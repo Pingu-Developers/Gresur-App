@@ -31,6 +31,7 @@
         <spring-format.version>0.0.19</spring-format.version>
 
     </properties>
+
     
 	<developers>
         <developer>
@@ -42,8 +43,18 @@
         	<role>Worker</role>
         </roles>
         </developer>
-    </developers>
-    
+
+		    <developer>
+		    <id>tomgalbar</id>
+		    <name>Tomas</name>
+		    <email>tomgalbar@alum.us.es</email>
+		    <url>vibienda.appspot.com</url>
+		    <roles>
+		      <role>Worker</role>
+		    </roles>
+		    </developer>
+	 </developers>
+
     <dependencies>
         <!-- Spring and Spring Boot dependencies -->
         <dependency>
