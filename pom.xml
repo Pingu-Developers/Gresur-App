@@ -32,8 +32,30 @@
 
     </properties>
 	
-		<developers>
- 		<developer>
+	
+    
+	<developers>
+        <developer>
+        <id>borrondom</id>
+        <name>Borja</name>
+        <email>borrondom@alum.us.es</email>
+        <url>https://github.com/borjar20</url>
+        <roles>
+        	<role>Worker</role>
+        </roles>
+        </developer>
+
+		    <developer>
+		    <id>tomgalbar</id>
+		    <name>Tomas</name>
+		    <email>tomgalbar@alum.us.es</email>
+		    <url>vibienda.appspot.com</url>
+		    <roles>
+		      <role>Worker</role>
+		    </roles>
+		    </developer>
+		    
+		 	<developer>
  			<id>caraticar</id>
  			<name>Carlos</name>
  			<email>caraticar@alum.us.es</email>
@@ -41,12 +63,10 @@
  			<roles>
 			 <role>Worker</role>
 			</roles>
- 		</developer>
+ 			</developer>
+		    
+	 </developers>
 
-
-		</developers>
-
-	
     <dependencies>
         <!-- Spring and Spring Boot dependencies -->
         <dependency>
