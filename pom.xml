@@ -35,11 +35,24 @@
 	
     
 	<developers>
+	
+	
+		
         <developer>
         <id>borrondom</id>
         <name>Borja</name>
         <email>borrondom@alum.us.es</email>
         <url>https://github.com/borjar20</url>
+        <roles>
+        	<role>Worker</role>
+        </roles>
+        </developer>
+        
+         <developer>
+        <id>lucperrui</id>
+        <name>Lucas</name>
+        <email>lucperrui@alum.us.es</email>
+        <url>https://github.com/lucasperezweb</url>
         <roles>
         	<role>Worker</role>
         </roles>
