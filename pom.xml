@@ -31,9 +31,8 @@
         <spring-format.version>0.0.19</spring-format.version>
 
     </properties>
-    
-		
- 	<developers>
+	
+	<developers>
  		<developer>
 			 <id>alesancor1</id>
 			 <name>Alejandro</name>
@@ -43,12 +42,22 @@
 			 	<role>Worker</role>
 			 </roles>
 		</developer>
-		
+			
         <developer>
 	        <id>borrondom</id>
 	        <name>Borja</name>
 	        <email>borrondom@alum.us.es</email>
 	        <url>https://github.com/borjar20</url>
+	        <roles>
+	        	<role>Worker</role>
+	        </roles>
+        </developer>
+        
+         <developer>
+	        <id>lucperrui</id>
+	        <name>Lucas</name>
+	        <email>lucperrui@alum.us.es</email>
+	        <url>https://github.com/lucasperezweb</url>
 	        <roles>
 	        	<role>Worker</role>
 	        </roles>
@@ -60,9 +69,20 @@
 		    <email>tomgalbar@alum.us.es</email>
 		    <url>vibienda.appspot.com</url>
 		    <roles>
-		      <role>Worker</role>
+		    	<role>Worker</role>
 		    </roles>
 		</developer>
+		    
+	 	<developer>
+ 			<id>caraticar</id>
+ 			<name>Carlos</name>
+ 			<email>caraticar@alum.us.es</email>
+ 			<url>http://www.tmht.com/carlos</url>
+ 			<roles>
+				<role>Worker</role>
+			</roles>
+ 		</developer>
+ 					    
 	 </developers>
 
     <dependencies>
