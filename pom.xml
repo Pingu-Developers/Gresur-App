@@ -31,7 +31,19 @@
         <spring-format.version>0.0.19</spring-format.version>
 
     </properties>
-
+    
+	<developers>
+		<developer>
+			 <id>alesancor1</id>
+			 <name>Alejandro</name>
+			 <email>alesancor1@alum.us.es</email>
+			 <url>https://github.com/alesancor1</url>
+			 <roles>
+			 	<role>Worker</role>
+			 </roles>
+		</developer>
+ 	</developers>
+ 
     <dependencies>
         <!-- Spring and Spring Boot dependencies -->
         <dependency>
