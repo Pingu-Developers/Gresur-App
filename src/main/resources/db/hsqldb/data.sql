@@ -6,7 +6,7 @@ INSERT INTO users(username,password,enabled) VALUES ('owner1','0wn3r',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (2,'owner1','owner');
 
 INSERT INTO users(username,password,enabled) VALUES ('borrondom','bord20',TRUE);
-INSERT INTO authorities(id,username,authority) VALUES (2,'borrondom','owner');
+INSERT INTO authorities(id,username,authority) VALUES (4,'borrondom','owner');
 -- One vet user, named vet1 with passwor v3t
 INSERT INTO users(username,password,enabled) VALUES ('vet1','v3t',TRUE);
 INSERT INTO authorities(id,username,authority) VALUES (3,'vet1','veterinarian');
