@@ -31,7 +31,19 @@
         <spring-format.version>0.0.19</spring-format.version>
 
     </properties>
-
+    
+	<developers>
+        <developer>
+        <id>borrondom</id>
+        <name>Borja</name>
+        <email>borrondom@alum.us.es</email>
+        <url>https://github.com/borjar20</url>
+        <roles>
+        	<role>Worker</role>
+        </roles>
+        </developer>
+    </developers>
+    
     <dependencies>
         <!-- Spring and Spring Boot dependencies -->
         <dependency>
