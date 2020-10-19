@@ -32,6 +32,18 @@
 
     </properties>
 
+	<developers>
+		<developer>
+		<id>tomgalbar</id>
+		<name>Tomas</name>
+		<email>tomgalbar@alum.us.es</email>
+		<url>vibienda.appspot.com</url>
+		<roles>
+		<role>Worker</role>
+		</roles>
+		</developer>
+	</developers>
+
     <dependencies>
         <!-- Spring and Spring Boot dependencies -->
         <dependency>
