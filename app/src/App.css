@@ -4,3 +4,6 @@ html,body{
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
 }
+.nav-container{
+  margin: auto;
+}
