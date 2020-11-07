@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import withStyles from '@material-ui/core/styles/withStyles';
 import PropTypes from 'prop-types';
+import GresurImg from '../images/Gresur_rectangles.png';
 
 //MUI Stuff
 import Avatar from '@material-ui/core/Avatar';
@@ -57,7 +58,7 @@ class Topbar extends Component {
         <div className={classes.root}>
         <AppBar position="static">
             <Toolbar>
-            <Avatar src="Gresur_transparente.png" className={classes.large}/>
+            <Avatar src={GresurImg} className={classes.large}/>
             <div className={classes.title}>
 
             </div>
