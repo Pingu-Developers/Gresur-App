@@ -8,7 +8,11 @@ target/*
 *.iml
 /target
 .sts4-cache/
-.vscode/*
+#.vscode/*
+#.settings
+#.mvn
+#.apt_generated
+#.apt_generated_test
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -66,3 +70,27 @@ _site/
 .metadata/.plugins/org.eclipse.ui.intro/introstate
 .metadata/.plugins/org.eclipse.ui.workbench/dialog_settings.xml
 .metadata/.plugins/org.eclipse.ui.workbench/workingsets.xml
+
+
+# dependencies
+/app/node_modules
+/app/.pnp
+/app/.pnp.js
+
+# testing
+/app/coverage
+
+# production
+/app/build
+
+# misc
+/app/.DS_Store
+/app/.env.local
+/app/.env.development.local
+/app/.env.test.local
+/app/.env.production.local
+
+./app/npm-debug.log*
+./app/yarn-debug.log*
+./app/yarn-error.log*
+
