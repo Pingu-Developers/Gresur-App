@@ -3,6 +3,7 @@ import {BrowserRouter as Router,Route,Switch} from 'react-router-dom';
 import './App.css';
 import {ThemeProvider} from '@material-ui/core/styles'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
+import axios from 'axios';
 
 //Redux
 import {Provider} from 'react-redux';
@@ -13,6 +14,7 @@ import Topbar from './components/Topbar';
 
 //Pages
 import Login from './pages/login';
+import entidad from './pages/entidad';
 
 
 
@@ -43,6 +45,7 @@ function App() {
         <Topbar/>
               <Switch>
                 <Route exact path="/login" component={Login}/>
+                <Route exact path="/entidad" component={entidad}/>
               </Switch>
         </Router>
       </div>
