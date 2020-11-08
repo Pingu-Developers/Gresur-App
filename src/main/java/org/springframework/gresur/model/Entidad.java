@@ -1,6 +1,8 @@
 package org.springframework.gresur.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -11,9 +13,10 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Entidad{
-    
-    @Id
+public class Entidad extends BaseEntity{
+	
+	@NotBlank
+	@Column(unique=true)
     @JsonProperty("nif")
     protected String NIF;
     
