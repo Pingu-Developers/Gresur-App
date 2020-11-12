@@ -4,35 +4,31 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
-@Entity
-@Data
-public class Entidad extends BaseEntity{
+@MappedSuperclass
+public class Entidad extends NamedEntity{
 	
 	@NotBlank
 	@Column(unique=true)
-    @JsonProperty("nif")
     protected String NIF;
-    
+
     @NotBlank
-    @JsonProperty("nombre")
-    protected String nombre;
-    
-    @NotBlank
-    @JsonProperty("email")
+    @Email
     protected String email;
     
-    //@Pattern(regexp = "^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-s./0-9]$")
-    @JsonProperty("tlf")
+    @Pattern(regexp = "^[0-9]{9}$")
     protected String tlf;
     
     @NotBlank
-    @JsonProperty("direccion")
+    @Size(max=50, min=3)
     protected String direccion;
 }
