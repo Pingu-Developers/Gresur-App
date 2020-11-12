@@ -67,23 +67,22 @@ class entidad extends Component {
 
     componentDidMount() {
         this.props.loadEntidadData();
-       
     };
 
     handleSubmit = (event) =>  {
         event.preventDefault();
-         const userData = {
-             nif: this.state.dni,
-             nombre: this.state.nombre,
-             email: this.state.email,
-             tlf: this.state.telefono,
-             direccion: this.state.direccion,
-         };
-         console.log(userData)
-         axios.post('http://localhost:8080/entidad/addEntidad',userData)
+        const userData = {
+            nif: this.state.dni,
+            nombre: this.state.nombre,
+            email: this.state.email,
+            tlf: this.state.telefono,
+            direccion: this.state.direccion,
+        };
+        console.log(userData)
+        axios.post('http://localhost:8080/entidad/addEntidad',userData)
             .then( this.props.loadEntidadData())
             .catch(err => console.log(err))
-         window.location.reload();
+        window.location.reload();
      }
 
     handleChange = (event) =>  {
