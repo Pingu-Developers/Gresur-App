@@ -1,6 +1,7 @@
 package org.springframework.gresur.model;
 
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
@@ -15,4 +16,7 @@ public class Pedido extends BaseEntity{
 	private String direccionEnvio;
 	@NotBlank
 	private Estado estado;
+	
+	@OneToOne(mappedBy = "pedido", optional = false)
+	FacturaEmitida facturaEmitida;
 }
