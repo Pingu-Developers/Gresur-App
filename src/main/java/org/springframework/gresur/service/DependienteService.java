@@ -33,7 +33,7 @@ public class DependienteService {
 		return dependienteRepository.save(dependiente);
 	}
 	
-	@Transactional(readOnly = true)
+	@Transactional
 	public void deleteByNIF(String NIF) throws DataAccessException{
 		dependienteRepository.deleteByNIF(NIF);
 	}
