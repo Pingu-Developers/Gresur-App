@@ -31,7 +31,7 @@ public class AlmacenService {
 	}
 	
 	@Transactional
-	public void deleteByNIF(Integer id) throws DataAccessException{
+	public void deleteById(Integer id) throws DataAccessException{
 		almacenRepository.deleteByid(id);
 	} 
 	
