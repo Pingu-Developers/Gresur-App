@@ -24,7 +24,7 @@ public class TransportistaService {
 	}	
 	
 	@Transactional(readOnly = true)
-	public Transportista findByNIF(Integer NIF) throws DataAccessException {
+	public Transportista findByNIF(String NIF) throws DataAccessException {
 		return transportistaRepo.findByNIF(NIF);
 	}
 	
@@ -34,7 +34,7 @@ public class TransportistaService {
 	}
 	
 	@Transactional
-	public void deleteByNIF(Integer NIF) {
+	public void deleteByNIF(String NIF) {
 		transportistaRepo.deleteByNIF(NIF);
 	}
 
