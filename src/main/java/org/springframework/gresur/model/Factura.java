@@ -3,6 +3,7 @@ package org.springframework.gresur.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +19,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Factura{
 	
 	@Id
+	@Column(name = "num_factura")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected Integer numFactura;
 	
@@ -28,6 +30,7 @@ public class Factura{
 	protected Double importe;
 	
 	@NotBlank
+	@Column(name = "esta_pagada")
 	protected Boolean estaPagada;
 	
 	@OneToMany(mappedBy = "factura", fetch = FetchType.EAGER)

@@ -14,5 +14,5 @@ public class Proveedor extends Entidad {
 	
 	@NotBlank
 	@Pattern(regexp = "^([a-zA-Z]{2})\\s*\\t*(\\d{2})\\s*\\t*(\\d{4})\\s*\\t*(\\d{4})\\s*\\t*(\\d{2})\\s*\\t*(\\d{10})$" )
-	private String iban;
+	private String IBAN;
 }
