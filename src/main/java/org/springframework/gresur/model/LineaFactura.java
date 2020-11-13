@@ -1,9 +1,11 @@
 package org.springframework.gresur.model;
 
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 
-public class LineaFactura {
+@Entity
+public class LineaFactura extends BaseEntity {
 
 	@Min(value = 1)
 	private Integer cantidad;
