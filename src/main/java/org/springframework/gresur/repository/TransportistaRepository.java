@@ -6,7 +6,7 @@ import org.springframework.gresur.model.Transportista;
 
 public interface TransportistaRepository extends CrudRepository<Transportista, Integer>{
 
-	 Transportista findByNIF(Integer NIF) throws DataAccessException;
-	 void deleteByNIF(Integer NIF) throws DataAccessException;
+	 Transportista findByNIF(String NIF) throws DataAccessException;
+	 void deleteByNIF(String NIF) throws DataAccessException;
 
 }
