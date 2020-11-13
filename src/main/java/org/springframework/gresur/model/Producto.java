@@ -1,5 +1,6 @@
 package org.springframework.gresur.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
@@ -15,33 +16,35 @@ import lombok.Data;
 public class Producto extends BaseEntity{
 	
 	@NotBlank
-	protected String nombre;
+	private String nombre;
 	
-	protected String descripcion;
+	private String descripcion;
 	
 	@NotBlank
-	protected String unidad;
+	private String unidad;
 	
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
-	protected Integer stock;
+	private Integer stock;
 	
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
-	protected Integer stockSeguridad;
+	@Column(name = "stock_seguridad")
+	private Integer stockSeguridad;
 	
-	protected String URLimagen;
+	@Column(name = "URL_imagen")
+	private String URLimagen;
 	
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
-	protected Double precioVenta;
+	@Column(name = "precio_venta")
+	private Double precioVenta;
 	
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
-	protected Double precioCompra;
+	@Column(name = "precio_compra")
+	private Double precioCompra;
 	
 	@Pattern(regexp = "^[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*$")
-	protected String dimensiones;
+	private String dimensiones;
 	
 	@Min(value = 0, message = "debe estar entre 0 y 1")
 	@Max(value = 1, message = "debe estar entre 0 y 1")
-	protected Double demanda;
-	
-
+	private Double demanda;
 }

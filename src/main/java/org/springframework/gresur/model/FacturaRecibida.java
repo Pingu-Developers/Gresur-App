@@ -14,6 +14,4 @@ public class FacturaRecibida extends Factura{
 	
 	@NotBlank
 	private Concepto concepto;
-	
-	
 }

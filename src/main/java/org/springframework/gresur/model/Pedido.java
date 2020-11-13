@@ -14,6 +14,7 @@ public class Pedido extends BaseEntity{
 
 	@NotBlank
 	private String direccionEnvio;
+	
 	@NotBlank
 	private Estado estado;
 	
