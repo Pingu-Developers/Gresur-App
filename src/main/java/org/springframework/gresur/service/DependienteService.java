@@ -10,6 +10,6 @@ public class DependienteService extends PersonalService<Dependiente, Dependiente
 	
 	@Autowired
 	public DependienteService(DependienteRepository dependienteRepository) {
-		super.personalRepo = dependienteRepository;
+		super.personalGRepo = dependienteRepository;
 	}	
 }

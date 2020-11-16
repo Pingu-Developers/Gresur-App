@@ -10,6 +10,6 @@ public class EncargadoDeAlmacenService extends PersonalService<EncargadoDeAlmace
 		
 	@Autowired
 	public EncargadoDeAlmacenService(EncargadoDeAlmacenRepository encargadoDeAlmacenRepository) {
-		super.personalRepo = encargadoDeAlmacenRepository;
+		super.personalGRepo = encargadoDeAlmacenRepository;
 	}
 }

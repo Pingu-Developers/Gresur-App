@@ -5,11 +5,14 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Administrador;
+import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.service.AdministradorService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/adm")
@@ -31,5 +34,17 @@ public class AdministradorController {
 	@GetMapping
 	public Iterable<Administrador> findAll(){
 		return admService.findAll();
+	}
+	
+	@GetMapping("/personal")
+	public Iterable<Personal> findAllPersonal(){
+		
+		return admService.findAllPersonal();
+	}
+	
+	@GetMapping("/personal/{id}")
+	public Personal findPersonal(@PathVariable("id") Long id){
+		System.out.println(id);
+		return admService.findPersonal(id);
 	}
 }

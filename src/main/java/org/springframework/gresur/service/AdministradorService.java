@@ -10,6 +10,6 @@ public class AdministradorService extends PersonalService<Administrador, Adminis
 		
 	@Autowired
 	public AdministradorService(AdministradorRepository admRepository) {
-		super.personalRepo = admRepository;
+		super.personalGRepo = admRepository;
 	}	
 }
