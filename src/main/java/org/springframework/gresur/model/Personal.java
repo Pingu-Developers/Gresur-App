@@ -1,10 +1,21 @@
 package org.springframework.gresur.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.Pattern;
 
-@MappedSuperclass
+import lombok.Data;
+
+@Data
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class Personal extends Entidad{
 	
 	@Column(unique = true)
@@ -12,4 +23,10 @@ public class Personal extends Entidad{
 	protected String NSS;
 	
 	protected String image;
+	
+	@OneToMany(mappedBy = "emisor", fetch = FetchType.EAGER)
+	protected List<Notificacion> noti_enviadas;
+	
+	@ManyToMany(mappedBy = "receptores")
+	protected List<Notificacion> noti_recibidas;
 }

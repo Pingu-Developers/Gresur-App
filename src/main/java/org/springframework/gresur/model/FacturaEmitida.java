@@ -12,13 +12,13 @@ import lombok.Data;
 @Table(name = "emitidas")
 public class FacturaEmitida extends Factura{
 	
-	@OneToOne(optional = true)
-	Pedido pedido;
-	
-	@ManyToOne(optional = false)
-	Dependiente dependiente;
-	
-	@ManyToOne(optional = false)
-	Cliente cliente;
-	
+//	@OneToOne(optional = true)
+//	Pedido pedido;
+//	
+//	@ManyToOne(optional = false)
+//	Dependiente dependiente;
+//	
+//	@ManyToOne(optional = false)
+//	Cliente cliente;
+//	
 }

@@ -11,9 +11,10 @@ public class LineaFactura extends BaseEntity {
 	@Min(value = 1)
 	private Integer cantidad;
 	
-	@ManyToOne(optional = true)
+/*	@ManyToOne(optional = true)
 	@JoinColumn(name = "factura_id")
 	Factura factura;
+*/
 	
 //	@ManyToOne(optional = true)
 //	Producto producto;

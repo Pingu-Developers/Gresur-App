@@ -33,8 +33,8 @@ public class Factura{
 	@Column(name = "esta_pagada")
 	protected Boolean estaPagada;
 	
-	@OneToMany(mappedBy = "factura", fetch = FetchType.EAGER)
-	List<LineaFactura> lineasFacturas;
+//	@OneToMany(mappedBy = "factura", fetch = FetchType.EAGER)
+//	List<LineaFactura> lineasFacturas;
 	
 //	@ManyToMany(fetch = FetchType.EAGER)
 //	Producto producto; FALTA EN PRODUCTO AÑADIR EL @ManyToMany con el fetch y el mapped!!!

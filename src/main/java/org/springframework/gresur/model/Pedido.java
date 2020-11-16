@@ -17,7 +17,7 @@ public class Pedido extends BaseEntity{
 	
 	@NotBlank
 	private Estado estado;
-	
-	@OneToOne(mappedBy = "pedido", optional = false)
-	FacturaEmitida facturaEmitida;
+//	
+//	@OneToOne(mappedBy = "pedido", optional = false)
+//	FacturaEmitida facturaEmitida;
 }

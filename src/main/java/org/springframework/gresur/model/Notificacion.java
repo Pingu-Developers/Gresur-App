@@ -28,7 +28,7 @@ public class Notificacion extends BaseEntity{
 	@Column(name ="tipo_notificacion")
 	private TipoNotificacion tipoNotificacion;
 	
-	@NotBlank
+	//@NotBlank
 	@Lob
 	private Blob cuerpo;
 	

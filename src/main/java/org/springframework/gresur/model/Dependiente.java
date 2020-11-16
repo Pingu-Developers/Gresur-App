@@ -14,7 +14,7 @@ import lombok.Data;
 @Table(name = "dependientes")
 public class Dependiente extends Personal{
 
-	@OneToMany(mappedBy = "dependiente", fetch = FetchType.EAGER)
-	List<FacturaEmitida> facturasEmitidas;
-	
+//	@OneToMany(mappedBy = "dependiente", fetch = FetchType.EAGER)
+//	List<FacturaEmitida> facturasEmitidas;
+//	
 }

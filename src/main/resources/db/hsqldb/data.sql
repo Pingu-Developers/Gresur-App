@@ -1,1 +1,1 @@
-INSERT INTO ENTIDAD(NIF, NOMBRE, EMAIL, TLF, DIRECCION) VALUES ('12345678A', 'Paco', 'paco@gamil.com', '1234567890', 'FUNCIONA PLS');
+INSERT INTO CONFIG(salario_minimo, num_max_notificaciones, MMA) VALUES(900.00, 10, 1500.00)
