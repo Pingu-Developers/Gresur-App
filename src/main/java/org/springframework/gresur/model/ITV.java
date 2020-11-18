@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity 
-@Table(name="vehiculos")
+@Table(name="ITV")
 public class ITV extends BaseEntity{
 	
 	@DateTimeFormat(pattern="dd/MM/yyyy")
