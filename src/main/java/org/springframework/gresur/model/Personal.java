@@ -2,6 +2,7 @@ package org.springframework.gresur.model;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
@@ -31,5 +32,6 @@ public class Personal extends Entidad{
 	@ManyToMany(mappedBy = "receptores")
 	protected List<Notificacion> noti_recibidas;
 	
-	//TODO RELACION CON CONTRATO PASA COMO EN VEHICULOS CON ITV Y ETC ETC ETC
+	@OneToMany(mappedBy = "personal", cascade = CascadeType.REMOVE)
+	protected List<Contrato> contratos;
 }

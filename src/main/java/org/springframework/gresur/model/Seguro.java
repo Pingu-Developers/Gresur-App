@@ -38,6 +38,6 @@ public class Seguro extends BaseEntity{
 	@JoinColumn(name = "facturas_recibidas")
 	private FacturaRecibida recibidas;
 	
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false)
 	private Vehiculo vehiculo;
 }

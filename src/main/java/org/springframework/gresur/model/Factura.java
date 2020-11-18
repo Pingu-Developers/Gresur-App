@@ -39,6 +39,6 @@ public class Factura{
 	@Column(name = "esta_pagada")
 	protected Boolean estaPagada;
 	
-	@OneToMany(mappedBy = "factura", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "factura", cascade = CascadeType.REMOVE)
 	protected List<LineaFactura> lineasFacturas;
 }

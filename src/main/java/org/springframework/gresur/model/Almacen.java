@@ -20,15 +20,15 @@ import lombok.EqualsAndHashCode;
 public class Almacen extends BaseEntity{
 	
 	@NotBlank
-	protected String direccion;
+	private String direccion;
 	
 	@NotBlank
 	@Min(value=0, message = "debe ser mayor o igual a cero")  
-	protected Double capacidad;
+	private Double capacidad;
 	
-	@OneToMany(mappedBy = "almacen", cascade = CascadeType.ALL)
-	protected List<Estanteria> estanterias;
+	@OneToMany(mappedBy = "almacen", cascade = CascadeType.REMOVE)
+	private List<Estanteria> estanterias;
 	
 	@OneToOne(mappedBy = "almacen", optional = false)
-	protected EncargadoDeAlmacen encargado;
+	private EncargadoDeAlmacen encargado;
 }

@@ -15,12 +15,12 @@ import lombok.EqualsAndHashCode;
 public class FacturaEmitida extends Factura{
 	
 	@OneToOne
-	Pedido pedido;
+	private Pedido pedido;
 	
 	@ManyToOne(optional = false)
-	Dependiente dependiente;
+	private Dependiente dependiente;
 	
 	@ManyToOne(optional = false)
-	Cliente cliente;
+	private Cliente cliente;
 	
 }

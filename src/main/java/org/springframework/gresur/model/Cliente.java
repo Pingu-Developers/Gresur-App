@@ -16,5 +16,5 @@ import lombok.EqualsAndHashCode;
 public class Cliente extends Entidad{
 	
 	@OneToMany(mappedBy = "cliente")
-	List<FacturaEmitida> facturasEmitidas;
+	private List<FacturaEmitida> facturasEmitidas;
 }
