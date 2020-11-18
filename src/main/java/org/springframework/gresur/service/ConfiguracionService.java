@@ -1,7 +1,5 @@
 package org.springframework.gresur.service;
 
-import java.lang.reflect.Field;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +25,7 @@ public class ConfiguracionService {
 	@Transactional
 	public Configuracion updateConfig(Configuracion config) {
 		Configuracion actual = this.getConfig();
-		if (config.getMMA() != actual.getMMA()) {
-			actual.setMMA(config.getMMA());
-		} if (config.getSalarioMinimo() != actual.getSalarioMinimo()) {
+		if (config.getSalarioMinimo() != actual.getSalarioMinimo()) {
 			actual.setSalarioMinimo(config.getSalarioMinimo());
 		} if (config.getNumMaxNotificaciones() != actual.getNumMaxNotificaciones()) {
 			actual.setNumMaxNotificaciones(config.getNumMaxNotificaciones());
@@ -43,9 +39,5 @@ public class ConfiguracionService {
 	
 	public Integer getNumMaxNotificaciones() {
 		return this.getConfig().getNumMaxNotificaciones();
-	}
-	
-	public Double getMMA() {
-		return this.getConfig().getMMA();
 	}
 }

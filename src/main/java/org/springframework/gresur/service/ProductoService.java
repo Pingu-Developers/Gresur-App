@@ -23,8 +23,8 @@ public class ProductoService {
 	}
 
 	@Transactional(readOnly = true)
-	public Producto findById(Integer id) throws DataAccessException{
-		return productoRepository.findByid(id);
+	public Producto findById(Long id) throws DataAccessException{
+		return productoRepository.findById(id).get();
 	}
 	
 	@Transactional
@@ -33,7 +33,7 @@ public class ProductoService {
 	}
 	
 	@Transactional
-	public void deleteById(Producto id) throws DataAccessException{
-		productoRepository.deleteByid(id);
+	public void deleteById(Long id) throws DataAccessException{
+		productoRepository.deleteById(id);
 	} 
 }

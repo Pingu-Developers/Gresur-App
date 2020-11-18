@@ -1,6 +1,5 @@
 package org.springframework.gresur.model;
 
-import java.sql.Blob;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -17,8 +16,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name="notificaciones")
 public class Notificacion extends BaseEntity{
@@ -28,9 +29,9 @@ public class Notificacion extends BaseEntity{
 	@Column(name ="tipo_notificacion")
 	private TipoNotificacion tipoNotificacion;
 	
-	//@NotBlank
+	@NotBlank
 	@Lob
-	private Blob cuerpo;
+	private String cuerpo;
 	
 	@NotNull
 	private Boolean leido;

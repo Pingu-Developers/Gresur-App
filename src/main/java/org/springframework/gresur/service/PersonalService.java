@@ -10,39 +10,40 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PersonalService<T extends Personal, E extends PersonalRepository<T>> {
 	
-	protected E personalGRepo;
+	protected E personalRepo;
 	
 	@Autowired
-	protected PersonalRepository<Personal> personalRepo;
+	protected PersonalRepository<Personal> personalGRepo;
 	
 	@Transactional(readOnly = true)
 	public Iterable<T> findAll() throws DataAccessException{
-		return personalGRepo.findAll();
-	}
-	
-	@Transactional(readOnly = true)
-	public Iterable<Personal> findAllPersonal() throws DataAccessException{
 		return personalRepo.findAll();
 	}
 	
 	@Transactional(readOnly = true)
-	public Personal findPersonal(Long id) throws DataAccessException{
-		return personalRepo.findById(id).orElse(null);
-	}
-	
-	
-	@Transactional(readOnly = true)
 	public T findByNIF(String NIF) throws DataAccessException{
-		return personalGRepo.findByNIF(NIF);
+		return personalRepo.findByNIF(NIF);
 	}
 	
 	@Transactional
 	public T add(T personal) throws DataAccessException{
-		return personalGRepo.save(personal);
+		return personalRepo.save(personal);
 	}
 	
 	@Transactional
 	public void deleteByNIF(String NIF) throws DataAccessException{
-		personalGRepo.deleteByNIF(NIF);
+		personalRepo.deleteByNIF(NIF);
 	}
+	
+	/* METODOS GENERALES PARA EL PERSONAL AL COMPLETO (superclase)*/
+	@Transactional(readOnly = true)
+	public Iterable<Personal> findAllPersonal() throws DataAccessException{
+		return personalGRepo.findAll();
+	}
+	
+	@Transactional(readOnly = true)
+	public Personal findPersonal(Long id) throws DataAccessException{
+		return personalGRepo.findById(id).orElse(null);
+	}
+	
 }

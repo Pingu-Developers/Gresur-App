@@ -23,8 +23,8 @@ public class EstanteriaService{
 	}
 	
 	@Transactional(readOnly = true)
-	public Estanteria findById(Integer id) throws DataAccessException{
-		return estanteriaRepository.findByid(id);
+	public Estanteria findById(Long id) throws DataAccessException{
+		return estanteriaRepository.findById(id).get();
 	}
 	
 	@Transactional
@@ -33,8 +33,8 @@ public class EstanteriaService{
 	}
 	
 	@Transactional
-	public void deleteById(Integer id) throws DataAccessException{
-		estanteriaRepository.deleteByid(id);
+	public void deleteById(Long id) throws DataAccessException{
+		estanteriaRepository.deleteById(id);
 	} 
 	
 

@@ -10,6 +10,6 @@ public class TransportistaService extends PersonalService<Transportista, Transpo
 	
 	@Autowired
 	public TransportistaService(TransportistaRepository transportistaRepo) {
-		super.personalGRepo = transportistaRepo;
+		super.personalRepo = transportistaRepo;
 	}		
 }

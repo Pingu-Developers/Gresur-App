@@ -23,7 +23,7 @@ public class PedidoService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Pedido findByID(Integer id) throws DataAccessException{
+	public Pedido findByID(Long id) throws DataAccessException{
 		return pedidoRepo.findById(id).get();
 	}
 	
@@ -33,7 +33,7 @@ public class PedidoService {
 	}
 	
 	@Transactional
-	public void deleteByID(Integer id) throws DataAccessException{
+	public void deleteByID(Long id) throws DataAccessException{
 		pedidoRepo.deleteById(id);
 	} 
 
