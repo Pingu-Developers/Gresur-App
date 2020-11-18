@@ -23,16 +23,16 @@ import lombok.EqualsAndHashCode;
 public class Seguro extends BaseEntity{
 	
 	@NotBlank
-	protected String compania;
+	private String compania;
 	
-	protected TipoSeguro tipoSeguro;
+	private TipoSeguro tipoSeguro;
 	
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@PastOrPresent
-	protected LocalDate fechaContrato;
+	private LocalDate fechaContrato;
 	
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	protected LocalDate fechaExpiracion;
+	private LocalDate fechaExpiracion;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "facturas_recibidas")
