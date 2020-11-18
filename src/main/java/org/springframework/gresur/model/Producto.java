@@ -1,8 +1,12 @@
 package org.springframework.gresur.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -49,5 +53,6 @@ public class Producto extends BaseEntity{
 	@ManyToOne
 	private Estanteria estanteria;
 	
-	//TODO EN LA RELACION PRODUCTO-LINEAFACTURA PASA LO MISMO QUE CON VEHICULO E ITV,SEGURO...
+	@OneToMany(mappedBy = "producto", cascade = CascadeType.REMOVE)
+	private List<LineaFactura> lineasFactura;
 }

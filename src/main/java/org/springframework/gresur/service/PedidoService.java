@@ -33,7 +33,7 @@ public class PedidoService {
 	}
 	
 	@Transactional
-	public void deleteByID(Long id) throws DataAccessException{
+	public void deleteById(Long id) throws DataAccessException{
 		pedidoRepo.deleteById(id);
 	} 
 

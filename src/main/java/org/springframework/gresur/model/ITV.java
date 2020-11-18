@@ -35,10 +35,10 @@ public class ITV extends BaseEntity{
 	@Enumerated(value = EnumType.STRING)
 	protected ResultadoITV resultado;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "facturas_recibidas")
 	private FacturaRecibida recibidas;
 	
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne
 	private Vehiculo vehiculo;
 }

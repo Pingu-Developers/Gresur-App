@@ -1,7 +1,11 @@
 package org.springframework.gresur.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,5 +16,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "transportistas")
 public class Transportista extends Personal{
 	
-	//TODO EN LA RELACION CON VEHICULO PASA LO MISMO QUE CON LAS ITV Y TO ESO
+	@OneToMany(mappedBy = "transportista")
+	@Size(min = 1)
+	private List<Vehiculo> vehiculos;
 }

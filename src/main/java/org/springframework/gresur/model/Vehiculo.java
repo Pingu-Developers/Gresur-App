@@ -1,10 +1,14 @@
 package org.springframework.gresur.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -48,6 +52,15 @@ public class Vehiculo extends BaseEntity {
 	@ManyToOne
 	private Transportista transportista;
 	
-	//TODO PROBAR SI CON LAS RELACIONES ONETOMANY A ITV,SEGUROS Y REPARACIONES, SPRING GENERA UNA PARA CADA UNA O SOLAMENTE UNA CON EL ÚLTIMO REGISTRO, IGUAL CON LOS PEDIDOS
+	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
+	private List<ITV> ITVs;
 	
+	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
+	private List<Seguro> seguros;
+	
+	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
+	private List<Reparacion> reparaciones;
+	
+	@OneToMany(mappedBy = "vehiculo")
+	private List<Pedido> pedidos;
 }

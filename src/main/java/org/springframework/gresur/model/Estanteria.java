@@ -19,14 +19,14 @@ import lombok.EqualsAndHashCode;
 public class Estanteria extends BaseEntity{
 	
 	@NotBlank
-	protected Categoria categoria;
+	private Categoria categoria;
 	
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
-	protected Double capacidad;
+	private Double capacidad;
 	
 	@ManyToOne(optional = false)
-	protected Almacen almacen;
+	private Almacen almacen;
 	
 	@OneToMany(mappedBy = "estanteria")
-	protected List<Producto> productos;
+	private List<Producto> productos;
 }
