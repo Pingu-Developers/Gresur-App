@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
 public class Seguro extends BaseEntity{
 	
 	@NotBlank
-	protected String compañia;
+	protected String compania;
 	
 	protected TipoSeguro tipoSeguro;
 	
