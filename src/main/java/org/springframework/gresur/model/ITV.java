@@ -26,14 +26,14 @@ public class ITV extends BaseEntity{
 	
 	@DateTimeFormat(pattern="dd/MM/yyyy")
 	@PastOrPresent
-	protected LocalDate fecha;
+	private LocalDate fecha;
 
 	@DateTimeFormat(pattern="dd/MM/yyyy")
-	protected LocalDate expiracion;
+	private LocalDate expiracion;
 	
 	@NotNull
 	@Enumerated(value = EnumType.STRING)
-	protected ResultadoITV resultado;
+	private ResultadoITV resultado;
 	
 	@OneToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "facturas_recibidas")
