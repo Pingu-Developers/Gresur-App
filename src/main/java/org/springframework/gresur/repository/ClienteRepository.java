@@ -4,7 +4,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.gresur.model.Cliente;
 
-public interface ClienteRepository extends CrudRepository<Cliente,Integer> {
+public interface ClienteRepository extends CrudRepository<Cliente,Long> {
 
 	Cliente findByNIF (String NIF) throws DataAccessException;
 	

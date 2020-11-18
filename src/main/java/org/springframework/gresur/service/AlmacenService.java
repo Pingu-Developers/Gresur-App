@@ -23,8 +23,8 @@ public class AlmacenService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Almacen findById(Integer id) throws DataAccessException{
-		return almacenRepository.findByid(id);
+	public Almacen findById(Long id) throws DataAccessException{
+		return almacenRepository.findById(id).get();
 	}
 	
 	@Transactional
@@ -33,8 +33,8 @@ public class AlmacenService {
 	}
 	
 	@Transactional
-	public void deleteById(Integer id) throws DataAccessException{
-		almacenRepository.deleteByid(id);
+	public void deleteById(Long id) throws DataAccessException{
+		almacenRepository.deleteById(id);
 	} 
 	
 

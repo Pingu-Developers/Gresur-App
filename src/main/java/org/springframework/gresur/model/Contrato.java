@@ -2,12 +2,11 @@ package org.springframework.gresur.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 
@@ -19,25 +18,25 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "seguros")
-public class Seguro extends BaseEntity{
+@Table(name = "contratos")
+public class Contrato extends BaseEntity{
+	
+	//TODO validacion de configuracion
+	private Double nomina;
 	
 	@NotBlank
-	protected String compañia;
+	@Column(name = "entidad_bancaria")
+	private String entidadBancaria;
 	
-	protected TipoSeguro tipoSeguro;
-	
+	@Column(name = "fecha_inicio")
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@PastOrPresent
-	protected LocalDate fechaContrato;
+	private LocalDate fechaInicio;
 	
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
-	protected LocalDate fechaExpiracion;
+	@FutureOrPresent
+	private LocalDate fechaFin;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "facturas_recibidas")
-	private FacturaRecibida recibidas;
-	
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
-	private Vehiculo vehiculo;
+	@ManyToOne(optional = false)
+	private Personal personal;
 }

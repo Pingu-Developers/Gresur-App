@@ -3,39 +3,42 @@ package org.springframework.gresur.model;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.FetchType;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import lombok.Data;
 
-@MappedSuperclass
+@Data
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table(name = "facturas")
 public class Factura{
 	
 	@Id
-	@Column(name = "num_factura")
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	protected Integer numFactura;
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ENTITY_ID")
+	protected Long id;
 	
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	protected LocalDate fecha;
 	
-	@NotBlank
+	@NotNull
 	protected Double importe;
 	
 	@NotBlank
 	@Column(name = "esta_pagada")
 	protected Boolean estaPagada;
 	
-//	@OneToMany(mappedBy = "factura", fetch = FetchType.EAGER)
-//	List<LineaFactura> lineasFacturas;
-	
-//	@ManyToMany(fetch = FetchType.EAGER)
-//	Producto producto; FALTA EN PRODUCTO AÑADIR EL @ManyToMany con el fetch y el mapped!!!
+	@OneToMany(mappedBy = "factura", cascade = CascadeType.ALL)
+	protected List<LineaFactura> lineasFacturas;
 }

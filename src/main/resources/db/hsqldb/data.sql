@@ -1,1 +1,1 @@
-INSERT INTO CONFIG(salario_minimo, num_max_notificaciones, MMA) VALUES(900.00, 10, 1500.00)
+INSERT INTO CONFIG(salario_minimo, num_max_notificaciones) VALUES(900.00, 10)
