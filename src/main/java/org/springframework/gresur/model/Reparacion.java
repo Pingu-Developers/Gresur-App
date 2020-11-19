@@ -2,7 +2,6 @@ package org.springframework.gresur.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,7 +26,7 @@ public class Reparacion extends BaseEntity{
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	protected LocalDate fechaSalidaTaller;
 	
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name = "facturas_recibidas")
 	private FacturaRecibida recibidas;
 	
