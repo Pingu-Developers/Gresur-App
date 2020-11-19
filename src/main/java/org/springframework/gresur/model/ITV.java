@@ -2,7 +2,6 @@ package org.springframework.gresur.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -35,7 +34,7 @@ public class ITV extends BaseEntity{
 	@Enumerated(value = EnumType.STRING)
 	private ResultadoITV resultado;
 	
-	@OneToOne(cascade = CascadeType.REMOVE)
+	@OneToOne
 	@JoinColumn(name = "facturas_recibidas")
 	private FacturaRecibida recibidas;
 	
