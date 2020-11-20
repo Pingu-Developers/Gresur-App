@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "seguros")
-public class Seguro extends BaseEntity{
+public class Seguro extends BaseEntity implements Comparable<Seguro>{
 	
 	@NotBlank
 	private String compania;
@@ -39,4 +39,9 @@ public class Seguro extends BaseEntity{
 	
 	@ManyToOne(optional = false)
 	private Vehiculo vehiculo;
+
+	@Override
+	public int compareTo(Seguro o) {
+		return this.fechaContrato.compareTo(o.fechaContrato);
+	}
 }
