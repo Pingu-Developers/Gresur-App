@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Factura;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.repository.FacturaRepository;
+import org.springframework.gresur.service.exceptions.ClienteDefaulterException;
 import org.springframework.transaction.annotation.Transactional;
 
 public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
@@ -27,7 +28,7 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	}
 	
 	@Transactional
-	public T add(T facturaRecibida) throws DataAccessException {
+	public T add(T facturaRecibida) throws DataAccessException, ClienteDefaulterException {
 		return facturaRepo.save(facturaRecibida);
 	}
 	
