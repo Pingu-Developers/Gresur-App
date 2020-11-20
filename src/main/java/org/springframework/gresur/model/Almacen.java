@@ -22,6 +22,7 @@ public class Almacen extends BaseEntity{
 	@NotBlank
 	private String direccion;
 	
+	//TODO RN LA CAPACIDAD DE LAS ESTANTERIAS NO DEBE SUPERAR AL ALMACEN
 	@NotBlank
 	@Min(value=0, message = "debe ser mayor o igual a cero")  
 	private Double capacidad;

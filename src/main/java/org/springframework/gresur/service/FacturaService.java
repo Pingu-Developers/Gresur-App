@@ -1,8 +1,11 @@
 package org.springframework.gresur.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Factura;
+import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.repository.FacturaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,14 +36,24 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 		facturaRepo.deleteById(numFactura);
 	}
 	
+	@Transactional(readOnly = true)
+	public List<LineaFactura> findLineasFactura(){
+		return facturaRepo.findAllLineasFactura();
+	}
+	
 	/*METODOS GENERALES PARA TODAS LAS FACTURAS (superclase)*/
-	@Transactional
+	@Transactional(readOnly = true)
 	public Iterable<Factura> findAllFacturas() throws DataAccessException{
 		return facturaGRepo.findAll();
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public Factura findFactura(Long numFactura) {
 		return facturaGRepo.findById(numFactura).get();
+	}
+	
+	@Transactional(readOnly = true)
+	public List<LineaFactura> findAllLineasFactura(){
+		return facturaGRepo.findAllLineasFactura();
 	}
 }
