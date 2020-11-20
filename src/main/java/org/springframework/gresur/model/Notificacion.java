@@ -1,7 +1,7 @@
 package org.springframework.gresur.model;
 
+import java.time.LocalDateTime;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -34,6 +33,8 @@ public class Notificacion extends BaseEntity{
 	private String cuerpo;
 	
 	@NotNull
+	private LocalDateTime fecha;
+	
 	private Boolean leido;
 	
 	@ManyToOne(optional = true)

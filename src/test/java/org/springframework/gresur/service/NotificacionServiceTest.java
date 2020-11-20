@@ -9,10 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.TipoNotificacion;
+import org.springframework.gresur.service.exceptions.NotificacionesLimitException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,9 +48,14 @@ class NotificacionServiceTest {
 		List<Personal> la = new ArrayList<Personal>();
 		la.add(adm);
 		not.setReceptores(la);
-		notificacionService.add(not);
+		try {
+			notificacionService.add(not);
+		} catch (DataAccessException e) {
+			e.printStackTrace();
+		} catch (NotificacionesLimitException e) {
+			e.printStackTrace();
+		}
 		
-		System.out.println("aaaaa");
 		assertTrue(notificacionService.findAll().iterator().next().getEmisor().equals(adm));
 	}
 
