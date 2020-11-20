@@ -9,4 +9,5 @@ import org.springframework.gresur.model.LineaFactura;
 public interface FacturaRepository<T extends Factura> extends CrudRepository<T, Long> {
 	
 	public List<LineaFactura> findAllLineasFactura();
+	
 }
