@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -49,6 +50,9 @@ public class Producto extends BaseEntity{
 	
 	@Pattern(regexp = "^[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*$")
 	private String dimensiones;
+	
+	@Positive(message = "el peso no puede ser negativo y debe ser mayor que 0")
+	private Double pesoUnitario;
 	
 	@ManyToOne
 	private Estanteria estanteria;
