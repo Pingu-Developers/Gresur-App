@@ -36,7 +36,7 @@ public class PedidoService {
 		return pedidoRepo.findById(id).get();
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = MMAExceededException.class)
 	public Pedido add(Pedido pedido) throws DataAccessException, MMAExceededException, VehicleNotAvailableException {
 		
 		Vehiculo vehiculo = pedido.getVehiculo();
