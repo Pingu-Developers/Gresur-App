@@ -35,6 +35,11 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 		personalRepo.deleteByNIF(NIF);
 	}
 	
+	@Transactional
+	public long count() throws DataAccessException{
+		return personalRepo.count();
+	}
+	
 	/* METODOS GENERALES PARA EL PERSONAL AL COMPLETO (superclase)*/
 	@Transactional(readOnly = true)
 	public Iterable<Personal> findAllPersonal() throws DataAccessException{
