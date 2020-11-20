@@ -96,6 +96,7 @@ public class VehiculoService {
 			
 			if(ultimaITV.getResultado()==ResultadoITV.NEGATIVA || ultimaITV.getResultado()==ResultadoITV.DESFAVORABLE) {
 				v.setDisponibilidad(false);
+				vehiculoRepository.save(v);
 				Notificacion warning = new Notificacion();
 				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a la invalidez de su ITV");
 				warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
@@ -107,6 +108,7 @@ public class VehiculoService {
 			}
 			if(ultimoSeguro == null || ultimoSeguro.getFechaExpiracion().isBefore(LocalDate.now())) {
 				v.setDisponibilidad(false);
+				vehiculoRepository.save(v);
 				Notificacion warning = new Notificacion();
 				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a la caducidad de su Seguro");
 				warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
