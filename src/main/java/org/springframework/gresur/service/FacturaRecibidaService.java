@@ -14,9 +14,4 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 	public FacturaRecibidaService(FacturaRecibidaRepository frRepo) {
 		super.facturaRepo = frRepo;
 	}
-	
-	@Transactional
-	public FacturaRecibida add(FacturaRecibida recibida) throws DataAccessException{
-		return facturaRepo.save(recibida);
-	}
 }
