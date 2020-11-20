@@ -1,6 +1,7 @@
 package org.springframework.gresur.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -39,7 +40,7 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	
 	@Transactional(readOnly = true)
 	public List<LineaFactura> findLineasFactura(){
-		return facturaRepo.findAllLineasFactura();
+		return facturaRepo.findAll().stream().map(x->x.getLineasFacturas()).flatMap(List::stream).collect(Collectors.toList());
 	}
 	
 	/*METODOS GENERALES PARA TODAS LAS FACTURAS (superclase)*/
@@ -55,6 +56,6 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	
 	@Transactional(readOnly = true)
 	public List<LineaFactura> findAllLineasFactura(){
-		return facturaGRepo.findAllLineasFactura();
+		return facturaGRepo.findAll().stream().map(x->x.getLineasFacturas()).flatMap(List::stream).collect(Collectors.toList());
 	}
 }

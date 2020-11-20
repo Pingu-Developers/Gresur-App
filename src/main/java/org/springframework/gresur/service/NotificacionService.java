@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.TipoNotificacion;
-import org.springframework.gresur.repository.ConfiguracionRepository;
 import org.springframework.gresur.repository.NotificacionRepository;
 import org.springframework.gresur.service.exceptions.NotificacionesLimitException;
 import org.springframework.stereotype.Service;
@@ -18,11 +17,12 @@ public class NotificacionService {
 
 	private NotificacionRepository notificacionRepo;
 	
-	private final ConfiguracionService configuracionService;
+	@Autowired
+	private ConfiguracionService configuracionService;
+
 	
 	@Autowired
-	public NotificacionService(NotificacionRepository notificacionRepo,ConfiguracionService configuracionService) {
-		this.configuracionService = configuracionService;
+	public NotificacionService(NotificacionRepository notificacionRepo) {
 		this.notificacionRepo = notificacionRepo;
 	}
 	
@@ -31,8 +31,14 @@ public class NotificacionService {
 		return notificacionRepo.findAll();
 	}
 	
-	@Transactional(rollbackFor = NotificacionesLimitException.class)
-	public Notificacion add(Notificacion notificacion) throws DataAccessException,NotificacionesLimitException{
+	@Transactional(rollbackFor = {NotificacionesLimitException.class, NullPointerException.class})
+	public Notificacion add(Notificacion notificacion) throws DataAccessException,NotificacionesLimitException,NullPointerException{
+		
+		if(notificacion.getLeido() == null)
+			notificacion.setLeido(false);
+		
+		if(notificacion.getEmisor()==null && notificacion.getTipoNotificacion()!=TipoNotificacion.SISTEMA)
+			throw new NullPointerException("El emisor no puede ser nulo si la notificación no es del sistema");
 		
 		notificacion.setFecha(LocalDateTime.now());
 		Personal persona = notificacion.getEmisor();

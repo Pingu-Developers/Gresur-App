@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.model.Producto;
-import org.springframework.gresur.repository.FacturaEmitidaRepository;
 import org.springframework.gresur.repository.ProductoRepository;
 import org.springframework.gresur.service.exceptions.CapacidadProductoExcededException;
 import org.springframework.gresur.service.exceptions.StockWithoutEstanteriaException;
@@ -18,13 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductoService {
 	
 	private ProductoRepository productoRepository;
-	private FacturaEmitidaRepository facturaRepository;
+	
+	@Autowired
+	private FacturaEmitidaService facturaService;
 	
 	
 	@Autowired
-	public ProductoService(ProductoRepository productoRepository, FacturaEmitidaRepository facturaRepository) {
+	public ProductoService(ProductoRepository productoRepository) {
 		this.productoRepository = productoRepository;
-		this.facturaRepository = facturaRepository;
 	}
 	
 	/* AUXILIAR METHODS */
@@ -99,9 +99,10 @@ public class ProductoService {
 	
 	/* USER STORIES */
 	
+	//TODO añadir franja de tiempo en el calculo de la demanda
 	@Transactional(readOnly = true)
 	public Double getDemanda(Producto p) throws DataAccessException{
-		List<LineaFactura> lf = facturaRepository.findAllLineasFactura();
+		List<LineaFactura> lf = facturaService.findAllLineasFactura();
 		Long totalVentas = lf.stream()
 							 .mapToLong(x->x.getCantidad())
 							 .sum();

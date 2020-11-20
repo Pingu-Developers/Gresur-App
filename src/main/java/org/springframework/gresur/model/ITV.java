@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity 
 @Table(name="ITV")
-public class ITV extends BaseEntity{
+public class ITV extends BaseEntity implements Comparable<ITV>{
 	
 	@DateTimeFormat(pattern="dd/MM/yyyy")
 	@PastOrPresent
@@ -40,4 +40,9 @@ public class ITV extends BaseEntity{
 	
 	@ManyToOne
 	private Vehiculo vehiculo;
+
+	@Override
+	public int compareTo(ITV o) {
+		return this.getFecha().compareTo(o.getFecha());
+	}
 }
