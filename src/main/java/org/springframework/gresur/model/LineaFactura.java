@@ -8,10 +8,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "lineas_factura", uniqueConstraints = @UniqueConstraint(columnNames = {"factura", "producto"}))
 public class LineaFactura extends BaseEntity {
@@ -26,4 +24,35 @@ public class LineaFactura extends BaseEntity {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "producto")
 	private Producto producto;
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((factura == null) ? 0 : factura.hashCode());
+		result = prime * result + ((producto == null) ? 0 : producto.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LineaFactura other = (LineaFactura) obj;
+		if (factura == null) {
+			if (other.factura != null)
+				return false;
+		} else if (!factura.equals(other.factura))
+			return false;
+		if (producto == null) {
+			if (other.producto != null)
+				return false;
+		} else if (!producto.equals(other.producto))
+			return false;
+		return true;
+	}
 }

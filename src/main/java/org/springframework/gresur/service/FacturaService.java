@@ -54,8 +54,4 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 		return facturaGRepo.findById(numFactura).get();
 	}
 	
-	@Transactional(readOnly = true)
-	public List<LineaFactura> findAllLineasFactura(){
-		return facturaGRepo.findAll().stream().map(x->x.getLineasFacturas()).flatMap(List::stream).collect(Collectors.toList());
-	}
 }
