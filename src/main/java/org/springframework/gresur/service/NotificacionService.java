@@ -32,7 +32,7 @@ public class NotificacionService {
 	}
 	
 	@Transactional(rollbackFor = {NotificacionesLimitException.class, NullPointerException.class})
-	public Notificacion add(Notificacion notificacion) throws DataAccessException,NotificacionesLimitException,NullPointerException{
+	public Notificacion save(Notificacion notificacion) throws DataAccessException,NotificacionesLimitException,NullPointerException{
 		
 		if(notificacion.getLeido() == null)
 			notificacion.setLeido(false);

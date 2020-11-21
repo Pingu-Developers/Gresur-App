@@ -29,7 +29,7 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	}
 	
 	@Transactional
-	public T add(T facturaRecibida) throws DataAccessException, ClienteDefaulterException {
+	public T save(T facturaRecibida) throws DataAccessException, ClienteDefaulterException {
 		return facturaRepo.save(facturaRecibida);
 	}
 	

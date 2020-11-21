@@ -28,7 +28,7 @@ public class ProveedorService {
 	}
 	
 	@Transactional
-	public Proveedor add(Proveedor cliente) throws DataAccessException {
+	public Proveedor save(Proveedor cliente) throws DataAccessException {
 		return proveedorRepo.save(cliente);
 	}
 	

@@ -101,7 +101,7 @@ public class VehiculoService {
 				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a la invalidez de su ITV");
 				warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
 				try {
-					notificacionService.add(warning);
+					notificacionService.save(warning);
 				} catch (Exception e) {
 					throw new UnknownException(e);
 				}
@@ -113,7 +113,7 @@ public class VehiculoService {
 				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a la caducidad de su Seguro");
 				warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
 				try {
-					notificacionService.add(warning);
+					notificacionService.save(warning);
 				} catch (Exception e) {
 					throw new UnknownException(e);
 				}

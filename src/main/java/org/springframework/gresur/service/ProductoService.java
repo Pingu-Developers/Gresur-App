@@ -1,6 +1,8 @@
 package org.springframework.gresur.service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -52,28 +54,9 @@ public class ProductoService {
 	public Producto findById(Long id) throws DataAccessException{
 		return productoRepository.findById(id).get();
 	}
-	
-	@Transactional(rollbackFor = {CapacidadProductoExcededException.class,StockWithoutEstanteriaException.class})
-	public Producto add(Producto producto) throws DataAccessException,CapacidadProductoExcededException,StockWithoutEstanteriaException {
-		Estanteria estanteria = producto.getEstanteria();
-		if(estanteria != null) {
-			Double capacidadE = estanteria.getCapacidad();
-			Double volumenProductos = estanteria.getProductos().stream().mapToDouble(x->dimensionToDouble(x.getDimensiones())*x.getStock()).sum() 
-					+ dimensionToDouble(producto.getDimensiones())*producto.getStock();
-			if(capacidadE < volumenProductos) {
-				throw new CapacidadProductoExcededException("El volumen de los productos es mayor a la capacidad de la estanteria");
-			}
-		}	
-			else {
-				if(producto.getStock()>0) 
-					throw new StockWithoutEstanteriaException("No se puede añadir stock a un producto sin estanteria asociada");	
-		}
-		
-		return productoRepository.save(producto);
-	}
 
 	@Transactional(rollbackFor = {CapacidadProductoExcededException.class,StockWithoutEstanteriaException.class})
-	public Producto update(Producto producto) throws DataAccessException,CapacidadProductoExcededException, StockWithoutEstanteriaException {
+	public Producto save(Producto producto) throws DataAccessException,CapacidadProductoExcededException, StockWithoutEstanteriaException {
 		Estanteria estanteria = producto.getEstanteria();
 		if(estanteria != null) {
 			Double capacidadE = estanteria.getCapacidad();
@@ -99,10 +82,16 @@ public class ProductoService {
 	
 	/* USER STORIES */
 	
-	//TODO añadir franja de tiempo en el calculo de la demanda
 	@Transactional(readOnly = true)
-	public Double getDemanda(Producto p) throws DataAccessException{
-		List<LineaFactura> lf = facturaService.findAllLineasFactura();
+	public Double getDemanda(Producto p, LocalDate fromDate) throws DataAccessException{
+		
+		if(fromDate == null) {
+			fromDate = LocalDate.now().minusMonths(1);
+		}
+		LocalDate tmp = fromDate;	
+		List<LineaFactura> lf = facturaService.findAllLineasFactura().stream()
+																	 .filter(x->x.getFactura().getFecha().isAfter(tmp))
+																	 .collect(Collectors.toList());
 		Long totalVentas = lf.stream()
 							 .mapToLong(x->x.getCantidad())
 							 .sum();

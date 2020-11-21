@@ -24,7 +24,7 @@ public class DependienteController{
 	
 	@PostMapping
 	public Dependiente add(@RequestBody @Valid Dependiente dependiente) throws DataAccessException{
-		return dependienteService.add(dependiente);
+		return dependienteService.save(dependiente);
 	}
 	
 }

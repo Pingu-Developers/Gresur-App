@@ -26,7 +26,7 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	}
 	
 	@Transactional
-	public T add(T personal) throws DataAccessException{
+	public T save(T personal) throws DataAccessException{
 		return personalRepo.save(personal);
 	}
 	

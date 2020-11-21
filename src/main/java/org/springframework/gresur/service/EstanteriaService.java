@@ -30,23 +30,12 @@ public class EstanteriaService{
 	}
 	
 	@Transactional
-	public Estanteria add(Estanteria estanteria) throws DataAccessException,CapacidadEstanteriaExcededException{
-		Almacen almacen = estanteria.getAlmacen();
-		
-		if(almacen.getCapacidad()<(almacen.getEstanterias().stream().mapToDouble(x->x.getCapacidad()).sum() + estanteria.getCapacidad())) {
-			throw new CapacidadEstanteriaExcededException("La nueva estanteria excede la capacidad disponible del almacen");
-		}
-		
-		return estanteriaRepository.save(estanteria);
-	}
-	
-	@Transactional
-	public Estanteria update(Estanteria estanteria) throws DataAccessException,CapacidadEstanteriaExcededException{
+	public Estanteria save(Estanteria estanteria) throws DataAccessException,CapacidadEstanteriaExcededException{
 		Almacen almacen = estanteria.getAlmacen();
 		
 		if(almacen.getCapacidad()<(almacen.getEstanterias().stream().filter(x->!x.getId().equals(estanteria.getId()))
 				.mapToDouble(x->x.getCapacidad()).sum() + estanteria.getCapacidad())) {
-			throw new CapacidadEstanteriaExcededException("La edicion de la estanteria excede la capacidad disponible del almacen");
+			throw new CapacidadEstanteriaExcededException("Las estanterias exceden la capacidad disponible del almacen");
 		}
 		
 		return estanteriaRepository.save(estanteria);

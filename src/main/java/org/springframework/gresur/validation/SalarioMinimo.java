@@ -19,22 +19,12 @@ import javax.validation.Payload;
 @Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = { })
-public @interface MinDouble {
+@Constraint(validatedBy = {SalarioMinimoValidator.class})
+public @interface SalarioMinimo {
 	
-
-	String message() default "{javax.validation.constraints.Min.message}";
+	String message() default "La nómina debe ser igual o superior al salario mínimo";
 
 	Class<?>[] groups() default { };
 
 	Class<? extends Payload>[] payload() default { };
-
-	double value();
-	@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
-	@Retention(RUNTIME)
-	@Documented
-	@interface List {
-
-		MinDouble[] value();	
-	}
 }
