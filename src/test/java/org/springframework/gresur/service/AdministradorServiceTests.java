@@ -34,7 +34,7 @@ class AdministradorServiceTests {
 		adm.setEmail(email);
 		adm.setDireccion(direccion);
 		
-		administradorService.add(adm);
+		administradorService.save(adm);
 		assertTrue(administradorService.count() == 1L);	
 	}
 	

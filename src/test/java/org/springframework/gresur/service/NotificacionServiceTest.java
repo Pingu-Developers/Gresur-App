@@ -38,7 +38,7 @@ class NotificacionServiceTest {
 		adm.setNIF("12345678Q");
 		adm.setNSS("123456789001");
 		adm.setTlf("123456789");
-		administradorService.add(adm);
+		administradorService.save(adm);
 		adm = administradorService.findByNIF("12345678Q");
 		
 		Notificacion not = new Notificacion();
@@ -49,7 +49,7 @@ class NotificacionServiceTest {
 		la.add(adm);
 		not.setReceptores(la);
 		try {
-			notificacionService.add(not);
+			notificacionService.save(not);
 		} catch (DataAccessException e) {
 			e.printStackTrace();
 		} catch (NotificacionesLimitException e) {

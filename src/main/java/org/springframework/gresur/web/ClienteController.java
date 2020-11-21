@@ -21,7 +21,7 @@ public class ClienteController {
 	
 	@PostMapping
 	public Cliente add(Cliente cliente) throws DataAccessException{
-		return clienteService.add(cliente);
+		return clienteService.save(cliente);
 	}
 	
 }

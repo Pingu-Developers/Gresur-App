@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.PastOrPresent;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.gresur.validation.SalarioMinimo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +22,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "contratos")
 public class Contrato extends BaseEntity{
 	
-	//TODO validacion de configuracion
+	@SalarioMinimo
 	private Double nomina;
 	
 	@NotBlank

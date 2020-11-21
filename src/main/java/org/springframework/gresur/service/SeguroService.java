@@ -28,7 +28,7 @@ public class SeguroService {
 	}
 	
 	@Transactional
-	public Seguro add(Seguro seguro) throws DataAccessException{
+	public Seguro save(Seguro seguro) throws DataAccessException{
 		return seguroRepo.save(seguro);
 	}
 

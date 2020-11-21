@@ -12,7 +12,7 @@ import org.springframework.gresur.model.Pedido;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.PedidoRepository;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
-import org.springframework.gresur.service.exceptions.VehicleNotAvailableException;
+import org.springframework.gresur.service.exceptions.VehiculoNotAvailableException;
 import org.springframework.gresur.service.exceptions.VehiculoDimensionesExceededException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,8 +51,8 @@ public class PedidoService {
 		return pedidoRepo.findById(id).get();
 	}
 
-	@Transactional(rollbackFor = {MMAExceededException.class, VehicleNotAvailableException.class, VehiculoDimensionesExceededException.class})
-	public Pedido add(Pedido pedido) throws DataAccessException, MMAExceededException, VehicleNotAvailableException, VehiculoDimensionesExceededException {
+	@Transactional(rollbackFor = {MMAExceededException.class, VehiculoNotAvailableException.class, VehiculoDimensionesExceededException.class})
+	public Pedido add(Pedido pedido) throws DataAccessException, MMAExceededException, VehiculoNotAvailableException, VehiculoDimensionesExceededException {
 		
 		Vehiculo vehiculo = pedido.getVehiculo();
 		Double MMA = vehiculo.getMMA();
@@ -60,7 +60,7 @@ public class PedidoService {
 		Double dimensionesVehiculo = dimensionToDouble(vehiculo.getDimensiones());
 		
 		if(!vehiculo.getDisponibilidad()) {
-			throw new VehicleNotAvailableException();
+			throw new VehiculoNotAvailableException();
 		} else {
 			
 			List<Pedido> pedidos = vehiculo.getPedidos().stream()

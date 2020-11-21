@@ -28,7 +28,7 @@ public class ITVService {
 	}
 	
 	@Transactional
-	public ITV add(ITV itv) throws DataAccessException{
+	public ITV save(ITV itv) throws DataAccessException{
 		return itvRepository.save(itv);
 	}
 	

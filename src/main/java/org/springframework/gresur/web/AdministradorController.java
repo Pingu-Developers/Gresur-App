@@ -27,7 +27,7 @@ public class AdministradorController {
 	
 	@PostMapping
 	public Administrador add(@RequestBody @Valid Administrador adm) throws DataAccessException{
-		return admService.add(adm);
+		return admService.save(adm);
 	}
 	
 	@GetMapping

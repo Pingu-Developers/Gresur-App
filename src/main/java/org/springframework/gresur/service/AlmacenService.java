@@ -28,7 +28,7 @@ public class AlmacenService {
 	}
 	
 	@Transactional
-	public Almacen add(Almacen almacen) throws DataAccessException {
+	public Almacen save(Almacen almacen) throws DataAccessException {
 		return almacenRepository.save(almacen);
 	}
 	

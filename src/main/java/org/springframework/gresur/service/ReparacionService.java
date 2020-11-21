@@ -28,7 +28,7 @@ public class ReparacionService {
 	}
 	
 	@Transactional
-	public Reparacion add(Reparacion reparacion) throws DataAccessException{
+	public Reparacion save(Reparacion reparacion) throws DataAccessException{
 		return reparacionRepo.save(reparacion);
 	}
 	

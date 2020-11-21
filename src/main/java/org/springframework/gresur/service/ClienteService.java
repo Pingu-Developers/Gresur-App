@@ -28,7 +28,7 @@ public class ClienteService {
 	}
 	
 	@Transactional
-	public Cliente add(Cliente cliente) throws DataAccessException {
+	public Cliente save(Cliente cliente) throws DataAccessException {
 		return clienteRepo.save(cliente);
 	}
 	

@@ -28,7 +28,7 @@ public class ContratoService {
 	}
 	
 	@Transactional
-	public Contrato add(Contrato contrato) throws DataAccessException{
+	public Contrato save(Contrato contrato) throws DataAccessException{
 		return contratoRepository.save(contrato);
 	}
 	
