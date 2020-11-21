@@ -89,7 +89,7 @@ public class ProductoService {
 			fromDate = LocalDate.now().minusMonths(1);
 		}
 		LocalDate tmp = fromDate;	
-		List<LineaFactura> lf = facturaService.findAllLineasFactura().stream()
+		List<LineaFactura> lf = facturaService.findLineasFactura().stream()
 																	 .filter(x->x.getFactura().getFecha().isAfter(tmp))
 																	 .collect(Collectors.toList());
 		Long totalVentas = lf.stream()
