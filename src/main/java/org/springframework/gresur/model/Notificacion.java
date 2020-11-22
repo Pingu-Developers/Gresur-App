@@ -14,6 +14,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -33,11 +37,13 @@ public class Notificacion extends BaseEntity{
 	private String cuerpo;
 	
 	@NotNull
-	private LocalDateTime fecha;
+	@DateTimeFormat(pattern = "dd/MM/yyyy-HH:mm:ss")
+	private LocalDateTime fechaHora;
 	
+	@NotNull
 	private Boolean leido;
 	
-	@ManyToOne(optional = true)
+	@ManyToOne
 	private Personal emisor;
 	
 	@ManyToMany
@@ -45,6 +51,7 @@ public class Notificacion extends BaseEntity{
 			name ="enviado_a",
 			joinColumns = @JoinColumn(name = "notificacion_id"),
 			inverseJoinColumns = @JoinColumn(name = "personal_id"))
+	@Size(min = 1)
 	private List<Personal> receptores;
 	
 }
