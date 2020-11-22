@@ -40,11 +40,11 @@ public class NotificacionService {
 		if(notificacion.getEmisor()==null && notificacion.getTipoNotificacion()!=TipoNotificacion.SISTEMA)
 			throw new NullPointerException("El emisor no puede ser nulo si la notificación no es del sistema");
 		
-		notificacion.setFecha(LocalDateTime.now());
+		notificacion.setFechaHora(LocalDateTime.now());
 		Personal persona = notificacion.getEmisor();
 		Integer maxNotificaciones = this.configuracionService.getNumMaxNotificaciones(); 
 		
-		Long n = persona.getNoti_enviadas().stream().filter(x->x.getFecha().isAfter(LocalDateTime.now().minusDays(1)))
+		Long n = persona.getNoti_enviadas().stream().filter(x->x.getFechaHora().isAfter(LocalDateTime.now().minusDays(1)))
 				.filter(x->x.getTipoNotificacion().equals(TipoNotificacion.NORMAL)).count();
 		
 		if(n>maxNotificaciones) {
