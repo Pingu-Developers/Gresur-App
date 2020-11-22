@@ -8,7 +8,6 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.TableGenerator;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -41,7 +40,7 @@ public class Entidad{
     @Email
     protected String email;
     
-    @NotNull
+    @NotBlank
     @Pattern(regexp = "^[0-9]{9}$")
     protected String tlf;
     
