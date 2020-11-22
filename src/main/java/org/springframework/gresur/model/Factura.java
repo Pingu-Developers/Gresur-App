@@ -13,6 +13,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -29,10 +30,12 @@ public class Factura{
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ENTITY_ID")
 	protected Long id;
 	
+	@NotNull
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	protected LocalDate fecha;
 	
 	@NotNull
+	@Min(value=0, message = "debe ser mayor o igual a cero")  
 	protected Double importe;
 	
 	@NotNull
