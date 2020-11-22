@@ -7,7 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,12 +18,14 @@ import lombok.EqualsAndHashCode;
 @Table(name = "estanterias")
 public class Estanteria extends BaseEntity{
 	
-	@NotBlank
+	@NotNull
 	private Categoria categoria;
 	
+	@NotNull
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Double capacidad;
 	
+	@NotNull //TODO para poder validar los tests unitarios
 	@ManyToOne(optional = false)
 	private Almacen almacen;
 	
