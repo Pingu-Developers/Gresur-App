@@ -17,14 +17,13 @@ class EstanteriaTests extends ValidatorTests{
 		List<Producto> l = new ArrayList<Producto>();
 		Almacen alm = null;
 		
-		if(lista != 0) {
+		if(lista != null && lista > 0) {
 			Producto p1 = new Producto();
 			Producto p2 = new Producto();
 			l.add(p1);
 			l.add(p2);
-		} if (almacen != null) {
+		} if (almacen != null && almacen > 0) {
 			alm = new Almacen();
-			alm.setId(almacen);
 		}
 				
 		Estanteria estanteria = new Estanteria();

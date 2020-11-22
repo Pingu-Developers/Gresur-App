@@ -16,7 +16,37 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class FacturaEmitidaTests extends ValidatorTests {
-
+	
+	private FacturaEmitida createSUT(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {
+		List<LineaFactura> lf = new ArrayList<LineaFactura>();
+		Pedido p = null;
+		Cliente c = null;
+		Dependiente d = null;
+		
+		if(lineasFacturas != null && lineasFacturas > 0) {
+			LineaFactura lf1 = new LineaFactura();
+			LineaFactura lf2 = new LineaFactura();
+			lf.add(lf1);
+			lf.add(lf2);
+		} if(pedido != null && pedido > 0) {
+			p = new Pedido();
+		} if(dependiente != null && dependiente > 0) {
+			d = new Dependiente();
+		} if(cliente!= null && cliente > 0) {
+			c = new Cliente();
+		}
+		
+		FacturaEmitida emitida = new FacturaEmitida();
+		emitida.setFecha(fecha == null ? null : LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		emitida.setImporte(importe);
+		emitida.setEstaPagada(pagada);
+		emitida.setLineasFacturas(lf);
+		emitida.setPedido(p);
+		emitida.setDependiente(d);
+		emitida.setCliente(c);
+		return emitida;
+	}
+	
 	@ParameterizedTest
 	@CsvSource({
 		"22/11/2020,40.3,True,0,0,0,0",
@@ -24,34 +54,12 @@ class FacturaEmitidaTests extends ValidatorTests {
 		"22/12/2020,4.3,True,0,1,0,0",
 		"20/11/2021,40.3,False,0,0,1,0",
 		"22/12/2020,400.3,True,0,0,0,1",
-
 	})
-	void validateFacturaEmitidaNoErrorsTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {
+	void validateFacturaEmitidaNoErrorsTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {	
+		FacturaEmitida emi = this.createSUT(fecha, importe, pagada, lineasFacturas, pedido, dependiente, cliente);
 		
-		FacturaEmitida emi = new FacturaEmitida();
-		emi.setFecha(LocalDate.parse(fecha,DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		emi.setImporte(importe);
-		emi.setEstaPagada(pagada);	
-		if(lineasFacturas == 0) {
-			List<LineaFactura> l = new ArrayList<>();
-			emi.setLineasFacturas(l);
-		}else if(lineasFacturas == 1) {
-			List<LineaFactura> l = new ArrayList<>();
-			l.add(new LineaFactura());
-			emi.setLineasFacturas(l);
-		}
-		 if(pedido == 1) {
-			emi.setPedido(new Pedido());
-		}
-		if(dependiente == 1) {
-			emi.setDependiente(new Dependiente());
-		}
-		if(cliente == 1) {
-			emi.setCliente(new Cliente());
-		}	
 		Validator validator = createValidator();
-		Set<ConstraintViolation<FacturaEmitida>> constraintViolations =
-				validator.validate(emi);
+		Set<ConstraintViolation<FacturaEmitida>> constraintViolations = validator.validate(emi);
 		assertThat(constraintViolations.size()).isEqualTo(0);	
 	}
 
