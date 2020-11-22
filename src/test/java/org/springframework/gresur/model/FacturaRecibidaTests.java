@@ -16,46 +16,120 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class FacturaRecibidaTests extends ValidatorTests{
 
-	@ParameterizedTest
-	@CsvSource({
-		"16/11/2019, 440.54, true, 1, 0, 0",
-		"16/11/2019, 43.3, false, 0, 1, 1"
-	})
-	void validateFacturaRecibidaNoErrorsTest(String fecha, Double importe, String estaPagada, Integer lista, Integer concepto, Integer proveedor) {
+	
+	private FacturaRecibida createSUT(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+		List<LineaFactura> lLineaFactura = new ArrayList<LineaFactura>();
+		Proveedor p = null;
+		
+		if(lista!=null && lista>0) {
+			LineaFactura lf = new LineaFactura();
+			lLineaFactura.add(lf);
+		} 
+		
+		if(proveedor!=null && proveedor>0) {
+			p = new Proveedor();
+		}
 		
 		FacturaRecibida facturaRecibida = new FacturaRecibida();
-		facturaRecibida.setFecha(LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		facturaRecibida.setFecha(fecha == null ? null : LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		facturaRecibida.setImporte(importe);
-		facturaRecibida.setEstaPagada(Boolean.parseBoolean(estaPagada));
+		facturaRecibida.setEstaPagada(estaPagada == null ? null : Boolean.parseBoolean(estaPagada));
+		facturaRecibida.setLineasFacturas(lLineaFactura);
+		facturaRecibida.setConcepto(concepto==null ? null : Concepto.valueOf(concepto));
+		facturaRecibida.setProveedor(p);
 		
-		System.out.println(facturaRecibida);
+		return facturaRecibida;
+	}
+	
+	
+	@ParameterizedTest
+	@CsvSource({
+		"16/11/2019, 440.54, true, 1, OTROS, 0",
+		"16/11/2019, 43.3, false, 0, GASTOS_VEHICULOS, 1"
+	})
+	void validateFacturaRecibidaNoErrorsTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
 		
-		if(lista==0) {
-			facturaRecibida.setLineasFacturas(new ArrayList<LineaFactura>());
-		} else if(lista==1) {
-			LineaFactura lf = new LineaFactura();
-			List<LineaFactura> lLineaFactura = new ArrayList<LineaFactura>();
-			lLineaFactura.add(lf);
-			facturaRecibida.setLineasFacturas(new ArrayList<LineaFactura>());
-		}
-		
-		if(concepto==0) {
-			facturaRecibida.setConcepto(Concepto.PAGO_IMPUESTOS);
-		} else if (concepto==1) {
-			facturaRecibida.setConcepto(Concepto.REPOSICION_STOCK);
-		}
-		
-		if(proveedor==0) {
-			facturaRecibida.setProveedor(null);
-		} else if(proveedor==1) {
-			facturaRecibida.setProveedor(new Proveedor());
-		}
+		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
 				
 		Validator validator = createValidator();
 		Set<ConstraintViolation<FacturaRecibida>> constraintViolations = validator.validate(facturaRecibida);
 		
 		assertThat(constraintViolations.size()).isEqualTo(0);
+	}
+	
+	
+	//TODO PREGUNTAR SOBRE VALIDACION @DateTimeFormat y @Null para la fecha 
+//	@ParameterizedTest
+//	@CsvSource({
+//		"EstoNoEsUnaFecha, 440.54, true, 1, 0, 0",
+//		"2000/03/03, 43.3, false, 0, 1, 1",
+//		", 43.3, false, 0, 1, 1"
+//	})
+//	void validateFacturaRecibidaDateTimeFormatTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+//		
+//		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
+//		
+//		Validator validator = createValidator();
+//		Set<ConstraintViolation<FacturaRecibida>> constraintViolations = validator.validate(facturaRecibida);
+//		assertThat(constraintViolations.size()).isEqualTo(1);
+//	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"16/11/2019, , true, 1, GASTOS_VEHICULOS, 0",
+		"17/11/2019, , false, 0, GASTOS_VEHICULOS, 1"
+	})
+	void validateFacturaRecibidaImporteNotNullTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
 		
+		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<FacturaRecibida>> constraintViolations = validator.validate(facturaRecibida);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("Min"));
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"16/11/2019, -44, true, 1, GASTOS_VEHICULOS, 0",
+		"17/11/2019, -0.1, false, 0, GASTOS_VEHICULOS, 1"
+	})
+	void validateFacturaRecibidaImporteMinTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+		
+		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<FacturaRecibida>> constraintViolations = validator.validate(facturaRecibida);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("NotNull"));
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"16/11/2019, 444, , 1, REPOSICION_STOCK, 0",
+		"17/11/2019, 332, , 0, GASTOS_VEHICULOS, 1"
+	})
+	void validateFacturaRecibidaEstaPagadaNotNullTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+		
+		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<FacturaRecibida>> constraintViolations = validator.validate(facturaRecibida);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"16/11/2019, 440.54, true, 1, , 0",
+		"16/11/2019, 43.3, false, 0, , 1"
+	})
+	void validateFacturaRecibidaConceptoNotNullTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+		
+		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<FacturaRecibida>> constraintViolations = validator.validate(facturaRecibida);
+		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
 
 }
