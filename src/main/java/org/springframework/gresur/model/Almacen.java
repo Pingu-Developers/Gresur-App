@@ -9,6 +9,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,7 +23,7 @@ public class Almacen extends BaseEntity{
 	@NotBlank
 	private String direccion;
 	
-	@NotBlank
+	@NotNull
 	@Min(value=0, message = "debe ser mayor o igual a cero")  
 	private Double capacidad;
 	
