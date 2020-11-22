@@ -73,6 +73,7 @@ class AlmacenTests extends ValidatorTests{
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Almacen>> constraintViolations = validator.validate(almacen);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("Min"));
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
 	
@@ -87,6 +88,7 @@ class AlmacenTests extends ValidatorTests{
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Almacen>> constraintViolations = validator.validate(almacen);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("NotNull"));
 		assertThat(constraintViolations.size()).isEqualTo(1);
 		
 	}
