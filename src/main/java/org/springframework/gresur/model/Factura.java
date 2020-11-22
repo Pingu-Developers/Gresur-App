@@ -35,7 +35,7 @@ public class Factura{
 	@NotNull
 	protected Double importe;
 	
-	@NotBlank
+	@NotNull
 	@Column(name = "esta_pagada")
 	protected Boolean estaPagada;
 	
