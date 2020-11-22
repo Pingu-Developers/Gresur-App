@@ -45,7 +45,7 @@ public class Vehiculo extends BaseEntity {
 	@Column(name ="tipo_vehiculo")
 	private TipoVehiculo tipoVehiculo;
 	
-	@NotBlank
+	@NotNull
 	@Min(value = 0, message = "debe ser mayor que cero")
 	private Double MMA;
 	
