@@ -34,11 +34,13 @@ public class ITV extends BaseEntity implements Comparable<ITV>{
 	@Enumerated(value = EnumType.STRING)
 	private ResultadoITV resultado;
 	
+	@NotNull //TODO Para validar que no puede tener asociada una factura recibida nula
 	@OneToOne
 	@JoinColumn(name = "facturas_recibidas")
 	private FacturaRecibida recibidas;
 	
-	@ManyToOne
+	@NotNull //TODO para validar test unitarios 
+	@ManyToOne(optional = false)
 	private Vehiculo vehiculo;
 
 	@Override
