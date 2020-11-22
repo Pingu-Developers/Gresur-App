@@ -6,6 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -17,10 +18,12 @@ public class LineaFactura extends BaseEntity {
 	@Min(value = 1)
 	private Integer cantidad;
 	
+	@NotNull //TODO PARA LOS TEST
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "factura")
 	private Factura factura;
 	
+	@NotNull //TODO PARA LOS TEST 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "producto")
 	private Producto producto;
