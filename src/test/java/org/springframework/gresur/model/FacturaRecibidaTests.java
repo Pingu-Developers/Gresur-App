@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 class FacturaRecibidaTests extends ValidatorTests{
 
 	
-	private FacturaRecibida createSUT(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+	private FacturaRecibida createSUT(String fecha, Double importe, Boolean estaPagada, Integer lista, String concepto, Integer proveedor) {
 		List<LineaFactura> lLineaFactura = new ArrayList<LineaFactura>();
 		Proveedor p = null;
 		
@@ -33,7 +33,7 @@ class FacturaRecibidaTests extends ValidatorTests{
 		FacturaRecibida facturaRecibida = new FacturaRecibida();
 		facturaRecibida.setFecha(fecha == null ? null : LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		facturaRecibida.setImporte(importe);
-		facturaRecibida.setEstaPagada(estaPagada == null ? null : Boolean.parseBoolean(estaPagada));
+		facturaRecibida.setEstaPagada(estaPagada == null ? null : estaPagada);
 		facturaRecibida.setLineasFacturas(lLineaFactura);
 		facturaRecibida.setConcepto(concepto==null ? null : Concepto.valueOf(concepto));
 		facturaRecibida.setProveedor(p);
@@ -47,7 +47,7 @@ class FacturaRecibidaTests extends ValidatorTests{
 		"16/11/2019, 440.54, true, 1, OTROS, 0",
 		"16/11/2019, 43.3, false, 0, GASTOS_VEHICULOS, 1"
 	})
-	void validateFacturaRecibidaNoErrorsTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+	void validateFacturaRecibidaNoErrorsTest(String fecha, Double importe, Boolean estaPagada, Integer lista, String concepto, Integer proveedor) {
 		
 		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
 				
@@ -65,7 +65,7 @@ class FacturaRecibidaTests extends ValidatorTests{
 //		"2000/03/03, 43.3, false, 0, 1, 1",
 //		", 43.3, false, 0, 1, 1"
 //	})
-//	void validateFacturaRecibidaDateTimeFormatTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+//	void validateFacturaRecibidaDateTimeFormatTest(String fecha, Double importe, Boolean estaPagada, Integer lista, String concepto, Integer proveedor) {
 //		
 //		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
 //		
@@ -79,7 +79,7 @@ class FacturaRecibidaTests extends ValidatorTests{
 		"16/11/2019, , true, 1, GASTOS_VEHICULOS, 0",
 		"17/11/2019, , false, 0, GASTOS_VEHICULOS, 1"
 	})
-	void validateFacturaRecibidaImporteNotNullTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+	void validateFacturaRecibidaImporteNotNullTest(String fecha, Double importe, Boolean estaPagada, Integer lista, String concepto, Integer proveedor) {
 		
 		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
 		
@@ -94,7 +94,7 @@ class FacturaRecibidaTests extends ValidatorTests{
 		"16/11/2019, -44, true, 1, GASTOS_VEHICULOS, 0",
 		"17/11/2019, -0.1, false, 0, GASTOS_VEHICULOS, 1"
 	})
-	void validateFacturaRecibidaImporteMinTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+	void validateFacturaRecibidaImporteMinTest(String fecha, Double importe, Boolean estaPagada, Integer lista, String concepto, Integer proveedor) {
 		
 		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
 		
@@ -109,7 +109,7 @@ class FacturaRecibidaTests extends ValidatorTests{
 		"16/11/2019, 444, , 1, REPOSICION_STOCK, 0",
 		"17/11/2019, 332, , 0, GASTOS_VEHICULOS, 1"
 	})
-	void validateFacturaRecibidaEstaPagadaNotNullTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+	void validateFacturaRecibidaEstaPagadaNotNullTest(String fecha, Double importe, Boolean estaPagada, Integer lista, String concepto, Integer proveedor) {
 		
 		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
 		
@@ -123,7 +123,7 @@ class FacturaRecibidaTests extends ValidatorTests{
 		"16/11/2019, 440.54, true, 1, , 0",
 		"16/11/2019, 43.3, false, 0, , 1"
 	})
-	void validateFacturaRecibidaConceptoNotNullTest(String fecha, Double importe, String estaPagada, Integer lista, String concepto, Integer proveedor) {
+	void validateFacturaRecibidaConceptoNotNullTest(String fecha, Double importe, Boolean estaPagada, Integer lista, String concepto, Integer proveedor) {
 		
 		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
 		

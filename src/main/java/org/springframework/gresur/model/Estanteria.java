@@ -3,6 +3,8 @@ package org.springframework.gresur.model;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -18,6 +20,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "estanterias")
 public class Estanteria extends BaseEntity{
 	
+	@Enumerated(value = EnumType.STRING)
 	@NotNull
 	private Categoria categoria;
 	
