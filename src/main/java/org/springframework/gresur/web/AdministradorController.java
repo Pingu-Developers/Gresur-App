@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("api/adm")
 @RestController
+
 public class AdministradorController {
 	
 	private final AdministradorService admService;
@@ -27,12 +28,13 @@ public class AdministradorController {
 	}
 	
 	@PostMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ROL_ADMIN')")
 	public Administrador add(@RequestBody @Valid Administrador adm) throws DataAccessException{
 		return admService.save(adm);
 	}
 	
 	@GetMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public Iterable<Administrador> findAll(){
 		return admService.findAll();
 	}
