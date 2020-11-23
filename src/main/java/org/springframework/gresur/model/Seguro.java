@@ -27,8 +27,8 @@ public class Seguro extends BaseEntity implements Comparable<Seguro>{
 	@NotBlank
 	private String compania;
 	
-	@Enumerated(value = EnumType.STRING)
 	@NotNull
+	@Enumerated(value = EnumType.STRING)
 	private TipoSeguro tipoSeguro;
 	
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -38,10 +38,12 @@ public class Seguro extends BaseEntity implements Comparable<Seguro>{
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate fechaExpiracion;
 	
-	@OneToOne
+	@NotNull //TODO para poder implementar tests unitarios
+	@OneToOne(optional = false)
 	@JoinColumn(name = "facturas_recibidas")
 	private FacturaRecibida recibidas;
 	
+	@NotNull //TODO para poder implementar tests unitarios
 	@ManyToOne(optional = false)
 	private Vehiculo vehiculo;
 
