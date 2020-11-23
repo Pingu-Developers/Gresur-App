@@ -2,6 +2,7 @@ package org.springframework.gresur.model;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,6 +13,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "encargadosAlmacen")
 public class EncargadoDeAlmacen extends Personal{
 	
+	@NotNull //TODO necesario para validar test unitario
 	@OneToOne(optional = false)
 	private Almacen almacen;
 }
