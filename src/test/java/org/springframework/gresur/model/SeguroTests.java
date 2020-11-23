@@ -72,9 +72,7 @@ class SeguroTests extends ValidatorTests{
 		Set<ConstraintViolation<Seguro>> constraintViolations = validator.validate(seguro);
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
-	
-	//TODO Testeo de DateTimeFormat?
-	
+		
 	@ParameterizedTest
 	@CsvSource({
 		"Mutua, TODORRIESGO, 17/08/2038, 17/08/2052, 1, 1",

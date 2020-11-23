@@ -57,23 +57,6 @@ class FacturaRecibidaTests extends ValidatorTests{
 		assertThat(constraintViolations.size()).isEqualTo(0);
 	}
 	
-	
-	//TODO PREGUNTAR SOBRE VALIDACION @DateTimeFormat y @Null para la fecha 
-//	@ParameterizedTest
-//	@CsvSource({
-//		"EstoNoEsUnaFecha, 440.54, true, 1, 0, 0",
-//		"2000/03/03, 43.3, false, 0, 1, 1",
-//		", 43.3, false, 0, 1, 1"
-//	})
-//	void validateFacturaRecibidaDateTimeFormatTest(String fecha, Double importe, Boolean estaPagada, Integer lista, String concepto, Integer proveedor) {
-//		
-//		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
-//		
-//		Validator validator = createValidator();
-//		Set<ConstraintViolation<FacturaRecibida>> constraintViolations = validator.validate(facturaRecibida);
-//		assertThat(constraintViolations.size()).isEqualTo(1);
-//	}
-	
 	@ParameterizedTest
 	@CsvSource({
 		"16/11/2019, , true, 1, GASTOS_VEHICULOS, 0",

@@ -10,6 +10,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
@@ -30,11 +31,11 @@ public class Producto extends BaseEntity{
 	@NotBlank
 	private String unidad;
 	
-	//TODO DEBERIA SER NOTNULL?
+	@NotNull
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Integer stock;
 	
-	//TODO REGLA DE NEGOCIO STOCKSEGURIDAD NO PUEDE SER MAYOR QUE STOCK
+	//TODO NOTIFICACION CUANDO EL STOCK SEA MENOR QUE EL STOCK DE SEGURIDAD
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	@Column(name = "stock_seguridad")
 	private Integer stockSeguridad;

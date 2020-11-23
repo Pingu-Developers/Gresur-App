@@ -83,22 +83,6 @@ class PedidoTests extends ValidatorTests{
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
 	
-	//TODO VALIDAR FECHA CON DATETIMEFORMAT Y NOTNULL?
-//	@ParameterizedTest
-//	@CsvSource({
-//		"C/Ligastorro, ABIERTO, 20/02/2020, 3, 5",
-//		"C/Diseño y pruebas, CERRADO, 20/04/2020, 2, 8",
-//	})
-//	void validatePedidoFechaEnvioDateTimeFormatTest(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
-//		
-//		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaEnvio, facturaEmitida, vehiculo);
-//		
-//		Validator validator = createValidator();
-//		Set<ConstraintViolation<Pedido>> constraintViolations = validator.validate(pedido);
-//		
-//		assertThat(constraintViolations.size()).isEqualTo(1);
-//	}
-	
 	@ParameterizedTest
 	@CsvSource({
 		"C/Ligastorro, ABIERTO, 20/02/2020, 0, 5",

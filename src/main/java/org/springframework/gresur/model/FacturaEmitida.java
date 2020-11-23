@@ -18,11 +18,11 @@ public class FacturaEmitida extends Factura{
 	@OneToOne
 	private Pedido pedido;
 	
-	@NotNull //TODO Añadido NotNull para validar los test unitarios
+	@NotNull
 	@ManyToOne(optional = false)
 	private Dependiente dependiente;
 	
-	@NotNull //TODO Añadido NotNull para validar los test unitarios
+	@NotNull
 	@ManyToOne(optional = false)
 	private Cliente cliente;
 	
