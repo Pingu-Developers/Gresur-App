@@ -29,6 +29,7 @@ class ClienteTests extends ValidatorTests{
 		cliente.setTlf(tlf);
 		cliente.setEmail(email);
 		cliente.setDireccion(direccion);
+		cliente.setFacturasEmitidas(lfe);
 		
 		return cliente;
 	}
@@ -54,7 +55,7 @@ class ClienteTests extends ValidatorTests{
 		"'', 96658774Y,987654321 , ja@correo.es, Cad,1",
 		", 92341231P,567894321,borjar20@gmail.com,Tomares,1"
 	})
-	void validateNameNotBlankError(String name, String NIF,String tlf, String email, String direccion,Integer ListaFactura) {
+	void validateClienteNameNotBlankTest(String name, String NIF,String tlf, String email, String direccion,Integer ListaFactura) {
 		Cliente cliente = this.createSUT(name, NIF, tlf, email, direccion, ListaFactura);
 
 		Validator validator = createValidator();
@@ -68,11 +69,12 @@ class ClienteTests extends ValidatorTests{
 		"Pepe Jose Carlos Borja Paco Lourdes Josefa Asturias, 98856332T,123456789, manolo@correo.es, Aljamir, 1",
 		"Wo, 96658774Y, 987654321 , ja@correo.es, Cad, "
 		})
-	void validateNameSizeError(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
+	void validateClienteNameSizeTest(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
 		Cliente cliente = this.createSUT(name, NIF, tlf, email, direccion, ListaFactura);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Cliente>> constraintViolations = validator.validate(cliente);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("NotBlank"));
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
 	
@@ -83,12 +85,28 @@ class ClienteTests extends ValidatorTests{
 		"Pepito, , 987362712, patata@yopmail.com, C/ calle, 0"
 		
 		})
-	void validateNifNotBlankError(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
+	void validateClienteNIFNotBlankTest(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
 		Cliente cliente = this.createSUT(name, NIF, tlf, email, direccion, ListaFactura);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Cliente>> constraintViolations = validator.validate(cliente);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("Pattern"));
 		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"Alberto, nodni,123456789, manolo@correo.es,Aljamir Software S.L. Glorieta Fernando Quiñones T,0",
+		"Wos, 22ff,987654321 , ja@correo.es, Cad,1",
+		"Pepe Jose Carlos Borja Paco Lourdes Josefa Asturis, FGD34, 880654321, borjar20@gmail.com,Tomares,1"
+	})
+	void validateClienteNIFPatternTest(String name, String NIF,String tlf, String email, String direccion,Integer ListaFactura) {
+		Cliente cliente = this.createSUT(name, NIF, tlf, email, direccion, ListaFactura);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Cliente>> constraintViolations = validator.validate(cliente);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("NotBlank"));
+		assertThat(constraintViolations.size()).isEqualTo(1);	
 	}
 	
 	@ParameterizedTest
@@ -98,7 +116,7 @@ class ClienteTests extends ValidatorTests{
 		"Pepito, 23456789W, 987362712, , C/ calle, 0"
 		
 		})
-	void validateEmailNotBlankError(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
+	void validateClienteEmailNotBlankTest(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
 		Cliente cliente = this.createSUT(name, NIF, tlf, email, direccion, ListaFactura);
 		
 		Validator validator = createValidator();
@@ -114,11 +132,12 @@ class ClienteTests extends ValidatorTests{
 		"Pepito, 23456789W, 987362712, yopmail.com, C/ calle, 0"
 		
 		})
-	void validateEmailNotEmailError(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
+	void validateClienteEmailEmailTest(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
 		Cliente cliente = this.createSUT(name, NIF, tlf, email, direccion, ListaFactura);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Cliente>> constraintViolations = validator.validate(cliente);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("NotBlank"));
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
 	
@@ -128,7 +147,7 @@ class ClienteTests extends ValidatorTests{
 		"Woassds, 98765432C, '', manolin@correo.es, Cad, ",
 		"Pepito, 23456789W, , patata@yopmail.com, C/ calle, 0"
 		})
-	void validateTlfNotBlankError(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
+	void validateClienteTlfNotBlankTest(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
 		Cliente cliente = this.createSUT(name, NIF, tlf, email, direccion, ListaFactura);
 		
 		Validator validator = createValidator();
@@ -143,11 +162,12 @@ class ClienteTests extends ValidatorTests{
 		"Antonio, 98856332T, 0123456789, gfg3@correo.es, Aljamir, ",
 		"Carlos, 98856290S, 1939as829, asd@correo.es, Aljamir, 0",
 		})
-	void validateTlfPatternError(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
+	void validateClienteTlfPatternTest(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
 		Cliente cliente = this.createSUT(name, NIF, tlf, email, direccion, ListaFactura);	
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Cliente>> constraintViolations = validator.validate(cliente);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("NotBlank"));
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
 
@@ -157,7 +177,7 @@ class ClienteTests extends ValidatorTests{
 		"Antonio, 98856332T, 987362712, gfg3@correo.es, '', ",
 		"Carlos, 98856290S, 987362712, asd@correo.es, , 0",
 		})
-	void validateDirecionNotBlankError(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
+	void validateClienteDireccionNotBlankTest(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
 		Cliente cliente = this.createSUT(name, NIF, tlf, email, direccion, ListaFactura);	
 
 		Validator validator = createValidator();
@@ -171,11 +191,12 @@ class ClienteTests extends ValidatorTests{
 		"Pepe, 98856332T, 123456789, manolo@correo.es, Al, 0",
 		"Pepe2, 98856332X, 123456789, manolo2@correo.es, Aljamir Software S.L. Glorieta Fernando Quiñones Ti, 1"
 		})
-	void validateDirecionSizeError(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
+	void validateClienteDireccionSizeTest(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
 		Cliente cliente = this.createSUT(name, NIF, tlf, email, direccion, ListaFactura);	
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Cliente>> constraintViolations = validator.validate(cliente);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("NotBlank"));
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
 }
