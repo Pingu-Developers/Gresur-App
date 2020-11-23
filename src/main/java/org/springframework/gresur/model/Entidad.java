@@ -30,7 +30,7 @@ public class Entidad{
 	@NotBlank
 	@Size(min = 3, max = 50)
 	@Column(name = "name")
-	private String name;
+	protected String name;
 
 	@NotBlank
 	@Column(unique=true)
