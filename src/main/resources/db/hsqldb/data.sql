@@ -1,1 +1,4 @@
-INSERT INTO CONFIG(salario_minimo, num_max_notificaciones) VALUES(900.00, 10)
+INSERT INTO CONFIG(salario_minimo, num_max_notificaciones) VALUES(900.00, 10);
+INSERT INTO ROLES(name) VALUES('ROL_ADMIN');
+INSERT INTO ROLES(name) VALUES('ROL_DEPENDIENTE');
+INSERT INTO ROLES(name) VALUES('ROL_ENCARGADO');
