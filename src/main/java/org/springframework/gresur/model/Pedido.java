@@ -32,9 +32,11 @@ public class Pedido extends BaseEntity{
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate fechaEnvio;
 	
+	@NotNull //TODO AÑADIDO NotNull para Tests
 	@OneToOne(mappedBy = "pedido", optional = false)
 	private FacturaEmitida facturaEmitida;
 	
+	@NotNull //TODO AÑADIDO NotNull para Testss
 	@ManyToOne(optional = false)
 	private Vehiculo vehiculo;
 }
