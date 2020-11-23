@@ -14,6 +14,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,17 +24,19 @@ import lombok.EqualsAndHashCode;
 @Entity 
 @Table(name="vehiculos")
 public class Vehiculo extends BaseEntity {
-
-	//FALTA AÑADIR REGLA DE NEGOCIO
+	
 	@NotBlank
+	@Column(unique = true)
 	private String matricula;
 	
 	@Column(name = "URL_imagen")
 	private String imagen;
 	
+	@NotNull
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Double capacidad; 
 	
+	@NotBlank
 	@Pattern(regexp = "^[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*$")
 	private String dimensiones;
 	
@@ -55,6 +58,7 @@ public class Vehiculo extends BaseEntity {
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
 	private List<ITV> ITVs;
 	
+	@Size(min = 1)
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
 	private List<Seguro> seguros;
 	
