@@ -34,6 +34,7 @@ public class Entidad{
 
 	@NotBlank
 	@Column(unique=true)
+	@Pattern(regexp = "^[0-9]{8}([A-Z]{1})?")
     protected String NIF;
 
     @NotBlank
