@@ -13,7 +13,7 @@ import javax.validation.Validator;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class NotificacionTest extends ValidatorTests{
+class NotificacionTests extends ValidatorTests{
 	
 	private Notificacion createSUT(String tipo, String cuerpo, String fecha, Boolean leido, Integer emisor, Integer receptores) {
 		Personal e = null;

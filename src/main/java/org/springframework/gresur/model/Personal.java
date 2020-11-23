@@ -9,6 +9,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import lombok.Data;
@@ -21,6 +22,7 @@ import lombok.EqualsAndHashCode;
 public class Personal extends Entidad{
 	
 	@Column(unique = true)
+	@NotBlank
 	@Pattern(regexp = "^[0-9]{2}\\s?[0-9]{10}$")
 	protected String NSS;
 	
