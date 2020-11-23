@@ -43,9 +43,7 @@ class ReparacionTests extends ValidatorTests{
 		Set<ConstraintViolation<Reparacion>> constraintViolations = validator.validate(reparacion);
 		assertThat(constraintViolations.size()).isEqualTo(0);
 	}
-	
-	//TODO Validacion de DateTimeFormat aqui?
-	
+		
 	@ParameterizedTest
 	@CsvSource({
 		"12/11/2029, 11/12/2049, 1, 1",

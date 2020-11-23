@@ -68,3 +68,5 @@ public class Vehiculo extends BaseEntity {
 	@OneToMany(mappedBy = "vehiculo")
 	private List<Pedido> pedidos;
 }
+
+//TODO RN: VALIDACION DE FECHAFINAL >= FECHAINICIAL EN EL SERVICE (ITV; SEGURO; REPARACION)

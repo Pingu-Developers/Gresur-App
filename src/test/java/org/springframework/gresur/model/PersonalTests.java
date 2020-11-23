@@ -333,9 +333,7 @@ class PersonalTests extends ValidatorTests{
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
-	
-	//TODO no hay manera de validar el @Column(unique = true) porque se hace en la BDD
-	
+		
 	
 	/* * * * * * * * * * * * * * * * * * * * * *
 	 * VALIDACIONES ATRIBUTOS TRANSPORTISTA    *

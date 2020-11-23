@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.gresur.validation.SalarioMinimo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,7 +25,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "contratos")
 public class Contrato extends BaseEntity{
 	
-	//TODO @SalarioMinimo CustomValidator que hay que preguntar para poder validar
+	//TODO @SalarioMinimo Revisar implementacion en configuracion
 	private Double nomina;
 	
 	@NotBlank
@@ -44,7 +45,7 @@ public class Contrato extends BaseEntity{
 	@Enumerated(value = EnumType.STRING)
 	@Column(name ="tipo_jornada")
 	private TipoJornada tipoJornada;
-	//TODO NOTNULL?
+
 	@NotNull
 	@ManyToOne(optional = false)
 	private Personal personal;

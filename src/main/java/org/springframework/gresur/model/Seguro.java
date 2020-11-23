@@ -38,12 +38,12 @@ public class Seguro extends BaseEntity implements Comparable<Seguro>{
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate fechaExpiracion;
 	
-	@NotNull //TODO para poder implementar tests unitarios
+	@NotNull
 	@OneToOne(optional = false)
 	@JoinColumn(name = "facturas_recibidas")
 	private FacturaRecibida recibidas;
 	
-	@NotNull //TODO para poder implementar tests unitarios
+	@NotNull
 	@ManyToOne(optional = false)
 	private Vehiculo vehiculo;
 

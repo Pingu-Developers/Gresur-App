@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "encargadosAlmacen")
 public class EncargadoDeAlmacen extends Personal{
 	
-	@NotNull //TODO necesario para validar test unitario
+	@NotNull
 	@OneToOne(optional = false)
 	private Almacen almacen;
 }

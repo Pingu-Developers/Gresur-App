@@ -27,12 +27,12 @@ public class Reparacion extends BaseEntity{
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	protected LocalDate fechaSalidaTaller;
 	
-	@NotNull //TODO Para poder validar tests unitarios
+	@NotNull
 	@OneToOne(optional = false)
 	@JoinColumn(name = "facturas_recibidas")
 	private FacturaRecibida recibidas;
 	
-	@NotNull //TODO Para poder validar tests unitarios
+	@NotNull
 	@ManyToOne(optional = false)
 	private Vehiculo vehiculo;
 }

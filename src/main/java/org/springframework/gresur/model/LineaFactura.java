@@ -18,12 +18,12 @@ public class LineaFactura extends BaseEntity {
 	@Min(value = 1)
 	private Integer cantidad;
 	
-	@NotNull //TODO PARA LOS TEST
+	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "factura")
 	private Factura factura;
 	
-	@NotNull //TODO PARA LOS TEST 
+	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "producto")
 	private Producto producto;

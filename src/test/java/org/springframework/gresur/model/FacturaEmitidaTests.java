@@ -63,21 +63,6 @@ class FacturaEmitidaTests extends ValidatorTests {
 		assertThat(constraintViolations.size()).isEqualTo(0);	
 	}
 	
-	//TODO PREGUNTAR SOBRE VALIDACION @DateTimeFormat y @Null para la fecha 
-//	@ParameterizedTest
-//	@CsvSource({
-//		"20/11/2021,40.3,false,0,0,1,0",
-//		"22/12/2020,400.3,true,0,0,0,1",
-//	})
-//	void validateFacturaEmitidaDateTimeFormatTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {
-//		
-//		FacturaEmitida facturaEmitida = this.createSUT(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente);
-//		
-//		Validator validator = createValidator();
-//		Set<ConstraintViolation<FacturaEmitida>> constraintViolations = validator.validate(facturaEmitida);
-//		assertThat(constraintViolations.size()).isEqualTo(1);
-//	}
-	
 	@ParameterizedTest
 	@CsvSource({
 		"20/11/2021,,false,0,0,1,1",

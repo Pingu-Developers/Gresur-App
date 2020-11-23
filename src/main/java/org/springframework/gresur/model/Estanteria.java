@@ -28,7 +28,7 @@ public class Estanteria extends BaseEntity{
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Double capacidad;
 	
-	@NotNull //TODO para poder validar los tests unitarios
+	@NotNull
 	@ManyToOne(optional = false)
 	private Almacen almacen;
 	
