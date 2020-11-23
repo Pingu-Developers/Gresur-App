@@ -30,15 +30,17 @@ public class Producto extends BaseEntity{
 	@NotBlank
 	private String unidad;
 	
+	//TODO DEBERIA SER NOTNULL?
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Integer stock;
 	
+	//TODO REGLA DE NEGOCIO STOCKSEGURIDAD NO PUEDE SER MAYOR QUE STOCK
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	@Column(name = "stock_seguridad")
 	private Integer stockSeguridad;
 	
 	@Column(name = "URL_imagen")
-	private String URLimagen;
+	private String URLImagen;
 	
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	@Column(name = "precio_venta")
