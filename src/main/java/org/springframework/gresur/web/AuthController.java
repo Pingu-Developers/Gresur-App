@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.configuration.jwt.JwtUtils;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.ERol;
+import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.Rol;
 import org.springframework.gresur.model.User;
 import org.springframework.gresur.model.userPayload.JwtResponse;
@@ -19,13 +20,16 @@ import org.springframework.gresur.model.userPayload.MessageResponse;
 import org.springframework.gresur.model.userPayload.SignupRequest;
 import org.springframework.gresur.repository.RolRepository;
 import org.springframework.gresur.repository.UserRepository;
+import org.springframework.gresur.util.Tuple3;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -126,6 +130,29 @@ public class AuthController {
 		userRepository.save(user);
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+	}
+	
+	@GetMapping("/user")
+	@PreAuthorize("permitAll()")
+	public ResponseEntity<?> getPersonData(){
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		List<String> roles = userDetails.getAuthorities().stream()
+				.map(item -> item.getAuthority())
+				.collect(Collectors.toList());
+		Tuple3<String,List<String>,Personal> res = new Tuple3<>();
+		res.name1 = "username";
+		res.setE1(userDetails.getUsername());
+		
+		res.name2 = "roles";
+		res.setE2(roles);
+		
+		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+		
+		res.name3 ="personal";
+		res.setE3(per);
+		
+		return ResponseEntity.ok(res);
 	}
 
 }
