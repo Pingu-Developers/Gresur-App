@@ -99,7 +99,21 @@ public class PedidoService {
 			}
 		}
 	}
-
+	
+	@Transactional
+	public List<Pedido> findPedidosByFecha(LocalDate fecha) {
+		List<Pedido> pedidosFecha = pedidoRepo.findAll().stream().filter(x->x.getFechaEnvio().equals(fecha)).collect(Collectors.toList());
+		return pedidosFecha;
+	}
+	
+	@Transactional
+	public List<Pedido> findPedidosEnRepartoByFecha(LocalDate fecha){
+		List<Pedido> pedidosEnRepartoFecha = pedidoRepo.findAll().stream()
+				.filter(x->x.getEstado().equals(Estado.EN_REPARTO) && x.getFechaEnvio().equals(fecha))
+				.collect(Collectors.toList());
+		return pedidosEnRepartoFecha;
+	}
+	
 	@Transactional
 	public void deleteById(Long id) throws DataAccessException {
 		pedidoRepo.deleteById(id);
