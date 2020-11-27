@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import GresurImage from '../images/Gresur_login.png';
+import PropTypes from 'prop-types';
 
 //MUI Stuff
 import Paper from '@material-ui/core/Paper';
@@ -10,6 +11,10 @@ import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+
+//Redux stuff
+import { connect } from 'react-redux';
+import { loginUser } from '../redux/actions/userActions';
 
 const style = {
     root: {
@@ -39,15 +44,29 @@ const style = {
     }
   }
 
-class Login extends Component {
+class login extends Component {
 
     constructor(){
         super();
         this.state = {
-            email:'',
+            username:'',
             password:'',
-            loading: false,
             errors: {}
+        }
+    }
+
+    handleSubmit = (event) =>  {
+        event.preventDefault();
+         const userData = {
+             username: this.state.username,
+             password: this.state.password
+         };
+         this.props.loginUser(userData,this.props.history);
+     }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.UI.errors){
+            this.setState({errors: nextProps.UI.errors});
         }
     }
 
@@ -62,8 +81,8 @@ class Login extends Component {
         document.body.style.background = `url(${GresurImage}) no-repeat center center fixed`;
         document.body.style.backgroundSize = "cover";
 
-        const {classes} = this.props;
-        const {errors,loading} = this.state;
+        const {classes, UI:{loading}} = this.props;
+        const {errors} = this.state;
         return (
             <div className={classes.root}>
                 <Grid container spacing={0} className={classes.grid}>
@@ -79,9 +98,11 @@ class Login extends Component {
                                 <Typography variant='h3'>
                                    <u>Inicio de sesión</u> 
                                 </Typography>
-                                <form  noValidate onSubmit="TODO">
-                                    <TextField fullWidth id="Username" label="Username" onChange={this.handleChange} className={classes.textField} />
-                                    <TextField fullWidth id="Password" label="Password" type="password" onChange={this.handleChange} className={classes.textField} />
+                                <form  noValidate onSubmit={this.handleSubmit}>
+                                    <TextField fullWidth id="username" name="username" label="Username" onChange={this.handleChange} className={classes.textField} 
+                                        helperText={errors.username} error={errors.username?true:false} value={this.state.username}/>
+                                    <TextField fullWidth id="password" name="password" label="Password" type="password" onChange={this.handleChange} className={classes.textField} 
+                                         helperText={errors.password} error={errors.password?true:false} value={this.state.password}/>
 
                                     <Button type="submit" variant="contained" color="primary" className={classes.button} disabled={loading}>
                                     Login
@@ -103,4 +124,20 @@ class Login extends Component {
     }
 }
 
-export default withStyles(style)(Login)
+login.propTypes={
+    classes: PropTypes.object.isRequired,
+    loginUser: PropTypes.func.isRequired,
+    user:PropTypes.object.isRequired,
+    UI:PropTypes.object.isRequired
+}
+
+const mapStateToProps = (state) => ({
+    user: state.user,
+    UI: state.UI
+});
+
+const mapActionsToProps = {
+    loginUser
+}
+
+export default connect(mapStateToProps,mapActionsToProps)(withStyles(style)(login))
