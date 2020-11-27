@@ -32,6 +32,7 @@ public class Vehiculo extends BaseEntity {
 	@Column(name = "URL_imagen")
 	private String imagen;
 	
+	//TODO ELIMINAR CAPACIDAD PORQUE ES LO MISMO QUE LAS DIMENSIONES??
 	@NotNull
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Double capacidad; 

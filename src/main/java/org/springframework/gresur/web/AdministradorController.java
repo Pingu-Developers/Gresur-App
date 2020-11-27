@@ -28,7 +28,7 @@ public class AdministradorController {
 	}
 	
 	@PostMapping
-	@PreAuthorize("hasRole('ROL_ADMIN')")
+	@PreAuthorize("hasRole('ADMIN')")
 	public Administrador add(@RequestBody @Valid Administrador adm) throws DataAccessException{
 		return admService.save(adm);
 	}
