@@ -14,6 +14,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -57,9 +59,8 @@ public class Producto extends BaseEntity{
 	@Positive(message = "el peso no puede ser negativo y debe ser mayor que 0")
 	private Double pesoUnitario;
 	
+	@JsonIgnore
 	@ManyToOne
 	private Estanteria estanteria;
 	
-	@OneToMany(mappedBy = "producto", cascade = CascadeType.REMOVE)
-	private List<LineaFactura> lineasFactura;
 }

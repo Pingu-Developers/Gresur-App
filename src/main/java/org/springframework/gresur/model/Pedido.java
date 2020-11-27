@@ -13,6 +13,8 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -32,10 +34,12 @@ public class Pedido extends BaseEntity{
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate fechaEnvio;
 	
+	@JsonIgnore
 	@NotNull
 	@OneToOne(mappedBy = "pedido", optional = false)
 	private FacturaEmitida facturaEmitida;
 	
+	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
 	private Vehiculo vehiculo;

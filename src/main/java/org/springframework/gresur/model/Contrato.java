@@ -16,6 +16,8 @@ import javax.validation.constraints.PastOrPresent;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.gresur.validation.SalarioMinimo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -46,6 +48,7 @@ public class Contrato extends BaseEntity{
 	@Column(name ="tipo_jornada")
 	private TipoJornada tipoJornada;
 
+	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
 	private Personal personal;

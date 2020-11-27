@@ -17,6 +17,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Data
@@ -41,6 +44,7 @@ public class Factura{
 	@Column(name = "esta_pagada")
 	protected Boolean estaPagada;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "factura", cascade = CascadeType.REMOVE)
 	protected List<LineaFactura> lineasFacturas;
 }

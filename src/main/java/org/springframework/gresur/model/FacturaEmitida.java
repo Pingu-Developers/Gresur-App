@@ -6,6 +6,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,13 +17,16 @@ import lombok.EqualsAndHashCode;
 @Table(name = "emitidas")
 public class FacturaEmitida extends Factura{
 	
+	@JsonIgnore
 	@OneToOne
 	private Pedido pedido;
 	
+	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
 	private Dependiente dependiente;
 	
+	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
 	private Cliente cliente;

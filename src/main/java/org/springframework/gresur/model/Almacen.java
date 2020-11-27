@@ -11,6 +11,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -27,6 +29,7 @@ public class Almacen extends BaseEntity{
 	@Min(value=0, message = "debe ser mayor o igual a cero")  
 	private Double capacidad;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "almacen", cascade = CascadeType.REMOVE)
 	private List<Estanteria> estanterias;
 	

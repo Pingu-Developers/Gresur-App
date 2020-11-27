@@ -18,6 +18,8 @@ import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -43,9 +45,11 @@ public class Notificacion extends BaseEntity{
 	@NotNull
 	private Boolean leido;
 	
+	@JsonIgnore
 	@ManyToOne
 	private Personal emisor;
 	
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(
 			name ="enviado_a",
