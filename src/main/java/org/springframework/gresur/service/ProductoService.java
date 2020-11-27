@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.model.Producto;
@@ -101,4 +102,18 @@ public class ProductoService {
 								  .sum();
 		return ventasProducto/totalVentas;
 	}
+	
+	@Transactional(readOnly = true)
+	public List<Producto> findAllProductosByName(String s){
+		List<Producto> productosName = 	productoRepository.findAll().stream()
+				.filter(x->x.getNombre().toLowerCase().contains(s.trim().toLowerCase())).collect(Collectors.toList());
+		return productosName;
+	}
+	@Transactional(readOnly = true)
+	public List<Producto> findByEstanteria(Categoria c){
+		List<Producto> productoEstanteria = productoRepository.findAll().stream()
+				.filter(x->x.getEstanteria().getCategoria().equals(c)).collect(Collectors.toList());
+		return productoEstanteria;
+	}
+
 }
