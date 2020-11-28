@@ -31,6 +31,7 @@ public class Pedido extends BaseEntity{
 	@NotNull
 	private Estado estado;
 	
+	@NotNull
 	private LocalDate fechaEnvio;
 	
 	@JsonIgnore

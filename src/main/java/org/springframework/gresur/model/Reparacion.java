@@ -26,6 +26,7 @@ public class Reparacion extends BaseEntity{
 	@PastOrPresent
 	protected LocalDate fechaEntradaTaller;
 	
+	@NotNull
 	protected LocalDate fechaSalidaTaller;
 	
 	@JsonIgnore

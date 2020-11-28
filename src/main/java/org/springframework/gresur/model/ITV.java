@@ -25,9 +25,11 @@ import lombok.EqualsAndHashCode;
 @Table(name="ITV")
 public class ITV extends BaseEntity implements Comparable<ITV>{
 	
+	@NotNull
 	@PastOrPresent
 	private LocalDate fecha;
 
+	@NotNull
 	private LocalDate expiracion;
 	
 	@NotNull
