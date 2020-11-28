@@ -1,7 +1,11 @@
 package org.springframework.gresur.service.exceptions;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 @SuppressWarnings("serial")
-public class CapacidadEstanteriaExcededException extends Exception{
+@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+public class CapacidadEstanteriaExcededException extends RuntimeException{
 
 	public CapacidadEstanteriaExcededException() {
 		super();
