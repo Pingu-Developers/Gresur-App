@@ -33,9 +33,11 @@ public class Seguro extends BaseEntity implements Comparable<Seguro>{
 	@Enumerated(value = EnumType.STRING)
 	private TipoSeguro tipoSeguro;
 	
+	@NotNull
 	@PastOrPresent
 	private LocalDate fechaContrato;
-	//TODO REVISAR POSIBLE NOTNULL DE TODAS LAS FECHAS
+	
+	@NotNull
 	private LocalDate fechaExpiracion;
 	
 	@JsonIgnore

@@ -34,10 +34,12 @@ public class Contrato extends BaseEntity{
 	@Column(name = "entidad_bancaria")
 	private String entidadBancaria;
 	
+	@NotNull
 	@Column(name = "fecha_inicio")
 	@PastOrPresent
 	private LocalDate fechaInicio;
 	
+	@NotNull
 	@FutureOrPresent
 	private LocalDate fechaFin;
 	
