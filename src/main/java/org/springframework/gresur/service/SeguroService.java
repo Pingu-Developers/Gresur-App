@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Seguro;
+import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.SeguroRepository;
+import org.springframework.gresur.repository.VehiculoRepository;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class SeguroService {
 	
 	private SeguroRepository seguroRepo;
+	private VehiculoRepository vehiculoRepo;
 	
 	@Autowired
-	public SeguroService(SeguroRepository seguroRepo) {
+	public SeguroService(SeguroRepository seguroRepo, VehiculoRepository vehiculoRepo) {
 		this.seguroRepo = seguroRepo;
+		this.vehiculoRepo = vehiculoRepo;
 	}
 	
 	@Transactional(readOnly = true)
@@ -38,6 +42,14 @@ public class SeguroService {
 		
 		if(fechaInicio.isAfter(fechaFin)) {
 			throw new FechaFinNotAfterFechaInicioException("La fecha de inicio no puede ser una fecha posterior a la de finalizacion!");
+		}
+		
+		if(seguro.getFechaExpiracion().isAfter(LocalDate.now())) {
+			Vehiculo vehiculo = seguro.getVehiculo();
+			if(vehiculo.getITVs().stream().anyMatch(x -> x.getExpiracion().isAfter(LocalDate.now()))) {
+				vehiculo.setDisponibilidad(true);
+				vehiculoRepo.save(vehiculo);
+			}
 		}
 		
 		return seguroRepo.save(seguro);

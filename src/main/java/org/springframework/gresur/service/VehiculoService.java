@@ -43,7 +43,6 @@ public class VehiculoService {
 		return vehiculoRepository.findById(id).get();
 	}
 	
-	//TODO RN: Vehiculo sin seguro o ITV caducada no puede estar disponible
 	@Transactional(rollbackFor = MatriculaUnsupportedPatternException.class)
 	public Vehiculo save(Vehiculo vehiculo) throws DataAccessException, MatriculaUnsupportedPatternException{
 		 TipoVehiculo tipo = vehiculo.getTipoVehiculo();
@@ -62,8 +61,16 @@ public class VehiculoService {
 			break;
 		default:
 			throw new NullPointerException();
-		 
 		 }
+		 
+		 if(vehiculo.getITVs().size()==0 && vehiculo.getDisponibilidad()==true){
+			 vehiculo.setDisponibilidad(false);
+		 }
+		 
+		 if(vehiculo.getSeguros().size()==0 && vehiculo.getDisponibilidad()==true){
+			 vehiculo.setDisponibilidad(false);
+		 }
+		 
 		return vehiculoRepository.save(vehiculo);
 	}
 	
