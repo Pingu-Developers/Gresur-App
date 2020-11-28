@@ -31,7 +31,7 @@ public class ReparacionService {
 	}
 	
 	@Transactional
-	public Reparacion save(Reparacion reparacion) throws DataAccessException{
+	public Reparacion save(Reparacion reparacion) throws DataAccessException, FechaFinNotAfterFechaInicioException{
 		
 		LocalDate fechaInicio = reparacion.getFechaEntradaTaller();
 		LocalDate fechaFin = reparacion.getFechaSalidaTaller();

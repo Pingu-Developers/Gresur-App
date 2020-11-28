@@ -31,7 +31,7 @@ public class ITVService {
 	}
 	
 	@Transactional
-	public ITV save(ITV itv) throws DataAccessException{
+	public ITV save(ITV itv) throws DataAccessException, FechaFinNotAfterFechaInicioException{
 		
 		LocalDate fechaInicio = itv.getFecha();
 		LocalDate fechaFin = itv.getExpiracion();
