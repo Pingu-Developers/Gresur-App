@@ -35,11 +35,9 @@ public class Contrato extends BaseEntity{
 	private String entidadBancaria;
 	
 	@Column(name = "fecha_inicio")
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@PastOrPresent
 	private LocalDate fechaInicio;
 	
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@FutureOrPresent
 	private LocalDate fechaFin;
 	

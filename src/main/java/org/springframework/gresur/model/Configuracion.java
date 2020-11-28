@@ -22,8 +22,4 @@ public class Configuracion extends BaseEntity{
 	@NotNull
 	@Column(name = "num_max_notificaciones")
 	private Integer numMaxNotificaciones;
-	
-	@NotBlank
-	@Column(name = "formato_fecha")
-	private String formatoFecha; //TODO usar este campo para el formato de fecha que sera validado en la configuracion del proyecto
 }

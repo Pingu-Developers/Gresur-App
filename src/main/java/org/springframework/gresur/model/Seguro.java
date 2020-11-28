@@ -33,11 +33,9 @@ public class Seguro extends BaseEntity implements Comparable<Seguro>{
 	@Enumerated(value = EnumType.STRING)
 	private TipoSeguro tipoSeguro;
 	
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@PastOrPresent
 	private LocalDate fechaContrato;
-	
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	//TODO REVISAR POSIBLE NOTNULL DE TODAS LAS FECHAS
 	private LocalDate fechaExpiracion;
 	
 	@JsonIgnore

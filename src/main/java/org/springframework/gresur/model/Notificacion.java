@@ -39,7 +39,6 @@ public class Notificacion extends BaseEntity{
 	private String cuerpo;
 	
 	@NotNull
-	@DateTimeFormat(pattern = "dd/MM/yyyy-HH:mm:ss")
 	private LocalDateTime fechaHora;
 	
 	@NotNull

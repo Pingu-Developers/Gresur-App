@@ -7,7 +7,6 @@
 //import org.springframework.web.servlet.view.InternalResourceViewResolver;
 //import org.springframework.web.servlet.view.JstlView;
 //
-////TODO VALIDACION DE DATETIMEFORMAT EN LA CONFIG
 //public class WebConfig implements WebMvcConfigurer {
 //	
 //	@Autowired

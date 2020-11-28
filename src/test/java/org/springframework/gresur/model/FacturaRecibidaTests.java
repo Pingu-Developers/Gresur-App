@@ -58,7 +58,6 @@ class FacturaRecibidaTests extends ValidatorTests{
 	}
 	
 	
-	//TODO PREGUNTAR SOBRE VALIDACION @DateTimeFormat y @Null para la fecha 
 //	@ParameterizedTest
 //	@CsvSource({
 //		"EstoNoEsUnaFecha, 440.54, true, 1, 0, 0",

@@ -33,7 +33,6 @@ public class Factura{
 	protected Long id;
 	
 	@NotNull
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	protected LocalDate fecha;
 	
 	@NotNull

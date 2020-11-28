@@ -31,7 +31,6 @@ public class Pedido extends BaseEntity{
 	@NotNull
 	private Estado estado;
 	
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate fechaEnvio;
 	
 	@JsonIgnore

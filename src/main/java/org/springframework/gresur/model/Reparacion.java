@@ -23,11 +23,9 @@ import lombok.EqualsAndHashCode;
 @Table(name = "reparaciones")
 public class Reparacion extends BaseEntity{
 
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@PastOrPresent
 	protected LocalDate fechaEntradaTaller;
 	
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	protected LocalDate fechaSalidaTaller;
 	
 	@JsonIgnore
