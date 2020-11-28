@@ -16,6 +16,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -53,19 +55,24 @@ public class Vehiculo extends BaseEntity {
 	@Min(value = 0, message = "debe ser mayor que cero")
 	private Double MMA;
 	
+	@JsonIgnore
 	@ManyToOne
 	private Transportista transportista;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
 	private List<ITV> ITVs;
 	
+	@JsonIgnore
 	@Size(min = 1)
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
 	private List<Seguro> seguros;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
 	private List<Reparacion> reparaciones;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "vehiculo")
 	private List<Pedido> pedidos;
 }

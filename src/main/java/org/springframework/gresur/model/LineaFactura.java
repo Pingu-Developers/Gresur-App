@@ -8,6 +8,8 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Data
@@ -18,11 +20,13 @@ public class LineaFactura extends BaseEntity {
 	@Min(value = 1)
 	private Integer cantidad;
 	
+	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "factura")
 	private Factura factura;
 	
+	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "producto")

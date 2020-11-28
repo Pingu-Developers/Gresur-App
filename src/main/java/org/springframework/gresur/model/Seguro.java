@@ -15,6 +15,8 @@ import javax.validation.constraints.PastOrPresent;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -38,11 +40,13 @@ public class Seguro extends BaseEntity implements Comparable<Seguro>{
 	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private LocalDate fechaExpiracion;
 	
+	@JsonIgnore
 	@NotNull
 	@OneToOne(optional = false)
 	@JoinColumn(name = "facturas_recibidas")
 	private FacturaRecibida recibidas;
 	
+	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
 	private Vehiculo vehiculo;

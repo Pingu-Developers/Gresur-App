@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -15,6 +17,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "dependientes")
 public class Dependiente extends Personal{
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "dependiente")
 	private List<FacturaEmitida> facturasEmitidas;
 	

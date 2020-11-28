@@ -1,6 +1,8 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -27,7 +29,7 @@ public class NotificacionService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Iterable<Notificacion> findAll() throws DataAccessException{
+	public List<Notificacion> findAll() throws DataAccessException{
 		return notificacionRepo.findAll();
 	}
 	
@@ -52,5 +54,13 @@ public class NotificacionService {
 		}
 		
 		return notificacionRepo.save(notificacion);
+	}
+	
+	@Transactional
+	public List<Notificacion> findNoLeidasPersonal(Personal p){
+		
+		List<Notificacion> todas = notificacionRepo.findAll();
+		
+		return todas.stream().filter(x -> x.getReceptores().contains(p)).filter(x -> !x.getLeido()).collect(Collectors.toList());
 	}
 }

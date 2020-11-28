@@ -8,6 +8,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -21,6 +23,7 @@ public class FacturaRecibida extends Factura{
 	@NotNull
 	private Concepto concepto;
 	
+	@JsonIgnore
 	@ManyToOne
 	private Proveedor proveedor;
 }
