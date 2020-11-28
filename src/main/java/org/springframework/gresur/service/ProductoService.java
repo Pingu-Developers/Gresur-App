@@ -1,15 +1,20 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.model.LineaFactura;
+import org.springframework.gresur.model.Notificacion;
+import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.Producto;
+import org.springframework.gresur.model.TipoNotificacion;
 import org.springframework.gresur.repository.ProductoRepository;
 import org.springframework.gresur.service.exceptions.CapacidadProductoExcededException;
 import org.springframework.gresur.service.exceptions.StockWithoutEstanteriaException;
@@ -20,6 +25,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductoService {
 	
 	private ProductoRepository productoRepository;
+	
+	@Autowired
+	private NotificacionService notificacionService;
+	@Autowired
+	private AdministradorService adminService;
 	
 	@Autowired
 	private FacturaEmitidaService facturaService;
@@ -72,6 +82,20 @@ public class ProductoService {
 			if(producto.getStock()>0) 
 				throw new StockWithoutEstanteriaException("No se puede añadir stock a un producto sin estanteria asociada");	
 	}
+		
+		if(producto.getStock() <= producto.getStockSeguridad()) {
+			Notificacion noti = new Notificacion();
+			noti.setTipoNotificacion(TipoNotificacion.SISTEMA);
+			noti.setCuerpo("El producto: '("+producto.getId()+")-"+producto.getNombre()+"' esta a punto de agotarse, considere reponerlo");
+			
+			List<Personal> lAdm = new ArrayList<>();
+			for (Administrador adm : adminService.findAll()) {
+				lAdm.add(adm);
+			}
+			noti.setReceptores(lAdm);
+			noti.setLeido(false);
+			notificacionService.save(noti);
+		}
 		
 		return productoRepository.save(producto);
 	}
