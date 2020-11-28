@@ -52,12 +52,11 @@ public class PedidoService {
 	}
 
 	@Transactional(rollbackFor = {MMAExceededException.class, VehiculoNotAvailableException.class, VehiculoDimensionesExceededException.class})
-	public Pedido add(Pedido pedido) throws DataAccessException, MMAExceededException, VehiculoNotAvailableException, VehiculoDimensionesExceededException {
+	public Pedido save(Pedido pedido) throws DataAccessException, MMAExceededException, VehiculoNotAvailableException, VehiculoDimensionesExceededException {
 		
 		Vehiculo vehiculo = pedido.getVehiculo();
 		Double MMA = vehiculo.getMMA();
 		LocalDate fecha = pedido.getFechaEnvio();
-		Double dimensionesVehiculo = dimensionToDouble(vehiculo.getDimensiones());
 		
 		if(!vehiculo.getDisponibilidad()) {
 			throw new VehiculoNotAvailableException();
@@ -65,6 +64,7 @@ public class PedidoService {
 			
 			List<Pedido> pedidos = vehiculo.getPedidos().stream()
 					.filter(x->x.getFechaEnvio().equals(fecha) && x.getEstado().equals(Estado.ABIERTO))
+					.filter(x -> !x.equals(pedido))
 					.collect(Collectors.toList());
 			
 			//Lista de pedidos, especificando para cada pedido los productos y su cantidad que incluyen
@@ -90,7 +90,7 @@ public class PedidoService {
 				throw new MMAExceededException();
 			} 
 			
-			if(dimensionesTotal>dimensionesVehiculo) {
+			if(dimensionesTotal>vehiculo.getCapacidad()) {
 				throw new VehiculoDimensionesExceededException();
 			}
 			

@@ -46,7 +46,6 @@ class VehiculoTests extends ValidatorTests{
 		vehiculo.setMatricula(matricula);
 		vehiculo.setImagen(imagen);
 		vehiculo.setCapacidad(capacidad);
-		vehiculo.setDimensiones(dimensiones);
 		vehiculo.setDisponibilidad(disponibilidad);
 		vehiculo.setTipoVehiculo(tipoVehiculo == null ? null : TipoVehiculo.valueOf(tipoVehiculo));
 		vehiculo.setMMA(MMA);
