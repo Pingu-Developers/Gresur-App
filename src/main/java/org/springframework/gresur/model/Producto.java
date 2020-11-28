@@ -1,12 +1,8 @@
 package org.springframework.gresur.model;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -37,7 +33,6 @@ public class Producto extends BaseEntity{
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Integer stock;
 	
-	//TODO NOTIFICACION CUANDO EL STOCK SEA MENOR QUE EL STOCK DE SEGURIDAD
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	@Column(name = "stock_seguridad")
 	private Integer stockSeguridad;
