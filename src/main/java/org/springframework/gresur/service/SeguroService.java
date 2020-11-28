@@ -31,7 +31,7 @@ public class SeguroService {
 	}
 	
 	@Transactional
-	public Seguro save(Seguro seguro) throws DataAccessException{
+	public Seguro save(Seguro seguro) throws DataAccessException, FechaFinNotAfterFechaInicioException{
 		
 		LocalDate fechaInicio = seguro.getFechaContrato();
 		LocalDate fechaFin = seguro.getFechaExpiracion();
