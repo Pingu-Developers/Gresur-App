@@ -16,6 +16,7 @@ import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.VehiculoRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.gresur.service.exceptions.MatriculaUnsupportedPatternException;
+import org.springframework.gresur.service.exceptions.VehiculoIllegalException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +54,7 @@ public class VehiculoService {
 	
 	
 	@Transactional(rollbackFor = MatriculaUnsupportedPatternException.class)
-	public Vehiculo save(Vehiculo vehiculo) throws DataAccessException, MatriculaUnsupportedPatternException{
+	public Vehiculo save(Vehiculo vehiculo) throws DataAccessException, MatriculaUnsupportedPatternException, VehiculoIllegalException{
 		 TipoVehiculo tipo = vehiculo.getTipoVehiculo();
 		 switch(tipo) {
 		case CAMION:
@@ -71,16 +72,15 @@ public class VehiculoService {
 		default:
 			throw new NullPointerException();
 		 }
-		 
-		 //TODO La validacion debe comprobar si la ultima ITV es válida (es decir, exits y no es NEGATIVA o DESFAVORABLE)
-		 // y debe lanzar una excepción en lugar de setearlo a false (o lanzar un warnig en un popup avisando de que no puede ser true y se
-		 //pondra automaticamente a false). Lo mismo para los seguros
-		 if(ITVService.findByVehiculo(vehiculo.getId()).size()==0 && vehiculo.getDisponibilidad()==true){
-			 vehiculo.setDisponibilidad(false);
+		 	 
+		 ITV ultimaITV = getUltimaITV(vehiculo);
+		 if((ultimaITV == null || ultimaITV.getResultado() != ResultadoITV.FAVORABLE) && vehiculo.getDisponibilidad()==true){
+			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin ITV valida");
 		 }
 		 
-		 if(seguroService.findByVehiculo(vehiculo.getId()).size()==0 && vehiculo.getDisponibilidad()==true){
-			 vehiculo.setDisponibilidad(false);
+		 Seguro ultimoSeguro = getUltimoSeguro(vehiculo);
+		 if(ultimoSeguro == null && vehiculo.getDisponibilidad()==true){
+			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin Seguro");
 		 }
 		 
 		return vehiculoRepository.save(vehiculo);
@@ -94,12 +94,12 @@ public class VehiculoService {
 	/* USER STORIES*/
 	@Transactional(readOnly = true)
 	public ITV getUltimaITV(Vehiculo v) throws DataAccessException{
-		return ITVService.findByVehiculo(v.getId()).stream().max(Comparator.naturalOrder()).get();
+		return ITVService.findByVehiculo(v.getId()).stream().filter(x -> x.getExpiracion().isAfter(LocalDate.now())).max(Comparator.naturalOrder()).orElse(null);
 	}
 	
 	@Transactional(readOnly = true)
 	public Seguro getUltimoSeguro(Vehiculo v) throws DataAccessException{
-		return seguroService.findByVehiculo(v.getId()).stream().max(Comparator.naturalOrder()).get();
+		return seguroService.findByVehiculo(v.getId()).stream().filter(x -> x.getFechaExpiracion().isAfter(LocalDate.now())).max(Comparator.naturalOrder()).orElse(null);
 	}
 	
 	// Validacion de la ITV y Seguros de los vehículos
@@ -114,7 +114,7 @@ public class VehiculoService {
 			ITV ultimaITV = this.getUltimaITV(v);
 			Seguro ultimoSeguro = this.getUltimoSeguro(v);
 			
-			if(ultimaITV.getResultado()==ResultadoITV.NEGATIVA || ultimaITV.getResultado()==ResultadoITV.DESFAVORABLE) {
+			if(ultimaITV == null || ultimaITV.getResultado()==ResultadoITV.NEGATIVA || ultimaITV.getResultado()==ResultadoITV.DESFAVORABLE) {
 				v.setDisponibilidad(false);
 				vehiculoRepository.save(v);
 				Notificacion warning = new Notificacion();
