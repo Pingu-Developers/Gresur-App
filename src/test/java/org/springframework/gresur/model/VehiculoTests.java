@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class VehiculoTests extends ValidatorTests{
 
-	private Vehiculo createSUT(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
+	private Vehiculo createSUT(String matricula, String imagen, Double capacidad, Boolean disponibilidad, String tipoVehiculo, 
 							Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos) {
 		Transportista t = null;
 		List<ITV> litv = new ArrayList<ITV>();
@@ -60,16 +60,16 @@ class VehiculoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"1526 MVC, /resources/camioneta.jpeg, 100.50 , 12.12x16x7.21, true, CAMION, 1100.29, 1, 1, 1, 0, 1",
-		"1357 SAI, /resources/furgo.jpeg, 100.50 , 12.29x16.19x7, false, FURGONETA, 1150.29, 0, 1, 1, 1, 1",
-		"5356 SKJ, /resources/torito.jpeg, 100.50 , '12,129x16,19x7', true, CAMION, 1050.29, 1, 1, 1, 0, 1",
-		"1234 ASE, /resources/grua.jpeg, 100.50 , '12.192x16.00x7.29', true, GRUA, 11130.29, 0, 1, 1, 1, 0",
+		"1526 MVC, /resources/camioneta.jpeg, 100.50, true, CAMION, 1100.29, 1, 1, 1, 0, 1",
+		"1357 SAI, /resources/furgo.jpeg, 100.50, false, FURGONETA, 1150.29, 0, 1, 1, 1, 1",
+		"5356 SKJ, /resources/torito.jpeg, 100.50, true, CAMION, 1050.29, 1, 1, 1, 0, 1",
+		"1234 ASE, /resources/grua.jpeg, 100.50, true, GRUA, 11130.29, 0, 1, 1, 1, 0",
 
 	})
-	void validateVehiculoNoErrorsTest(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
+	void validateVehiculoNoErrorsTest(String matricula, String imagen, Double capacidad, Boolean disponibilidad, String tipoVehiculo, 
 									Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos){
 		
-		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, dimensiones, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
+		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Vehiculo>> constraintViolations = validator.validate(vehiculo);
@@ -78,16 +78,16 @@ class VehiculoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"'    ', /resources/camioneta.jpeg, 100.50 , 12x16x7, true, CAMION, 1100.29, 1, 1, 1, 0, 1",
-		"    , /resources/furgo.jpeg, 100.50 , 12x16x7, false, FURGONETA, 1150.29, 0, 1, 1, 1, 1",
-		"'', /resources/torito.jpeg, 100.50 , 12x16x7, true, CAMION, 1050.29, 1, 1, 1, 0, 1",
-		", /resources/grua.jpeg, 100.50 , 12x16x7, true, GRUA, 11130.29, 0, 1, 1, 1, 0",
+		"'    ', /resources/camioneta.jpeg, 100.50, true, CAMION, 1100.29, 1, 1, 1, 0, 1",
+		"    , /resources/furgo.jpeg, 100.50, false, FURGONETA, 1150.29, 0, 1, 1, 1, 1",
+		"'', /resources/torito.jpeg, 100.50, true, CAMION, 1050.29, 1, 1, 1, 0, 1",
+		", /resources/grua.jpeg, 100.50, true, GRUA, 11130.29, 0, 1, 1, 1, 0",
 
 	})
-	void validateVehiculoMatriculaNotBlankTest(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
+	void validateVehiculoMatriculaNotBlankTest(String matricula, String imagen, Double capacidad, Boolean disponibilidad, String tipoVehiculo, 
 											Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos){
 		
-		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, dimensiones, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
+		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Vehiculo>> constraintViolations = validator.validate(vehiculo);
@@ -96,16 +96,16 @@ class VehiculoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"1526 MVC, /resources/camioneta.jpeg,  , 12x16x7, true, CAMION, 1100.29, 1, 1, 1, 0, 1",
-		"1357 SAI, /resources/furgo.jpeg,  , 12x16x7, false, FURGONETA, 1150.29, 0, 1, 1, 1, 1",
-		"5356 SKJ, /resources/torito.jpeg,  , 12x16x7, true, CAMION, 1050.29, 1, 1, 1, 0, 1",
-		"1234 ASE, /resources/grua.jpeg,  , 12x16x7, true, GRUA, 11130.29, 0, 1, 1, 1, 0",
+		"1526 MVC, /resources/camioneta.jpeg,  , true, CAMION, 1100.29, 1, 1, 1, 0, 1",
+		"1357 SAI, /resources/furgo.jpeg,  , false, FURGONETA, 1150.29, 0, 1, 1, 1, 1",
+		"5356 SKJ, /resources/torito.jpeg,  , true, CAMION, 1050.29, 1, 1, 1, 0, 1",
+		"1234 ASE, /resources/grua.jpeg,  , true, GRUA, 11130.29, 0, 1, 1, 1, 0",
 
 	})
-	void validateVehiculoCapacidadNotNullTest(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
+	void validateVehiculoCapacidadNotNullTest(String matricula, String imagen, Double capacidad, Boolean disponibilidad, String tipoVehiculo, 
 									Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos){
 		
-		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, dimensiones, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
+		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Vehiculo>> constraintViolations = validator.validate(vehiculo);
@@ -114,71 +114,34 @@ class VehiculoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"1526 MVC, /resources/camioneta.jpeg, -100.50 , 12x16x7, true, CAMION, 1100.29, 1, 1, 1, 0, 1",
-		"1357 SAI, /resources/furgo.jpeg, -100.50 , 12x16x7, false, FURGONETA, 1150.29, 0, 1, 1, 1, 1",
-		"5356 SKJ, /resources/torito.jpeg, -100.50 , 12x16x7, true, CAMION, 1050.29, 1, 1, 1, 0, 1",
-		"1234 ASE, /resources/grua.jpeg, -100.50 , 12x16x7, true, GRUA, 11130.29, 0, 1, 1, 1, 0",
+		"1526 MVC, /resources/camioneta.jpeg, -100.50, true, CAMION, 1100.29, 1, 1, 1, 0, 1",
+		"1357 SAI, /resources/furgo.jpeg, -100.50, false, FURGONETA, 1150.29, 0, 1, 1, 1, 1",
+		"5356 SKJ, /resources/torito.jpeg, -100.50, true, CAMION, 1050.29, 1, 1, 1, 0, 1",
+		"1234 ASE, /resources/grua.jpeg, -100.50, true, GRUA, 11130.29, 0, 1, 1, 1, 0",
 
 	})
-	void validateVehiculoCapacidadMinTest(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
+	void validateVehiculoCapacidadMinTest(String matricula, String imagen, Double capacidad, Boolean disponibilidad, String tipoVehiculo, 
 										Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos){
 		
-		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, dimensiones, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
+		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Vehiculo>> constraintViolations = validator.validate(vehiculo);
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
-	
+		
 	@ParameterizedTest
 	@CsvSource({
-		"1526 MVC, /resources/camioneta.jpeg, 100.50 , '      ', true, CAMION, 1100.29, 1, 1, 1, 0, 1",
-		"1357 SAI, /resources/furgo.jpeg, 100.50 , '', false, FURGONETA, 1150.29, 0, 1, 1, 1, 1",
-		"5356 SKJ, /resources/torito.jpeg, 100.50 ,      , true, CAMION, 1050.29, 1, 1, 1, 0, 1",
-		"1234 ASE, /resources/grua.jpeg, 100.50 , , true, GRUA, 11130.29, 0, 1, 1, 1, 0",
+		"1526 MVC, /resources/camioneta.jpeg, 100.50, , CAMION, 1100.29, 1, 1, 1, 0, 1",
+		"1357 SAI, /resources/furgo.jpeg, 100.50, , FURGONETA, 1150.29, 0, 1, 1, 1, 1",
+		"5356 SKJ, /resources/torito.jpeg, 100.50 , , CAMION, 1050.29, 1, 1, 1, 0, 1",
+		"1234 ASE, /resources/grua.jpeg, 100.50 , , GRUA, 11130.29, 0, 1, 1, 1, 0",
 
 	})
-	void validateVehiculoDimensionesNotBlankTest(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
-												Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos){
-		
-		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, dimensiones, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
-		
-		Validator validator = createValidator();
-		Set<ConstraintViolation<Vehiculo>> constraintViolations = validator.validate(vehiculo);
-		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("Pattern"));
-		assertThat(constraintViolations.size()).isEqualTo(1);
-	}
-	
-	@ParameterizedTest
-	@CsvSource({
-		"1526 MVC, /resources/camioneta.jpeg, 100.50 , 12x16.ak19x7, true, CAMION, 1100.29, 1, 1, 1, 0, 1",
-		"1357 SAI, /resources/furgo.jpeg, 100.50 , 12x7, false, FURGONETA, 1150.29, 0, 1, 1, 1, 1",
-		"5356 SKJ, /resources/torito.jpeg, 100.50 , 12x16ax7, true, CAMION, 1050.29, 1, 1, 1, 0, 1",
-		"1234 ASE, /resources/grua.jpeg, 100.50 , 12xx16x7, true, GRUA, 11130.29, 0, 1, 1, 1, 0",
-
-	})
-	void validateVehiculoDimensionesPatternTest(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
-												Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos){
-		
-		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, dimensiones, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
-		
-		Validator validator = createValidator();
-		Set<ConstraintViolation<Vehiculo>> constraintViolations = validator.validate(vehiculo);
-		assertThat(constraintViolations.size()).isEqualTo(1);
-	}
-	
-	@ParameterizedTest
-	@CsvSource({
-		"1526 MVC, /resources/camioneta.jpeg, 100.50 , 12x16x7, , CAMION, 1100.29, 1, 1, 1, 0, 1",
-		"1357 SAI, /resources/furgo.jpeg, 100.50 , 12x16x7, , FURGONETA, 1150.29, 0, 1, 1, 1, 1",
-		"5356 SKJ, /resources/torito.jpeg, 100.50 , 12x16x7, , CAMION, 1050.29, 1, 1, 1, 0, 1",
-		"1234 ASE, /resources/grua.jpeg, 100.50 , 12x16x7, , GRUA, 11130.29, 0, 1, 1, 1, 0",
-
-	})
-	void validateVehiculoDisponibilidadNotNullTest(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
+	void validateVehiculoDisponibilidadNotNullTest(String matricula, String imagen, Double capacidad, Boolean disponibilidad, String tipoVehiculo, 
 													Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos){
 		
-		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, dimensiones, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
+		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Vehiculo>> constraintViolations = validator.validate(vehiculo);
@@ -187,16 +150,16 @@ class VehiculoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"1526 MVC, /resources/camioneta.jpeg, 100.50 , 12x16x7, true, , 1100.29, 1, 1, 1, 0, 1",
-		"1357 SAI, /resources/furgo.jpeg, 100.50 , 12x16x7, false, , 1150.29, 0, 1, 1, 1, 1",
-		"5356 SKJ, /resources/torito.jpeg, 100.50 , 12x16x7, true, , 1050.29, 1, 1, 1, 0, 1",
-		"1234 ASE, /resources/grua.jpeg, 100.50 , 12x16x7, true, , 11130.29, 0, 1, 1, 1, 0",
+		"1526 MVC, /resources/camioneta.jpeg, 100.50 , true, , 1100.29, 1, 1, 1, 0, 1",
+		"1357 SAI, /resources/furgo.jpeg, 100.50 , false, , 1150.29, 0, 1, 1, 1, 1",
+		"5356 SKJ, /resources/torito.jpeg, 100.50 , true, , 1050.29, 1, 1, 1, 0, 1",
+		"1234 ASE, /resources/grua.jpeg, 100.50 , true, , 11130.29, 0, 1, 1, 1, 0",
 
 	})
-	void validateVehiculoTipoVehiculoNotNullTest(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
+	void validateVehiculoTipoVehiculoNotNullTest(String matricula, String imagen, Double capacidad , Boolean disponibilidad, String tipoVehiculo, 
 												Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos){
 		
-		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, dimensiones, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
+		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Vehiculo>> constraintViolations = validator.validate(vehiculo);
@@ -205,16 +168,16 @@ class VehiculoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"1526 MVC, /resources/camioneta.jpeg, 100.50 , 12x16x7, true, CAMION, , 1, 1, 1, 0, 1",
-		"1357 SAI, /resources/furgo.jpeg, 100.50 , 12x16x7, false, FURGONETA, , 0, 1, 1, 1, 1",
-		"5356 SKJ, /resources/torito.jpeg, 100.50 , 12x16x7, true, CAMION, , 1, 1, 1, 0, 1",
-		"1234 ASE, /resources/grua.jpeg, 100.50 , 12x16x7, true, GRUA, , 0, 1, 1, 1, 0",
+		"1526 MVC, /resources/camioneta.jpeg, 100.50, true, CAMION, , 1, 1, 1, 0, 1",
+		"1357 SAI, /resources/furgo.jpeg, 100.50 , false, FURGONETA, , 0, 1, 1, 1, 1",
+		"5356 SKJ, /resources/torito.jpeg, 100.50, true, CAMION, , 1, 1, 1, 0, 1",
+		"1234 ASE, /resources/grua.jpeg, 100.50, true, GRUA, , 0, 1, 1, 1, 0",
 
 	})
-	void validateVehiculoMMANotNullTest(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
+	void validateVehiculoMMANotNullTest(String matricula, String imagen, Double capacidad , Boolean disponibilidad, String tipoVehiculo, 
 										Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos){
 		
-		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, dimensiones, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
+		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Vehiculo>> constraintViolations = validator.validate(vehiculo);
@@ -223,16 +186,16 @@ class VehiculoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"1526 MVC, /resources/camioneta.jpeg, 100.50 , 12x16x7, true, CAMION, -1100.29, 1, 1, 1, 0, 1",
-		"1357 SAI, /resources/furgo.jpeg, 100.50 , 12x16x7, false, FURGONETA, -1150.29, 0, 1, 1, 1, 1",
-		"5356 SKJ, /resources/torito.jpeg, 100.50 , 12x16x7, true, CAMION, -1050.29, 1, 1, 1, 0, 1",
-		"1234 ASE, /resources/grua.jpeg, 100.50 , 12x16x7, true, GRUA, -11130.29, 0, 1, 1, 1, 0",
+		"1526 MVC, /resources/camioneta.jpeg, 100.50, true, CAMION, -1100.29, 1, 1, 1, 0, 1",
+		"1357 SAI, /resources/furgo.jpeg, 100.50, false, FURGONETA, -1150.29, 0, 1, 1, 1, 1",
+		"5356 SKJ, /resources/torito.jpeg, 100.50, true, CAMION, -1050.29, 1, 1, 1, 0, 1",
+		"1234 ASE, /resources/grua.jpeg, 100.50, true, GRUA, -11130.29, 0, 1, 1, 1, 0",
 
 	})
-	void validateVehiculoMMAMinTest(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
+	void validateVehiculoMMAMinTest(String matricula, String imagen, Double capacidad, Boolean disponibilidad, String tipoVehiculo, 
 									Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos){
 		
-		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, dimensiones, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
+		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Vehiculo>> constraintViolations = validator.validate(vehiculo);
@@ -241,16 +204,16 @@ class VehiculoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"1526 MVC, /resources/camioneta.jpeg, 100.50 , 12x16x7, true, CAMION, 1100.29, 1, 1, , 0, 1",
-		"1357 SAI, /resources/furgo.jpeg, 100.50 , 12x16x7, false, FURGONETA, 1150.29, 0, 1, 0, 1, 1",
-		"5356 SKJ, /resources/torito.jpeg, 100.50 , 12x16x7, true, CAMION, 1050.29, 1, 1, , 0, 1",
-		"1234 ASE, /resources/grua.jpeg, 100.50 , 12x16x7, true, GRUA, 11130.29, 0, 1, 0, 1, 0",
+		"1526 MVC, /resources/camioneta.jpeg, 100.50, true, CAMION, 1100.29, 1, 1, , 0, 1",
+		"1357 SAI, /resources/furgo.jpeg, 100.50, false, FURGONETA, 1150.29, 0, 1, 0, 1, 1",
+		"5356 SKJ, /resources/torito.jpeg, 100.50, true, CAMION, 1050.29, 1, 1, , 0, 1",
+		"1234 ASE, /resources/grua.jpeg, 100.50, true, GRUA, 11130.29, 0, 1, 0, 1, 0",
 
 	})
-	void validateVehiculoSegurosSizeTest(String matricula, String imagen, Double capacidad, String dimensiones, Boolean disponibilidad, String tipoVehiculo, 
+	void validateVehiculoSegurosSizeTest(String matricula, String imagen, Double capacidad, Boolean disponibilidad, String tipoVehiculo, 
 										Double MMA, Integer transportista, Integer ITVs, Integer seguros, Integer reparaciones, Integer pedidos){
 		
-		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, dimensiones, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
+		Vehiculo vehiculo = this.createSUT(matricula, imagen, capacidad, disponibilidad, tipoVehiculo, MMA, transportista, ITVs, seguros, reparaciones, pedidos);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Vehiculo>> constraintViolations = validator.validate(vehiculo);
