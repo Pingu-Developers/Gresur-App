@@ -160,9 +160,9 @@ class ProductoTests extends ValidatorTests {
 	@ParameterizedTest
 	@CsvSource({
 		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 21x12x14, -44, 4",
-		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 21x12x14, 0, 4"
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 21x12x14, -1, 4"
 	})
-	void validateProductoPesoUnitarioPositiveTest(String nombre, String descripcion, String unidad, Integer stock, Integer stockSeguridad, String URLImagen, Double precioVenta, Double precioCompra, String dimensiones, Double pesoUnitario, Integer estanteria) {
+	void validateProductoPesoUnitarioMinTest(String nombre, String descripcion, String unidad, Integer stock, Integer stockSeguridad, String URLImagen, Double precioVenta, Double precioCompra, String dimensiones, Double pesoUnitario, Integer estanteria) {
 		
 		Producto producto = this.createSUT(nombre, descripcion, unidad, stock, stockSeguridad, URLImagen, precioVenta, precioCompra, dimensiones, pesoUnitario, estanteria);
 				
