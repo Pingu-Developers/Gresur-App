@@ -3,7 +3,6 @@ package org.springframework.gresur.service;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Iterator;
-
 import org.omg.CORBA.portable.UnknownException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -27,10 +26,18 @@ public class VehiculoService {
 	
 	@Autowired
 	private NotificacionService notificacionService;
+	
+	@Autowired
+	private ITVService ITVService;
+	
+	@Autowired
+	private SeguroService seguroService;
+	
 
 	@Autowired
 	public VehiculoService(VehiculoRepository vehiculoRepository) {
 		this.vehiculoRepository = vehiculoRepository;
+		
 	}
 	
 	@Transactional(readOnly = true)
@@ -42,6 +49,8 @@ public class VehiculoService {
 	public Vehiculo findById(Long id) throws DataAccessException{
 		return vehiculoRepository.findById(id).get();
 	}
+
+	
 	
 	@Transactional(rollbackFor = MatriculaUnsupportedPatternException.class)
 	public Vehiculo save(Vehiculo vehiculo) throws DataAccessException, MatriculaUnsupportedPatternException{
@@ -63,11 +72,11 @@ public class VehiculoService {
 			throw new NullPointerException();
 		 }
 		 
-		 if(vehiculo.getITVs().size()==0 && vehiculo.getDisponibilidad()==true){
+		 if(ITVService.findByVehiculo(vehiculo.getId()).size()==0 && vehiculo.getDisponibilidad()==true){
 			 vehiculo.setDisponibilidad(false);
 		 }
 		 
-		 if(vehiculo.getSeguros().size()==0 && vehiculo.getDisponibilidad()==true){
+		 if(seguroService.findByVehiculo(vehiculo.getId()).size()==0 && vehiculo.getDisponibilidad()==true){
 			 vehiculo.setDisponibilidad(false);
 		 }
 		 
@@ -82,12 +91,12 @@ public class VehiculoService {
 	/* USER STORIES*/
 	@Transactional(readOnly = true)
 	public ITV getUltimaITV(Vehiculo v) throws DataAccessException{
-		return v.getITVs().stream().max(Comparator.naturalOrder()).get();
+		return ITVService.findByVehiculo(v.getId()).stream().max(Comparator.naturalOrder()).get();
 	}
 	
 	@Transactional(readOnly = true)
 	public Seguro getUltimoSeguro(Vehiculo v) throws DataAccessException{
-		return v.getSeguros().stream().max(Comparator.naturalOrder()).get();
+		return seguroService.findByVehiculo(v.getId()).stream().max(Comparator.naturalOrder()).get();
 	}
 	
 	// Validacion de la ITV y Seguros de los vehículos

@@ -1,13 +1,12 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
-
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.SeguroRepository;
-import org.springframework.gresur.repository.VehiculoRepository;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +15,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class SeguroService {
 	
 	private SeguroRepository seguroRepo;
-	private VehiculoRepository vehiculoRepo;
+
+	@Autowired
+	private ITVService ITVService;
 	
 	@Autowired
-	public SeguroService(SeguroRepository seguroRepo, VehiculoRepository vehiculoRepo) {
+	private VehiculoService vehiculoService;
+	
+	
+	@Autowired
+	public SeguroService(SeguroRepository seguroRepo) {
 		this.seguroRepo = seguroRepo;
-		this.vehiculoRepo = vehiculoRepo;
 	}
 	
 	@Transactional(readOnly = true)
@@ -32,6 +36,10 @@ public class SeguroService {
 	@Transactional(readOnly = true)
 	public Seguro findById(Long id) throws DataAccessException{
 		return seguroRepo.findById(id).orElse(null);
+	}
+	@Transactional(readOnly = true)
+	public List<Seguro> findByVehiculo(Long id) throws DataAccessException{
+		return seguroRepo.findByVehiculo(id);
 	}
 	
 	@Transactional
@@ -46,12 +54,12 @@ public class SeguroService {
 		
 		if(seguro.getFechaExpiracion().isAfter(LocalDate.now())) {
 			Vehiculo vehiculo = seguro.getVehiculo();
-			if(vehiculo.getITVs().stream().anyMatch(x -> x.getExpiracion().isAfter(LocalDate.now()))) {
+
+			if(ITVService.findByVehiculo(vehiculo.getId()).stream().anyMatch(x -> x.getExpiracion().isAfter(LocalDate.now()))) {
 				vehiculo.setDisponibilidad(true);
-				vehiculoRepo.save(vehiculo);
+				vehiculoService.save(vehiculo); 
 			}
 		}
-		
 		return seguroRepo.save(seguro);
 	}
 
