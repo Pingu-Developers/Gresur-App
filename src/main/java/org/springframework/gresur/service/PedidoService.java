@@ -108,15 +108,13 @@ public class PedidoService {
 	
 	@Transactional(readOnly = true)
 	public List<Pedido> findPedidosByFecha(LocalDate fecha) {
-		List<Pedido> pedidosFecha = pedidoRepo.findAll().stream().filter(x->x.getFechaEnvio().equals(fecha)).collect(Collectors.toList());
-		return pedidosFecha;
+		return pedidoRepo.findByFechaEnvio(fecha);
 	}
 	
 	@Transactional(readOnly = true)
 	public List<Pedido> findPedidosEnRepartoByFecha(LocalDate fecha){
-		List<Pedido> pedidosEnRepartoFecha = pedidoRepo.findAll().stream()
-				.filter(x->x.getEstado().equals(Estado.EN_REPARTO) && x.getFechaEnvio().equals(fecha))
-				.collect(Collectors.toList());
+		List<Pedido> pedidosEnRepartoFecha = pedidoRepo.findByFechaEnvio(fecha).stream()
+					.filter(x -> x.getEstado().equals(Estado.EN_REPARTO)).collect(Collectors.toList());
 		return pedidosEnRepartoFecha;
 	}
 	
