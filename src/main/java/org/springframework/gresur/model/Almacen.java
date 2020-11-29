@@ -6,6 +6,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,6 +18,7 @@ import lombok.EqualsAndHashCode;
 public class Almacen extends BaseEntity{
 	
 	@NotBlank
+	@Size(max=50, min=3)
 	private String direccion;
 	
 	@NotNull

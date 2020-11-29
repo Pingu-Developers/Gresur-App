@@ -33,6 +33,11 @@ public class NotificacionService {
 		return notificacionRepo.findAll();
 	}
 	
+	@Transactional(readOnly = true)
+	public List<Notificacion> findAllNotificacionesByEmisor(Long id) throws DataAccessException{
+		return notificacionRepo.findByEmisorId(id);
+	}
+	
 	@Transactional(rollbackFor = {NotificacionesLimitException.class, NullPointerException.class})
 	public Notificacion save(Notificacion notificacion) throws DataAccessException,NotificacionesLimitException,NullPointerException{
 		
@@ -47,7 +52,7 @@ public class NotificacionService {
 		Integer maxNotificaciones = this.configuracionService.getNumMaxNotificaciones(); 
 		
 		if(persona != null) {
-			Long n = persona.getNoti_enviadas().stream().filter(x->x.getFechaHora().isAfter(LocalDateTime.now().minusDays(1)))
+			Long n = findAllNotificacionesByEmisor(persona.getId()).stream().filter(x->x.getFechaHora().isAfter(LocalDateTime.now().minusDays(1)))
 					.filter(x->x.getTipoNotificacion().equals(TipoNotificacion.NORMAL)).count();
 			
 			if(n>maxNotificaciones) {
@@ -58,7 +63,7 @@ public class NotificacionService {
 		return notificacionRepo.save(notificacion);
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Notificacion> findNoLeidasPersonal(Personal p){
 		
 		List<Notificacion> todas = notificacionRepo.findAll();

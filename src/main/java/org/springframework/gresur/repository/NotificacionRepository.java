@@ -8,4 +8,6 @@ import org.springframework.gresur.model.Notificacion;
 public interface NotificacionRepository extends CrudRepository<Notificacion, Long>{
 	
 	List<Notificacion> findAll();
+	
+	List<Notificacion> findByEmisorId(Long id);
 }
