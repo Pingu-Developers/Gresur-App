@@ -8,6 +8,7 @@ import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.SeguroRepository;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
+import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,9 +49,7 @@ public class SeguroService {
 		LocalDate fechaInicio = seguro.getFechaContrato();
 		LocalDate fechaFin = seguro.getFechaExpiracion();
 		
-		if(fechaInicio.isAfter(fechaFin)) {
-			throw new FechaFinNotAfterFechaInicioException("La fecha de inicio no puede ser una fecha posterior a la de finalizacion!");
-		}
+		FechaInicioFinValidation.fechaInicioFinValidation(Seguro.class,fechaInicio, fechaFin);
 		
 		if(seguro.getFechaExpiracion().isAfter(LocalDate.now())) {
 			Vehiculo vehiculo = seguro.getVehiculo();
