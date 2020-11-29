@@ -30,16 +30,18 @@ public class Entidad{
 	@NotBlank
 	@Size(min = 3, max = 50)
 	@Column(name = "name")
-	private String name;
+	protected String name;
 
 	@NotBlank
 	@Column(unique=true)
+	@Pattern(regexp = "^[0-9]{8}([A-Z]{1})?")
     protected String NIF;
 
     @NotBlank
     @Email
     protected String email;
     
+    @NotBlank
     @Pattern(regexp = "^[0-9]{9}$")
     protected String tlf;
     

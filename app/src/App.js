@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router,Route,Switch} from 'react-router-dom';
+import {BrowserRouter as Router,Route,Switch,Redirect} from 'react-router-dom';
 import './App.css';
 import {ThemeProvider} from '@material-ui/core/styles'
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
+import jwtDecode from 'jwt-decode'
 import axios from 'axios';
 
 //Redux
 import {Provider} from 'react-redux';
 import store from './redux/store';
+import {SET_AUTHENTICATED} from './redux/types';
+import { logoutUser, getUserData } from './redux/actions/userActions'
 
 //Components
 import Topbar from './components/Topbar';
+import AuthRoute from './util/AuthRoute';
 
 //Pages
-import Login from './pages/login';
-import entidad from './pages/entidad';
+import login from './pages/login';
 
-
+axios.defaults.baseURL = "http://localhost:8080/api";
 
 const theme = createMuiTheme({
   palette: {
@@ -35,6 +38,19 @@ const theme = createMuiTheme({
   },
 })
 
+const token = localStorage.GresurIdToken;
+
+if(token){
+  const decodedToken = jwtDecode(token);
+  if(decodedToken.exp * 1000 < Date.now()){
+    store.dispatch(logoutUser());
+    window.location.href = '/login';
+  } else {
+    store.dispatch({ type:SET_AUTHENTICATED });
+    axios.defaults.headers.common['Authorization'] = token;
+    store.dispatch(getUserData());
+  }
+}
 
 function App() {
   return (
@@ -44,8 +60,7 @@ function App() {
         <Router>
         <Topbar/>
               <Switch>
-                <Route exact path="/login" component={Login}/>
-                <Route exact path="/entidad" component={entidad}/>
+                <AuthRoute exact path="/login" component={login} />
               </Switch>
         </Router>
       </div>

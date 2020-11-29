@@ -1,9 +1,12 @@
 package org.springframework.gresur.service;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.repository.ReparacionRepository;
+import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +31,15 @@ public class ReparacionService {
 	}
 	
 	@Transactional
-	public Reparacion add(Reparacion reparacion) throws DataAccessException{
+	public Reparacion save(Reparacion reparacion) throws DataAccessException, FechaFinNotAfterFechaInicioException{
+		
+		LocalDate fechaInicio = reparacion.getFechaEntradaTaller();
+		LocalDate fechaFin = reparacion.getFechaSalidaTaller();
+		
+		if(fechaInicio.isAfter(fechaFin)) {
+			throw new FechaFinNotAfterFechaInicioException("La fecha de inicio no puede ser una fecha posterior a la de finalizacion!");
+		}
+		
 		return reparacionRepo.save(reparacion);
 	}
 	

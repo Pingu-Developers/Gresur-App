@@ -14,6 +14,9 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 
+//redux stuff
+import { connect } from 'react-redux';
+
 const styles = {
     root: {
         flexGrow: 1,
@@ -52,7 +55,7 @@ class Topbar extends Component {
   };
 
     render() {
-        const { classes } = this.props
+        const { classes , user:{username}} = this.props
 
         return (
         <div className={classes.root}>
@@ -64,7 +67,7 @@ class Topbar extends Component {
             </div>
                 <div>
                 <Typography variant='h5' align='center' display='inline'>
-                    Nombre de este seño
+                    {username}
                 </Typography>
                 
                 <IconButton
@@ -112,7 +115,12 @@ class Topbar extends Component {
 }
 
 Topbar.propTypes = {
-    classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired,
+    user:PropTypes.object.isRequired
 }
 
-export default withStyles(styles)(Topbar)
+const mapStateToProps = (state) => ({
+    user: state.user
+})
+
+export default connect(mapStateToProps)(withStyles(styles)(Topbar))

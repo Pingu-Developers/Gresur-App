@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,19 +23,17 @@ import lombok.EqualsAndHashCode;
 @Entity 
 @Table(name="vehiculos")
 public class Vehiculo extends BaseEntity {
-
-	//FALTA AÑADIR REGLA DE NEGOCIO
+	
 	@NotBlank
+	@Column(unique = true)
 	private String matricula;
 	
 	@Column(name = "URL_imagen")
 	private String imagen;
 	
+	@NotNull
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Double capacidad; 
-	
-	@Pattern(regexp = "^[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*$")
-	private String dimensiones;
 	
 	@NotNull
 	private Boolean disponibilidad;
@@ -45,22 +43,16 @@ public class Vehiculo extends BaseEntity {
 	@Column(name ="tipo_vehiculo")
 	private TipoVehiculo tipoVehiculo;
 	
-	@NotBlank
+	@NotNull
 	@Min(value = 0, message = "debe ser mayor que cero")
 	private Double MMA;
 	
+	@JsonIgnore
 	@ManyToOne
 	private Transportista transportista;
 	
-	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
-	private List<ITV> ITVs;
-	
-	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
-	private List<Seguro> seguros;
-	
+	@JsonIgnore
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
 	private List<Reparacion> reparaciones;
 	
-	@OneToMany(mappedBy = "vehiculo")
-	private List<Pedido> pedidos;
 }

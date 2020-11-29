@@ -4,13 +4,16 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,22 +24,29 @@ import lombok.EqualsAndHashCode;
 @Table(name = "contratos")
 public class Contrato extends BaseEntity{
 	
-	//TODO validacion de configuracion
+	@NotNull
 	private Double nomina;
 	
 	@NotBlank
 	@Column(name = "entidad_bancaria")
 	private String entidadBancaria;
 	
+	@NotNull
 	@Column(name = "fecha_inicio")
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@PastOrPresent
 	private LocalDate fechaInicio;
 	
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@NotNull
 	@FutureOrPresent
 	private LocalDate fechaFin;
 	
+	@NotNull
+	@Enumerated(value = EnumType.STRING)
+	@Column(name ="tipo_jornada")
+	private TipoJornada tipoJornada;
+
+	@JsonIgnore
+	@NotNull
 	@ManyToOne(optional = false)
 	private Personal personal;
 }

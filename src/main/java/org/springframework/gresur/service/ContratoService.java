@@ -1,9 +1,13 @@
 package org.springframework.gresur.service;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Contrato;
 import org.springframework.gresur.repository.ContratoRepository;
+import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
+import org.springframework.gresur.service.exceptions.SalarioMinimoException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ContratoService {
 	
 	private ContratoRepository contratoRepository;
+	
+	@Autowired
+	private ConfiguracionService configService;
 	
 	@Autowired
 	public ContratoService(ContratoRepository contratoRepository) {
@@ -28,7 +35,18 @@ public class ContratoService {
 	}
 	
 	@Transactional
-	public Contrato add(Contrato contrato) throws DataAccessException{
+	public Contrato save(Contrato contrato) throws DataAccessException{
+		
+		LocalDate fechaInicio = contrato.getFechaInicio();
+		LocalDate fechaFin = contrato.getFechaFin();
+		
+		if(contrato.getNomina() < configService.getSalarioMinimo()) {
+			throw new SalarioMinimoException();
+		} 
+		if(fechaInicio.isAfter(fechaFin)) {
+			throw new FechaFinNotAfterFechaInicioException("La fecha de inicio no puede ser una fecha posterior a la de finalizacion!");
+		}
+		
 		return contratoRepository.save(contrato);
 	}
 	

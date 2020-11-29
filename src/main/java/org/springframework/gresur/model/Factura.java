@@ -13,10 +13,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 
 @Data
@@ -29,16 +30,18 @@ public class Factura{
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ENTITY_ID")
 	protected Long id;
 	
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@NotNull
 	protected LocalDate fecha;
 	
 	@NotNull
+	@Min(value=0, message = "debe ser mayor o igual a cero")  
 	protected Double importe;
 	
-	@NotBlank
+	@NotNull
 	@Column(name = "esta_pagada")
 	protected Boolean estaPagada;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "factura", cascade = CascadeType.REMOVE)
 	protected List<LineaFactura> lineasFacturas;
 }

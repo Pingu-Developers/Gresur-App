@@ -1,16 +1,16 @@
 package org.springframework.gresur.model;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Positive;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,6 +29,7 @@ public class Producto extends BaseEntity{
 	@NotBlank
 	private String unidad;
 	
+	@NotNull
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Integer stock;
 	
@@ -37,7 +38,7 @@ public class Producto extends BaseEntity{
 	private Integer stockSeguridad;
 	
 	@Column(name = "URL_imagen")
-	private String URLimagen;
+	private String URLImagen;
 	
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	@Column(name = "precio_venta")
@@ -50,9 +51,11 @@ public class Producto extends BaseEntity{
 	@Pattern(regexp = "^[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*$")
 	private String dimensiones;
 	
+	@Min(value = 0, message = "debe ser mayor o igual a cero")
+	private Double pesoUnitario;
+	
+	@JsonIgnore
 	@ManyToOne
 	private Estanteria estanteria;
 	
-	@OneToMany(mappedBy = "producto", cascade = CascadeType.REMOVE)
-	private List<LineaFactura> lineasFactura;
 }

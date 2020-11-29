@@ -1,12 +1,14 @@
 package org.springframework.gresur.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Factura;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.repository.FacturaRepository;
+import org.springframework.gresur.service.exceptions.ClienteDefaulterException;
 import org.springframework.transaction.annotation.Transactional;
 
 public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
@@ -27,7 +29,7 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	}
 	
 	@Transactional
-	public T add(T facturaRecibida) throws DataAccessException {
+	public T save(T facturaRecibida) throws DataAccessException, ClienteDefaulterException {
 		return facturaRepo.save(facturaRecibida);
 	}
 	
@@ -38,7 +40,7 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	
 	@Transactional(readOnly = true)
 	public List<LineaFactura> findLineasFactura(){
-		return facturaRepo.findAllLineasFactura();
+		return facturaRepo.findAll().stream().map(x->x.getLineasFacturas()).flatMap(List::stream).collect(Collectors.toList());
 	}
 	
 	/*METODOS GENERALES PARA TODAS LAS FACTURAS (superclase)*/
@@ -52,8 +54,4 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 		return facturaGRepo.findById(numFactura).get();
 	}
 	
-	@Transactional(readOnly = true)
-	public List<LineaFactura> findAllLineasFactura(){
-		return facturaGRepo.findAllLineasFactura();
-	}
 }
