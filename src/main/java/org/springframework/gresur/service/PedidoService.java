@@ -50,6 +50,12 @@ public class PedidoService {
 	public Pedido findByID(Long id) throws DataAccessException {
 		return pedidoRepo.findById(id).get();
 	}
+	
+	@Transactional(readOnly = true)
+	public List<Pedido> findAllByVehiculo(Long id) throws DataAccessException {
+		return pedidoRepo.findByVehiculoId(id);
+	}
+	
 
 	@Transactional(rollbackFor = {MMAExceededException.class, VehiculoNotAvailableException.class, VehiculoDimensionesExceededException.class})
 	public Pedido save(Pedido pedido) throws DataAccessException, MMAExceededException, VehiculoNotAvailableException, VehiculoDimensionesExceededException {
@@ -62,7 +68,7 @@ public class PedidoService {
 			throw new VehiculoNotAvailableException();
 		} else {
 			
-			List<Pedido> pedidos = vehiculo.getPedidos().stream()
+			List<Pedido> pedidos = findAllByVehiculo(vehiculo.getId()).stream()
 					.filter(x->x.getFechaEnvio().equals(fecha) && x.getEstado().equals(Estado.ABIERTO))
 					.filter(x -> !x.equals(pedido))
 					.collect(Collectors.toList());
@@ -100,13 +106,13 @@ public class PedidoService {
 		}
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Pedido> findPedidosByFecha(LocalDate fecha) {
 		List<Pedido> pedidosFecha = pedidoRepo.findAll().stream().filter(x->x.getFechaEnvio().equals(fecha)).collect(Collectors.toList());
 		return pedidosFecha;
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<Pedido> findPedidosEnRepartoByFecha(LocalDate fecha){
 		List<Pedido> pedidosEnRepartoFecha = pedidoRepo.findAll().stream()
 				.filter(x->x.getEstado().equals(Estado.EN_REPARTO) && x.getFechaEnvio().equals(fecha))

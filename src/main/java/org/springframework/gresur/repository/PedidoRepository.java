@@ -9,4 +9,6 @@ public interface PedidoRepository extends CrudRepository<Pedido, Long>{
 
 	List<Pedido> findAll(); 
 	
+	List<Pedido> findByVehiculoId(Long id); 
+	
 }
