@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import lombok.Data;
 
@@ -12,6 +13,7 @@ import lombok.Data;
 @Table(name="roles")
 public class Rol extends BaseEntity{
 
+	@NotNull
 	@Enumerated(EnumType.STRING)
 	private ERol name;
 }

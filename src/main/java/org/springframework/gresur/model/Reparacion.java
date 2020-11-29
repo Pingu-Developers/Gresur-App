@@ -21,10 +21,11 @@ import lombok.EqualsAndHashCode;
 @Table(name = "reparaciones")
 public class Reparacion extends BaseEntity{
 
+	@NotNull
 	@PastOrPresent
 	protected LocalDate fechaEntradaTaller;
 	
-	@NotNull
+	
 	protected LocalDate fechaSalidaTaller;
 	
 	@JsonIgnore

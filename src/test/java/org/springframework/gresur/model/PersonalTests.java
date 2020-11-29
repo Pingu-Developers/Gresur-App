@@ -15,23 +15,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 class PersonalTests extends ValidatorTests{
 	
 	private Personal createSUT(String name, String NIF, String email, String tlf, String direccion, String NSS,
-							  String image, Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
-		List<Notificacion> lenviadas = new ArrayList<Notificacion>();
-		List<Notificacion> lrecibidas = new ArrayList<Notificacion>();
-		List<Contrato> lcontratos = new ArrayList<Contrato>();
-		
-		if(noti_enviadas != null && noti_enviadas > 0) {
-			Notificacion n1 = new Notificacion();
-			Notificacion n2 = new Notificacion();
-			lenviadas.add(n1);
-			lenviadas.add(n2);
-		} if(noti_recibidas != null && noti_recibidas > 0) {
-			Notificacion n1 = new Notificacion();
-			lrecibidas.add(n1);
-		} if(contratos != null && contratos > 0) {
-			Contrato c1 = new Contrato();
-			lcontratos.add(c1);
-		};
+							  String image) {
+
 		
 		Personal personal = new Personal();
 		personal.setName(name);
@@ -45,10 +30,10 @@ class PersonalTests extends ValidatorTests{
 	}
 	
 	private Transportista createSUTTransportista(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-									Integer noti_enviadas, Integer noti_recibidas, Integer contratos, Integer vehiculos) {
+									 Integer vehiculos) {
 		
 		List<Vehiculo> lv = new ArrayList<Vehiculo>();
-		Personal p = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal p = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		if(vehiculos != null && vehiculos > 0) {
 			Vehiculo v1 = new Vehiculo();
@@ -65,25 +50,16 @@ class PersonalTests extends ValidatorTests{
 		transportista.setDireccion(p.direccion);
 		transportista.setNSS(p.NSS);
 		transportista.setImage(p.image);
-		transportista.setNoti_enviadas(p.noti_enviadas);
-		transportista.setNoti_recibidas(p.noti_recibidas);
-		transportista.setContratos(p.contratos);
 		transportista.setVehiculos(lv);	
 		return transportista;
 	}
 	
-	private Dependiente createSUTDependiente(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-											Integer noti_enviadas, Integer noti_recibidas, Integer contratos, Integer emitidas) {
+	private Dependiente createSUTDependiente(String name, String NIF, String email, String tlf, String direccion, String NSS, String image
+											) {
 		
 		List<FacturaEmitida> le = new ArrayList<FacturaEmitida>();
-		Personal p = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal p = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
-		if(emitidas != null && emitidas > 0) {
-			FacturaEmitida e1 = new FacturaEmitida();
-			FacturaEmitida e2 = new FacturaEmitida();
-			le.add(e1);
-			le.add(e2);
-		}
 		
 		Dependiente dependiente = new Dependiente();
 		dependiente.setName(p.name);
@@ -93,18 +69,14 @@ class PersonalTests extends ValidatorTests{
 		dependiente.setDireccion(p.direccion);
 		dependiente.setNSS(p.NSS);
 		dependiente.setImage(p.image);
-		dependiente.setNoti_enviadas(p.noti_enviadas);
-		dependiente.setNoti_recibidas(p.noti_recibidas);
-		dependiente.setContratos(p.contratos);
-		dependiente.setFacturasEmitidas(le);	
 		return dependiente;
 	}
 	
 	private EncargadoDeAlmacen createSUTEncargado(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-												Integer noti_enviadas, Integer noti_recibidas, Integer contratos, Integer almacen) {
+												 Integer almacen) {
 		
 		Almacen alm = null;
-		Personal p = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal p = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 		
 		if(almacen != null && almacen > 0) {
 			alm = new Almacen();
@@ -118,9 +90,6 @@ class PersonalTests extends ValidatorTests{
 		encargado.setDireccion(p.direccion);
 		encargado.setNSS(p.NSS);
 		encargado.setImage(p.image);
-		encargado.setNoti_enviadas(p.noti_enviadas);
-		encargado.setNoti_recibidas(p.noti_recibidas);
-		encargado.setContratos(p.contratos);
 		encargado.setAlmacen(alm);	
 		return encargado;
 	}
@@ -132,14 +101,14 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
-		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 1, 0, 0",
-		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1",
+		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png",
+		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png",
+		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg",
 	}) /* Tambien es valido para el administrador, que no tiene atributos extra*/
-	void validatePersonalNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-									Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image
+									) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -149,14 +118,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"'     ', 12345678A, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
-		"'', 12345678C, email2@email.com, 696823445, C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1",
-		" , 12345678A, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
+		"'     ', 12345678A, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png",
+		"'', 12345678C, email2@email.com, 696823445, C/ patata4, 12 1234567891, /resources/alex.jpeg",
+		" , 12345678A, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png",
 	})
-	void validatePersonalNameNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-										 Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalNameNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -171,14 +139,13 @@ class PersonalTests extends ValidatorTests{
 		+ "Teresa Francisca de Paula Lourdes "
 		+ "Antonia Josefa Fausta Rita Castor  "
 		+ "Dorotea Santa Esperanza Fitz-James"
-		+ "Stuart y Silva Falcó y Gurtubay, 12345678A, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
+		+ "Stuart y Silva Falcó y Gurtubay, 12345678A, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png",
 		
-		"Ra, 12345678A, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1"
+		"Ra, 12345678A, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png"
 	})
-	void validatePersonalNameSizeTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-									 Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalNameSizeTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -187,14 +154,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Pepe, '   ', email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
-		"Juan, '', email2@email.com, 696823445, C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1",
-		"Miguel , , email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
+		"Pepe, '   ', email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png",
+		"Juan, '', email2@email.com, 696823445, C/ patata4, 12 1234567891, /resources/alex.jpeg",
+		"Miguel , , email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png",
 	})
-	void validatePersonalNIFNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-										 Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalNIFNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -204,14 +170,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Pepe, 12345678Aa, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
-		"Juan, 12, email2@email.com, 696823445, C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1",
-		"Paco , 12345, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
+		"Pepe, 12345678Aa, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png",
+		"Juan, 12, email2@email.com, 696823445, C/ patata4, 12 1234567891, /resources/alex.jpeg",
+		"Paco , 12345, email@email.com, 696823445, C/ patata, 12 1234567890, /resources/lucas.png",
 	})
-	void validatePersonalNIFPatternTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-										 Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalNIFPatternTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -220,14 +185,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Pepe, 12345678A, '    ', 696823445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
-		"Juan, 12345678C, '', 696823445, C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1",
-		"Paco , 12345678A, , 696823445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
+		"Pepe, 12345678A, '    ', 696823445, C/ patata, 12 1234567890, /resources/lucas.png",
+		"Juan, 12345678C, '', 696823445, C/ patata4, 12 1234567891, /resources/alex.jpeg",
+		"Paco , 12345678A, , 696823445, C/ patata, 12 1234567890, /resources/lucas.png",
 	})
-	void validatePersonalEmailNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-										 Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalEmailNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -237,14 +201,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Pepe, 12345678A, email@email.com, '    ', C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
-		"Juan, 12345678C, email2@email.com, '', C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1",
-		"Paco , 12345678A, email@email.com, , C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
+		"Pepe, 12345678A, email@email.com, '    ', C/ patata, 12 1234567890, /resources/lucas.png",
+		"Juan, 12345678C, email2@email.com, '', C/ patata4, 12 1234567891, /resources/alex.jpeg",
+		"Paco , 12345678A, email@email.com, , C/ patata, 12 1234567890, /resources/lucas.png",
 	})
-	void validatePersonalTlfNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-										 Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalTlfNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -254,14 +217,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Pepe, 12345678A, email@email.com, 823445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
-		"Juan, 12345678C, email2@email.com, 69682344520020, C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1",
-		"Paco , 12345678A, email@email.com, 2a1s23445, C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1",
+		"Pepe, 12345678A, email@email.com, 823445, C/ patata, 12 1234567890, /resources/lucas.png",
+		"Juan, 12345678C, email2@email.com, 69682344520020, C/ patata4, 12 1234567891, /resources/alex.jpeg",
+		"Paco , 12345678A, email@email.com, 2a1s23445, C/ patata, 12 1234567890, /resources/lucas.png",
 	})
-	void validatePersonalTlfPatternTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-										 Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalTlfPatternTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -270,14 +232,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Pepe, 12345678A, email@email.com, 696823445, '', 12 1234567890, /resources/lucas.png, 0, 1, 1",
-		"Juan, 12345678C, email2@email.com, 696823445, '    ', 12 1234567891, /resources/alex.jpeg, , 0, 1",
-		"Paco , 12345678A, email@email.com, 696823445, , 12 1234567890, /resources/lucas.png, 0, 1, 1",
+		"Pepe, 12345678A, email@email.com, 696823445, '', 12 1234567890, /resources/lucas.png",
+		"Juan, 12345678C, email2@email.com, 696823445, '    ', 12 1234567891, /resources/alex.jpeg",
+		"Paco , 12345678A, email@email.com, 696823445, , 12 1234567890, /resources/lucas.png",
 	})
-	void validatePersonalDireccionNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-										 Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalDireccionNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -287,14 +248,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Pepe, 12345678A, email@email.com, 696823445, C/, 12 1234567890, /resources/lucas.png, 0, 1, 1",
-		"Juan, 12345678C, email2@email.com, 696823445, C/ Semiglorieta candida ruiz de la virgen santisima de las hermanas santas de la santisima concepcion, 12 1234567891, /resources/alex.jpeg, , 0, 1",
-		"Paco , 12345678A, email@email.com, 696823445, C/ Este texto tiene exactamente 51 caractere y peta, 12 1234567890, /resources/lucas.png, 0, 1, 1",
+		"Pepe, 12345678A, email@email.com, 696823445, C/, 12 1234567890, /resources/lucas.png",
+		"Juan, 12345678C, email2@email.com, 696823445, C/ Semiglorieta candida ruiz de la virgen santisima de las hermanas santas de la santisima concepcion, 12 1234567891, /resources/alex.jpeg",
+		"Paco , 12345678A, email@email.com, 696823445, C/ Este texto tiene exactamente 51 caractere y peta, 12 1234567890, /resources/lucas.png",
 	})
-	void validatePersonalDireccionSizeTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-										 Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalDireccionSizeTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -303,14 +263,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, '    ', /resources/lucas.png, 0, 1, 1",
-		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, '', /resources/paco.png, 1, 0, 0",
-		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, , /resources/alex.jpeg, , 0, 1",
+		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, '    ', /resources/lucas.png",
+		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, '', /resources/paco.png",
+		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, , /resources/alex.jpeg",
 	})
-	void validatePersonalNSSNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-									Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalNSSNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -320,14 +279,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12  1234567890, /resources/lucas.png, 0, 1, 1",
-		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 1212 34a567891, /resources/paco.png, 1, 0, 0",
-		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 12345 as91, /resources/alex.jpeg, , 0, 1",
+		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12  1234567890, /resources/lucas.png",
+		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 1212 34a567891, /resources/paco.png",
+		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 12345 as91, /resources/alex.jpeg",
 	})
-	void validatePersonalNSSPatternTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-									Integer noti_enviadas, Integer noti_recibidas, Integer contratos) {
+	void validatePersonalNSSPatternTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos);
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
@@ -340,14 +298,13 @@ class PersonalTests extends ValidatorTests{
 	 * * * * * * * * * * * * * * * * * * * * * */
 	@ParameterizedTest
 	@CsvSource({
-		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1, 1",
-		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 1, 0, 0, 1",
-		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1, 1",
+		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, 1",
+		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 1",
+		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, 1",
 	})
-	void validateTransportistaNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-									Integer noti_enviadas, Integer noti_recibidas, Integer contratos, Integer vehiculos) {
+	void validateTransportistaNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, Integer vehiculos) {
 		
-		Transportista transportista = this.createSUTTransportista(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos, vehiculos);
+		Transportista transportista = this.createSUTTransportista(name, NIF, email, tlf, direccion, NSS, image, vehiculos);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Transportista>> constraintViolations = validator.validate(transportista);
@@ -356,14 +313,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1, ",
-		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 1, 0, 0, 0",
-		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1, ",
+		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, ",
+		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 0",
+		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, ",
 	})
-	void validateTransportistaVehiculosSizeTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-												Integer noti_enviadas, Integer noti_recibidas, Integer contratos, Integer vehiculos) {
+	void validateTransportistaVehiculosSizeTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, Integer vehiculos) {
 		
-		Transportista transportista = this.createSUTTransportista(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos, vehiculos);
+		Transportista transportista = this.createSUTTransportista(name, NIF, email, tlf, direccion, NSS, image, vehiculos);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Transportista>> constraintViolations = validator.validate(transportista);
@@ -375,14 +331,13 @@ class PersonalTests extends ValidatorTests{
 	 * * * * * * * * * * * * * * * * * * * * * */
 	@ParameterizedTest
 	@CsvSource({
-		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1, 1",
-		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 1, 0, 0, 0",
-		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1, ",
+		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png",
+		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png",
+		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg",
 	})
-	void validateDependienteNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-												Integer noti_enviadas, Integer noti_recibidas, Integer contratos, Integer emitidas) {
+	void validateDependienteNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Dependiente dependiente = this.createSUTDependiente(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos, emitidas);
+		Dependiente dependiente = this.createSUTDependiente(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Dependiente>> constraintViolations = validator.validate(dependiente);
@@ -394,14 +349,13 @@ class PersonalTests extends ValidatorTests{
 	 * * * * * * * * * * * * * * * * * * * * * */
 	@ParameterizedTest
 	@CsvSource({
-		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1, 1",
-		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 1, 0, 0, 1",
-		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1, 1",
+		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, 1",
+		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 1",
+		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, 1",
 	})
-	void validateEncargadoNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-												Integer noti_enviadas, Integer noti_recibidas, Integer contratos, Integer almacen) {
+	void validateEncargadoNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, Integer almacen) {
 		
-		EncargadoDeAlmacen encargado = this.createSUTEncargado(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos, almacen);
+		EncargadoDeAlmacen encargado = this.createSUTEncargado(name, NIF, email, tlf, direccion, NSS, image, almacen);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<EncargadoDeAlmacen>> constraintViolations = validator.validate(encargado);
@@ -410,14 +364,13 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, 0, 1, 1, 0",
-		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 1, 0, 0, 0",
-		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, , 0, 1, ",
+		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, 0",
+		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 0",
+		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, ",
 	})
-	void validateEncargadoAlmacenNotNullTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-												Integer noti_enviadas, Integer noti_recibidas, Integer contratos, Integer almacen) {
+	void validateEncargadoAlmacenNotNullTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, Integer almacen) {
 		
-		EncargadoDeAlmacen encargado = this.createSUTEncargado(name, NIF, email, tlf, direccion, NSS, image, noti_enviadas, noti_recibidas, contratos, almacen);
+		EncargadoDeAlmacen encargado = this.createSUTEncargado(name, NIF, email, tlf, direccion, NSS, image, almacen);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<EncargadoDeAlmacen>> constraintViolations = validator.validate(encargado);

@@ -14,14 +14,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class ProveedorTests extends ValidatorTests {
 
-	private Proveedor createSUT(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		
-		List<FacturaRecibida> lrec = new ArrayList<FacturaRecibida>();
-		
-		if(recibidas!=null && recibidas>0) {
-			FacturaRecibida lf = new FacturaRecibida();
-			lrec.add(lf);
-		}
+	private Proveedor createSUT(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+			
 		
 		Proveedor proveedor = new Proveedor();
 		proveedor.setName(name);
@@ -30,18 +24,18 @@ class ProveedorTests extends ValidatorTests {
 		proveedor.setEmail(email);
 		proveedor.setDireccion(direccion);		
 		proveedor.setIBAN(IBAN);
-		proveedor.setRecibidas(lrec);
+
 		
 		return proveedor;
 	}
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Alberto, 98856332T, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891, 3",
-		"Wos, 96658774Y, ja@correo.es, 987654321, Cadiz, ES6621000418401234567891, 1"
+		"Alberto, 98856332T, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891",
+		"Wos, 96658774Y, ja@correo.es, 987654321, Cadiz, ES6621000418401234567891"
 	})
-	void validateProveedorNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -50,11 +44,11 @@ class ProveedorTests extends ValidatorTests {
 
 	@ParameterizedTest
 	@CsvSource({
-		", 98856332T, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891, 3",
-		"'   ', 96658774Y, ja@correo.es, 987654321, Cadiz, ES6621000418401234567891, 1"
+		", 98856332T, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891",
+		"'   ', 96658774Y, ja@correo.es, 987654321, Cadiz, ES6621000418401234567891"
 	})
-	void validateProveedorNameNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorNameNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -64,11 +58,11 @@ class ProveedorTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"WW, 98856332T, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891, 3",
-		"FOSDNFSNDIFNSDIFNSDUIFNSDUFNSUIDNFSUDINFSUFNSUNFSUDNFSUIDNFUDSNFUNSDIUFNSDUNFSDUNFSDIU, 96658774Y, ja@correo.es, 987654321, Cadiz, ES6621000418401234567891, 1"
+		"WW, 98856332T, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891",
+		"FOSDNFSNDIFNSDIFNSDUIFNSDUFNSUIDNFSUDINFSUFNSUNFSUDNFSUIDNFUDSNFUNSDIUFNSDUNFSDUNFSDIU, 96658774Y, ja@correo.es, 987654321, Cadiz, ES6621000418401234567891"
 		})
-	void validateProveedorNameSizeTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorNameSizeTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -78,11 +72,11 @@ class ProveedorTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Alberto, , manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891, 3",
-		"Wos, '   ', ja@correo.es, 987654321, Cadiz, ES6621000418401234567891, 1"
+		"Alberto, , manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891",
+		"Wos, '   ', ja@correo.es, 987654321, Cadiz, ES6621000418401234567891"
 	})
-	void validateProveedorNIFNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorNIFNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -92,11 +86,11 @@ class ProveedorTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Alberto, FF44343, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891, 3",
-		"Wos, 4242342FB, ja@correo.es, 987654321, Cadiz, ES6621000418401234567891, 1"
+		"Alberto, FF44343, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891",
+		"Wos, 4242342FB, ja@correo.es, 987654321, Cadiz, ES6621000418401234567891"
 	})
-	void validateProveedorNIFPatternTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorNIFPatternTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -106,11 +100,11 @@ class ProveedorTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Alberto, 98856332T, , 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891, 3",
-		"Wos, 96658774Y, '   ', 987654321, Cadiz, ES6621000418401234567891, 1"
+		"Alberto, 98856332T, , 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891",
+		"Wos, 96658774Y, '   ', 987654321, Cadiz, ES6621000418401234567891"
 	})
-	void validateProveedorEmailNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorEmailNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -120,11 +114,11 @@ class ProveedorTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Alberto, 98856332T, manolo.correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891, 3",
-		"Wos, 96658774Y, ja_correo.es, 987654321, Cadiz, ES6621000418401234567891, 1"
+		"Alberto, 98856332T, manolo.correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891",
+		"Wos, 96658774Y, ja_correo.es, 987654321, Cadiz, ES6621000418401234567891"
 	})
-	void validateProveedorEmailEmailTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorEmailEmailTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -134,11 +128,11 @@ class ProveedorTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Alberto, 98856332T, manolo@correo.es, , Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891, 3",
-		"Wos, 96658774Y, ja@correo.es, '   ', Cadiz, ES6621000418401234567891, 1"
+		"Alberto, 98856332T, manolo@correo.es, , Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891",
+		"Wos, 96658774Y, ja@correo.es, '   ', Cadiz, ES6621000418401234567891"
 	})
-	void validateProveedorTlfNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorTlfNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -148,11 +142,11 @@ class ProveedorTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Alberto, 98856332T, manolo@correo.es, 2324234234234234324, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891, 3",
-		"Wos, 96658774Y, ja@correo.es, 432423, Cadiz, ES6621000418401234567891, 1"
+		"Alberto, 98856332T, manolo@correo.es, 2324234234234234324, Aljamir Software S.L. Glorieta Fernando Quiñones T, ES6621000418401234567891",
+		"Wos, 96658774Y, ja@correo.es, 432423, Cadiz, ES6621000418401234567891"
 	})
-	void validateProveedorTlfPatternTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorTlfPatternTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -162,11 +156,11 @@ class ProveedorTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Alberto, 98856332T, manolo@correo.es, 123456789, , ES6621000418401234567891, 3",
-		"Wos, 96658774Y, ja@correo.es, 987654321, '     ', ES6621000418401234567891, 1"
+		"Alberto, 98856332T, manolo@correo.es, 123456789, , ES6621000418401234567891",
+		"Wos, 96658774Y, ja@correo.es, 987654321, '     ', ES6621000418401234567891"
 	})
-	void validateProveedorDireccionNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorDireccionNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -176,11 +170,11 @@ class ProveedorTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Alberto, 98856332T, manolo@correo.es, 123456789, Up, ES6621000418401234567891, 3",
-		"Wos, 96658774Y, ja@correo.es, 987654321, NFSDIFNSDIFNSIFNSIFNSDUIFNSDUIFNSDIUNFSUDNFUSDNFSUDNFUSDNFUSDNFIUSDNFUNSDFUNSDUFNSDNUFDDDD, ES6621000418401234567891, 1"
+		"Alberto, 98856332T, manolo@correo.es, 123456789, Up, ES6621000418401234567891",
+		"Wos, 96658774Y, ja@correo.es, 987654321, NFSDIFNSDIFNSIFNSIFNSDUIFNSDUIFNSDIUNFSUDNFUSDNFSUDNFUSDNFUSDNFIUSDNFUNSDFUNSDUFNSDNUFDDDD, ES6621000418401234567891"
 	})
-	void validateProveedorDireccionSizeTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorDireccionSizeTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -190,11 +184,11 @@ class ProveedorTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Alberto, 98856332T, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, , 3",
-		"Wos, 96658774Y, ja@correo.es, 987654321, Cadiz, '   ', 1"
+		"Alberto, 98856332T, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, ",
+		"Wos, 96658774Y, ja@correo.es, 987654321, Cadiz, '   '"
 	})
-	void validateProveedorIBANNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorIBANNotBlankTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);
@@ -204,11 +198,11 @@ class ProveedorTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Alberto, 98856332T, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, 662424234es2342341000418401234567891, 3",
-		"Wos, 96658774Y, ja@correo.es, 987654321, Cadiz, 5453534543_FFESS, 1"
+		"Alberto, 98856332T, manolo@correo.es, 123456789, Aljamir Software S.L. Glorieta Fernando Quiñones T, 662424234es2342341000418401234567891",
+		"Wos, 96658774Y, ja@correo.es, 987654321, Cadiz, 5453534543_FFESS"
 	})
-	void validateProveedorIBANPatternTest(String name, String NIF, String email, String tlf, String direccion, String IBAN, Integer recibidas) {
-		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN, recibidas);
+	void validateProveedorIBANPatternTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
+		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Proveedor>> constraintViolations = validator.validate(proveedor);

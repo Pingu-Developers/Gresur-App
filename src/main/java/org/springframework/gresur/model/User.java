@@ -11,7 +11,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -27,17 +26,13 @@ public class User extends BaseEntity {
 	@Column(unique = true)
 	private String username;
 
-	@NotBlank
-	@Size(max = 50)
-	@Email
-	private String email;
 
 	@NotBlank
 	@Size(max = 120)
 	@Column(unique = true)
 	private String password;
 	
-	@OneToOne
+	@OneToOne(orphanRemoval = true)
 	private Personal personal;
 
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -49,9 +44,8 @@ public class User extends BaseEntity {
 	public User() {
 	}
 	
-	public User(String username, String email, String password) {
+	public User(String username, String password) {
 		this.username = username;
-		this.email = email;
 		this.password = password;
 	}
 
