@@ -13,8 +13,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
@@ -55,18 +53,6 @@ public class Vehiculo extends BaseEntity {
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
-	private List<ITV> ITVs;
-	
-	@JsonIgnore
-	@Size(min = 1)
-	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
-	private List<Seguro> seguros;
-	
-	@JsonIgnore
-	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
 	private List<Reparacion> reparaciones;
 	
-	@JsonIgnore
-	@OneToMany(mappedBy = "vehiculo")
-	private List<Pedido> pedidos;
 }

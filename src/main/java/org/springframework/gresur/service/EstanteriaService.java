@@ -1,5 +1,7 @@
 package org.springframework.gresur.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Almacen;
@@ -29,11 +31,16 @@ public class EstanteriaService{
 		return estanteriaRepository.findById(id).get();
 	}
 	
+	@Transactional(readOnly = true)
+	public List<Estanteria> findAllEstanteriaByAlmacen(Long id) throws DataAccessException{
+		return estanteriaRepository.findByAlmacenId(id);
+	}
+	
 	@Transactional
 	public Estanteria save(Estanteria estanteria) throws DataAccessException,CapacidadEstanteriaExcededException{
 		Almacen almacen = estanteria.getAlmacen();
 		
-		if(almacen.getCapacidad()<(almacen.getEstanterias().stream().filter(x->!x.getId().equals(estanteria.getId()))
+		if(almacen.getCapacidad()<(findAllEstanteriaByAlmacen(almacen.getId()).stream().filter(x->!x.getId().equals(estanteria.getId()))
 				.mapToDouble(x->x.getCapacidad()).sum() + estanteria.getCapacidad())) {
 			throw new CapacidadEstanteriaExcededException("Las estanterias exceden la capacidad disponible del almacen");
 		}
