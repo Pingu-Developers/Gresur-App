@@ -72,6 +72,9 @@ public class VehiculoService {
 			throw new NullPointerException();
 		 }
 		 
+		 //TODO La validacion debe comprobar si la ultima ITV es válida (es decir, exits y no es NEGATIVA o DESFAVORABLE)
+		 // y debe lanzar una excepción en lugar de setearlo a false (o lanzar un warnig en un popup avisando de que no puede ser true y se
+		 //pondra automaticamente a false). Lo mismo para los seguros
 		 if(ITVService.findByVehiculo(vehiculo.getId()).size()==0 && vehiculo.getDisponibilidad()==true){
 			 vehiculo.setDisponibilidad(false);
 		 }
