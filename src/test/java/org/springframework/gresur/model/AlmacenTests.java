@@ -50,10 +50,28 @@ class AlmacenTests extends ValidatorTests{
 		Almacen almacen = this.createSUT(direccion, capacidad, encargado);
 
 		Validator validator = createValidator();
-		Set<ConstraintViolation<Almacen>> constraintViolations = validator.validate(almacen);		
+		Set<ConstraintViolation<Almacen>> constraintViolations = validator.validate(almacen);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("Size"));
 		assertThat(constraintViolations.size()).isEqualTo(1);
 		
 	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"C/, 3.9, 1",
+		"C/ esto es un nombre muy largo que debe tener mas de cincuenta caracteres, 19.29, 0",
+		"C, 392.9, 0"
+	})
+	void validateAlmacenDireccionSizeTest(String direccion, Double capacidad, Integer encargado) {
+		Almacen almacen = this.createSUT(direccion, capacidad, encargado);
+
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Almacen>> constraintViolations = validator.validate(almacen);
+		constraintViolations.removeIf(x -> x.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName().contains("NotBlank"));
+		assertThat(constraintViolations.size()).isEqualTo(1);
+		
+	}
+	
 	
 	@ParameterizedTest
 	@CsvSource({
