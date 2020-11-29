@@ -24,7 +24,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "contratos")
 public class Contrato extends BaseEntity{
 	
-	//TODO @SalarioMinimo Revisar implementacion en configuracion
+	@NotNull
 	private Double nomina;
 	
 	@NotBlank
