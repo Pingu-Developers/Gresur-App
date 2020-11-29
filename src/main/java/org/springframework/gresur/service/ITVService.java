@@ -8,6 +8,7 @@ import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.ITVRepository;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
+import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,9 +49,8 @@ public class ITVService {
 		LocalDate fechaInicio = itv.getFecha();
 		LocalDate fechaFin = itv.getExpiracion();
 		
-		if(fechaInicio.isAfter(fechaFin)) {
-			throw new FechaFinNotAfterFechaInicioException("La fecha de inicio no puede ser una fecha posterior a la de finalizacion!");
-		}
+		FechaInicioFinValidation.fechaInicioFinValidation(ITV.class,fechaInicio, fechaFin);
+
 		if(itv.getExpiracion().isAfter(LocalDate.now())) {
 			Vehiculo vehiculo = itv.getVehiculo();
 			if(seguroService.findByVehiculo(vehiculo.getId()).stream().anyMatch(x -> x.getFechaExpiracion().isAfter(LocalDate.now()))) {

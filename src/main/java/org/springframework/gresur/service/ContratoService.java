@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Contrato;
 import org.springframework.gresur.repository.ContratoRepository;
-import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.gresur.service.exceptions.SalarioMinimoException;
+import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +34,7 @@ public class ContratoService {
 		return contratoRepository.findById(id).get();
 	}
 	
+	//TODO REVISAR LOS THROWS YA QUE ALGUNOS LO TIENEN Y OTROS NO (EXCEPCION ES RUNTIMEEXCEPTION HARIA FALTA ENTONCES?)
 	@Transactional
 	public Contrato save(Contrato contrato) throws DataAccessException{
 		
@@ -43,9 +44,8 @@ public class ContratoService {
 		if(contrato.getNomina() < configService.getSalarioMinimo()) {
 			throw new SalarioMinimoException();
 		} 
-		if(fechaInicio.isAfter(fechaFin)) {
-			throw new FechaFinNotAfterFechaInicioException("La fecha de inicio no puede ser una fecha posterior a la de finalizacion!");
-		}
+
+		FechaInicioFinValidation.fechaInicioFinValidation(Contrato.class,fechaInicio, fechaFin);
 		
 		return contratoRepository.save(contrato);
 	}
