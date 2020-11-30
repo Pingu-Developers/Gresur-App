@@ -38,6 +38,7 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 		facturaRepo.deleteById(numFactura);
 	}
 	
+	//TODO esto no es lo mismo que el findAll de LineaFacturaService????
 	@Transactional(readOnly = true)
 	public List<LineaFactura> findLineasFactura(){
 		return facturaRepo.findAll().stream().map(x->x.getLineasFacturas()).flatMap(List::stream).collect(Collectors.toList());

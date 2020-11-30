@@ -1,10 +1,13 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.ITV;
+import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.ITVRepository;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
@@ -39,7 +42,13 @@ public class ITVService {
 	}
 	@Transactional(readOnly = true)
 	public List<ITV> findByVehiculo(Long id) throws DataAccessException{
-		return itvRepository.findByVehiculo(id);
+		return itvRepository.findByVehiculoId(id);
+	}
+	
+	@Transactional(readOnly = true)
+	public ITV findLastITVFavorableByVehiculo(Long id) {
+		return itvRepository.findByVehiculoIdAndExpiracionAfterAndResultadoIn(id, LocalDate.now(), Arrays.asList(ResultadoITV.FAVORABLE)).stream()
+				.max((x,y) -> x.getExpiracion().compareTo(y.getExpiracion())).orElse(null);
 	}
 	
 	
@@ -53,7 +62,8 @@ public class ITVService {
 
 		if(itv.getExpiracion().isAfter(LocalDate.now())) {
 			Vehiculo vehiculo = itv.getVehiculo();
-			if(seguroService.findByVehiculo(vehiculo.getId()).stream().anyMatch(x -> x.getFechaExpiracion().isAfter(LocalDate.now()))) {
+			
+			if(seguroService.findLastSeguroByVehiculo(vehiculo.getId()) != null) {
 				vehiculo.setDisponibilidad(true);
 				vehiculoService.save(vehiculo);
 			}

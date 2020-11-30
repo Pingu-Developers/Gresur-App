@@ -1,11 +1,13 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.gresur.model.LineaEnviado;
 import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.TipoNotificacion;
@@ -21,6 +23,9 @@ public class NotificacionService {
 	
 	@Autowired
 	private ConfiguracionService configuracionService;
+	
+	@Autowired
+	private LineasEnviadoService lineaEnviadoService;
 
 	
 	@Autowired
@@ -39,7 +44,7 @@ public class NotificacionService {
 	}
 	
 	@Transactional(rollbackFor = {NotificacionesLimitException.class, NullPointerException.class})
-	public Notificacion save(Notificacion notificacion) throws DataAccessException,NotificacionesLimitException,NullPointerException{
+	public Notificacion save(Notificacion notificacion,List<Personal> receptores) throws DataAccessException,NotificacionesLimitException,NullPointerException{
 		
 		if(notificacion.getLeido() == null)
 			notificacion.setLeido(false);
@@ -52,22 +57,26 @@ public class NotificacionService {
 		Integer maxNotificaciones = this.configuracionService.getNumMaxNotificaciones(); 
 		
 		if(persona != null) {
-			Long n = findAllNotificacionesByEmisor(persona.getId()).stream().filter(x->x.getFechaHora().isAfter(LocalDateTime.now().minusDays(1)))
-					.filter(x->x.getTipoNotificacion().equals(TipoNotificacion.NORMAL)).count();
+			
+			Long n = (long) notificacionRepo.
+					findByEmisorIdAndFechaHoraAfterAndTipoNotificacionIn(persona.getId(), LocalDateTime.now().minusDays(1), Arrays.asList(TipoNotificacion.NORMAL))
+					.size();
 			
 			if(n>maxNotificaciones) {
 				throw new NotificacionesLimitException("Ha excedido el limite diario de notificaciones");
 			}
 		}
+		Notificacion result = notificacionRepo.save(notificacion);
 		
-		return notificacionRepo.save(notificacion);
+		List<LineaEnviado> lenviado = receptores.stream().map(x ->new LineaEnviado(result,x)).collect(Collectors.toList());
+		
+		lineaEnviadoService.saveAll(lenviado);
+		return result;
 	}
 	
 	@Transactional(readOnly = true)
 	public List<Notificacion> findNoLeidasPersonal(Personal p){
 		
-		List<Notificacion> todas = notificacionRepo.findAll();
-		
-		return todas.stream().filter(x -> x.getReceptores().contains(p)).filter(x -> !x.getLeido()).collect(Collectors.toList());
+		return notificacionRepo.findNoLeidasForPersonal(p.getId());
 	}
 }

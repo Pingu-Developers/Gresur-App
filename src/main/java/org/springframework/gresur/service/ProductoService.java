@@ -28,6 +28,7 @@ public class ProductoService {
 	
 	@Autowired
 	private NotificacionService notificacionService;
+	
 	@Autowired
 	private AdministradorService adminService;
 	
@@ -92,9 +93,7 @@ public class ProductoService {
 			for (Administrador adm : adminService.findAll()) {
 				lAdm.add(adm);
 			}
-			noti.setReceptores(lAdm);
-			noti.setLeido(false);
-			notificacionService.save(noti);
+			notificacionService.save(noti,lAdm);
 		}
 		
 		return productoRepository.save(producto);
@@ -129,15 +128,11 @@ public class ProductoService {
 	
 	@Transactional(readOnly = true)
 	public List<Producto> findAllProductosByName(String s){
-		List<Producto> productosName = 	productoRepository.findAll().stream()
-				.filter(x->x.getNombre().toLowerCase().contains(s.trim().toLowerCase())).collect(Collectors.toList());
-		return productosName;
+		return productoRepository.findByNombreContainingIgnoreCase(s.trim());
 	}
 	@Transactional(readOnly = true)
 	public List<Producto> findByEstanteria(Categoria c){
-		List<Producto> productoEstanteria = productoRepository.findAll().stream()
-				.filter(x->x.getEstanteria().getCategoria().equals(c)).collect(Collectors.toList());
-		return productoEstanteria;
+		return productoRepository.findByEstanteriaCategoria(c);
 	}
 
 }
