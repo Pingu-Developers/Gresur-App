@@ -36,6 +36,11 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	}
 	
 	@Transactional
+	public void deleteAll() throws DataAccessException{
+		personalRepo.deleteAll();;
+	}
+	
+	@Transactional
 	public long count() throws DataAccessException{
 		return personalRepo.count();
 	}
