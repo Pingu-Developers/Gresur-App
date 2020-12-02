@@ -46,6 +46,10 @@ public class SeguroService {
 	public List<Seguro> findByVehiculo(Long id) throws DataAccessException{
 		return seguroRepo.findByVehiculo(id);
 	}
+	@Transactional
+	public void deleteAll() {
+		seguroRepo.deleteAll();
+	}
 	
 	//TODO Revisar Max en JSQL
 	@Transactional(readOnly = true)
@@ -71,6 +75,10 @@ public class SeguroService {
 			}
 		}
 		return seguroRepo.save(seguro);
+	}
+
+	public Long count() {
+		return seguroRepo.count();
 	}
 
 }

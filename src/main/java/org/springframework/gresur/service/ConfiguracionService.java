@@ -40,4 +40,5 @@ public class ConfiguracionService {
 	public Integer getNumMaxNotificaciones() {
 		return this.getConfig().getNumMaxNotificaciones();
 	}
+
 }

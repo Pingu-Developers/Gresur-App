@@ -13,4 +13,6 @@ public class ContratoController {
 	public ContratoController(ContratoService contratoService) {
 		this.contratoService = contratoService;
 	}
+
+	
 }

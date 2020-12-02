@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.omg.CORBA.portable.UnknownException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,22 +61,22 @@ public class VehiculoService {
 	}
 
 	
-	
+	//TODO COMPROBAR TODOS LOS PATRONES. NO SE VALIDAN CON .equals, SE VALIDAN CON Pattern.matches
 	@Transactional(rollbackFor = MatriculaUnsupportedPatternException.class)
 	public Vehiculo save(Vehiculo vehiculo) throws DataAccessException, MatriculaUnsupportedPatternException, VehiculoIllegalException{
 		 TipoVehiculo tipo = vehiculo.getTipoVehiculo();
 		 switch(tipo) {
 		case CAMION:
-			if(!vehiculo.getMatricula().equals("^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para camion");
 			break;
 		case CARRETILLA_ELEVADORA:
-			if(!vehiculo.getMatricula().equals("^E[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!Pattern.matches("E[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para carretilla elevadora");
 			break;
 		case FURGONETA:
-			if(!vehiculo.getMatricula().equals("^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para furgoneta");
 			break;
 		case GRUA:
-			if(!vehiculo.getMatricula().equals("^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para grua");
 			break;
 		default:
 			throw new NullPointerException();
