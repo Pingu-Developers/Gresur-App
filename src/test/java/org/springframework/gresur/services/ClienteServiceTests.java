@@ -52,7 +52,7 @@ class ClienteServiceTests {
 	}
 	
 	@CsvSource({
-		"54789663T, Jose Luis"
+		"54789663T"
 	})
 	@ParameterizedTest
 	@Transactional

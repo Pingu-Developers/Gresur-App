@@ -52,6 +52,16 @@ public class EstanteriaService{
 	@Transactional
 	public void deleteById(Long id) throws DataAccessException{
 		estanteriaRepository.deleteById(id);
+	}
+	
+	@Transactional
+	public void deleteAll() {
+		estanteriaRepository.deleteAll();
+	}
+	
+	@Transactional
+	public Long count() {
+		return estanteriaRepository.count();
 	} 
 	
 

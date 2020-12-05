@@ -22,7 +22,6 @@ class AdministradorServiceTests {
 	@Autowired
 	protected AdministradorService administradorService;
 	
-	
 	@BeforeEach
 	@Transactional
 	void initAll() {
@@ -35,13 +34,12 @@ class AdministradorServiceTests {
 		adm.setNSS("12 1234123890");
 		adm.setImage("/resources/foto.png");
 		
-		this.administradorService.save(adm);
+		administradorService.save(adm);
 	}
-	
 	@AfterEach
 	@Transactional
 	void clearAll() {
-		this.administradorService.deleteAll();
+		administradorService.deleteAll();
 	}
 	
 	//Tests
@@ -52,17 +50,18 @@ class AdministradorServiceTests {
 	@ParameterizedTest
 	@Transactional	
 	void findAdminByNif(String NIF, String name) {
-		Administrador adm = this.administradorService.findByNIF(NIF);
+		Administrador adm = administradorService.findByNIF(NIF);
 		assertThat(adm.getName()).isEqualTo(name);
 	}
+	
 	@CsvSource({
 		"18845878A"
 	})
 	@ParameterizedTest
 	@Transactional	
 	void deleteAdminByNIF(String NIF) {
-		this.administradorService.deleteByNIF(NIF);
-		assertThat(this.administradorService.count()).isEqualTo(0);
+		administradorService.deleteByNIF(NIF);
+		assertThat(administradorService.count()).isEqualTo(0);
 	}
 		
 

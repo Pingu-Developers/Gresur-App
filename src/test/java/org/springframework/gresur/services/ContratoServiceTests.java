@@ -71,6 +71,8 @@ class ContratoServiceTests {
 	@AfterEach
 	@Transactional
 	void clearAll() {
+		confService.deleteAll();
+		administradorService.deleteAll();
 		contratoService.deleteAll();
 	}
 
