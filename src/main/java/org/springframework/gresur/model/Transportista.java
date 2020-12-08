@@ -5,7 +5,6 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -20,6 +19,6 @@ public class Transportista extends Personal{
 	
 	@JsonIgnore
 	@OneToMany(mappedBy = "transportista")
-	@Size(min = 1)
-	private List<Vehiculo> vehiculos;
+	private List<Pedido> pedido;
+
 }

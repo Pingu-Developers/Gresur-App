@@ -2,7 +2,6 @@ package org.springframework.gresur.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -124,7 +123,6 @@ public class VehiculoService {
 					for (Administrador adm : adminService.findAll()) {
 						lPer.add(adm);
 					}
-					lPer.add(v.getTransportista());
 					notificacionService.save(warning,lPer);
 				} catch (Exception e) {
 					throw new UnknownException(e);
@@ -141,7 +139,6 @@ public class VehiculoService {
 					for (Administrador adm : adminService.findAll()) {
 						lPer.add(adm);
 					}
-					lPer.add(v.getTransportista());
 					notificacionService.save(warning,lPer);
 				} catch (Exception e) {
 					throw new UnknownException(e);

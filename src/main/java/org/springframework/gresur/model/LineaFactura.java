@@ -7,6 +7,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -17,6 +18,7 @@ import lombok.Data;
 @Table(name = "lineas_factura", uniqueConstraints = @UniqueConstraint(columnNames = {"factura", "producto"}))
 public class LineaFactura extends BaseEntity {
 
+	@NotNull
 	@Min(value = 1)
 	private Integer cantidad;
 	
@@ -31,6 +33,10 @@ public class LineaFactura extends BaseEntity {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "producto")
 	private Producto producto;
+
+	@NotNull
+	@Positive
+	private Double precio;
 
 	@Override
 	public int hashCode() {

@@ -2,8 +2,6 @@ package org.springframework.gresur.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -29,18 +27,9 @@ class PersonalTests extends ValidatorTests{
 		return personal;
 	}
 	
-	private Transportista createSUTTransportista(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, 
-									 Integer vehiculos) {
+	private Transportista createSUTTransportista(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		List<Vehiculo> lv = new ArrayList<Vehiculo>();
 		Personal p = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
-
-		if(vehiculos != null && vehiculos > 0) {
-			Vehiculo v1 = new Vehiculo();
-			Vehiculo v2 = new Vehiculo();
-			lv.add(v1);
-			lv.add(v2);
-		}
 		
 		Transportista transportista = new Transportista();
 		transportista.setName(p.name);
@@ -50,16 +39,12 @@ class PersonalTests extends ValidatorTests{
 		transportista.setDireccion(p.direccion);
 		transportista.setNSS(p.NSS);
 		transportista.setImage(p.image);
-		transportista.setVehiculos(lv);	
 		return transportista;
 	}
 	
-	private Dependiente createSUTDependiente(String name, String NIF, String email, String tlf, String direccion, String NSS, String image
-											) {
+	private Dependiente createSUTDependiente(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		List<FacturaEmitida> le = new ArrayList<FacturaEmitida>();
 		Personal p = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
-
 		
 		Dependiente dependiente = new Dependiente();
 		dependiente.setName(p.name);
@@ -105,8 +90,7 @@ class PersonalTests extends ValidatorTests{
 		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png",
 		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg",
 	}) /* Tambien es valido para el administrador, que no tiene atributos extra*/
-	void validatePersonalNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image
-									) {
+	void validatePersonalNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
 		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
 
@@ -298,32 +282,17 @@ class PersonalTests extends ValidatorTests{
 	 * * * * * * * * * * * * * * * * * * * * * */
 	@ParameterizedTest
 	@CsvSource({
-		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, 1",
-		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 1",
-		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, 1",
+		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png",
+		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png",
+		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg",
 	})
-	void validateTransportistaNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, Integer vehiculos) {
+	void validateTransportistaNoErrorsTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		
-		Transportista transportista = this.createSUTTransportista(name, NIF, email, tlf, direccion, NSS, image, vehiculos);
+		Transportista transportista = this.createSUTTransportista(name, NIF, email, tlf, direccion, NSS, image);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Transportista>> constraintViolations = validator.validate(transportista);
 		assertThat(constraintViolations.size()).isEqualTo(0);		
-	}
-	
-	@ParameterizedTest
-	@CsvSource({
-		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, ",
-		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 0",
-		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, ",
-	})
-	void validateTransportistaVehiculosSizeTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, Integer vehiculos) {
-		
-		Transportista transportista = this.createSUTTransportista(name, NIF, email, tlf, direccion, NSS, image, vehiculos);
-
-		Validator validator = createValidator();
-		Set<ConstraintViolation<Transportista>> constraintViolations = validator.validate(transportista);
-		assertThat(constraintViolations.size()).isEqualTo(1);	
 	}
 	
 	/* * * * * * * * * * * * * * * * * * * * * *

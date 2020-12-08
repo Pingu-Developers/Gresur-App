@@ -19,6 +19,8 @@ import lombok.EqualsAndHashCode;
 @Table(name = "recibidas")
 public class FacturaRecibida extends Factura{
 	
+	private String descripcion;
+	
 	@Enumerated(value = EnumType.STRING)
 	@NotNull
 	private Concepto concepto;

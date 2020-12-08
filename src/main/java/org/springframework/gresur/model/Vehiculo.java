@@ -48,10 +48,6 @@ public class Vehiculo extends BaseEntity {
 	private Double MMA;
 	
 	@JsonIgnore
-	@ManyToOne
-	private Transportista transportista;
-	
-	@JsonIgnore
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
 	private List<Reparacion> reparaciones;
 	

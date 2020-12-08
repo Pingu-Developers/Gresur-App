@@ -48,8 +48,17 @@ public class Producto extends BaseEntity{
 	@Column(name = "precio_compra")
 	private Double precioCompra;
 	
-	@Pattern(regexp = "^[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*$")
-	private String dimensiones;
+	@NotNull
+	@Positive
+	private Double alto;
+	
+	@NotNull
+	@Positive
+	private Double ancho;
+	
+	@NotNull
+	@Positive
+	private Double profundo;
 	
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Double pesoUnitario;
