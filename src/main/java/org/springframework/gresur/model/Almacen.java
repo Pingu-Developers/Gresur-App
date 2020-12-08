@@ -25,6 +25,6 @@ public class Almacen extends BaseEntity{
 	@Min(value=0, message = "debe ser mayor o igual a cero")  
 	private Double capacidad;
 	
-	@OneToOne(mappedBy = "almacen", optional = false)
+	@OneToOne(mappedBy = "almacen")
 	private EncargadoDeAlmacen encargado;
 }

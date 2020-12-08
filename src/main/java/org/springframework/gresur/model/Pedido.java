@@ -27,7 +27,7 @@ public class Pedido extends BaseEntity{
 	
 	@Enumerated(value = EnumType.STRING)
 	@NotNull
-	private Estado estado;
+	private EstadoPedido estado;
 	
 	@NotNull
 	private LocalDate fechaEnvio;
@@ -39,6 +39,9 @@ public class Pedido extends BaseEntity{
 	
 	@JsonIgnore
 	@NotNull
-	@ManyToOne(optional = false)
+	@ManyToOne
 	private Vehiculo vehiculo;
+	
+	@ManyToOne
+	private Transportista transportista;
 }

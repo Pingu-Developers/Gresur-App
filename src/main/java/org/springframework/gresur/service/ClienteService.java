@@ -1,6 +1,5 @@
 package org.springframework.gresur.service;
 
-import java.util.function.IntPredicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;

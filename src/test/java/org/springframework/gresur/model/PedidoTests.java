@@ -29,7 +29,7 @@ class PedidoTests extends ValidatorTests{
 		
 		Pedido pedido = new Pedido();
 		pedido.setDireccionEnvio(direccionEnvio);
-		pedido.setEstado(estado == null ? null : Estado.valueOf(estado));
+		pedido.setEstado(estado == null ? null : EstadoPedido.valueOf(estado));
 		pedido.setFechaEnvio(fechaEnvio == null ? null : LocalDate.parse(fechaEnvio, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		pedido.setFacturaEmitida(f);
 		pedido.setVehiculo(v);
@@ -39,8 +39,8 @@ class PedidoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"C/Ligastorro, ABIERTO, 20/02/2020, 3, 5",
-		"C/Diseño y pruebas, CERRADO, 20/04/2020, 2, 8",
+		"C/Ligastorro, PREPARADO, 20/02/2020, 3, 5",
+		"C/Diseño y pruebas, ENTREGADO, 20/04/2020, 2, 8",
 	})
 	void validatePedidoNoErrorsTest(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
 		
@@ -54,9 +54,9 @@ class PedidoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		", ABIERTO, 20/02/2020, 3, 5",
-		"'', CERRADO, 20/04/2020, 2, 8",
-		"'         ', CERRADO, 20/04/2020, 2, 8"
+		", PREPARADO, 20/02/2020, 3, 5",
+		"'', ENTREGADO, 20/04/2020, 2, 8",
+		"'         ', ENTREGADO, 20/04/2020, 2, 8"
 	})
 	void validatePedidoDireccionEnvioNotBlankTest(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
 		
@@ -85,8 +85,8 @@ class PedidoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"C/Ligastorro, ABIERTO, 20/02/2020, 0, 5",
-		"C/Diseño y pruebas, CERRADO, 20/04/2020, , 8",
+		"C/Ligastorro, PREPARADO, 20/02/2020, 0, 5",
+		"C/Diseño y pruebas, ENTREGADO, 20/04/2020, , 8",
 	})
 	void validatePedidoFacturaEmitidaNotNullTest(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
 		
@@ -100,8 +100,8 @@ class PedidoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"C/Ligastorro, ABIERTO, 20/02/2020, 3, 0",
-		"C/Diseño y pruebas, CERRADO, 20/04/2020, 2, ",
+		"C/Ligastorro, PREPARADO, 20/02/2020, 3, 0",
+		"C/Diseño y pruebas, ENTREGADO, 20/04/2020, 2, ",
 	})
 	void validatePedidoVehiculoNotNullTest(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
 		
