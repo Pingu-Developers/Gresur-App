@@ -13,6 +13,9 @@ import org.springframework.gresur.model.Pedido;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.PedidoRepository;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
+import org.springframework.gresur.service.exceptions.PedidoLogisticException;
+import org.springframework.gresur.service.exceptions.PedidoNoDeleteableException;
+import org.springframework.gresur.service.exceptions.PedidoSinTransportistaException;
 import org.springframework.gresur.service.exceptions.VehiculoNotAvailableException;
 import org.springframework.gresur.service.exceptions.VehiculoDimensionesExceededException;
 import org.springframework.stereotype.Service;
@@ -51,44 +54,55 @@ public class PedidoService {
 		Double MMA = vehiculo.getMMA();
 		LocalDate fecha = pedido.getFechaEnvio();
 		
-		if(!vehiculo.getDisponibilidad()) {
-			throw new VehiculoNotAvailableException();
+		if(pedido.getVehiculo() != null) {
+			if(pedido.getTransportista() == null) {
+				throw new PedidoSinTransportistaException();
+			} if(!vehiculo.getDisponibilidad()) {
+				throw new VehiculoNotAvailableException();
+			} if(pedido.getEstado().equals(EstadoPedido.EN_REPARTO) || pedido.getEstado().equals(EstadoPedido.ENTREGADO)) {
+				
+				List<Pedido> pedidos = pedidoRepo.findDistinctByVehiculoIdAndFechaEnvioAndEstadoIn(vehiculo.getId(), fecha, Arrays.asList(EstadoPedido.EN_REPARTO));
+				
+				List<List<LineaFactura>> lineasFactura= pedidos.stream()
+						.map(x->x.getFacturaEmitida().getLineasFacturas())
+						.collect(Collectors.toList());
+						
+				Double pesoTotal=0.;
+				Double dimensionesTotal=0.;
+				for (int i = 0; i < lineasFactura.size(); i++) {
+					pesoTotal += lineasFactura.get(i).stream().mapToDouble(x->x.getCantidad()*x.getProducto().getPesoUnitario()).sum();
+					dimensionesTotal += lineasFactura.get(i).stream().
+							mapToDouble(x->x.getProducto().getAlto()*x.getProducto().getAncho()*x.getProducto().getProfundo()*x.getCantidad()).sum(); 
+				}
+				
+				pesoTotal += pedido.getFacturaEmitida().getLineasFacturas().stream()
+							.mapToDouble(x->x.getCantidad()*x.getProducto().getPesoUnitario())
+							.sum();
+				dimensionesTotal += pedido.getFacturaEmitida().getLineasFacturas().stream()
+						.mapToDouble(x->x.getProducto().getAlto()*x.getProducto().getAncho()*x.getProducto().getProfundo()*x.getCantidad()).sum();
+				
+				if(pesoTotal>MMA) {
+					throw new MMAExceededException();
+				} 
+				
+				if(dimensionesTotal>vehiculo.getCapacidad()) {
+					throw new VehiculoDimensionesExceededException();
+				}
+				
+				else {
+					return pedidoRepo.save(pedido);
+				}
+			} else {
+				throw new PedidoLogisticException();
+			}
 		} else {
-			
-			List<Pedido> pedidos = pedidoRepo.findDistinctByVehiculoIdAndFechaEnvioAndEstadoIn(vehiculo.getId(), fecha, Arrays.asList(EstadoPedido.EN_REPARTO));
-			
-			//TODO Esta parte es un map No se si habria que cambiar y poner llamadas?
-			//Lista de pedidos, especificando para cada pedido los productos y su cantidad que incluyen
-			List<List<LineaFactura>> lineasFactura= pedidos.stream()
-					.map(x->x.getFacturaEmitida().getLineasFacturas())
-					.collect(Collectors.toList());
-					
-			Double pesoTotal=0.;
-			Double dimensionesTotal=0.;
-			for (int i = 0; i < lineasFactura.size(); i++) {
-				pesoTotal += lineasFactura.get(i).stream().mapToDouble(x->x.getCantidad()*x.getProducto().getPesoUnitario()).sum();
-				dimensionesTotal += lineasFactura.get(i).stream().
-						mapToDouble(x->x.getProducto().getAlto()*x.getProducto().getAncho()*x.getProducto().getProfundo()*x.getCantidad()).sum(); 
-			}
-			
-			pesoTotal += pedido.getFacturaEmitida().getLineasFacturas().stream()
-						.mapToDouble(x->x.getCantidad()*x.getProducto().getPesoUnitario())
-						.sum();
-			dimensionesTotal += pedido.getFacturaEmitida().getLineasFacturas().stream()
-					.mapToDouble(x->x.getProducto().getAlto()*x.getProducto().getAncho()*x.getProducto().getProfundo()*x.getCantidad()).sum();
-			
-			if(pesoTotal>MMA) {
-				throw new MMAExceededException();
-			} 
-			
-			if(dimensionesTotal>vehiculo.getCapacidad()) {
-				throw new VehiculoDimensionesExceededException();
-			}
-			
-			else {
+			if(pedido.getTransportista() == null && pedido.getEstado().equals(EstadoPedido.ESPERANDO_REPOSICION) || pedido.getTransportista()!= null && pedido.getEstado().equals(EstadoPedido.PREPARADO)) {
 				return pedidoRepo.save(pedido);
+			} else {
+				throw new PedidoLogisticException();
 			}
 		}
+		
 	}
 	
 	@Transactional(readOnly = true)
@@ -103,7 +117,14 @@ public class PedidoService {
 	
 	@Transactional
 	public void deleteById(Long id) throws DataAccessException {
-		pedidoRepo.deleteById(id);
+		Pedido p = pedidoRepo.findById(id).orElse(null);
+		
+		if(p.getEstado().equals(EstadoPedido.ESPERANDO_REPOSICION)) {
+			pedidoRepo.deleteById(id);
+		}
+		else {
+			throw new PedidoNoDeleteableException();
+		}
 	}
 
 }
