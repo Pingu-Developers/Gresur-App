@@ -24,7 +24,7 @@ public class AlmacenService {
 	
 	@Transactional(readOnly = true)
 	public Almacen findById(Long id) throws DataAccessException{
-		return almacenRepository.findById(id).get();
+		return almacenRepository.findById(id).orElse(null);
 	}
 	
 	@Transactional
@@ -36,6 +36,16 @@ public class AlmacenService {
 	public void deleteById(Long id) throws DataAccessException{
 		almacenRepository.deleteById(id);
 	} 
+	
+	@Transactional
+	public long count() throws DataAccessException{
+		return almacenRepository.count();
+	} 
+	
+	@Transactional
+	public void deletAll() {
+		almacenRepository.deleteAll();
+	}
 	
 
 }

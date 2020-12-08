@@ -36,6 +36,7 @@ public class EstanteriaService{
 		return estanteriaRepository.findByAlmacenId(id);
 	}
 	
+	//TODO Revisar JSQL todos menos uno mismo(filter(x->!x.getId().equals(estanteria.getId())))
 	@Transactional
 	public Estanteria save(Estanteria estanteria) throws DataAccessException,CapacidadEstanteriaExcededException{
 		Almacen almacen = estanteria.getAlmacen();
@@ -51,6 +52,16 @@ public class EstanteriaService{
 	@Transactional
 	public void deleteById(Long id) throws DataAccessException{
 		estanteriaRepository.deleteById(id);
+	}
+	
+	@Transactional
+	public void deleteAll() {
+		estanteriaRepository.deleteAll();
+	}
+	
+	@Transactional
+	public Long count() {
+		return estanteriaRepository.count();
 	} 
 	
 

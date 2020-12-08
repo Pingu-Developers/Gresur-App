@@ -1,9 +1,13 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.gresur.model.ITV;
+import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.SeguroRepository;
@@ -42,6 +46,17 @@ public class SeguroService {
 	public List<Seguro> findByVehiculo(Long id) throws DataAccessException{
 		return seguroRepo.findByVehiculo(id);
 	}
+	@Transactional
+	public void deleteAll() {
+		seguroRepo.deleteAll();
+	}
+	
+	//TODO Revisar Max en JSQL
+	@Transactional(readOnly = true)
+	public Seguro findLastSeguroByVehiculo(Long id) {
+		return seguroRepo.findByVehiculoIdAndFechaExpiracionAfter(id, LocalDate.now()).stream()
+				.max((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).orElse(null);
+	}
 	
 	@Transactional
 	public Seguro save(Seguro seguro) throws DataAccessException, FechaFinNotAfterFechaInicioException{
@@ -54,12 +69,16 @@ public class SeguroService {
 		if(seguro.getFechaExpiracion().isAfter(LocalDate.now())) {
 			Vehiculo vehiculo = seguro.getVehiculo();
 
-			if(ITVService.findByVehiculo(vehiculo.getId()).stream().anyMatch(x -> x.getExpiracion().isAfter(LocalDate.now()))) {
+			if(ITVService.findLastITVFavorableByVehiculo(vehiculo.getId()) != null) {
 				vehiculo.setDisponibilidad(true);
 				vehiculoService.save(vehiculo); 
 			}
 		}
 		return seguroRepo.save(seguro);
+	}
+
+	public Long count() {
+		return seguroRepo.count();
 	}
 
 }

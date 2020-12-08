@@ -1,13 +1,19 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.omg.CORBA.portable.UnknownException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Notificacion;
+import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoNotificacion;
@@ -34,6 +40,9 @@ public class VehiculoService {
 	@Autowired
 	private SeguroService seguroService;
 	
+	@Autowired
+	private AdministradorService adminService;
+	
 
 	@Autowired
 	public VehiculoService(VehiculoRepository vehiculoRepository) {
@@ -52,33 +61,33 @@ public class VehiculoService {
 	}
 
 	
-	
+	//TODO COMPROBAR TODOS LOS PATRONES. NO SE VALIDAN CON .equals, SE VALIDAN CON Pattern.matches
 	@Transactional(rollbackFor = MatriculaUnsupportedPatternException.class)
 	public Vehiculo save(Vehiculo vehiculo) throws DataAccessException, MatriculaUnsupportedPatternException, VehiculoIllegalException{
 		 TipoVehiculo tipo = vehiculo.getTipoVehiculo();
 		 switch(tipo) {
 		case CAMION:
-			if(!vehiculo.getMatricula().equals("^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para camion");
 			break;
 		case CARRETILLA_ELEVADORA:
-			if(!vehiculo.getMatricula().equals("^E[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!Pattern.matches("E[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para carretilla elevadora");
 			break;
 		case FURGONETA:
-			if(!vehiculo.getMatricula().equals("^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para furgoneta");
 			break;
 		case GRUA:
-			if(!vehiculo.getMatricula().equals("^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para grua");
 			break;
 		default:
 			throw new NullPointerException();
 		 }
 		 	 
-		 ITV ultimaITV = getUltimaITV(vehiculo);
+		 ITV ultimaITV = ITVService.findLastITVFavorableByVehiculo(vehiculo.getId());
 		 if((ultimaITV == null || ultimaITV.getResultado() != ResultadoITV.FAVORABLE) && vehiculo.getDisponibilidad()==true){
 			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin ITV valida");
 		 }
 		 
-		 Seguro ultimoSeguro = getUltimoSeguro(vehiculo);
+		 Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(vehiculo.getId());
 		 if(ultimoSeguro == null && vehiculo.getDisponibilidad()==true){
 			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin Seguro");
 		 }
@@ -91,16 +100,6 @@ public class VehiculoService {
 		vehiculoRepository.deleteById(id);
 	}
 	
-	/* USER STORIES*/
-	@Transactional(readOnly = true)
-	public ITV getUltimaITV(Vehiculo v) throws DataAccessException{
-		return ITVService.findByVehiculo(v.getId()).stream().filter(x -> x.getExpiracion().isAfter(LocalDate.now())).max(Comparator.naturalOrder()).orElse(null);
-	}
-	
-	@Transactional(readOnly = true)
-	public Seguro getUltimoSeguro(Vehiculo v) throws DataAccessException{
-		return seguroService.findByVehiculo(v.getId()).stream().filter(x -> x.getFechaExpiracion().isAfter(LocalDate.now())).max(Comparator.naturalOrder()).orElse(null);
-	}
 	
 	// Validacion de la ITV y Seguros de los vehículos
 	@Scheduled(cron = "0 7 * * * *")
@@ -111,8 +110,8 @@ public class VehiculoService {
 		while (vehiculos.hasNext()) {
 			
 			Vehiculo v = vehiculos.next();
-			ITV ultimaITV = this.getUltimaITV(v);
-			Seguro ultimoSeguro = this.getUltimoSeguro(v);
+			ITV ultimaITV = ITVService.findLastITVFavorableByVehiculo(v.getId());
+			Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(v.getId());
 			
 			if(ultimaITV == null || ultimaITV.getResultado()==ResultadoITV.NEGATIVA || ultimaITV.getResultado()==ResultadoITV.DESFAVORABLE) {
 				v.setDisponibilidad(false);
@@ -121,7 +120,12 @@ public class VehiculoService {
 				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a la invalidez de su ITV");
 				warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
 				try {
-					notificacionService.save(warning);
+					List<Personal> lPer = new ArrayList<>();
+					for (Administrador adm : adminService.findAll()) {
+						lPer.add(adm);
+					}
+					lPer.add(v.getTransportista());
+					notificacionService.save(warning,lPer);
 				} catch (Exception e) {
 					throw new UnknownException(e);
 				}
@@ -133,7 +137,12 @@ public class VehiculoService {
 				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a la caducidad de su Seguro");
 				warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
 				try {
-					notificacionService.save(warning);
+					List<Personal> lPer = new ArrayList<>();
+					for (Administrador adm : adminService.findAll()) {
+						lPer.add(adm);
+					}
+					lPer.add(v.getTransportista());
+					notificacionService.save(warning,lPer);
 				} catch (Exception e) {
 					throw new UnknownException(e);
 				}

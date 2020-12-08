@@ -40,4 +40,10 @@ public class ConfiguracionService {
 	public Integer getNumMaxNotificaciones() {
 		return this.getConfig().getNumMaxNotificaciones();
 	}
+	
+	@Transactional
+	public void deleteAll() {
+		configRepo.deleteAll();
+	}
+
 }

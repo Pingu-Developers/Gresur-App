@@ -1,6 +1,7 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,11 +69,9 @@ public class PedidoService {
 			throw new VehiculoNotAvailableException();
 		} else {
 			
-			List<Pedido> pedidos = findAllByVehiculo(vehiculo.getId()).stream()
-					.filter(x->x.getFechaEnvio().equals(fecha) && x.getEstado().equals(Estado.ABIERTO))
-					.filter(x -> !x.equals(pedido))
-					.collect(Collectors.toList());
+			List<Pedido> pedidos = pedidoRepo.findDistinctByVehiculoIdAndFechaEnvioAndEstadoIn(vehiculo.getId(), fecha, Arrays.asList(Estado.EN_REPARTO));
 			
+			//TODO Esta parte es un map No se si habria que cambiar y poner llamadas?
 			//Lista de pedidos, especificando para cada pedido los productos y su cantidad que incluyen
 			List<List<LineaFactura>> lineasFactura= pedidos.stream()
 					.map(x->x.getFacturaEmitida().getLineasFacturas())
@@ -113,9 +112,7 @@ public class PedidoService {
 	
 	@Transactional(readOnly = true)
 	public List<Pedido> findPedidosEnRepartoByFecha(LocalDate fecha){
-		List<Pedido> pedidosEnRepartoFecha = pedidoRepo.findByFechaEnvio(fecha).stream()
-					.filter(x -> x.getEstado().equals(Estado.EN_REPARTO)).collect(Collectors.toList());
-		return pedidosEnRepartoFecha;
+		return pedidoRepo.findByFechaEnvioAndEstadoIn(fecha, Arrays.asList(Estado.EN_REPARTO));
 	}
 	
 	@Transactional

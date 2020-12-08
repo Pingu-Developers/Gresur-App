@@ -27,9 +27,7 @@ public class LineasFacturaService {
 	public LineaFactura save(LineaFactura linea) {		
 		
 		LineaFactura tmp = linea;
-		LineaFactura otherLinea = linea.getFactura().getLineasFacturas().stream()
-				.filter(x->x.equals(tmp))
-				.findAny().orElse(null);
+		LineaFactura otherLinea = lineasRepo.findByFacturaIdAndProductoId(tmp.getFactura().getId(), tmp.getProducto().getId()).orElse(null);
 
 		if(otherLinea != null) {
 			otherLinea.setCantidad(otherLinea.getCantidad() + linea.getCantidad());

@@ -35,14 +35,16 @@ public class ContratoService {
 	}
 	
 	//TODO REVISAR LOS THROWS YA QUE ALGUNOS LO TIENEN Y OTROS NO (EXCEPCION ES RUNTIMEEXCEPTION HARIA FALTA ENTONCES?)
+	
 	@Transactional
 	public Contrato save(Contrato contrato) throws DataAccessException{
 		
 		LocalDate fechaInicio = contrato.getFechaInicio();
 		LocalDate fechaFin = contrato.getFechaFin();
 		
+		//TODO FATAL BUG: SE CAPTURA LA EXCEPCION, EL SALARIO SIGUE GUARDANDOSE EN BD
 		if(contrato.getNomina() < configService.getSalarioMinimo()) {
-			throw new SalarioMinimoException();
+			throw new SalarioMinimoException("El salario es menor que el salario minimo");
 		} 
 
 		FechaInicioFinValidation.fechaInicioFinValidation(Contrato.class,fechaInicio, fechaFin);
@@ -53,5 +55,15 @@ public class ContratoService {
 	@Transactional
 	public void deleteById(Long id) throws DataAccessException{
 		contratoRepository.deleteById(id);
+	}
+	
+	@Transactional
+	public void deleteAll() {
+		contratoRepository.deleteAll();
+	}
+
+	@Transactional
+	public Long count() {
+		return contratoRepository.count();
 	}
 }

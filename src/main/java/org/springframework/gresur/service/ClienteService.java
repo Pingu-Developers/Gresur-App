@@ -1,5 +1,7 @@
 package org.springframework.gresur.service;
 
+import java.util.function.IntPredicate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Cliente;
@@ -35,5 +37,16 @@ public class ClienteService {
 	@Transactional
 	public void deleteByNIF(String NIF) throws DataAccessException{
 		clienteRepo.deleteByNIF(NIF);
+	}
+
+	@Transactional
+	public void deletAll() {
+		clienteRepo.deleteAll();
+		
+	}
+
+	@Transactional
+	public Long count() {
+		return clienteRepo.count();
 	} 
 }
