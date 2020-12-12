@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -41,15 +39,12 @@ class AlmacenServiceTests {
 	
 	//Tests
 	
-	@CsvSource({
-		"Los Algodonales"
-	})
-	@ParameterizedTest
+	@Test
 	@Transactional
-	void findAlmacenById(String direccion) {
+	void findAlmacenById() {
 		Long id = almacenService.findAll().iterator().next().getId();
 		Almacen alm = almacenService.findById(id);
-		assertThat(alm.getDireccion()).isEqualTo(direccion);
+		assertThat(alm.getDireccion()).isEqualTo("Los Algodonales");
 	}
 	
 	@Test

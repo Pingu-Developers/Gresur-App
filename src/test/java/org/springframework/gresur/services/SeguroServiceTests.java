@@ -6,21 +6,17 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Concepto;
-import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.FacturaRecibida;
-import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Proveedor;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoSeguro;
 import org.springframework.gresur.model.TipoVehiculo;
-import org.springframework.gresur.model.Transportista;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.ProveedorService;
@@ -90,15 +86,12 @@ class SeguroServiceTests {
 		seguroService.deleteAll();
 	}
 	
-	@CsvSource({
-		"Linea Directa"
-	})
-	@ParameterizedTest
+	@Test
 	@Transactional
-	void findSeguroById(String compañia) {
+	void findSeguroById() {
 		Long id = seguroService.findAll().iterator().next().getId();
 		Seguro seguro = seguroService.findById(id);
-		assertThat(seguro.getCompania()).isEqualTo(compañia);
+		assertThat(seguro.getCompania()).isEqualTo("Linea Directa");
 		
 	}
 
