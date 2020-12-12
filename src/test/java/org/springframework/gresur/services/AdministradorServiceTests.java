@@ -4,8 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -44,23 +43,17 @@ class AdministradorServiceTests {
 	
 	//Tests
 	
-	@CsvSource({
-		"18845878A, Jose Luis Gresur"
-	})
-	@ParameterizedTest
+	@Test
 	@Transactional	
-	void findAdminByNif(String NIF, String name) {
-		Administrador adm = administradorService.findByNIF(NIF);
-		assertThat(adm.getName()).isEqualTo(name);
+	void findAdminByNif() {
+		Administrador adm = administradorService.findByNIF("18845878A");
+		assertThat(adm.getName()).isEqualTo("Jose Luis Gresur");
 	}
 	
-	@CsvSource({
-		"18845878A"
-	})
-	@ParameterizedTest
+	@Test
 	@Transactional	
-	void deleteAdminByNIF(String NIF) {
-		administradorService.deleteByNIF(NIF);
+	void deleteAdminByNIF() {
+		administradorService.deleteByNIF("18845878A");
 		assertThat(administradorService.count()).isEqualTo(0);
 	}
 		

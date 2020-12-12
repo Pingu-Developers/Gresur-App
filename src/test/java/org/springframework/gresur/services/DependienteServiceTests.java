@@ -3,8 +3,7 @@ package org.springframework.gresur.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -43,23 +42,17 @@ class DependienteServiceTests {
 	
 	//Tests
 	
-	@CsvSource({
-		"18845878A, Jose Luis Gresur"
-	})
-	@ParameterizedTest
+	@Test
 	@Transactional	
-	void findAdminByNif(String NIF, String name) {
-		Dependiente adm = dependienteService.findByNIF(NIF);
-		assertThat(adm.getName()).isEqualTo(name);
+	void findAdminByNif() {
+		Dependiente adm = dependienteService.findByNIF("18845878A");
+		assertThat(adm.getName()).isEqualTo("Jose Luis Gresur");
 	}
 	
-	@CsvSource({
-		"18845878A"
-	})
-	@ParameterizedTest
+	@Test
 	@Transactional	
-	void deleteAdminByNIF(String NIF) {
-		dependienteService.deleteByNIF(NIF);
+	void deleteAdminByNIF() {
+		dependienteService.deleteByNIF("18845878A");
 		assertThat(dependienteService.count()).isEqualTo(0);
 	}
 

@@ -8,8 +8,6 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -78,15 +76,12 @@ class ContratoServiceTests {
 
 	//Tests
 	
-	@CsvSource({
-		"Cajasol"
-	})
-	@ParameterizedTest
+	@Test
 	@Transactional
-	void findContratoById(String entidadBancaria) {
+	void findContratoById() {
 		Long id = contratoService.findAll().iterator().next().getId();
 		Contrato contrato = contratoService.findById(id);
-		assertThat(contrato.getEntidadBancaria()).isEqualTo(entidadBancaria);
+		assertThat(contrato.getEntidadBancaria()).isEqualTo("Cajasol");
 	}
 	
 	@Test
@@ -97,14 +92,11 @@ class ContratoServiceTests {
 		assertThat(contratoService.count()).isEqualTo(0);
 	}
 	
-	@CsvSource({
-		"450.00"
-	})
-	@ParameterizedTest
+	@Test
 	@Transactional
-	void saveContratoSalarioMinimoException(Double nomina) {
+	void saveContratoSalarioMinimoException() {
 		Contrato contrato = contratoService.findAll().iterator().next();
-		contrato.setNomina(nomina);
+		contrato.setNomina(450.00);
 		RuntimeException exception = assertThrows(SalarioMinimoException.class, () -> {contratoService.save(contrato);});
 		
 		String expectedMessage = "El salario es menor que el salario minimo";
