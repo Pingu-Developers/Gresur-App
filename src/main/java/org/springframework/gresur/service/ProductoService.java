@@ -118,7 +118,7 @@ public class ProductoService {
 	}
 	
 	public Integer stockRequerido(Producto p) {
-		List<LineaFactura> lf = this.pedidoRepository.findByProductoAndEstadoIn(Arrays.asList(EstadoPedido.ESPERANDO_REPOSICION), p);
+		List<LineaFactura> lf = this.pedidoRepository.findByProductoAndEstadoIn(Arrays.asList(EstadoPedido.EN_ESPERA), p);
 		Integer stockDemandado = lf.stream().mapToInt(x->x.getCantidad()).sum();
 		return p.getStock() - stockDemandado;
 	}

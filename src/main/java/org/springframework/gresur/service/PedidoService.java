@@ -96,7 +96,7 @@ public class PedidoService {
 				throw new PedidoLogisticException();
 			}
 		} else {
-			if(pedido.getTransportista() == null && pedido.getEstado().equals(EstadoPedido.ESPERANDO_REPOSICION) || pedido.getTransportista()!= null && pedido.getEstado().equals(EstadoPedido.PREPARADO)) {
+			if(pedido.getTransportista() == null && pedido.getEstado().equals(EstadoPedido.EN_ESPERA) || pedido.getTransportista()!= null && pedido.getEstado().equals(EstadoPedido.PREPARADO)) {
 				return pedidoRepo.save(pedido);
 			} else {
 				throw new PedidoLogisticException();
@@ -119,7 +119,7 @@ public class PedidoService {
 	public void deleteById(Long id) throws DataAccessException {
 		Pedido p = pedidoRepo.findById(id).orElse(null);
 		
-		if(p.getEstado().equals(EstadoPedido.ESPERANDO_REPOSICION)) {
+		if(p.getEstado().equals(EstadoPedido.EN_ESPERA)) {
 			pedidoRepo.deleteById(id);
 		}
 		else {
