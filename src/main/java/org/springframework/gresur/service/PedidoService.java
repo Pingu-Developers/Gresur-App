@@ -47,8 +47,8 @@ public class PedidoService {
 	}
 	
 
-	@Transactional(rollbackFor = {MMAExceededException.class, VehiculoNotAvailableException.class, VehiculoDimensionesExceededException.class})
-	public Pedido save(Pedido pedido) throws DataAccessException, MMAExceededException, VehiculoNotAvailableException, VehiculoDimensionesExceededException {
+	@Transactional
+	public Pedido save(Pedido pedido) throws DataAccessException {
 		
 		Vehiculo vehiculo = pedido.getVehiculo();
 		Double MMA = vehiculo.getMMA();
