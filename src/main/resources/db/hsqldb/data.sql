@@ -168,4 +168,155 @@ INSERT INTO PRODUCTOS(nombre, descripcion, unidad, stock, stock_seguridad, URL_i
 		VALUES ('Micro-hormigon ligero estructural 25 kg', 'Micro-hormigón ligero en base arcilla expandida para la realización de recrecidos. Saco de 25 kg',
 		'SACOS',19, 5, 'https://assets.leroymerlin.es/is/image/lmes/81931392-0100/micro-hormigon-ligero-estructural-25kg.png', 8.29, 6.78, 0.47, 0.52, 0.13, 25.0, 7);
 
--- PRODUCTOS TOTALMENTE IMPLEMENTADOS!
+-- PRODUCTOS FIN
+
+
+INSERT INTO CLIENTES(ID, NIF, name, email, tlf, direccion) 
+		VALUES (1,'75648392B', 'Paco Lopez Castro', 'paclopcas@gmail.com', '787983426', 'Calle Der Cadi Depe nº1 Bloque C Piso 3 Puerta 1 (Cadiz)');
+
+INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
+		VALUES (2,'28415689N', 'Juan Martin Santos', 'juamarsan@hotmail.com', '624791246', 'Ronda Iglesia, 44, 49492, Fresno De Sayago(Zamora)');
+		
+INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
+		VALUES (3,'44812413H', 'Luis Olivares Dominguez', 'rnu6e107@journalism.com', '787983426', 'Campo Horno, 51, 18355, Dúdar(Granada)');
+
+INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
+		VALUES (4,'22727936A', 'Iris Estevez Arjona', 'eucsdu6d7@netscape.net', '619957551', 'Kalea De España, 66, 46107, Sant Joanet(Valencia)');
+
+INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
+		VALUES (5,'39979389F', 'Eugenia Valero Borrego', 'g4zoiz6re@scientist.com', '634970870', 'Praza Catalunya, 2, 20341, Itsasondo(Gipuzkoa)');
+		
+INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
+		VALUES (6,'22264890Q', 'Victoriano Garzon Martin', 'fv7hkct7ac@lycos.es', '675958716', 'Sector Catalunya, 56, 08133, Puig-reig(Barcelona)');
+		
+INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
+		VALUES (7,'26219453M', 'Maria Amparo Ortiz Poveda', 'r7xnew0aup@mail.com', '784043436', 'Placeta Madrid, 36, 37219, Calzada De Valdunciel(Salamanca)');
+		
+INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
+		VALUES (8,'22898584Z', 'Rocio Barbero Carballo', '1sb7zoxsi1@talk21.com', '650116275', 'Parque Iglesia, 44, 32043, Monterrei(Ourense)');
+	
+INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
+		VALUES (9,'17868188V', 'Angeles Mendoza Serrano', 'mmy3xn9w0@unforgettable.com', '638609667', 'Travessera De España, 22, 16390, Fuentelespino De Moya(Cuenca)');
+		
+INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
+		VALUES (10,'87074959H', 'Andreu Vega Gil', '26doupca@yahoo.com', '778946555', 'Jardins Nueva, 41, 14091, Villanueva De Córdoba(Córdoba)');	
+		
+		
+INSERT INTO PROVEEDORES(ID, NIF, name, email, tlf, direccion, IBAN) 
+	VALUES (1, '26690085B', 'Borja Hernando Canovas', 'lp0nrqb0zr@teacher.com', '691533234', 'Sector Iglesia, 68, 47134, San Pedro De Latarce(Valladolid)', 'ES1120952845103784661664');	
+
+INSERT INTO PROVEEDORES(ID, NIF, name, email, tlf, direccion, IBAN) 
+	VALUES (2, '74668939Z', 'Ariadna Herranz Leal', 'sc8s4nm52@netscape.net', '779832710', 'Jardines Mayor, 56, 08755, Corbera De Llobregat(Barcelona)', 'ES4400812634079548975366');
+
+INSERT INTO PROVEEDORES(ID, NIF, name, email, tlf, direccion, IBAN) 
+	VALUES (3, '31214241K', 'Juana Maria Esteban Benito', 'brzvaxa9n@caramail.com', '709604603', 'Praza Real, 78, 16665, Monteagudo De Las Salinas(Cuenca)', 'ES5820384225959160407235');
+
+INSERT INTO PROVEEDORES(ID, NIF, name, email, tlf, direccion, IBAN) 
+	VALUES (4, '81792929F', 'Jose Miguel Bautista Merino', 'wlatjldp1@btinternet.com', '660754784', 'Plazuela Horno, 14, 28059, Robregordo(Madrid)', 'ES2020850354752503007736');
+		
+INSERT INTO PROVEEDORES(ID, NIF, name, email, tlf, direccion, IBAN) 
+	VALUES (5, '08129428D', 'Esteban Ponce Benito', 'duc17lxqi@lycos.it', '790098033', 'Parque Mayor, 52, 18391, Alamedilla(Granada)', 'ES2320382563632341001623');
+	
+	
+INSERT INTO ADMINISTRADORES(ID, NIF, name, email, tlf, direccion, NSS, image) 
+	VALUES (1, '06860594Q', 'Ruben Galvez Vicente', 'j6n97y3gc@lycos.it', '726782748', 'Calle Gresur nº1 El Gastor(Cadiz)', '240685809175', 'https://i.imgur.com/ROcpSPY.png');
+		
+INSERT INTO ENCARGADOS_ALMACEN(ID, NIF, name, email, tlf, direccion, NSS, image, almacen_id) 
+	VALUES (2, '54511574X', 'Jose Daniel Soria Gallardo', 'iud4v6mn2@lycos.nl', '631087202', 'Praza De España, 89, 19905, Toba, La(Guadalajara)', 'ES6420381225374096884004', 'https://img.lovepik.com/element/40094/5994.png_860.png',1);
+		
+INSERT INTO ENCARGADOS_ALMACEN(ID, NIF, name, email, tlf, direccion, NSS, image, almacen_id) 
+	VALUES (3, '14337755S', 'Iria Rios Linares', 'kuftenuidt@scientist.com', '673206955', 'Poblado Nueva, 14, 19652, Atanzón(Guadalajara)', 'ES1620804547325086507513', 'https://img.lovepik.com/element/40094/5994.png_860.png',2);
+	
+INSERT INTO DEPENDIENTES(ID, NIF, name, email, tlf, direccion, NSS, image) 
+	VALUES (4, '64145337Q', 'Jose Javier Muñoz Jimenez', 'u0kvftny@talk21.com', '688128113', 'Via Nueva, 65, 21499, Palos De La Frontera(Huelva)', 'ES7620853657763800490457', 'https://toppng.com/uploads/preview/dependiente-1155104897331wmwr4sz0.png');
+	
+INSERT INTO TRANSPORTISTAS(ID, NIF, name, email, tlf, direccion, NSS, image) 
+	VALUES (5, '50921688X', 'Eduardo Velazquez Rivas', 'p6qf4oya1@blu.it', '684036867', 'Avenida Horno, 95, 41904, Gines(Sevilla)', 'ES8701287783165809615502', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
+
+INSERT INTO TRANSPORTISTAS(ID, NIF, name, email, tlf, direccion, NSS, image) 
+	VALUES (6, '73929968X', 'Agustin Pineda Rey', 'f8s9khjgx@btinternet.com', '672910341', 'Carrera De España, 74, 28661, Valdemanco(madrid)', 'ES8320853328983168372320', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
+
+	
+INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
+	VALUES (2000.00, 'SANTADER', TO_DATE('2015/04/04','YYYY/MM/DD'), TO_DATE('2999/01/02','YYYY/MM/DD'), 'COMPLETA', 1);
+		
+INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
+	VALUES (1240.00, 'CAIXA-BANK', TO_DATE('2017/04/04','YYYY/MM/DD'), TO_DATE('2021/01/02','YYYY/MM/DD'), 'COMPLETA', 2);
+		
+INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
+	VALUES (1100.00, 'BANKIA', TO_DATE('2018/07/09','YYYY/MM/DD'), TO_DATE('2021/04/03','YYYY/MM/DD'), 'PARCIAL', 3);
+			
+INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
+	VALUES (1300.00, 'SANTANDER', TO_DATE('2016/05/04','YYYY/MM/DD'), TO_DATE('2021/09/05','YYYY/MM/DD'), 'COMPLETA', 4);
+
+INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
+	VALUES (910.00, 'CAIXA', TO_DATE('2017/02/08','YYYY/MM/DD'), TO_DATE('2021/03/04','YYYY/MM/DD'), 'MEDIA_JORNADA', 5);
+		
+INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
+	VALUES (1300.00, 'CAIXA', TO_DATE('2017/01/01','YYYY/MM/DD'), TO_DATE('2021/04/06','YYYY/MM/DD'), 'COMPLETA', 6);
+
+
+INSERT INTO NOTIFICACIONES(tipo_notificacion, cuerpo, fecha_hora, emisor_id)
+	VALUES ('SISTEMA', 'ATENCION BAJO STOCK DE Azulejo Kenia de pasta blanca blanco', TO_DATE('2018/06/10 19:34:09', 'YYYY/MM/DD HH24:MI:SS'),null);
+	
+INSERT INTO NOTIFICACIONES(tipo_notificacion, cuerpo, fecha_hora, emisor_id)
+	VALUES ('NORMAL', 'ECHAME UNA MANO PARA BAJAR UNOS PELLETS!!', TO_DATE('2020/06/10 10:21:09', 'YYYY/MM/DD HH24:MI:SS'), 2);
+	
+INSERT INTO NOTIFICACIONES(tipo_notificacion, cuerpo, fecha_hora, emisor_id)
+	VALUES ('URGENTE', 'AVERIA EN MI CAMION!!', TO_DATE('2020/05/11 12:23:09', 'YYYY/MM/DD HH24:MI:SS'), 5);
+
+
+INSERT INTO LINEAS_ENVIADO(leido, notificacion_id, personal_id)
+	VALUES (TRUE, 1, 1);
+	
+INSERT INTO LINEAS_ENVIADO(leido, notificacion_id, personal_id)
+	VALUES (FALSE, 1, 2);
+	
+INSERT INTO LINEAS_ENVIADO(leido, notificacion_id, personal_id)
+	VALUES (FALSE, 1, 3);
+
+INSERT INTO LINEAS_ENVIADO(leido, notificacion_id, personal_id)
+	VALUES (TRUE, 1, 4);
+
+INSERT INTO LINEAS_ENVIADO(leido, notificacion_id, personal_id)
+	VALUES (FALSE, 2, 4);
+	
+INSERT INTO LINEAS_ENVIADO(leido, notificacion_id, personal_id)
+	VALUES (TRUE, 3, 1);
+	
+	
+INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
+	VALUES (1, TRUE, TO_DATE('2020/06/10', 'YYYY/MM/DD'), 103.00, 1, 4);
+
+INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
+	VALUES (2, FALSE, TO_DATE('2020/09/15', 'YYYY/MM/DD'), 209.30, 2, 4);
+	
+INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
+	VALUES (3, TRUE, TO_DATE('2020/11/12', 'YYYY/MM/DD'), 211.30, 3, 4);
+	
+INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
+	VALUES (4, FALSE, TO_DATE('2020/08/21', 'YYYY/MM/DD'), 168.30, 4, 4);
+	
+	
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (5, TRUE, TO_DATE('2020/06/10', 'YYYY/MM/DD'), 186.00, 'REPOSICION_STOCK', 'Reposicion de stock de Azulejo Kenia de pasta blanca blanco', 1);
+
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (6, FALSE, TO_DATE('2020/09/15', 'YYYY/MM/DD'), 123.20, 'GASTOS_VEHICULOS', 'Reparacion pinchazo rueda camion', null);
+	
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (7, TRUE, TO_DATE('2020/11/12', 'YYYY/MM/DD'), 254.15, 'PAGO_IMPUESTOS', 'Pago impuestos del trimestre', null);
+	
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (8, FALSE, TO_DATE('2020/08/21', 'YYYY/MM/DD'), 10.00, 'OTROS', 'Reposicion de boligrafos', 2);
+	
+
+	
+	
+	
+	
+	
+	
+	
+		
+		

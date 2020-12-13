@@ -37,6 +37,7 @@ public class Contrato extends BaseEntity{
 	private LocalDate fechaInicio;
 	
 	@NotNull
+	@Column(name = "fecha_fin")
 	@FutureOrPresent
 	private LocalDate fechaFin;
 	
