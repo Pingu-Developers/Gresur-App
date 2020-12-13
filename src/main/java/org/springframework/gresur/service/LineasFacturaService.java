@@ -6,8 +6,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.repository.LineasFacturaRepository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class LineasFacturaService {
 	
 	private LineasFacturaRepository lineasRepo;
