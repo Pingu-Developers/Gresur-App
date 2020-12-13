@@ -8,8 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -33,11 +36,13 @@ import org.springframework.gresur.service.FacturaEmitidaService;
 import org.springframework.gresur.service.LineasFacturaService;
 import org.springframework.gresur.service.PedidoService;
 import org.springframework.gresur.service.ProductoService;
+import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
+@TestInstance(value = Lifecycle.PER_CLASS)
 public class FacturaEmitidaServiceTests {
 	
 	@Autowired
@@ -64,9 +69,21 @@ public class FacturaEmitidaServiceTests {
 	@Autowired
 	protected AlmacenService almacenService;
 	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	@BeforeAll
+	@Transactional
+	void clearDB() {
+		DBUtility.clearDB();
+	}
+	
 	@BeforeEach
 	@Transactional
-	void InitAll() { //TODO quiza esto seria mejor mirarlo con mockito ^^'
+	void InitAll() {
 		Cliente cliente = new Cliente();
 		cliente.setDireccion("Calle");
 		cliente.setEmail("cliente@mail.es");
@@ -182,18 +199,16 @@ public class FacturaEmitidaServiceTests {
 	@AfterEach
 	@Transactional
 	void clearAll() {
-		almacenService.deletAll();
-		clienteService.deletAll();
-		estanteriaService.deleteAll();
-		lineaFacturaService.deleteAll();
-		facturaEmitidaService.deleteAll();
-		dependienteService.deleteAll();
-		pedidoService.deleteAll();
-		productoService.deleteAll();
-		//productoService.findAll().forEach(x->System.out.println(x));
+		DBUtility.clearDB();
 	}
 	
-	/* FIND-REMOVE TESTS */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* 										FUNCIONES DE LOS TESTS													 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	/* * * * * * * * * * * * *
+	 *   FIND-REMOVE TESTS   *
+	 * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional
@@ -203,5 +218,7 @@ public class FacturaEmitidaServiceTests {
 		assertThat(lf.get(1).getPrecio()).isEqualTo(220.00);
 	}
 	
-	/* REGLAS NEGOCIO TESTS */
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */
 }

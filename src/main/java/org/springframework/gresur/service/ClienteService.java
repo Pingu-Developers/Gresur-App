@@ -23,6 +23,11 @@ public class ClienteService {
 		return clienteRepo.findAll();
 	}
 	
+	@Transactional
+	public void deleteAll() {
+		this.clienteRepo.deleteAll();
+	}
+	
 	@Transactional(readOnly = true)
 	public Cliente findByNIF(String NIF) throws DataAccessException{
 		return clienteRepo.findByNIF(NIF);

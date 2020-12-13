@@ -22,6 +22,11 @@ public class AlmacenService {
 		return almacenRepository.findAll();
 	}
 	
+	@Transactional
+	public void deleteAll() {
+		this.almacenRepository.deleteAll();
+	}
+	
 	@Transactional(readOnly = true)
 	public Almacen findById(Long id) throws DataAccessException{
 		return almacenRepository.findById(id).orElse(null);
