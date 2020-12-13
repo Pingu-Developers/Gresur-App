@@ -38,7 +38,12 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 		facturaRepo.deleteById(numFactura);
 	}
 	
-	//TODO esto no es lo mismo que el findAll de LineaFacturaService????
+	@Transactional
+	public void deleteAll() throws DataAccessException{
+		facturaRepo.deleteAll();
+	}
+	
+	//TODO esto no es lo mismo que el findAll de LineaFacturaService???? - NO, estas son las lineas facturas solo de las emitidas o recibidas, no de TODAS
 	@Transactional(readOnly = true)
 	public List<LineaFactura> findLineasFactura(){
 		return facturaRepo.findAll().stream().map(x->x.getLineasFacturas()).flatMap(List::stream).collect(Collectors.toList());

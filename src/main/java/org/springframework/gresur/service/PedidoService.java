@@ -46,6 +46,11 @@ public class PedidoService {
 		return pedidoRepo.findByVehiculoId(id);
 	}
 	
+	@Transactional
+	public void deleteAll() {
+		pedidoRepo.deleteAll();
+	}
+	
 
 	@Transactional
 	public Pedido save(Pedido pedido) throws DataAccessException {
