@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -27,7 +28,6 @@ import org.springframework.gresur.service.ProveedorService;
 import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
-import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -128,10 +128,35 @@ class SeguroServiceTests {
 	
 	@Test
 	@Transactional
+	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion")
+
 	void updateSeguroFechaException() {
 		Seguro seguro = seguroService.findAll().iterator().next();
 		seguro.setFechaContrato(LocalDate.of(2020, 1, 1));
 		seguro.setFechaExpiracion(LocalDate.of(2005, 1, 1));
+		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);});
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion")
+	void addSeguroFechaException() {
+		FacturaRecibida fra = new FacturaRecibida();
+		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
+		fra.setEstaPagada(true);
+		fra.setFecha(LocalDate.of(2020, 1, 10));
+		fra.setImporte(300.50);
+		fra.setProveedor(proveedorService.findByNIF("80871031A"));
+		fraService.save(fra);
+		
+		Seguro seguro = new Seguro();
+		seguro.setCompania("Linea Directa");
+		seguro.setFechaExpiracion(LocalDate.of(2020, 1, 10));
+		seguro.setFechaContrato(LocalDate.of(2100, 12, 12));
+		seguro.setRecibidas(fra);
+		seguro.setTipoSeguro(TipoSeguro.TODORRIESGO);
+		seguro.setVehiculo(vehiculoService.findByMatricula("1526MVC"));
+		
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);});
 	}
 
