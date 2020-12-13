@@ -27,12 +27,11 @@ import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
-@TestInstance(Lifecycle.PER_CLASS)
+@TestInstance(value = Lifecycle.PER_CLASS)
 class ReparacionServiceTests {
 
 	
@@ -47,15 +46,21 @@ class ReparacionServiceTests {
 
 	@Autowired
 	protected DBUtility util;
-
-	@AfterEach
+	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
 	@BeforeAll
+	@AfterEach
 	@Transactional
 	void clearDB() {
 		util.clearDB();
 	}
 	
-	/* Carga de datos para cada test */
+
 	@BeforeEach
 	@Transactional
 	void initAll() {
@@ -128,7 +133,13 @@ class ReparacionServiceTests {
 	}
 
 	
-	/* FIND-REMOVE TESTS */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* 										FUNCIONES DE LOS TESTS													 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+	/* * * * * * * * * * * * *
+	 *   FIND-REMOVE TESTS   *
+	 * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional
@@ -149,7 +160,9 @@ class ReparacionServiceTests {
 	}
 
 	
-	/* RN TESTS */
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional
