@@ -37,4 +37,10 @@ public class LineaEnviado extends BaseEntity{
 		this.personal = personal;
 		this.leido = false;
 	}
+
+	public LineaEnviado() {
+	}
+
+
+	
 }
