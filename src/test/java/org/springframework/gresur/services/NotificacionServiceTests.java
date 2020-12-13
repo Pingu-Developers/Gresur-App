@@ -7,9 +7,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -23,10 +26,12 @@ import org.springframework.gresur.service.ConfiguracionService;
 import org.springframework.gresur.service.NotificacionService;
 import org.springframework.gresur.service.PersonalService;
 import org.springframework.gresur.service.exceptions.NotificacionesLimitException;
+import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
+@TestInstance(Lifecycle.PER_CLASS)
 class NotificacionServiceTests {
 
 	@Autowired
@@ -37,7 +42,19 @@ class NotificacionServiceTests {
 	
 	@Autowired
 	protected PersonalService<Transportista, ?> personalService;
+	
+	@Autowired
+	protected DBUtility util;
 
+	
+	@BeforeAll
+	@Transactional
+	void clearDB() {
+		util.clearDB();
+		
+	}
+	
+	
 	/* Carga de datos para cada test */
 	
 	@BeforeEach
@@ -102,9 +119,10 @@ class NotificacionServiceTests {
 	
 	@AfterEach
 	@Transactional
-	void clearAll(){
-		notificacionService.deleteAll();
+	void clearAll() {
+		util.clearDB();
 	}
+	
 	
 	/* FIND-REMOVE TESTS */
 	@Test
@@ -153,9 +171,7 @@ class NotificacionServiceTests {
 		Personal emisor = personalService.findByNIF("11170284R");
 		Personal receptor = personalService.findByNIF("12170284R");
 		Personal receptor2 = personalService.findByNIF("12240284R");
-		
-		
-		//TODO Revisar porque la notificaicion de antes no la tiene en cuenta para el excepcion
+
 		Notificacion noc = new Notificacion();
 		noc.setCuerpo("Cena de empresa hoy ¿quien se apunta?");
 		noc.setTipoNotificacion(TipoNotificacion.NORMAL);
@@ -166,17 +182,7 @@ class NotificacionServiceTests {
 		receptores.add(receptor2);
 		notificacionService.save(noc,receptores);
 
-		
-		Notificacion noc1 = new Notificacion();
-		noc1.setCuerpo("Pepe y Jose a ver si podeis ayudarme esta tarde a cambiarle el aceite al camion grua");
-		noc1.setTipoNotificacion(TipoNotificacion.NORMAL);
-		noc1.setFechaHora(LocalDateTime.of(2020, 12, 13, 17, 30));
-		noc1.setEmisor(emisor);
-		List<Personal> receptores2 = new ArrayList<Personal>();
-		receptores2.add(receptor);
-		receptores2.add(receptor2);
-	
-		assertThrows(NotificacionesLimitException.class, ()->{notificacionService.save(noc1,receptores);});
+		assertThrows(NotificacionesLimitException.class, ()->{notificacionService.save(noc,receptores);});
 		
 	}
 
