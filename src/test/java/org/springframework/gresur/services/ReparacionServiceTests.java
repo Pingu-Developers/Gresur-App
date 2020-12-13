@@ -27,6 +27,7 @@ import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
@@ -47,7 +48,7 @@ class ReparacionServiceTests {
 	@Autowired
 	protected DBUtility util;
 
-	
+	@AfterEach
 	@BeforeAll
 	@Transactional
 	void clearDB() {
@@ -55,7 +56,6 @@ class ReparacionServiceTests {
 	}
 	
 	/* Carga de datos para cada test */
-	
 	@BeforeEach
 	@Transactional
 	void initAll() {
@@ -126,13 +126,7 @@ class ReparacionServiceTests {
 		reparaciones.add(reparacion2);
 		reparaciones.add(reparacion3);
 	}
-	
-	@AfterEach
-	@Transactional
-	void clearAll() {
-		util.clearDB();
-	}
-	
+
 	
 	/* FIND-REMOVE TESTS */
 	

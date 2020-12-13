@@ -2,7 +2,6 @@ package org.springframework.gresur.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,7 @@ import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.TipoNotificacion;
 import org.springframework.gresur.model.Transportista;
+import org.springframework.gresur.repository.ConfiguracionRepository;
 import org.springframework.gresur.service.ConfiguracionService;
 import org.springframework.gresur.service.NotificacionService;
 import org.springframework.gresur.service.PersonalService;
@@ -41,22 +41,27 @@ class NotificacionServiceTests {
 	protected ConfiguracionService configuracionService;
 	
 	@Autowired
+	protected ConfiguracionRepository configuracionR;
+	
+	@Autowired
 	protected PersonalService<Transportista, ?> personalService;
 	
 	@Autowired
 	protected DBUtility util;
 
-	
+	@AfterEach
 	@BeforeAll
 	@Transactional
 	void clearDB() {
 		util.clearDB();
-		
+		Configuracion config = new Configuracion();
+		config.setNumMaxNotificaciones(1);
+		config.setSalarioMinimo(950.);
+		configuracionR.save(config);
 	}
 	
 	
 	/* Carga de datos para cada test */
-	
 	@BeforeEach
 	@Transactional
 	void initAll() {
@@ -116,12 +121,7 @@ class NotificacionServiceTests {
 		
 	
 	}
-	
-	@AfterEach
-	@Transactional
-	void clearAll() {
-		util.clearDB();
-	}
+
 	
 	
 	/* FIND-REMOVE TESTS */
