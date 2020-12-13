@@ -13,7 +13,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "lineas_enviado", uniqueConstraints = @UniqueConstraint(columnNames = {"notificacion", "personal"}))
+@Table(name = "lineas_enviado", uniqueConstraints = @UniqueConstraint(columnNames = {"notificacion_id", "personal_id"}))
 public class LineaEnviado extends BaseEntity{
 
 
@@ -23,13 +23,13 @@ public class LineaEnviado extends BaseEntity{
 	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "notificacion")
+	@JoinColumn(name = "notificacion_id")
 	private Notificacion notificacion;
 	
 	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "personal")
+	@JoinColumn(name = "personal_id")
 	private Personal personal;
 	
 	public LineaEnviado(Notificacion notificacion, Personal personal) {

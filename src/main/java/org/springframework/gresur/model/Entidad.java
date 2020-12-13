@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.TableGenerator;
 import javax.validation.constraints.Email;
@@ -46,6 +47,7 @@ public class Entidad{
     protected String tlf;
     
     @NotBlank
-    @Size(max=50, min=3)
+    @Size(max=100, min=3)
+    @Lob
     protected String direccion;
 }
