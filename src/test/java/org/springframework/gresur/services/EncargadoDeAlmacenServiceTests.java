@@ -53,20 +53,38 @@ class EncargadoDeAlmacenServiceTests {
 		almacenService.deletAll();
 	}
 	
-	//Tests
+	
+	
+	/* FIND-REMOVE TESTS */
 	
 	@Test
 	@Transactional	
-	void findAdminByNif() {
+	void findEncargadoByNif() {
 		EncargadoDeAlmacen adm = encargadoService.findByNIF("18845878A");
 		assertThat(adm.getName()).isEqualTo("Jose Luis Gresur");
 	}
 	
 	@Test
 	@Transactional	
-	void deleteAdminByNIF() {
+	void findEncargadoByNifNotFound() {
+		EncargadoDeAlmacen adm = encargadoService.findByNIF("18845878S");
+		assertThat(adm).isEqualTo(null);
+	}
+	
+	
+	@Test
+	@Transactional	
+	void deleteEncargadoByNIF() {
 		encargadoService.deleteByNIF("18845878A");
 		assertThat(encargadoService.count()).isEqualTo(0);
 	}
+	
+	@Test
+	@Transactional	
+	void deleteEncargadoByNIFNotFound() {
+		encargadoService.deleteByNIF("18845878V");
+		assertThat(encargadoService.count()).isEqualTo(1);
+	}
+
 
 }
