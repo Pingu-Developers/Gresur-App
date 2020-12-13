@@ -2,6 +2,7 @@ package org.springframework.gresur.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -26,8 +27,8 @@ public class Producto extends BaseEntity{
 	
 	private String descripcion;
 	
-	@NotBlank
-	private String unidad;
+	@Enumerated
+	private Unidad unidad;
 	
 	@NotNull
 	@Min(value = 0, message = "debe ser mayor o igual a cero")

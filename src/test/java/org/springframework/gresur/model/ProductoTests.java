@@ -24,7 +24,7 @@ class ProductoTests extends ValidatorTests {
 		Producto producto = new Producto();
 		producto.setNombre(nombre);
 		producto.setDescripcion(descripcion);
-		producto.setUnidad(unidad);
+		producto.setUnidad(Unidad.valueOf(unidad.toUpperCase()));
 		producto.setStock(stock);
 		producto.setStockSeguridad(stockSeguridad);
 		producto.setURLImagen(URLImagen);
@@ -60,21 +60,6 @@ class ProductoTests extends ValidatorTests {
 		" '  ', Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 21, 12, 14, 3, 4"
 	})
 	void validateProductoNombreNotBlankTest(String nombre, String descripcion, String unidad, Integer stock, Integer stockSeguridad, String URLImagen, Double precioVenta, Double precioCompra, Double alto, Double ancho, Double profundo, Double pesoUnitario, Integer estanteria) {
-		
-		Producto producto = this.createSUT(nombre, descripcion, unidad, stock, stockSeguridad, URLImagen, precioVenta, precioCompra, alto, ancho, profundo, pesoUnitario, estanteria);
-				
-		Validator validator = createValidator();
-		Set<ConstraintViolation<Producto>> constraintViolations = validator.validate(producto);
-		
-		assertThat(constraintViolations.size()).isEqualTo(1);
-	}
-	
-	@ParameterizedTest
-	@CsvSource({
-		"Azulejo, Es de color rojo, , 200, 30, azulejoRojo.jpg, 50, 35, 21, 12, 14, 3, 4",
-		"Azulejo, Es de color rojo, '   ', 200, 30, azulejoRojo.jpg, 50, 35, 21, 12, 14, 3, 4"
-	})
-	void validateProductoUnidadNotBlankTest(String nombre, String descripcion, String unidad, Integer stock, Integer stockSeguridad, String URLImagen, Double precioVenta, Double precioCompra, Double alto, Double ancho, Double profundo, Double pesoUnitario, Integer estanteria) {
 		
 		Producto producto = this.createSUT(nombre, descripcion, unidad, stock, stockSeguridad, URLImagen, precioVenta, precioCompra, alto, ancho, profundo, pesoUnitario, estanteria);
 				
