@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.ITV;
+import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.ITVRepository;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
