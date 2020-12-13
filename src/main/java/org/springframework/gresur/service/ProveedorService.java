@@ -35,6 +35,11 @@ public class ProveedorService {
 	@Transactional
 	public void deleteByNIF(String NIF) throws DataAccessException{
 		proveedorRepo.deleteByNIF(NIF);
-	} 
+	}
+	
+	@Transactional
+	public Long count() throws DataAccessException{
+		return proveedorRepo.count();
+	}
 
 }
