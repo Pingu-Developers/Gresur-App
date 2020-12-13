@@ -9,8 +9,10 @@ import org.springframework.gresur.model.ResultadoITV;
 
 public interface ITVRepository extends CrudRepository<ITV, Long>{
 	
-	List<ITV> findByVehiculoId(Long id);
+	List<ITV> findByVehiculoMatricula(String matricula);
 	
-	List<ITV> findByVehiculoIdAndExpiracionAfterAndResultadoIn(Long id, LocalDate fecha,Collection<ResultadoITV> res);
+	List<ITV> findByVehiculoMatriculaAndExpiracionAfterAndResultadoIn(String matricula, LocalDate fecha,Collection<ResultadoITV> res);
+	
+	ITV findFirstByVehiculoMatriculaOrderByExpiracionDesc(String matricula);
 	
 }

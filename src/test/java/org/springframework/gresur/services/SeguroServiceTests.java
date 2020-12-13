@@ -110,6 +110,9 @@ class SeguroServiceTests {
 	@Transactional
 	void clearAll() {
 		seguroService.deleteAll();
+		vehiculoService.deleteAll();
+		fraService.deleteAll();
+
 	}
 	
 	@Test
