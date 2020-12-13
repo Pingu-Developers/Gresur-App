@@ -28,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DBUtility {
 	@Autowired
-	public ConfiguracionService configService;
+	private ConfiguracionService configService;
 	@Autowired
 	private SeguroService seguroService;
 	@Autowired
@@ -69,34 +69,33 @@ public class DBUtility {
 	private EstanteriaService estanteriaService;
 	@Autowired
 	private AlmacenService almacenService;
-	
-	private DBUtility() {
+	@Autowired
+	public DBUtility() {
 		
 	}
 	
 	@Transactional
-	public static void clearDB() {
-		DBUtility util = new DBUtility();
-		util.configService.deleteAll();
-		util.seguroService.deleteAll();
-		util.ITVService.deleteAll();
-		util.reparacionService.deleteAll();
-		util.vehiculoService.deleteAll();
-		util.pedidoService.deleteAll();
-		util.lfService.deleteAll();
-		util.facturaEmitidaService.deleteAll();
-		util.facturaRecibidaService.deleteAll();
-		util.lnService.deleteAll();
-		util.notificacionService.deleteAll();
-		util.contratoService.deleteAll();
-		util.transportistaService.deleteAll();
-		util.dependienteService.deleteAll();
-		util.encargadoService.deleteAll();
-		util.adminService.deleteAll();
-		util.proveedorService.deleteAll();
-		util.clienteService.deleteAll();
-		util.productoService.deleteAll();
-		util.estanteriaService.deleteAll();
-		util.almacenService.deleteAll();	
+	public void clearDB() {
+		configService.deleteAll();
+		seguroService.deleteAll();
+		ITVService.deleteAll();
+		reparacionService.deleteAll();
+		vehiculoService.deleteAll();
+		pedidoService.deleteAll();
+		lfService.deleteAll();
+		facturaEmitidaService.deleteAll();
+		facturaRecibidaService.deleteAll();
+		lnService.deleteAll();
+		notificacionService.deleteAll();
+		contratoService.deleteAll();
+		transportistaService.deleteAll();
+		dependienteService.deleteAll();
+		encargadoService.deleteAll();
+		adminService.deleteAll();
+		proveedorService.deleteAll();
+		clienteService.deleteAll();
+		productoService.deleteAll();
+		estanteriaService.deleteAll();
+		almacenService.deleteAll();	
 	}
 }

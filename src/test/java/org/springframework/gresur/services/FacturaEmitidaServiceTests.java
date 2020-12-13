@@ -69,6 +69,9 @@ public class FacturaEmitidaServiceTests {
 	@Autowired
 	protected AlmacenService almacenService;
 	
+	@Autowired
+	protected DBUtility util;
+	
 	
 	
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -78,7 +81,7 @@ public class FacturaEmitidaServiceTests {
 	@BeforeAll
 	@Transactional
 	void clearDB() {
-		DBUtility.clearDB();
+		util.clearDB();
 	}
 	
 	@BeforeEach
@@ -199,7 +202,7 @@ public class FacturaEmitidaServiceTests {
 	@AfterEach
 	@Transactional
 	void clearAll() {
-		DBUtility.clearDB();
+		util.clearDB();
 	}
 	
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
