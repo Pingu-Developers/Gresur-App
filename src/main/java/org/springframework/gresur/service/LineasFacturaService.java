@@ -39,8 +39,12 @@ public class LineasFacturaService {
 	
 	@Transactional
 	public List<LineaFactura> saveAll(List<LineaFactura> lineas){
-		
 		return lineas.stream().map(x->this.save(x)).collect(Collectors.toList());
+	}
+	
+	@Transactional
+	public void deleteAll() {
+		lineasRepo.deleteAll();
 	}
 
 }
