@@ -38,7 +38,7 @@ class ClienteServiceTests {
 		clienteService.deletAll();
 	}
 	
-	//Tests
+	/* FIND-REMOVE TESTS */
 	
 	@Test
 	@Transactional
@@ -46,12 +46,26 @@ class ClienteServiceTests {
 		Cliente cliente = clienteService.findByNIF("54789663T");
 		assertThat(cliente.getName()).isEqualTo("Jose Luis");
 	}
+
+	@Test
+	@Transactional
+	void findClienteByNifNotFound() {
+		Cliente cliente = clienteService.findByNIF("54789662K");
+		assertThat(cliente).isEqualTo(null);
+	}
 	
 	@Test
 	@Transactional
 	void deleteClienteByNIF() {
 		clienteService.deleteByNIF("54789663T");
 		assertThat(clienteService.count()).isEqualTo(0);
+	}
+	
+	@Test
+	@Transactional
+	void deleteClienteByNIFNotFound() {
+		clienteService.deleteByNIF("54789669J");
+		assertThat(clienteService.count()).isEqualTo(1);
 	}
 	
 	

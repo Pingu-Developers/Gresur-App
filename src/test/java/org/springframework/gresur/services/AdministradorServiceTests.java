@@ -41,7 +41,8 @@ class AdministradorServiceTests {
 		administradorService.deleteAll();
 	}
 	
-	//Tests
+	
+	/* FIND-REMOVE TESTS*/
 	
 	@Test
 	@Transactional	
@@ -51,11 +52,24 @@ class AdministradorServiceTests {
 	}
 	
 	@Test
+	@Transactional
+	void findAdminByNifNotFound() {
+		Administrador adm = administradorService.findByNIF("18845878C");
+		assertThat(adm).isEqualTo(null);
+	}
+	
+	@Test
 	@Transactional	
 	void deleteAdminByNIF() {
 		administradorService.deleteByNIF("18845878A");
 		assertThat(administradorService.count()).isEqualTo(0);
 	}
-		
+	
+	@Test
+	@Transactional	
+	void deleteAdminByNIFNotFound() {
+		administradorService.deleteByNIF("18845878S");
+		assertThat(administradorService.count()).isEqualTo(1);
+	}
 
 }

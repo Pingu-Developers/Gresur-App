@@ -40,20 +40,35 @@ class DependienteServiceTests {
 		dependienteService.deleteAll();
 	}
 	
-	//Tests
+	
+	/* FIND-REMOVE TESTS */
 	
 	@Test
 	@Transactional	
-	void findAdminByNif() {
+	void findDependienteByNif() {
 		Dependiente adm = dependienteService.findByNIF("18845878A");
 		assertThat(adm.getName()).isEqualTo("Jose Luis Gresur");
 	}
 	
 	@Test
 	@Transactional	
-	void deleteAdminByNIF() {
+	void findDependienteByNifNotFound() {
+		Dependiente adm = dependienteService.findByNIF("18845878K");
+		assertThat(adm).isEqualTo(null);
+	}
+	
+	@Test
+	@Transactional	
+	void deleteDependienteByNIF() {
 		dependienteService.deleteByNIF("18845878A");
 		assertThat(dependienteService.count()).isEqualTo(0);
+	}
+	
+	@Test
+	@Transactional	
+	void deleteDependienteByNIFNotFound() {
+		dependienteService.deleteByNIF("18845878K");
+		assertThat(dependienteService.count()).isEqualTo(1);
 	}
 
 }

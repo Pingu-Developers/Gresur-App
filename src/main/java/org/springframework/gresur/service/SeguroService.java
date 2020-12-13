@@ -55,7 +55,8 @@ public class SeguroService {
 	@Transactional(readOnly = true)
 	public Seguro findLastSeguroByVehiculo(Long id) {
 		return seguroRepo.findByVehiculoIdAndFechaExpiracionAfter(id, LocalDate.now()).stream()
-				.max((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).orElse(null);
+				.sorted((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).findFirst().get();
+				//.max((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).orElse(null);
 	}
 	
 	@Transactional

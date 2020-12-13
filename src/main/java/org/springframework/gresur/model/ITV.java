@@ -2,6 +2,7 @@ package org.springframework.gresur.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -42,7 +43,7 @@ public class ITV extends BaseEntity implements Comparable<ITV>{
 	
 	@JsonIgnore
 	@NotNull
-	@ManyToOne(optional = false)
+	@ManyToOne(optional = false,cascade=CascadeType.ALL)
 	private Vehiculo vehiculo;
 
 	@Override
