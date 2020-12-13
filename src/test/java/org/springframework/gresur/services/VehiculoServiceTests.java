@@ -1,5 +1,7 @@
 package org.springframework.gresur.services;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
@@ -206,8 +208,33 @@ class VehiculoServiceTests {
 	void clearAll(){
 		vehiculoService.deleteAll();;
 	}
+	
+	/* FIND-REMOVE TESTS */
+	
+	@Test
+	@Transactional
+	@DisplayName("findVehiculoByMatricula -- Caso Positivo")
+	void findVehiculoByMatricula() {
 
-	//Realizamos los test de los services
+		Vehiculo vehiculo = vehiculoService.findByMatricula("4040GND");
+		Vehiculo vehiculo2 = vehiculoService.findByMatricula("E4040GND");
+		assertThat(vehiculo.getTipoVehiculo().equals(TipoVehiculo.CAMION));
+		assertThat(vehiculo2.getTipoVehiculo().equals(TipoVehiculo.CARRETILLA_ELEVADORA));
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("findVehiculoByMatricula -- Caso Negativo")
+	void findVehiculoByMatriculaNotFound() {
+
+		Vehiculo vehiculo = vehiculoService.findByMatricula("4040LNE");
+		Vehiculo vehiculo2 = vehiculoService.findByMatricula("E3010UND");
+		assertThat(vehiculo).isEqualTo(null);
+		assertThat(vehiculo2).isEqualTo(null);
+	}
+	
+	
+	/* RN TESTS */
 	
 
 	@Test
@@ -240,7 +267,7 @@ class VehiculoServiceTests {
 		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo2);});
 	}
 
-
+/*
 	@Test
 	@Transactional
 	@DisplayName("RN: Seguro no en vigor (VehiculoIllegalException)")
@@ -258,5 +285,5 @@ class VehiculoServiceTests {
 		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo);});
 		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo2);});
 	}
-
+*/
 }
