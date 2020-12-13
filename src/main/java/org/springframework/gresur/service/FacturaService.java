@@ -60,4 +60,9 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 		return facturaGRepo.findById(numFactura).get();
 	}
 	
+	@Transactional
+	public Long count() {
+		return facturaRepo.count();
+	}
+	
 }

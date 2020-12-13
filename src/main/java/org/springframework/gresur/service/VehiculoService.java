@@ -123,7 +123,7 @@ public class VehiculoService {
 			
 			Vehiculo v = vehiculos.next();
 			ITV ultimaITV = ITVService.findLastITVFavorableByVehiculo(v.getId());
-			Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(v.getId());
+			Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(v.getMatricula());
 			
 			if(ultimaITV == null || ultimaITV.getResultado()==ResultadoITV.NEGATIVA || ultimaITV.getResultado()==ResultadoITV.DESFAVORABLE) {
 				v.setDisponibilidad(false);
