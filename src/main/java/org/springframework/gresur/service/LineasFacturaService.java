@@ -26,6 +26,11 @@ public class LineasFacturaService {
 	}
 	
 	@Transactional
+	public void deleteAll() {
+		this.lineasRepo.deleteAll();
+	}
+	
+	@Transactional
 	public LineaFactura save(LineaFactura linea) {		
 		
 		LineaFactura otherLinea = lineasRepo.findByFacturaIdAndProductoId(linea.getFactura().getId(), linea.getProducto().getId()).orElse(null);
@@ -42,10 +47,4 @@ public class LineasFacturaService {
 	public List<LineaFactura> saveAll(List<LineaFactura> lineas){
 		return lineas.stream().map(x->this.save(x)).collect(Collectors.toList());
 	}
-	
-	@Transactional
-	public void deleteAll() {
-		lineasRepo.deleteAll();
-	}
-
 }

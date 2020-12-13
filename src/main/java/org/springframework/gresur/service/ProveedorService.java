@@ -22,6 +22,11 @@ public class ProveedorService {
 		return proveedorRepo.findAll();
 	}
 	
+	@Transactional
+	public void deleteAll() {
+		this.proveedorRepo.deleteAll();
+	}
+	
 	@Transactional(readOnly = true)
 	public Proveedor findByNIF(String NIF) throws DataAccessException{
 		return proveedorRepo.findByNIF(NIF);

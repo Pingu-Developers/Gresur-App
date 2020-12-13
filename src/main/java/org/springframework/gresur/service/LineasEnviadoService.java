@@ -26,6 +26,11 @@ public class LineasEnviadoService {
 	}
 	
 	@Transactional
+	public void deleteAll() {
+		this.lineasEnviadoRepo.deleteAll();
+	}
+	
+	@Transactional
 	public LineaEnviado save(LineaEnviado l) {
 		return lineasEnviadoRepo.save(l);
 	}
