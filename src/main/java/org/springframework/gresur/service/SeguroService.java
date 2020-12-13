@@ -48,11 +48,11 @@ public class SeguroService {
 		seguroRepo.deleteAll();
 	}
 	
-	//TODO Revisar Max en JSQL
 	@Transactional(readOnly = true)
 	public Seguro findLastSeguroByVehiculo(String matricula) {
-		return seguroRepo.findByVehiculoMatriculaAndFechaExpiracionAfter(matricula, LocalDate.now())
-				.stream().max((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).orElse(null);
+		return seguroRepo.findFirstByVehiculoMatriculaOrderByFechaExpiracionDesc(matricula);
+//		return seguroRepo.findByVehiculoMatriculaAndFechaExpiracionAfter(matricula, LocalDate.now())
+//				.stream().max((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).orElse(null);
 	}
 	
 	@Transactional
