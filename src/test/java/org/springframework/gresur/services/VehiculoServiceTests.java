@@ -1,13 +1,10 @@
 package org.springframework.gresur.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -59,7 +56,7 @@ class VehiculoServiceTests {
 	@BeforeEach
 	@Transactional
 	void initAll() {
-		
+		//TODO REVISAR
 		//Vehiculo
 		
 		Vehiculo vehiculo = new Vehiculo();
@@ -69,7 +66,7 @@ class VehiculoServiceTests {
 		vehiculo.setDisponibilidad(true);
 		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculo.setMMA(1050.);
-	
+
 		//ITV de vehiculo
 		
 		FacturaRecibida facturaRecibidaITV = new FacturaRecibida();
@@ -128,7 +125,7 @@ class VehiculoServiceTests {
 		vehiculo.setReparaciones(reparaciones);
 
 		vehiculoService.save(vehiculo);
-		
+
 
 		//Vehiculo Carretilla elevadora
 		
@@ -139,7 +136,8 @@ class VehiculoServiceTests {
 		vehiculo2.setDisponibilidad(true);
 		vehiculo2.setTipoVehiculo(TipoVehiculo.CARRETILLA_ELEVADORA);
 		vehiculo2.setMMA(500.);
-	
+
+		
 		//ITV de vehiculo
 		
 		FacturaRecibida facturaRecibidaITV2 = new FacturaRecibida();
@@ -196,8 +194,8 @@ class VehiculoServiceTests {
 		List<Reparacion> reparaciones2 = new ArrayList<>();
 		reparaciones.add(reparacion2);
 		vehiculo.setReparaciones(reparaciones2);
-
 		vehiculoService.save(vehiculo2);
+
 		
 	}
 	
@@ -206,7 +204,7 @@ class VehiculoServiceTests {
 	@AfterEach
 	@Transactional
 	void clearAll(){
-		vehiculoService.deleteAll();;
+		vehiculoService.deleteAll();
 	}
 	
 	/* FIND-REMOVE TESTS */
@@ -231,6 +229,27 @@ class VehiculoServiceTests {
 		Vehiculo vehiculo2 = vehiculoService.findByMatricula("E3010UND");
 		assertThat(vehiculo).isEqualTo(null);
 		assertThat(vehiculo2).isEqualTo(null);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("deleteVehiculoByMatricula -- Caso Positivo")
+	void deleteVehiculoByMatricula() {
+
+		vehiculoService.deleteByMatricula("4040GND");
+//		vehiculoService.deleteByMatricula("E4040GND");
+		assertThat(vehiculoService.count()).isEqualTo(1);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("deleteVehiculoByMatricula -- Caso Negativo")
+	void deleteVehiculoByMatriculaNotFound() {
+
+		vehiculoService.deleteByMatricula("4040LNE");
+		vehiculoService.deleteByMatricula("E3010UND");
+		assertThat(vehiculoService.count()).isEqualTo(2);
+
 	}
 	
 	
@@ -267,23 +286,23 @@ class VehiculoServiceTests {
 		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo2);});
 	}
 
-/*
+
 	@Test
 	@Transactional
 	@DisplayName("RN: Seguro no en vigor (VehiculoIllegalException)")
 	void saveIllegalVehiculoSeguro() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		Seguro seguro = seguroService.findAll().iterator().next();
-		seguro.setFechaExpiracion(LocalDate.of(2020, 12, 11));
+		seguro.setFechaExpiracion(LocalDate.of(2020, 2, 11));
 		seguroService.save(seguro);
 		
 		Vehiculo vehiculo2 = vehiculoService.findAll().iterator().next();
 		Seguro seguro2 = seguroService.findAll().iterator().next();
-		seguro2.setFechaExpiracion(LocalDate.of(2020, 12, 11));
+		seguro2.setFechaExpiracion(LocalDate.of(2020, 2, 11));
 		seguroService.save(seguro2);
 
 		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo);});
 		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo2);});
 	}
-*/
+
 }

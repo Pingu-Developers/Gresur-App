@@ -90,7 +90,7 @@ public class VehiculoService {
 			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin ITV valida");
 		 }
 		 //TODO Hay que revisar el findByVehiculoIdAndFechaExpiracionAfter de Seguro porque sino no va a ir
-//		 Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(vehiculo.getId());
+//		 Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula());
 //		 if(ultimoSeguro == null && vehiculo.getDisponibilidad()==true){
 //			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin Seguro");
 //		 }

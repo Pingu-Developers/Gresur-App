@@ -39,7 +39,8 @@ class NotificacionTests extends ValidatorTests{
 		notificacion.setTipoNotificacion(tipo == null ? null:TipoNotificacion.valueOf(tipo));
 		notificacion.setCuerpo(cuerpo);
 		notificacion.setFechaHora(fecha == null ? null : LocalDateTime.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy-HH:mm:ss")));
-		notificacion.setLeido(leido);
+		//TODO elimnar el leido de la notificacion
+		//notificacion.setLeido(leido);
 		notificacion.setEmisor(e);
 		notificacion.setLineasEnviado(lr);
 		

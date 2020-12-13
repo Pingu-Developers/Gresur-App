@@ -35,5 +35,6 @@ public class LineaEnviado extends BaseEntity{
 	public LineaEnviado(Notificacion notificacion, Personal personal) {
 		this.notificacion = notificacion;
 		this.personal = personal;
+		this.leido = false;
 	}
 }

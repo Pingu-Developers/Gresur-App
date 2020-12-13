@@ -43,11 +43,13 @@ public class NotificacionService {
 		return notificacionRepo.findByEmisorId(id);
 	}
 	
+	@Transactional(readOnly = true)
+	public List<Notificacion> findAllNotificacionesByEmisorName(String name)throws DataAccessException{
+		return notificacionRepo.findAllNotificacionesByEmisorName(name);
+	}
+	
 	@Transactional(rollbackFor = {NotificacionesLimitException.class, NullPointerException.class})
 	public Notificacion save(Notificacion notificacion,List<Personal> receptores) throws DataAccessException,NotificacionesLimitException,NullPointerException{
-		
-		if(notificacion.getLeido() == null)
-			notificacion.setLeido(false);
 		
 		if(notificacion.getEmisor()==null && notificacion.getTipoNotificacion()!=TipoNotificacion.SISTEMA)
 			throw new NullPointerException("El emisor no puede ser nulo si la notificación no es del sistema");
@@ -78,5 +80,9 @@ public class NotificacionService {
 	public List<Notificacion> findNoLeidasPersonal(Personal p){
 		
 		return notificacionRepo.findNoLeidasForPersonal(p.getId());
+	}
+	@Transactional
+	public void deleteAll() throws DataAccessException{
+		notificacionRepo.deleteAll();
 	}
 }

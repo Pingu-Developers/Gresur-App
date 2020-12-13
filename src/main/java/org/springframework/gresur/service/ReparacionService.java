@@ -1,6 +1,7 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -31,6 +32,11 @@ public class ReparacionService {
 		return reparacionRepo.findById(id).orElse(null);
 	}
 	
+	@Transactional(readOnly = true)
+	public List<Reparacion> findByMatricula(String matricula) throws DataAccessException{
+		return reparacionRepo.findByVehiculoMatricula(matricula);
+	}
+	
 	@Transactional
 	public Reparacion save(Reparacion reparacion) throws DataAccessException, FechaFinNotAfterFechaInicioException{
 		
@@ -40,6 +46,11 @@ public class ReparacionService {
 		FechaInicioFinValidation.fechaInicioFinValidation(Reparacion.class,fechaInicio, fechaFin);
 		
 		return reparacionRepo.save(reparacion);
+	}
+
+	@Transactional(readOnly = true)
+	public void deleteAll() throws DataAccessException{
+		reparacionRepo.deleteAll();
 	}
 	
 }
