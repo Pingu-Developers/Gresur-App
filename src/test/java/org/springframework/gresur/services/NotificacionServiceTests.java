@@ -29,6 +29,7 @@ import org.springframework.gresur.service.exceptions.NotificacionesLimitExceptio
 import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @TestInstance(Lifecycle.PER_CLASS)
@@ -48,20 +49,21 @@ class NotificacionServiceTests {
 	
 	@Autowired
 	protected DBUtility util;
-
-	@AfterEach
+	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
 	@BeforeAll
+	@AfterEach
 	@Transactional
 	void clearDB() {
 		util.clearDB();
-		Configuracion config = new Configuracion();
-		config.setNumMaxNotificaciones(1);
-		config.setSalarioMinimo(950.);
-		configuracionR.save(config);
 	}
 	
-	
-	/* Carga de datos para cada test */
+
 	@BeforeEach
 	@Transactional
 	void initAll() {
@@ -116,15 +118,16 @@ class NotificacionServiceTests {
 		receptores.add(receptor2);
 		
 		notificacionService.save(noc1, receptores);
-		
-		
-		
-	
 	}
 
 	
-	
-	/* FIND-REMOVE TESTS */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* 										FUNCIONES DE LOS TESTS													 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+	/* * * * * * * * * * * * *
+	 *   FIND-REMOVE TESTS   *
+	 * * * * * * * * * * * * */
 	@Test
 	@Transactional
 	@DisplayName("findAllNotificacionesByEmisor -- Caso Positivo")
@@ -148,8 +151,7 @@ class NotificacionServiceTests {
 		List<Notificacion> noc = notificacionService.findNoLeidasPersonal(p);
 		assertThat(noc.size()).isEqualTo(1);
 	}
-	
-	
+		
 	@Test
 	@Transactional
 	@DisplayName("findNoLeidasPersonal -- Caso Negativo")
@@ -160,7 +162,9 @@ class NotificacionServiceTests {
 	}
 	
 	
-	/* RN TESTS */
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */
 	@Test
 	@Transactional
 	@DisplayName("RN: Limite de notificaciones (NotificacionesLimitException)")

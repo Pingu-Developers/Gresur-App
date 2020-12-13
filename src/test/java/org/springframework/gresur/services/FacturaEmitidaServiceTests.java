@@ -216,6 +216,7 @@ public class FacturaEmitidaServiceTests {
 		assertThat(lf.get(1).getPrecio()).isEqualTo(220.00);
 	}
 	
+	
 	/* * * * * * * * * * * * * * * *
 	 *   REGLAS DE NEGOCIO TESTS   *
 	 * * * * * * * * * * * * * * * */

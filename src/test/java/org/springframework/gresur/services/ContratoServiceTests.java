@@ -6,9 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,11 +24,13 @@ import org.springframework.gresur.service.AdministradorService;
 import org.springframework.gresur.service.ConfiguracionService;
 import org.springframework.gresur.service.ContratoService;
 import org.springframework.gresur.service.exceptions.SalarioMinimoException;
+import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
+@TestInstance(value = Lifecycle.PER_CLASS)
 class ContratoServiceTests {
 	@Autowired
 	protected AdministradorService administradorService;
@@ -36,15 +41,34 @@ class ContratoServiceTests {
 	@Autowired
 	protected ConfiguracionService confService;
 	
+	@Autowired
+	protected DBUtility util;
+	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	@BeforeAll
+	@AfterEach
+	@Transactional
+	void clearDB() {
+		util.clearDB();
+	}
+	
 	@BeforeEach
 	@Transactional
 	void initAll() {
+		
+		//CREACION DE CONFIGURACION
 		Configuracion conf = new Configuracion();
 		conf.setSalarioMinimo(900.00);
 		conf.setNumMaxNotificaciones(100);
 		
 		confService.updateConfig(conf);
 		
+		//CREACION DE ADMINISTRADOR
 		Administrador adm = new Administrador();
 		adm.setName("Jose Luis Gresur");
 		adm.setNIF("18845878A");
@@ -56,6 +80,7 @@ class ContratoServiceTests {
 		
 		administradorService.save(adm);
 		
+		//CREACION DE CONTRATO
 		Contrato contrato = new Contrato();
 		contrato.setEntidadBancaria("Cajasol");
 		contrato.setFechaFin(LocalDate.of(2100, 12, 12));
@@ -67,18 +92,18 @@ class ContratoServiceTests {
 		contratoService.save(contrato);
 	}
 	
-	@AfterEach
-	@Transactional
-	void clearAll() {
-		confService.deleteAll();
-		administradorService.deleteAll();
-		contratoService.deleteAll();
-	}
-
-	/* FIND-REMOVE TESTS */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* 										FUNCIONES DE LOS TESTS													 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+	/* * * * * * * * * * * * *
+	 *   FIND-REMOVE TESTS   *
+	 * * * * * * * * * * * * */
 	
 	
-	/* REGLAS DE NEGOCIO TESTS */
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional

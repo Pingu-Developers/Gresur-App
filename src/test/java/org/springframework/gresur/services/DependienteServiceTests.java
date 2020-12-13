@@ -2,23 +2,44 @@ package org.springframework.gresur.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Dependiente;
 import org.springframework.gresur.service.DependienteService;
+import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
+@TestInstance(value = Lifecycle.PER_CLASS)
 class DependienteServiceTests {
 	
 	@Autowired
 	protected DependienteService dependienteService;
+	
+	@Autowired
+	protected DBUtility util;
+	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	@BeforeAll
+	@AfterEach
+	@Transactional
+	void clearDB() {
+		util.clearDB();
+	}
 
 	@BeforeEach
 	@Transactional
@@ -34,14 +55,14 @@ class DependienteServiceTests {
 		
 		dependienteService.save(dependiente);
 	}
-	@AfterEach
-	@Transactional
-	void clearAll() {
-		dependienteService.deleteAll();
-	}
 	
-	
-	/* FIND-REMOVE TESTS */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* 										FUNCIONES DE LOS TESTS													 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+	/* * * * * * * * * * * * *
+	 *   FIND-REMOVE TESTS   *
+	 * * * * * * * * * * * * */		
 	
 	@Test
 	@Transactional	
@@ -70,5 +91,8 @@ class DependienteServiceTests {
 		dependienteService.deleteByNIF("18845878K");
 		assertThat(dependienteService.count()).isEqualTo(1);
 	}
-
+	
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */
 }

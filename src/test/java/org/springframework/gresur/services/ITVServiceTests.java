@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
+import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +46,22 @@ class ITVServiceTests {
 	@Autowired
 	protected VehiculoService vehiculoService;
 	
+	@Autowired
+	protected DBUtility util;
 	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	@BeforeAll
+	@AfterEach
+	@Transactional
+	void clearDB() {
+		util.clearDB();
+	}
+		
 	@BeforeEach
 	@Transactional
 	void initAll() {
@@ -120,12 +137,14 @@ class ITVServiceTests {
 		seg.setTipoSeguro(TipoSeguro.TODORRIESGO);
 		seg.setVehiculo(vehiculo);
 	}
-	@AfterEach
-	@Transactional
-	void clearAll() {
-		vehiculoService.deleteAll();
-		fraService.deleteAll();
-	}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* 										FUNCIONES DE LOS TESTS													 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+	/* * * * * * * * * * * * *
+	 *   FIND-REMOVE TESTS   *
+	 * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional
@@ -140,6 +159,12 @@ class ITVServiceTests {
 		ITV itv = itvService.findLastITVFavorableByVehiculo("1526MVC");
 		assertThat(itv.getExpiracion()).isEqualTo(LocalDate.of(2025, 1, 10));
 	}
+	
+	
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */
+	
 	//TODO ITV Fantasma
 	@Test
 	@Transactional
