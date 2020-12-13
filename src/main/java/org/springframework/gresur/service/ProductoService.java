@@ -95,6 +95,11 @@ public class ProductoService {
 		productoRepository.deleteById(id);
 	}
 	
+	@Transactional
+	public void deleteAll() throws DataAccessException{
+		productoRepository.deleteAll();
+	}
+	
 	/* USER STORIES */
 	
 	@Transactional(readOnly = true)
@@ -127,6 +132,7 @@ public class ProductoService {
 	public List<Producto> findAllProductosByName(String s){
 		return productoRepository.findByNombreContainingIgnoreCase(s.trim());
 	}
+	
 	@Transactional(readOnly = true)
 	public List<Producto> findByEstanteria(Categoria c){
 		return productoRepository.findByEstanteriaCategoria(c);
