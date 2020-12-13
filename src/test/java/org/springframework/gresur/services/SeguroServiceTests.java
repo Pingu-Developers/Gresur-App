@@ -1,6 +1,7 @@
 package org.springframework.gresur.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -8,11 +9,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Concepto;
 import org.springframework.gresur.model.FacturaRecibida;
@@ -26,6 +27,7 @@ import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.ProveedorService;
 import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
+import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,6 +78,14 @@ class SeguroServiceTests {
 		fra.setProveedor(prov);
 		fraService.save(fra);
 		
+		FacturaRecibida fra1 = new FacturaRecibida();
+		fra1.setConcepto(Concepto.GASTOS_VEHICULOS);
+		fra1.setEstaPagada(true);
+		fra1.setFecha(LocalDate.of(1990, 1, 10));
+		fra1.setImporte(300.50);
+		fra1.setProveedor(prov);
+		fraService.save(fra1);
+		
 		Seguro seguro = new Seguro();
 		seguro.setCompania("Linea Directa");
 		seguro.setFechaContrato(LocalDate.of(2020, 1, 10));
@@ -84,6 +94,15 @@ class SeguroServiceTests {
 		seguro.setTipoSeguro(TipoSeguro.TODORRIESGO);
 		seguro.setVehiculo(vehiculo);
 		seguroService.save(seguro);
+		
+		Seguro seguro1 = new Seguro();
+		seguro1.setCompania("Linea Directa");
+		seguro1.setFechaContrato(LocalDate.of(1990, 1, 10));
+		seguro1.setFechaExpiracion(LocalDate.of(2004, 12, 12));
+		seguro1.setRecibidas(fra1);
+		seguro1.setTipoSeguro(TipoSeguro.TODORRIESGO);
+		seguro1.setVehiculo(vehiculo);
+		seguroService.save(seguro1);
 			
 	}
 	
@@ -97,7 +116,48 @@ class SeguroServiceTests {
 	@Transactional
 	void findSegurosByMatricula() {
 		List<Seguro> ls = seguroService.findByVehiculo("1526MVC");
-		assertThat(ls.size()).isEqualTo(1);
+		assertThat(ls.size()).isEqualTo(2);
+	}
+	
+	@Test
+	@Transactional
+	void findLastSeguroByVehiculo() {
+		Seguro lastSeguro = seguroService.findLastSeguroByVehiculo("1526MVC");
+		assertThat(lastSeguro.getFechaContrato()).isEqualTo(LocalDate.of(2020, 1, 10));
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion")
+
+	void updateSeguroFechaException() {
+		Seguro seguro = seguroService.findAll().iterator().next();
+		seguro.setFechaContrato(LocalDate.of(2020, 1, 1));
+		seguro.setFechaExpiracion(LocalDate.of(2005, 1, 1));
+		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);});
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion")
+	void addSeguroFechaException() {
+		FacturaRecibida fra = new FacturaRecibida();
+		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
+		fra.setEstaPagada(true);
+		fra.setFecha(LocalDate.of(2020, 1, 10));
+		fra.setImporte(300.50);
+		fra.setProveedor(proveedorService.findByNIF("80871031A"));
+		fraService.save(fra);
+		
+		Seguro seguro = new Seguro();
+		seguro.setCompania("Linea Directa");
+		seguro.setFechaExpiracion(LocalDate.of(2020, 1, 10));
+		seguro.setFechaContrato(LocalDate.of(2100, 12, 12));
+		seguro.setRecibidas(fra);
+		seguro.setTipoSeguro(TipoSeguro.TODORRIESGO);
+		seguro.setVehiculo(vehiculoService.findByMatricula("1526MVC"));
+		
+		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);});
 	}
 
 }
