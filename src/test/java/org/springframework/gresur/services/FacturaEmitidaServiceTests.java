@@ -1,5 +1,7 @@
 package org.springframework.gresur.services;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -7,6 +9,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -94,47 +97,49 @@ public class FacturaEmitidaServiceTests {
 		
 		Estanteria estanteria = new Estanteria();
 		estanteria.setAlmacen(almacen);
-		estanteria.setCapacidad(150.00);
+		estanteria.setCapacidad(550.00);
 		estanteria.setCategoria(Categoria.AZULEJOS);
 		
 		Producto p1 = new Producto();
-		p1.setAlto(2.1);
-		p1.setAncho(3.9);
+		p1.setAlto(1.1);
+		p1.setAncho(1.9);
 		p1.setDescripcion("Una descripcion de un producto");
 		p1.setEstanteria(estanteria);
 		p1.setNombre("Azulejo rojo");
 		p1.setPesoUnitario(80.10);
 		p1.setPrecioCompra(10.29);
 		p1.setPrecioVenta(29.01);
-		p1.setProfundo(4.2);
+		p1.setProfundo(1.2);
 		p1.setStock(70);
 		p1.setStockSeguridad(30);
 		p1.setUnidad(Unidad.UNIDADES);
+		p1.setId(0L);
 		
 		Producto p2 = new Producto();
-		p2.setAlto(2.1);
-		p2.setAncho(3.9);
+		p2.setAlto(1.1);
+		p2.setAncho(1.9);
 		p2.setDescripcion("Una descripcion de un producto");
 		p2.setEstanteria(estanteria);
 		p2.setNombre("Azulejo amarillo");
 		p2.setPesoUnitario(80.10);
 		p2.setPrecioCompra(10.29);
 		p2.setPrecioVenta(29.01);
-		p2.setProfundo(4.2);
+		p2.setProfundo(1.2);
 		p2.setStock(35);
 		p2.setStockSeguridad(30);
 		p2.setUnidad(Unidad.UNIDADES);
-		
-		productoService.save(p1);
-		productoService.save(p2);
-		
+		p2.setId(1L);
+				
 		List<Producto> lp = new ArrayList<Producto>();
 		lp.add(p1);
 		lp.add(p2);
 		estanteria.setProductos(lp);
 		
 		estanteriaService.save(estanteria);
-	
+		productoService.save(p1);
+		productoService.save(p2);
+		
+		
 		FacturaEmitida fem = new FacturaEmitida();
 		fem.setCliente(cliente);
 		fem.setDependiente(dependiente);
@@ -142,6 +147,7 @@ public class FacturaEmitidaServiceTests {
 		fem.setFecha(LocalDate.parse("17/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		fem.setImporte(320.15);
 		
+		facturaEmitidaService.save(fem);
 	
 		List<LineaFactura> lf = new ArrayList<LineaFactura>();
 		LineaFactura lf1 = new LineaFactura();
@@ -187,6 +193,14 @@ public class FacturaEmitidaServiceTests {
 	}
 	
 	/* FIND-REMOVE TESTS */
+	
+	@Test
+	@Transactional
+	void findLineasFactura() {
+		List<LineaFactura> lf = facturaEmitidaService.findLineasFactura();
+		assertThat(lf.get(0)).isEqualTo(100.15);
+		assertThat(lf.get(1)).isEqualTo(200.00);
+	}
 	
 	/* REGLAS NEGOCIO TESTS */
 }
