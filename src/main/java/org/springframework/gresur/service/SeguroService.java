@@ -1,13 +1,9 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.gresur.model.ITV;
-import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.SeguroRepository;
@@ -55,8 +51,7 @@ public class SeguroService {
 	@Transactional(readOnly = true)
 	public Seguro findLastSeguroByVehiculo(Long id) {
 		return seguroRepo.findByVehiculoIdAndFechaExpiracionAfter(id, LocalDate.now()).stream()
-				.sorted((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).findFirst().get();
-				//.max((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).orElse(null);
+				.max((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).orElse(null);
 	}
 	
 	@Transactional

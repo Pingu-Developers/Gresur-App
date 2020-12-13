@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.gresur.model.Cliente;
 import org.springframework.gresur.model.Concepto;
 import org.springframework.gresur.model.FacturaRecibida;
 import org.springframework.gresur.model.ITV;
@@ -25,14 +23,13 @@ import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoSeguro;
 import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Vehiculo;
-import org.springframework.gresur.service.ClienteService;
 import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.ReparacionService;
 import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.service.exceptions.MatriculaUnsupportedPatternException;
-import org.springframework.gresur.service.exceptions.SalarioMinimoException;
+import org.springframework.gresur.service.exceptions.VehiculoIllegalException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -129,8 +126,77 @@ class VehiculoServiceTests {
 		vehiculo.setReparaciones(reparaciones);
 
 		vehiculoService.save(vehiculo);
+		
 
+		//Vehiculo Carretilla elevadora
+		
+		Vehiculo vehiculo2 = new Vehiculo();
+		vehiculo2.setMatricula("E4040GND");
+		vehiculo2.setImagen("doc/images/carretilaelevadora.png");
+		vehiculo2.setCapacidad(20.);
+		vehiculo2.setDisponibilidad(true);
+		vehiculo2.setTipoVehiculo(TipoVehiculo.CARRETILLA_ELEVADORA);
+		vehiculo2.setMMA(500.);
 	
+		//ITV de vehiculo
+		
+		FacturaRecibida facturaRecibidaITV2 = new FacturaRecibida();
+		facturaRecibidaITV2.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaITV2.setEstaPagada(true);
+		facturaRecibidaITV2.setImporte(30.);
+		facturaRecibidaITV2.setFecha(LocalDate.of(2019, 9, 23));
+		facturaRecibidaService.save(facturaRecibidaITV2);
+		
+		ITV itv2 = new ITV();
+		itv2.setVehiculo(vehiculo2);
+		itv2.setFecha(LocalDate.of(2019, 9, 23));
+		itv2.setExpiracion(LocalDate.of(2021, 9, 23));
+		itv2.setRecibidas(facturaRecibidaITV2);
+		itv2.setResultado(ResultadoITV.FAVORABLE);
+		itvService.save(itv2);
+		
+		//Seguro de vehiculo
+		
+		FacturaRecibida facturaRecibidaSeguro2 = new FacturaRecibida();
+		facturaRecibidaSeguro2.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaSeguro2.setEstaPagada(true);
+		facturaRecibidaSeguro2.setImporte(220.);
+		facturaRecibidaSeguro2.setFecha(LocalDate.of(2019, 03, 10));
+		facturaRecibidaService.save(facturaRecibidaSeguro2);
+
+		
+		Seguro seguro2 = new Seguro();
+		seguro2.setCompania("Linea Directa");
+		seguro2.setFechaContrato(LocalDate.of(2019, 03, 10));
+		seguro2.setFechaExpiracion(LocalDate.of(2023, 07, 21));
+		seguro2.setRecibidas(facturaRecibidaSeguro2);
+		seguro2.setTipoSeguro(TipoSeguro.TODORRIESGO);
+		seguro2.setVehiculo(vehiculo2);
+		seguroService.save(seguro2);
+		
+		//Reparacion de vehiculo
+		
+		FacturaRecibida facturaRecibidaReparacion2 = new FacturaRecibida();
+		facturaRecibidaReparacion2.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaReparacion2.setEstaPagada(true);
+		facturaRecibidaReparacion2.setImporte(220.);
+		facturaRecibidaReparacion2.setFecha(LocalDate.of(2019, 2, 13));
+		facturaRecibidaService.save(facturaRecibidaReparacion2);
+
+		
+		Reparacion reparacion2 = new Reparacion();
+		reparacion2.setFechaEntradaTaller(LocalDate.of(2019, 2, 13));
+		reparacion2.setFechaSalidaTaller(LocalDate.of(2019, 2, 25));
+		reparacion2.setRecibidas(facturaRecibidaReparacion2);
+		reparacion2.setVehiculo(vehiculo2);
+		reparacionService.save(reparacion2);
+		
+		List<Reparacion> reparaciones2 = new ArrayList<>();
+		reparaciones.add(reparacion2);
+		vehiculo.setReparaciones(reparaciones2);
+
+		vehiculoService.save(vehiculo2);
+		
 	}
 	
 	//Borramos los datos despues de realizar el test correspondiente
@@ -143,16 +209,54 @@ class VehiculoServiceTests {
 
 	//Realizamos los test de los services
 	
+
 	@Test
 	@Transactional
-	@DisplayName("RN: Formato de Matricula")
-	void updateVehiculoWithCorrectPlate() {
+	@DisplayName("RN: Formato de Matricula (MatriculaUnsupportedPatternException)")
+	void saveVehiculoWithIncorrectPlate() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
-	//	RuntimeException exception = assertThrows(MatriculaUnsupportedPatternException.class, () -> {vehiculoService.save(vehiculo);});
-	//	System.out.println("---------------------------------------------"+ vehiculo);
-	//    assertTrue(exception.getMessage().contains("matricula"));
-		vehiculoService.save(vehiculo);
+		vehiculo.setMatricula("4040GNDD");
+		Vehiculo vehiculo2 = vehiculoService.findAll().iterator().next();
+		vehiculo.setMatricula("EE4040GND");
+		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculoService.save(vehiculo);});
+		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculoService.save(vehiculo2);});
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: ITV no en vigor (VehiculoIllegalException)")
+	void saveVehiculoWithITV() {
+		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
+		ITV itv = itvService.findAll().iterator().next();
+		itv.setExpiracion(LocalDate.of(2020, 12, 11));
+		itvService.save(itv);
+		
+		Vehiculo vehiculo2 = vehiculoService.findAll().iterator().next();
+		ITV itv2 = itvService.findAll().iterator().next();
+		itv2.setExpiracion(LocalDate.of(2020, 12, 11));
+		itvService.save(itv2);
+		
+		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo);});
+		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo2);});
+	}
 
+
+	@Test
+	@Transactional
+	@DisplayName("RN: Seguro no en vigor (VehiculoIllegalException)")
+	void saveIllegalVehiculoSeguro() {
+		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
+		Seguro seguro = seguroService.findAll().iterator().next();
+		seguro.setFechaExpiracion(LocalDate.of(2020, 12, 11));
+		seguroService.save(seguro);
+		
+		Vehiculo vehiculo2 = vehiculoService.findAll().iterator().next();
+		Seguro seguro2 = seguroService.findAll().iterator().next();
+		seguro2.setFechaExpiracion(LocalDate.of(2020, 12, 11));
+		seguroService.save(seguro2);
+
+		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo);});
+		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo2);});
 	}
 
 }

@@ -89,12 +89,12 @@ public class VehiculoService {
 		 if((ultimaITV == null || ultimaITV.getResultado() != ResultadoITV.FAVORABLE) && vehiculo.getDisponibilidad()==true){
 			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin ITV valida");
 		 }
-		 
-		 Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(vehiculo.getId());
-		 if(ultimoSeguro == null && vehiculo.getDisponibilidad()==true){
-			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin Seguro");
-		 }
-		 
+		 //TODO Hay que revisar el findByVehiculoIdAndFechaExpiracionAfter de Seguro porque sino no va a ir
+//		 Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(vehiculo.getId());
+//		 if(ultimoSeguro == null && vehiculo.getDisponibilidad()==true){
+//			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin Seguro");
+//		 }
+//		 
 		return vehiculoRepository.save(vehiculo);
 	}
 	
@@ -109,7 +109,7 @@ public class VehiculoService {
 	
 	@Transactional
 	public void deleteAll() throws DataAccessException{
-		vehiculoRepository.deleteAll();;
+		vehiculoRepository.deleteAll();
 	}
 	
 	
