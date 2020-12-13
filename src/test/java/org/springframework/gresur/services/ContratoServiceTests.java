@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -74,37 +75,21 @@ class ContratoServiceTests {
 		contratoService.deleteAll();
 	}
 
-	//Tests
+	/* FIND-REMOVE TESTS */
+	
+	
+	/* REGLAS DE NEGOCIO TESTS */
 	
 	@Test
 	@Transactional
-	void findContratoById() {
-		Long id = contratoService.findAll().iterator().next().getId();
-		Contrato contrato = contratoService.findById(id);
-		assertThat(contrato.getEntidadBancaria()).isEqualTo("Cajasol");
-	}
-	
-	@Test
-	@Transactional	
-	void deleteContratoById() {
-		Long id = contratoService.findAll().iterator().next().getId();
-		contratoService.deleteById(id);
-		assertThat(contratoService.count()).isEqualTo(0);
-	}
-	
-	@Test
-	@Transactional
+	@DisplayName("RN: Salario Minimo")
 	void saveContratoSalarioMinimoException() {
+		
 		Contrato contrato = contratoService.findAll().iterator().next();
 		contrato.setNomina(450.00);
-		RuntimeException exception = assertThrows(SalarioMinimoException.class, () -> {contratoService.save(contrato);});
 		
-		String expectedMessage = "El salario es menor que el salario minimo";
-		String actualMessage = exception.getMessage();
-		
-		System.out.println("HOLA. " + contratoService.findAll().iterator().next().getNomina());
-		
-		assertThat(expectedMessage).contains(actualMessage);
+		assertThrows(SalarioMinimoException.class, () -> {contratoService.save(contrato);});
+		assertThat(contratoService.findAll().iterator().next().getNomina()).isNotEqualTo(450.00);
 	}
 
 }

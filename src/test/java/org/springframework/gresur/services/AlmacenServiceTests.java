@@ -1,10 +1,7 @@
 package org.springframework.gresur.services;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -37,22 +34,5 @@ class AlmacenServiceTests {
 		almacenService.deletAll();
 	}
 	
-	//Tests
-	
-	@Test
-	@Transactional
-	void findAlmacenById() {
-		Long id = almacenService.findAll().iterator().next().getId();
-		Almacen alm = almacenService.findById(id);
-		assertThat(alm.getDireccion()).isEqualTo("Los Algodonales");
-	}
-	
-	@Test
-	@Transactional	
-	void deleteAlmacenById() {
-		Long id = almacenService.findAll().iterator().next().getId();
-		almacenService.deleteById(id);
-		assertThat(almacenService.count()).isEqualTo(0);
-	}
-
+	/* FIND-REMOVE TESTS */
 }
