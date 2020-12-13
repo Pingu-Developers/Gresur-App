@@ -53,6 +53,10 @@ public class VehiculoService {
 	public Iterable<Vehiculo> findAll() throws DataAccessException{
 		return vehiculoRepository.findAll();
 	}
+	@Transactional(readOnly = true)
+	public Vehiculo findByMatricula(String matricula) throws DataAccessException{
+		return vehiculoRepository.findByMatricula(matricula);
+	}
 	
 	@Transactional(readOnly = true)
 	public Vehiculo findById(Long id) throws DataAccessException{
@@ -97,6 +101,15 @@ public class VehiculoService {
 	@Transactional
 	public void deleteById(Long id) throws DataAccessException{
 		vehiculoRepository.deleteById(id);
+	}
+	@Transactional(readOnly = true)
+	public void deleteByMatricula(String matricula) throws DataAccessException{
+		 vehiculoRepository.deleteByMatricula(matricula);
+	}
+	
+	@Transactional
+	public void deleteAll() throws DataAccessException{
+		vehiculoRepository.deleteAll();;
 	}
 	
 	
