@@ -72,7 +72,7 @@ public class SeguroService {
 		}
 		return seguroRepo.save(seguro);
 	}
-
+	@Transactional
 	public Long count() {
 		return seguroRepo.count();
 	}

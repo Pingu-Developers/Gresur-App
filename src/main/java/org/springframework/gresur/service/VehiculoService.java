@@ -159,4 +159,8 @@ public class VehiculoService {
 			}
 		}
 	}
+	@Transactional
+	public Long count() {
+		return vehiculoRepository.count();
+	}
 }

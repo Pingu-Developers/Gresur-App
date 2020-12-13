@@ -1,19 +1,29 @@
 package org.springframework.gresur.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Almacen;
 import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.service.AlmacenService;
 import org.springframework.gresur.service.EstanteriaService;
+import org.springframework.gresur.service.exceptions.CapacidadEstanteriaExcededException;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
+@AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 class EstanteriaServiceTests {
 
 	@Autowired
@@ -26,18 +36,31 @@ class EstanteriaServiceTests {
 	@Transactional
 	void initAll() {
 		Almacen alm = new Almacen();
-		alm.setCapacidad(30.0);
+		alm.setCapacidad(30000.0);
 		alm.setDireccion("Los Algodonales");
-
 		almacenService.save(alm);
 		
 		Estanteria est = new Estanteria();
 		est.setAlmacen(alm);
 		est.setCapacidad(3000.0);
-		est.setCategoria(Categoria.CEMENTOS);
-		est.setProductos(null);
+		est.setCategoria(Categoria.SILICES);
 		
 		estanteriaService.save(est);
+		
+		Estanteria est1 = new Estanteria();
+		est1.setAlmacen(alm);
+		est1.setCapacidad(3000.0);
+		est1.setCategoria(Categoria.AZULEJOS);
+		
+		estanteriaService.save(est1);
+		
+		Estanteria est2 = new Estanteria();
+		est2.setAlmacen(alm);
+		est2.setCapacidad(3000.0);
+		est2.setCategoria(Categoria.LADRILLOS);
+		
+		estanteriaService.save(est2);
+		
 	}
 	@AfterEach
 	@Transactional
@@ -46,44 +69,42 @@ class EstanteriaServiceTests {
 		estanteriaService.deleteAll();
 	}
 	
-	//Tests
-//	
-//	@CsvSource({
-//		"3000"
-//	})
-//	@ParameterizedTest
-//	@Transactional
-//	void findEstanteriaById(Double capacidad) {
-//		Long id = estanteriaService.findAll().iterator().next().getId();
-//		Estanteria est = estanteriaService.findById(id);
-//		assertThat(est.getCapacidad()).isEqualTo(capacidad);
-//	} 
-//	
-//	@CsvSource({
-//		"Los Algodonales"
-//	})
-//	@ParameterizedTest
-//	@Transactional
-//	void deleteEstanteriaById() {
-//		Long id = estanteriaService.findAll().iterator().next().getId();
-//		estanteriaService.deleteById(id);
-//		assertThat(estanteriaService.count()).isEqualTo(0);
-//	}
-//	
-//	@Transactional
-//	void findAllEstanteriaByAlmacenTest() {
-//		Almacen alm = almacenService.findAll().iterator().next();
-//		for(int i=0; i<100; i++) {
-//			Estanteria est = new Estanteria();
-//			est.setAlmacen(alm);
-//			est.setCapacidad(3000.0);
-//			est.setCategoria(Categoria.CEMENTOS);
-//			est.setProductos(null);
-//			
-//			estanteriaService.save(est);
-//		}
-//		Integer numEstanterias = estanteriaService.findAllEstanteriaByAlmacen(alm.getId()).size();
-//		assertThat(numEstanterias).isEqualTo(101);
-//		
-//	}
+	//Test
+	
+	@Test
+	@Transactional
+	void listAllEstanteriasInAlmacen() {
+		Long idAlmacen = almacenService.findAll().iterator().next().getId();
+		List<Estanteria> ls = estanteriaService.findAllEstanteriaByAlmacen(idAlmacen);
+		assertThat(ls.size()).isEqualTo(3);
+	}
+	
+	@Test
+	@Transactional
+	void listAllEstanteriasInAlmacenNotFound() {
+		Long idAlmacen = 200L;
+		List<Estanteria> ls = estanteriaService.findAllEstanteriaByAlmacen(idAlmacen);
+		assertThat(ls).isEmpty();
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen")
+	void saveEstanteriaWithCapacidadExceded() {
+		Almacen alm = almacenService.findAll().iterator().next();
+		Estanteria est = new Estanteria();
+		est.setAlmacen(alm);
+		est.setCapacidad(1000000.00);
+		est.setCategoria(Categoria.PINTURAS);
+		assertThrows(CapacidadEstanteriaExcededException.class, () -> {estanteriaService.save(est);});
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen")
+	void updateEstanteriaWithCapacidadExceded() {
+		Estanteria est = estanteriaService.findAll().iterator().next();
+		est.setCapacidad(1000000.00);
+		assertThrows(CapacidadEstanteriaExcededException.class, () -> {estanteriaService.save(est);});
+	}
 }
