@@ -7,7 +7,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.SeguroRepository;
-import org.springframework.gresur.repository.VehiculoRepository;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
