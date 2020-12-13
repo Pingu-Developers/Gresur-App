@@ -37,9 +37,6 @@ public class Notificacion extends BaseEntity{
 	@NotNull
 	private LocalDateTime fechaHora;
 	
-	@NotNull
-	private Boolean leido;
-	
 	@JsonIgnore
 	@ManyToOne
 	private Personal emisor;
