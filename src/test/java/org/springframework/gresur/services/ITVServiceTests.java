@@ -1,12 +1,15 @@
 package org.springframework.gresur.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -24,6 +27,7 @@ import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.VehiculoService;
+import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,12 +138,40 @@ class ITVServiceTests {
 	@Transactional
 	void findLastItvFavorable(){
 		ITV itv = itvService.findLastITVFavorableByVehiculo("1526MVC");
-		System.out.println("HOLA FROM TEST" + itv);
 		assertThat(itv.getExpiracion()).isEqualTo(LocalDate.of(2025, 1, 10));
-		assertThat(itv.getExpiracion()).isAfter(LocalDate.now());
-		assertThat(itv.getResultado()).isEqualTo(ResultadoITV.FAVORABLE);
+	}
+	//TODO ITV Fantasma
+	@Test
+	@Transactional
+	@DisplayName("RN: Fechas inicio y fin incongruentes")
+	void updateFechaException() {
+		ITV itv = itvService.findAll().iterator().next();
+		itv.setExpiracion(LocalDate.of(2020, 1, 1));
+		itv.setFecha(LocalDate.of(2030, 12, 1));
+		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {itvService.save(itv);});
 	}
 	
+	@Test
+	@DisplayName("RN: Fechas inicio y fin incongruentes")
+	void saveNewFechaException() {
+		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
+		
+		FacturaRecibida fra = new FacturaRecibida();
+		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
+		fra.setEstaPagada(true);
+		fra.setFecha(LocalDate.of(2020, 1, 12));
+		fra.setImporte(65.50);
+		fraService.save(fra);
+		
+		ITV itv = new ITV();
+		itv.setExpiracion(LocalDate.of(2010, 1, 10));
+		itv.setFecha(LocalDate.of(2030, 1, 12));
+		itv.setResultado(ResultadoITV.FAVORABLE);
+		itv.setVehiculo(vehiculo);
+		itv.setRecibidas(fra);
+		
+		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {itvService.save(itv);});
+	}
 	
 
 }
