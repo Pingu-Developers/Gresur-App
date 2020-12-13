@@ -56,10 +56,10 @@ public class PedidoService {
 	public Pedido save(Pedido pedido) throws DataAccessException {
 		
 		Vehiculo vehiculo = pedido.getVehiculo();
-		Double MMA = vehiculo.getMMA();
 		LocalDate fecha = pedido.getFechaEnvio();
 		
-		if(pedido.getVehiculo() != null) {
+		if(vehiculo != null) {
+			Double MMA = vehiculo.getMMA();
 			if(pedido.getTransportista() == null) {
 				throw new PedidoSinTransportistaException();
 			} if(!vehiculo.getDisponibilidad()) {

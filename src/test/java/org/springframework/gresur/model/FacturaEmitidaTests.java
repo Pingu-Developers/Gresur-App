@@ -17,6 +17,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class FacturaEmitidaTests extends ValidatorTests {
 	
+	//TODO quitar pedido de los datos de entrada de todos los tests y de esta funcion
 	private FacturaEmitida createSUT(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {
 		List<LineaFactura> lf = new ArrayList<LineaFactura>();
 		Pedido p = null;
@@ -41,7 +42,6 @@ class FacturaEmitidaTests extends ValidatorTests {
 		emitida.setImporte(importe);
 		emitida.setEstaPagada(pagada);
 		emitida.setLineasFacturas(lf);
-		emitida.setPedido(p);
 		emitida.setDependiente(d);
 		emitida.setCliente(c);
 		return emitida;

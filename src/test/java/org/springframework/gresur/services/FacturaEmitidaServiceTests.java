@@ -99,6 +99,8 @@ public class FacturaEmitidaServiceTests {
 		estanteria.setAlmacen(almacen);
 		estanteria.setCapacidad(550.00);
 		estanteria.setCategoria(Categoria.AZULEJOS);
+		estanteria = estanteriaService.save(estanteria);
+		
 		
 		Producto p1 = new Producto();
 		p1.setAlto(1.1);
@@ -113,7 +115,6 @@ public class FacturaEmitidaServiceTests {
 		p1.setStock(70);
 		p1.setStockSeguridad(30);
 		p1.setUnidad(Unidad.UNIDADES);
-		p1.setId(0L);
 		
 		Producto p2 = new Producto();
 		p2.setAlto(1.1);
@@ -128,17 +129,13 @@ public class FacturaEmitidaServiceTests {
 		p2.setStock(35);
 		p2.setStockSeguridad(30);
 		p2.setUnidad(Unidad.UNIDADES);
-		p2.setId(1L);
-				
+					
+		p1 = productoService.save(p1);
+		p2 = productoService.save(p2);
+		
 		List<Producto> lp = new ArrayList<Producto>();
 		lp.add(p1);
-		lp.add(p2);
-		estanteria.setProductos(lp);
-		
-		estanteriaService.save(estanteria);
-		productoService.save(p1);
-		productoService.save(p2);
-		
+		lp.add(p2);	
 		
 		FacturaEmitida fem = new FacturaEmitida();
 		fem.setCliente(cliente);
@@ -146,9 +143,10 @@ public class FacturaEmitidaServiceTests {
 		fem.setEstaPagada(true);
 		fem.setFecha(LocalDate.parse("17/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		fem.setImporte(320.15);
+
 		
-		facturaEmitidaService.save(fem);
-	
+		fem = facturaEmitidaService.save(fem);
+		
 		List<LineaFactura> lf = new ArrayList<LineaFactura>();
 		LineaFactura lf1 = new LineaFactura();
 		LineaFactura lf2 = new LineaFactura();
@@ -156,16 +154,17 @@ public class FacturaEmitidaServiceTests {
 		lf1.setFactura(fem);
 		lf1.setPrecio(100.15);
 		lf1.setProducto(p1);
+		
+
+		lf1 = lineaFacturaService.save(lf1);
+		
 		lf2.setCantidad(20);
 		lf2.setFactura(fem);
 		lf2.setPrecio(220.00);
 		lf2.setProducto(p2);
-		
-		lineaFacturaService.save(lf1);
-		lineaFacturaService.save(lf2);
-				
-		fem.setLineasFacturas(lf);
-		
+						
+		lf2 = lineaFacturaService.save(lf2);
+						
 		Pedido pedido = new Pedido();
 		pedido.setDireccionEnvio("C/ Ejemplo");
 		pedido.setEstado(EstadoPedido.EN_ESPERA);
@@ -174,8 +173,9 @@ public class FacturaEmitidaServiceTests {
 		
 		pedidoService.save(pedido);
 		
-		fem.setPedido(pedido);
-		
+		lf.add(lf1);
+		lf.add(lf2);
+		fem.setLineasFacturas(lf);
 		facturaEmitidaService.save(fem);
 	}
 	
@@ -184,12 +184,13 @@ public class FacturaEmitidaServiceTests {
 	void clearAll() {
 		almacenService.deletAll();
 		clienteService.deletAll();
-		dependienteService.deleteAll();
 		estanteriaService.deleteAll();
-		facturaEmitidaService.deleteAll();
 		lineaFacturaService.deleteAll();
+		facturaEmitidaService.deleteAll();
+		dependienteService.deleteAll();
 		pedidoService.deleteAll();
 		productoService.deleteAll();
+		//productoService.findAll().forEach(x->System.out.println(x));
 	}
 	
 	/* FIND-REMOVE TESTS */
@@ -198,8 +199,8 @@ public class FacturaEmitidaServiceTests {
 	@Transactional
 	void findLineasFactura() {
 		List<LineaFactura> lf = facturaEmitidaService.findLineasFactura();
-		assertThat(lf.get(0)).isEqualTo(100.15);
-		assertThat(lf.get(1)).isEqualTo(200.00);
+		assertThat(lf.get(0).getPrecio()).isEqualTo(100.15);
+		assertThat(lf.get(1).getPrecio()).isEqualTo(220.00);
 	}
 	
 	/* REGLAS NEGOCIO TESTS */

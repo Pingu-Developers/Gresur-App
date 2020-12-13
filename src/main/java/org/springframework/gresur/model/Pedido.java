@@ -34,11 +34,10 @@ public class Pedido extends BaseEntity{
 	
 	@JsonIgnore
 	@NotNull
-	@OneToOne(mappedBy = "pedido", optional = false)
+	@OneToOne(optional = false)
 	private FacturaEmitida facturaEmitida;
 	
 	@JsonIgnore
-	@NotNull
 	@ManyToOne
 	private Vehiculo vehiculo;
 	

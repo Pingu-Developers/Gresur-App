@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -24,6 +25,7 @@ import lombok.EqualsAndHashCode;
 public class Producto extends BaseEntity{
 	
 	@NotBlank
+	@Column(unique = true)
 	private String nombre;
 	
 	@Lob
@@ -68,6 +70,7 @@ public class Producto extends BaseEntity{
 	
 	@JsonIgnore
 	@ManyToOne
+	@ToString.Exclude
 	private Estanteria estanteria;
 	
 }

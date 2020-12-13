@@ -28,14 +28,13 @@ public class LineasFacturaService {
 	@Transactional
 	public LineaFactura save(LineaFactura linea) {		
 		
-		LineaFactura tmp = linea;
-		LineaFactura otherLinea = lineasRepo.findByFacturaIdAndProductoId(tmp.getFactura().getId(), tmp.getProducto().getId()).orElse(null);
-
+		LineaFactura otherLinea = lineasRepo.findByFacturaIdAndProductoId(linea.getFactura().getId(), linea.getProducto().getId()).orElse(null);
+			
 		if(otherLinea != null) {
 			otherLinea.setCantidad(otherLinea.getCantidad() + linea.getCantidad());
+			otherLinea.setPrecio(otherLinea.getPrecio() + linea.getPrecio());
 			linea = otherLinea;
 		}
-		
 		return lineasRepo.save(linea);
 	}
 	
