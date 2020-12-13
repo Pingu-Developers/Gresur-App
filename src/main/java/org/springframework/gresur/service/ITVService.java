@@ -1,7 +1,6 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -40,17 +39,21 @@ public class ITVService {
 		return itvRepository.findById(id).get();
 	}
 	@Transactional(readOnly = true)
-	public List<ITV> findByVehiculo(Long id) throws DataAccessException{
-		return itvRepository.findByVehiculoId(id);
+	public List<ITV> findByVehiculo(String matricula) throws DataAccessException{
+		return itvRepository.findByVehiculoMatricula(matricula);
 	}
 	
+	//TODO hay devolver null si se no se cumple que
+	//itv.getResultado().equals(ResultadoITV.FAVORABLE) && itv.getExpiracion().isAfter(LocalDate.now())	
 	@Transactional(readOnly = true)
-	public ITV findLastITVFavorableByVehiculo(Long id) {
-		return itvRepository.findByVehiculoIdAndExpiracionAfterAndResultadoIn(id, LocalDate.now(), Arrays.asList(ResultadoITV.FAVORABLE)).stream()
-				.max((x,y) -> x.getExpiracion().compareTo(y.getExpiracion())).orElse(null);
+	public ITV findLastITVFavorableByVehiculo(String matricula) {
+		ITV itv = itvRepository.findFirstByVehiculoMatriculaOrderByExpiracionDesc(matricula);
+		return itv;
+//		return (itv.getResultado().equals(ResultadoITV.FAVORABLE) && itv.getExpiracion().isAfter(LocalDate.now())) ? itv : null;
+//		return itvRepository.findByVehiculoMatriculaAndExpiracionAfterAndResultadoIn(matricula, LocalDate.now(), Arrays.asList(ResultadoITV.FAVORABLE)).stream()
+//				.max((x,y) -> x.getExpiracion().compareTo(y.getExpiracion())).orElse(null);
 	}
-	
-	
+		
 	@Transactional
 	public ITV save(ITV itv) throws DataAccessException, FechaFinNotAfterFechaInicioException{
 		
@@ -67,9 +70,7 @@ public class ITVService {
 				vehiculoService.save(vehiculo);
 			}
 		}
-		
 
-		
 		return itvRepository.save(itv);
 	}
 	

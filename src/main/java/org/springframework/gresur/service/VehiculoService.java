@@ -85,7 +85,7 @@ public class VehiculoService {
 			throw new NullPointerException();
 		 }
 		 	 
-		 ITV ultimaITV = ITVService.findLastITVFavorableByVehiculo(vehiculo.getId());
+		 ITV ultimaITV = ITVService.findLastITVFavorableByVehiculo(vehiculo.getMatricula());
 		 if((ultimaITV == null || ultimaITV.getResultado() != ResultadoITV.FAVORABLE) && vehiculo.getDisponibilidad()==true){
 			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin ITV valida");
 		 }
@@ -122,7 +122,7 @@ public class VehiculoService {
 		while (vehiculos.hasNext()) {
 			
 			Vehiculo v = vehiculos.next();
-			ITV ultimaITV = ITVService.findLastITVFavorableByVehiculo(v.getId());
+			ITV ultimaITV = ITVService.findLastITVFavorableByVehiculo(v.getMatricula());
 			Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(v.getMatricula());
 			
 			if(ultimaITV == null || ultimaITV.getResultado()==ResultadoITV.NEGATIVA || ultimaITV.getResultado()==ResultadoITV.DESFAVORABLE) {
