@@ -49,7 +49,7 @@ public class ProductoService {
 	/* CRUD METHODS */
 	
 	@Transactional(readOnly = true)
-	public Iterable<Producto> findAll() throws DataAccessException{
+	public List<Producto> findAll() throws DataAccessException{
 		return productoRepository.findAll();
 	}
 
@@ -63,9 +63,10 @@ public class ProductoService {
 		Estanteria estanteria = producto.getEstanteria();
 		if(estanteria != null) {
 			Double capacidadE = estanteria.getCapacidad();
-			Double volumenProductos = estanteria.getProductos().stream().filter(x->!x.getId().equals(producto.getId()))
-					.mapToDouble(x->x.getAlto()*x.getAncho()*x.getProfundo()*x.getStock()).sum()
-					+ producto.getAlto()*producto.getAncho()*producto.getProfundo()*producto.getStock();
+			
+			Double volumenProductos = this.productoRepository.sumStockProductosEstanteriaNotNombre(estanteria.getId(), producto.getNombre()).orElse(0.0)
+									  + producto.getAlto()*producto.getAncho()*producto.getProfundo()*producto.getStock();
+			
 			if(capacidadE < volumenProductos) {
 				throw new CapacidadProductoExcededException("El volumen de los productos es mayor a la capacidad de la estanteria");
 			}
