@@ -8,8 +8,8 @@ import org.springframework.gresur.model.Seguro;
 
 public interface SeguroRepository extends CrudRepository<Seguro, Long> {	
 	
-	List<Seguro> findByVehiculo(Long id);
+	List<Seguro> findByVehiculoMatricula(String Matricula);
 	
-	List<Seguro> findByVehiculoIdAndFechaExpiracionAfter(Long id, LocalDate fecha);
+	List<Seguro> findByVehiculoMatriculaAndFechaExpiracionAfter(String matricula, LocalDate fecha);
 	
 }

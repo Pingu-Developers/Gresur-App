@@ -7,6 +7,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.SeguroRepository;
+import org.springframework.gresur.repository.VehiculoRepository;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
@@ -39,8 +40,8 @@ public class SeguroService {
 		return seguroRepo.findById(id).orElse(null);
 	}
 	@Transactional(readOnly = true)
-	public List<Seguro> findByVehiculo(Long id) throws DataAccessException{
-		return seguroRepo.findByVehiculo(id);
+	public List<Seguro> findByVehiculo(String matricula) throws DataAccessException{
+		return seguroRepo.findByVehiculoMatricula(matricula);
 	}
 	@Transactional
 	public void deleteAll() {
@@ -49,9 +50,9 @@ public class SeguroService {
 	
 	//TODO Revisar Max en JSQL
 	@Transactional(readOnly = true)
-	public Seguro findLastSeguroByVehiculo(Long id) {
-		return seguroRepo.findByVehiculoIdAndFechaExpiracionAfter(id, LocalDate.now()).stream()
-				.max((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).orElse(null);
+	public Seguro findLastSeguroByVehiculo(String matricula) {
+		return seguroRepo.findByVehiculoMatriculaAndFechaExpiracionAfter(matricula, LocalDate.now())
+				.stream().max((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).orElse(null);
 	}
 	
 	@Transactional

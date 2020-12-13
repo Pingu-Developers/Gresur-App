@@ -62,7 +62,7 @@ public class ITVService {
 		if(itv.getExpiracion().isAfter(LocalDate.now())) {
 			Vehiculo vehiculo = itv.getVehiculo();
 			
-			if(seguroService.findLastSeguroByVehiculo(vehiculo.getId()) != null) {
+			if(seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula()) != null) {
 				vehiculo.setDisponibilidad(true);
 				vehiculoService.save(vehiculo);
 			}
