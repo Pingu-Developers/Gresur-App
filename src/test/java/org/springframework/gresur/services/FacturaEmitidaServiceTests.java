@@ -79,6 +79,7 @@ public class FacturaEmitidaServiceTests {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	@BeforeAll
+	@AfterEach
 	@Transactional
 	void clearDB() {
 		util.clearDB();
@@ -197,12 +198,6 @@ public class FacturaEmitidaServiceTests {
 		lf.add(lf2);
 		fem.setLineasFacturas(lf);
 		facturaEmitidaService.save(fem);
-	}
-	
-	@AfterEach
-	@Transactional
-	void clearAll() {
-		util.clearDB();
 	}
 	
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
