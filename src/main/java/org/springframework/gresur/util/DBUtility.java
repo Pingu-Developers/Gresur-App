@@ -77,11 +77,11 @@ public class DBUtility {
 	@Transactional
 	public void clearDB() {
 		configService.deleteAll();
+		pedidoService.deleteAll();
 		seguroService.deleteAll();
 		ITVService.deleteAll();
 		reparacionService.deleteAll();
 		vehiculoService.deleteAll();
-		pedidoService.deleteAll();
 		lfService.deleteAll();
 		facturaEmitidaService.deleteAll();
 		facturaRecibidaService.deleteAll();

@@ -114,22 +114,25 @@ class EstanteriaServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen")
+	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen - (nueva estanteria)")
 	void saveEstanteriaWithCapacidadExceded() {
 		Almacen alm = almacenService.findAll().iterator().next();
 		Estanteria est = new Estanteria();
 		est.setAlmacen(alm);
 		est.setCapacidad(1000000.00);
 		est.setCategoria(Categoria.PINTURAS);
+		est.setId(20L);
 		assertThrows(CapacidadEstanteriaExcededException.class, () -> {estanteriaService.save(est);});
+		assertThat(estanteriaService.findById(20L)).isEqualTo(null);
 	}
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen")
+	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen - (update estanteria)")
 	void updateEstanteriaWithCapacidadExceded() {
 		Estanteria est = estanteriaService.findAll().iterator().next();
 		est.setCapacidad(1000000.00);
 		assertThrows(CapacidadEstanteriaExcededException.class, () -> {estanteriaService.save(est);});
+		assertThat(estanteriaService.findAll().iterator().next().getCapacidad()).isNotEqualTo(1000000.00); //TODO No se hace rollback
 	}
 }

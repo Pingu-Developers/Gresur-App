@@ -28,7 +28,7 @@ public class EstanteriaService{
 	
 	@Transactional(readOnly = true)
 	public Estanteria findById(Long id) throws DataAccessException{
-		return estanteriaRepository.findById(id).get();
+		return estanteriaRepository.findById(id).orElse(null);
 	}
 	
 	@Transactional(readOnly = true)

@@ -12,6 +12,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -35,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
+@TestInstance(value = Lifecycle.PER_CLASS)
 class ITVServiceTests {
 	
 	@Autowired
@@ -172,8 +175,9 @@ class ITVServiceTests {
 	void updateFechaException() {
 		ITV itv = itvService.findAll().iterator().next();
 		itv.setExpiracion(LocalDate.of(2020, 1, 1));
-		itv.setFecha(LocalDate.of(2030, 12, 1));
+		itv.setFecha(LocalDate.of(2020, 12, 1));
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {itvService.save(itv);});
+		assertThat(itvService.findById(itv.getId())).isNotEqualTo(itv); // TODO NO HACE ROLLBACK
 	}
 	
 	@Test
@@ -190,12 +194,14 @@ class ITVServiceTests {
 		
 		ITV itv = new ITV();
 		itv.setExpiracion(LocalDate.of(2010, 1, 10));
-		itv.setFecha(LocalDate.of(2030, 1, 12));
+		itv.setFecha(LocalDate.of(2020, 1, 12));
 		itv.setResultado(ResultadoITV.FAVORABLE);
 		itv.setVehiculo(vehiculo);
 		itv.setRecibidas(fra);
+		itv.setId(50L);
 		
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {itvService.save(itv);});
+		assertThat(itvService.findLastITVFavorableByVehiculo(vehiculo.getMatricula())).isNotEqualTo(itv);
 	}
 	
 

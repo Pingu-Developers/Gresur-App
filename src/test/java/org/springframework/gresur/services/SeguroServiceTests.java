@@ -163,6 +163,7 @@ class SeguroServiceTests {
 		seguro.setFechaContrato(LocalDate.of(2020, 1, 1));
 		seguro.setFechaExpiracion(LocalDate.of(2005, 1, 1));
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);});
+		//TODO comprobar que se haga rollback
 	}
 	
 	@Test
@@ -186,6 +187,7 @@ class SeguroServiceTests {
 		seguro.setVehiculo(vehiculoService.findByMatricula("1526MVC"));
 		
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);});
+		//TODO comprobar que se haga rollback
 	}
 
 }

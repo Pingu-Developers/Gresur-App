@@ -114,7 +114,7 @@ class ContratoServiceTests {
 		contrato.setNomina(450.00);
 		
 		assertThrows(SalarioMinimoException.class, () -> {contratoService.save(contrato);});
-		assertThat(contratoService.findAll().iterator().next().getNomina()).isNotEqualTo(450.00);
+		assertThat(contratoService.findAll().iterator().next().getNomina()).isNotEqualTo(450.00); //TODO NO HACE LE ROLLBACK
 	}
 
 }

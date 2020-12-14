@@ -187,7 +187,7 @@ class NotificacionServiceTests {
 		notificacionService.save(noc,receptores);
 
 		assertThrows(NotificacionesLimitException.class, ()->{notificacionService.save(noc,receptores);});
-		
+		//TODO Comprobar que se haga rollback
 	}
 
 	
