@@ -15,7 +15,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "lineas_factura", uniqueConstraints = @UniqueConstraint(columnNames = {"factura", "producto"}))
+@Table(name = "lineas_factura", uniqueConstraints = @UniqueConstraint(columnNames = {"factura_id", "producto_id"}))
 public class LineaFactura extends BaseEntity {
 
 	@NotNull
@@ -25,13 +25,13 @@ public class LineaFactura extends BaseEntity {
 	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "factura")
+	@JoinColumn(name = "factura_id")
 	private Factura factura;
 	
 	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "producto")
+	@JoinColumn(name = "producto_id")
 	private Producto producto;
 
 	@NotNull
