@@ -218,10 +218,7 @@ class VehiculoServiceTests {
 	@Transactional
 	@DisplayName("deleteVehiculoByMatricula -- Caso Positivo")
 	void deleteVehiculoByMatricula() {
-		//TODO Cuando se borra un vehiculo no se borran sus itvs ni seguros por lo que hay que borrar estas antes
-		
-		itvService.deleteAll();
-		seguroService.deleteAll();
+
 		vehiculoService.deleteByMatricula("4040GND");
 		vehiculoService.deleteByMatricula("E4040GND");
 		assertThat(vehiculoService.count()).isEqualTo(0);
