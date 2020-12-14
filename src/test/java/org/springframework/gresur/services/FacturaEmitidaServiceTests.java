@@ -79,6 +79,7 @@ public class FacturaEmitidaServiceTests {
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	@BeforeAll
+	@AfterEach
 	@Transactional
 	void clearDB() {
 		util.clearDB();
@@ -199,12 +200,6 @@ public class FacturaEmitidaServiceTests {
 		facturaEmitidaService.save(fem);
 	}
 	
-	@AfterEach
-	@Transactional
-	void clearAll() {
-		util.clearDB();
-	}
-	
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * 										FUNCIONES DE LOS TESTS													 *
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -220,6 +215,7 @@ public class FacturaEmitidaServiceTests {
 		assertThat(lf.get(0).getPrecio()).isEqualTo(100.15);
 		assertThat(lf.get(1).getPrecio()).isEqualTo(220.00);
 	}
+	
 	
 	/* * * * * * * * * * * * * * * *
 	 *   REGLAS DE NEGOCIO TESTS   *

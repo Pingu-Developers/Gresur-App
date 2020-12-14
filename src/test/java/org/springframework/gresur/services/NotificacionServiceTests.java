@@ -2,7 +2,6 @@ package org.springframework.gresur.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +21,7 @@ import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.TipoNotificacion;
 import org.springframework.gresur.model.Transportista;
+import org.springframework.gresur.repository.ConfiguracionRepository;
 import org.springframework.gresur.service.ConfiguracionService;
 import org.springframework.gresur.service.NotificacionService;
 import org.springframework.gresur.service.PersonalService;
@@ -29,6 +29,7 @@ import org.springframework.gresur.service.exceptions.NotificacionesLimitExceptio
 import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
 @TestInstance(Lifecycle.PER_CLASS)
@@ -41,22 +42,28 @@ class NotificacionServiceTests {
 	protected ConfiguracionService configuracionService;
 	
 	@Autowired
+	protected ConfiguracionRepository configuracionR;
+	
+	@Autowired
 	protected PersonalService<Transportista, ?> personalService;
 	
 	@Autowired
 	protected DBUtility util;
-
+	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	@BeforeAll
+	@AfterEach
 	@Transactional
 	void clearDB() {
 		util.clearDB();
-		
 	}
 	
-	
-	/* Carga de datos para cada test */
-	
+
 	@BeforeEach
 	@Transactional
 	void initAll() {
@@ -65,7 +72,7 @@ class NotificacionServiceTests {
 		Configuracion config = new Configuracion();
 		config.setNumMaxNotificaciones(1);
 		config.setSalarioMinimo(950.);
-		configuracionService.updateConfig(config);
+		configuracionService.save(config);
 		
 		
 		//Creamos personal que se envía y recibe la notificacion
@@ -111,20 +118,16 @@ class NotificacionServiceTests {
 		receptores.add(receptor2);
 		
 		notificacionService.save(noc1, receptores);
-		
-		
-		
-	
 	}
+
 	
-	@AfterEach
-	@Transactional
-	void clearAll() {
-		util.clearDB();
-	}
-	
-	
-	/* FIND-REMOVE TESTS */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* 										FUNCIONES DE LOS TESTS													 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+	/* * * * * * * * * * * * *
+	 *   FIND-REMOVE TESTS   *
+	 * * * * * * * * * * * * */
 	@Test
 	@Transactional
 	@DisplayName("findAllNotificacionesByEmisor -- Caso Positivo")
@@ -148,8 +151,7 @@ class NotificacionServiceTests {
 		List<Notificacion> noc = notificacionService.findNoLeidasPersonal(p);
 		assertThat(noc.size()).isEqualTo(1);
 	}
-	
-	
+		
 	@Test
 	@Transactional
 	@DisplayName("findNoLeidasPersonal -- Caso Negativo")
@@ -160,7 +162,9 @@ class NotificacionServiceTests {
 	}
 	
 	
-	/* RN TESTS */
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */
 	@Test
 	@Transactional
 	@DisplayName("RN: Limite de notificaciones (NotificacionesLimitException)")

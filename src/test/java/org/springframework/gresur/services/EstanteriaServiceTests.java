@@ -6,9 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -19,11 +22,13 @@ import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.service.AlmacenService;
 import org.springframework.gresur.service.EstanteriaService;
 import org.springframework.gresur.service.exceptions.CapacidadEstanteriaExcededException;
+import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
+@TestInstance(value = Lifecycle.PER_CLASS)
 class EstanteriaServiceTests {
 
 	@Autowired
@@ -31,6 +36,22 @@ class EstanteriaServiceTests {
 	
 	@Autowired
 	protected AlmacenService almacenService;
+	
+	@Autowired
+	protected DBUtility util;
+	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	@BeforeAll
+	@AfterEach
+	@Transactional
+	void clearDB() {
+		util.clearDB();
+	}
 	
 	@BeforeEach
 	@Transactional
@@ -59,18 +80,17 @@ class EstanteriaServiceTests {
 		est2.setCapacidad(3000.0);
 		est2.setCategoria(Categoria.LADRILLOS);
 		
-		estanteriaService.save(est2);
+		estanteriaService.save(est2);		
+	}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* 										FUNCIONES DE LOS TESTS													 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 		
-	}
-	@AfterEach
-	@Transactional
-	void clearAll() {
-		almacenService.deletAll();
-		estanteriaService.deleteAll();
-	}
-	
-	//Test
-	
+	/* * * * * * * * * * * * *
+	 *   FIND-REMOVE TESTS   *
+	 * * * * * * * * * * * * */
+
 	@Test
 	@Transactional
 	void listAllEstanteriasInAlmacen() {
@@ -86,6 +106,11 @@ class EstanteriaServiceTests {
 		List<Estanteria> ls = estanteriaService.findAllEstanteriaByAlmacen(idAlmacen);
 		assertThat(ls).isEmpty();
 	}
+	
+	
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional

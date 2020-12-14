@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
-@TestInstance(Lifecycle.PER_CLASS)
+@TestInstance(value = Lifecycle.PER_CLASS)
 class ReparacionServiceTests {
 
 	
@@ -46,16 +46,21 @@ class ReparacionServiceTests {
 
 	@Autowired
 	protected DBUtility util;
-
+	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	@BeforeAll
+	@AfterEach
 	@Transactional
 	void clearDB() {
 		util.clearDB();
 	}
 	
-	/* Carga de datos para cada test */
-	
+
 	@BeforeEach
 	@Transactional
 	void initAll() {
@@ -126,15 +131,15 @@ class ReparacionServiceTests {
 		reparaciones.add(reparacion2);
 		reparaciones.add(reparacion3);
 	}
+
 	
-	@AfterEach
-	@Transactional
-	void clearAll() {
-		util.clearDB();
-	}
-	
-	
-	/* FIND-REMOVE TESTS */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* 										FUNCIONES DE LOS TESTS													 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+	/* * * * * * * * * * * * *
+	 *   FIND-REMOVE TESTS   *
+	 * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional
@@ -155,7 +160,9 @@ class ReparacionServiceTests {
 	}
 
 	
-	/* RN TESTS */
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional

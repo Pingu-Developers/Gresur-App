@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,7 @@ import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.service.exceptions.MatriculaUnsupportedPatternException;
 import org.springframework.gresur.service.exceptions.VehiculoIllegalException;
+import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,8 +53,22 @@ class VehiculoServiceTests {
 	@Autowired
 	protected FacturaRecibidaService facturaRecibidaService;
 	
-	//Carga de datos para Test 
+	@Autowired
+	protected DBUtility util;
 	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	@BeforeAll
+	@AfterEach
+	@Transactional
+	void clearDB() {
+		util.clearDB();
+	}
+		
 	@BeforeEach
 	@Transactional
 	void initAll() {
@@ -198,16 +214,14 @@ class VehiculoServiceTests {
 
 		
 	}
-	
-	//Borramos los datos despues de realizar el test correspondiente
-	
-	@AfterEach
-	@Transactional
-	void clearAll(){
-		vehiculoService.deleteAll();
-	}
-	
-	/* FIND-REMOVE TESTS */
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* 										FUNCIONES DE LOS TESTS													 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+		
+	/* * * * * * * * * * * * *
+	 *   FIND-REMOVE TESTS   *
+	 * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional
@@ -253,8 +267,9 @@ class VehiculoServiceTests {
 	}
 	
 	
-	/* RN TESTS */
-	
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */	
 
 	@Test
 	@Transactional

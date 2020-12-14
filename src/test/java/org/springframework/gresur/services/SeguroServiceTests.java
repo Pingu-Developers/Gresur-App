@@ -8,9 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -28,11 +31,13 @@ import org.springframework.gresur.service.ProveedorService;
 import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
+import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @DataJpaTest(includeFilters = @ComponentScan.Filter(Service.class))
 @AutoConfigureTestDatabase(replace=AutoConfigureTestDatabase.Replace.NONE)
+@TestInstance(value = Lifecycle.PER_CLASS)
 class SeguroServiceTests {
 	
 	@Autowired
@@ -46,6 +51,22 @@ class SeguroServiceTests {
 	
 	@Autowired
 	protected ProveedorService proveedorService;
+	
+	@Autowired
+	protected DBUtility util;
+	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	@BeforeAll
+	@AfterEach
+	@Transactional
+	void clearDB() {
+		util.clearDB();
+	}
 	
 	@BeforeEach
 	@Transactional
@@ -105,15 +126,14 @@ class SeguroServiceTests {
 		seguroService.save(seguro1);
 			
 	}
-	
-	@AfterEach
-	@Transactional
-	void clearAll() {
-		seguroService.deleteAll();
-		vehiculoService.deleteAll();
-		fraService.deleteAll();
 
-	}
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* 										FUNCIONES DE LOS TESTS													 *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	/* * * * * * * * * * * * *
+	 *   FIND-REMOVE TESTS   *
+	 * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional
@@ -128,6 +148,11 @@ class SeguroServiceTests {
 		Seguro lastSeguro = seguroService.findLastSeguroByVehiculo("1526MVC");
 		assertThat(lastSeguro.getFechaContrato()).isEqualTo(LocalDate.of(2020, 1, 10));
 	}
+	
+	
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional
