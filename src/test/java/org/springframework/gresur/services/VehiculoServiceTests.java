@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,17 +74,20 @@ class VehiculoServiceTests {
 	@BeforeEach
 	@Transactional
 	void initAll() {
-		//TODO REVISAR
-		//Vehiculo
+		
+		/* Vehiculo 1*/
 		
 		Vehiculo vehiculo = new Vehiculo();
 		vehiculo.setMatricula("4040GND");
 		vehiculo.setImagen("doc/images/camionpluma.png");
-		vehiculo.setCapacidad(200.);
-		vehiculo.setDisponibilidad(true);
+		vehiculo.setCapacidad(100.);
+		vehiculo.setDisponibilidad(false); 
 		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
-		vehiculo.setMMA(1050.);
-
+		vehiculo.setMMA(450.);
+		vehiculo.setReparaciones(new ArrayList<Reparacion>());
+		
+		vehiculo = vehiculoService.save(vehiculo);
+		
 		//ITV de vehiculo
 		
 		FacturaRecibida facturaRecibidaITV = new FacturaRecibida();
@@ -116,47 +118,31 @@ class VehiculoServiceTests {
 		Seguro seguro = new Seguro();
 		seguro.setCompania("Linea Directa");
 		seguro.setFechaContrato(LocalDate.of(2018, 05, 21));
-		seguro.setFechaExpiracion(LocalDate.of(2023, 07, 21));
+		seguro.setFechaExpiracion(LocalDate.of(2025, 07, 21));
 		seguro.setRecibidas(facturaRecibidaSeguro);
 		seguro.setTipoSeguro(TipoSeguro.TODORRIESGO);
 		seguro.setVehiculo(vehiculo);
-		seguroService.save(seguro);
+		seguroService.save(seguro);	
 		
-		//Reparacion de vehiculo
 		
-		FacturaRecibida facturaRecibidaReparacion = new FacturaRecibida();
-		facturaRecibidaReparacion.setConcepto(Concepto.GASTOS_VEHICULOS);
-		facturaRecibidaReparacion.setEstaPagada(true);
-		facturaRecibidaReparacion.setImporte(220.);
-		facturaRecibidaReparacion.setFecha(LocalDate.of(2019, 10, 19));
-		facturaRecibidaService.save(facturaRecibidaReparacion);
-
+		/* Como tiene ITV Favorable y Seguro en vigor*/		
+//		vehiculo.setDisponibilidad(true);
+//		vehiculoService.save(vehiculo);
 		
-		Reparacion reparacion = new Reparacion();
-		reparacion.setFechaEntradaTaller(LocalDate.of(2019, 10, 19));
-		reparacion.setFechaSalidaTaller(LocalDate.of(2019, 10, 20));
-		reparacion.setRecibidas(facturaRecibidaReparacion);
-		reparacion.setVehiculo(vehiculo);
-		reparacionService.save(reparacion);
 		
-		List<Reparacion> reparaciones = new ArrayList<>();
-		reparaciones.add(reparacion);
-		vehiculo.setReparaciones(reparaciones);
-
-		vehiculoService.save(vehiculo);
-
-
-		//Vehiculo Carretilla elevadora
+		/* Vehiculo 2*/
 		
 		Vehiculo vehiculo2 = new Vehiculo();
 		vehiculo2.setMatricula("E4040GND");
 		vehiculo2.setImagen("doc/images/carretilaelevadora.png");
 		vehiculo2.setCapacidad(20.);
-		vehiculo2.setDisponibilidad(true);
+		vehiculo2.setDisponibilidad(false);
 		vehiculo2.setTipoVehiculo(TipoVehiculo.CARRETILLA_ELEVADORA);
 		vehiculo2.setMMA(500.);
-
+		vehiculo2.setReparaciones(new ArrayList<Reparacion>());
 		
+		vehiculoService.save(vehiculo2);
+	
 		//ITV de vehiculo
 		
 		FacturaRecibida facturaRecibidaITV2 = new FacturaRecibida();
@@ -187,35 +173,15 @@ class VehiculoServiceTests {
 		Seguro seguro2 = new Seguro();
 		seguro2.setCompania("Linea Directa");
 		seguro2.setFechaContrato(LocalDate.of(2019, 03, 10));
-		seguro2.setFechaExpiracion(LocalDate.of(2023, 07, 21));
+		seguro2.setFechaExpiracion(LocalDate.of(2025, 07, 21));
 		seguro2.setRecibidas(facturaRecibidaSeguro2);
 		seguro2.setTipoSeguro(TipoSeguro.TODORRIESGO);
 		seguro2.setVehiculo(vehiculo2);
 		seguroService.save(seguro2);
 		
-		//Reparacion de vehiculo
-		
-		FacturaRecibida facturaRecibidaReparacion2 = new FacturaRecibida();
-		facturaRecibidaReparacion2.setConcepto(Concepto.GASTOS_VEHICULOS);
-		facturaRecibidaReparacion2.setEstaPagada(true);
-		facturaRecibidaReparacion2.setImporte(220.);
-		facturaRecibidaReparacion2.setFecha(LocalDate.of(2019, 2, 13));
-		facturaRecibidaService.save(facturaRecibidaReparacion2);
-
-		
-		Reparacion reparacion2 = new Reparacion();
-		reparacion2.setFechaEntradaTaller(LocalDate.of(2019, 2, 13));
-		reparacion2.setFechaSalidaTaller(LocalDate.of(2019, 2, 25));
-		reparacion2.setRecibidas(facturaRecibidaReparacion2);
-		reparacion2.setVehiculo(vehiculo2);
-		reparacionService.save(reparacion2);
-		
-		List<Reparacion> reparaciones2 = new ArrayList<>();
-		reparaciones.add(reparacion2);
-		vehiculo.setReparaciones(reparaciones2);
-		vehiculoService.save(vehiculo2);
-
-		
+		/* Como tiene ITV Favorable y Seguro en vigor*/		
+//		vehiculo2.setDisponibilidad(true);
+//		vehiculoService.save(vehiculo2);
 	}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -254,8 +220,8 @@ class VehiculoServiceTests {
 	void deleteVehiculoByMatricula() {
 
 		vehiculoService.deleteByMatricula("4040GND");
-//		vehiculoService.deleteByMatricula("E4040GND");
-		assertThat(vehiculoService.count()).isEqualTo(1);
+		vehiculoService.deleteByMatricula("E4040GND");
+		assertThat(vehiculoService.count()).isEqualTo(0);
 	}
 	
 	@Test
@@ -278,14 +244,13 @@ class VehiculoServiceTests {
 	@Transactional
 	@DisplayName("RN: Formato de Matricula (MatriculaUnsupportedPatternException)")
 	void saveVehiculoWithIncorrectPlate() {
-		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
+		Vehiculo vehiculo = vehiculoService.findByMatricula("4040GND");
 		vehiculo.setMatricula("4040GNDD");
-		Vehiculo vehiculo2 = vehiculoService.findAll().iterator().next();
-		vehiculo.setMatricula("EE4040GND");
+		Vehiculo vehiculo2 = vehiculoService.findByMatricula("E4040GND");
+		vehiculo2.setMatricula("EE4040GND");
 		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculoService.save(vehiculo);});
 		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculoService.save(vehiculo2);});
-		assertThat(vehiculoService.findByMatricula("4040GNDD")).isEqualTo(null);
-		assertThat(vehiculoService.findByMatricula("EE4040GND")).isEqualTo(null);
+
 	}
 	
 	@Test
@@ -293,17 +258,15 @@ class VehiculoServiceTests {
 	@DisplayName("RN: ITV no en vigor (VehiculoIllegalException)")
 	void saveVehiculoWithITV() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
-		ITV itv = itvService.findAll().iterator().next();
-		itv.setExpiracion(LocalDate.of(2020, 12, 11));
-		itvService.save(itv);
-		
+		ITV itv = itvService.findLastITVFavorableByVehiculo(vehiculo.getMatricula());
+		itv.setResultado(ResultadoITV.NEGATIVA);		
+
 		Vehiculo vehiculo2 = vehiculoService.findAll().iterator().next();
-		ITV itv2 = itvService.findAll().iterator().next();
-		itv2.setExpiracion(LocalDate.of(2020, 12, 11));
-		itvService.save(itv2);
+		ITV itv2 = itvService.findLastITVFavorableByVehiculo(vehiculo2.getMatricula());;
+		itv2.setResultado(ResultadoITV.NEGATIVA);
 		
-		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo);});
-		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo2);});
+		assertThrows(VehiculoIllegalException.class, ()->{itvService.save(itv);});
+		assertThrows(VehiculoIllegalException.class, ()->{itvService.save(itv2);});
 	}
 
 
@@ -312,17 +275,15 @@ class VehiculoServiceTests {
 	@DisplayName("RN: Seguro no en vigor (VehiculoIllegalException)")
 	void saveIllegalVehiculoSeguro() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
-		Seguro seguro = seguroService.findAll().iterator().next();
+		Seguro seguro = seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula());
 		seguro.setFechaExpiracion(LocalDate.of(2020, 2, 11));
-		seguroService.save(seguro);
 		
 		Vehiculo vehiculo2 = vehiculoService.findAll().iterator().next();
-		Seguro seguro2 = seguroService.findAll().iterator().next();
+		Seguro seguro2 = seguroService.findLastSeguroByVehiculo(vehiculo2.getMatricula());
 		seguro2.setFechaExpiracion(LocalDate.of(2020, 2, 11));
-		seguroService.save(seguro2);
 
-		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo);});
-		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo2);});
+		assertThrows(VehiculoIllegalException.class, ()->{seguroService.save(seguro);});
+		assertThrows(VehiculoIllegalException.class, ()->{seguroService.save(seguro2);});
 	}
 
 }

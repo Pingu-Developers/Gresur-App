@@ -1,9 +1,11 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.EstadoPedido;
 import org.springframework.gresur.model.Estanteria;
+import org.springframework.gresur.model.LineaEnviado;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Personal;
@@ -32,6 +35,9 @@ public class ProductoService {
 	
 	@Autowired
 	private NotificacionService notificacionService;
+	
+	@Autowired
+	private LineasEnviadoService lineaEnviadoService;
 	
 	@Autowired
 	private AdministradorService adminService;
@@ -72,20 +78,25 @@ public class ProductoService {
 			}
 		}
 		else {
-			if(producto.getStock()>0) 
+			if(producto.getStock()>0) {
 				throw new StockWithoutEstanteriaException("No se puede añadir stock a un producto sin estanteria asociada");	
-	}
+			} else if(producto.getStock()==0) {
+				return productoRepository.save(producto);
+			}
+		}
 		
 		if(producto.getStock() <= producto.getStockSeguridad()) {
 			Notificacion noti = new Notificacion();
 			noti.setTipoNotificacion(TipoNotificacion.SISTEMA);
 			noti.setCuerpo("El producto: '("+producto.getId()+")-"+producto.getNombre()+"' esta a punto de agotarse, considere reponerlo");
+			noti.setFechaHora(LocalDateTime.now());
 			
-			List<Personal> lAdm = new ArrayList<>();
+			List<Personal> adminReceptores = new ArrayList<>();
 			for (Administrador adm : adminService.findAll()) {
-				lAdm.add(adm);
+				adminReceptores.add(adm);
 			}
-			notificacionService.save(noti,lAdm);
+			System.out.println("HOLA" + noti);
+			notificacionService.save(noti, adminReceptores);
 		}
 		
 		return productoRepository.save(producto);
@@ -137,6 +148,11 @@ public class ProductoService {
 	@Transactional(readOnly = true)
 	public List<Producto> findByEstanteria(Categoria c){
 		return productoRepository.findByEstanteriaCategoria(c);
+	}
+	
+	@Transactional(readOnly = true)
+	public Long count() {
+		return productoRepository.count();
 	}
 
 }

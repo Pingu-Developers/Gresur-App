@@ -47,7 +47,7 @@ public class NotificacionService {
 	public List<Notificacion> findAllNotificacionesByEmisorName(String name)throws DataAccessException{
 		return notificacionRepo.findAllNotificacionesByEmisorName(name);
 	}
-	
+	//TODO hace falta meter linea leido?
 	@Transactional(rollbackFor = {NotificacionesLimitException.class, NullPointerException.class})
 	public Notificacion save(Notificacion notificacion,List<Personal> receptores) throws DataAccessException,NotificacionesLimitException,NullPointerException{
 		

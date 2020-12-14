@@ -38,6 +38,10 @@ public class ITVService {
 	public void deleteAll() {
 		this.itvRepository.deleteAll();
 	}
+	@Transactional
+	public void deleteAll(List<ITV> li) {
+		this.itvRepository.deleteAll(li);
+	}
 	
 	@Transactional(readOnly = true)
 	public ITV findById(Long id) throws DataAccessException{
