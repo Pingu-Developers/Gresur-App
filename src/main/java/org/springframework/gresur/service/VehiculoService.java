@@ -40,6 +40,9 @@ public class VehiculoService {
 	private SeguroService seguroService;
 	
 	@Autowired
+	private ReparacionService reparacionService;
+	
+	@Autowired
 	private AdministradorService adminService;
 	
 
@@ -100,15 +103,26 @@ public class VehiculoService {
 	
 	@Transactional
 	public void deleteById(Long id) throws DataAccessException{
+		String matricula = vehiculoRepository.findById(id).get().getMatricula();
+		reparacionService.deleteAll(reparacionService.findByMatricula(matricula));
+		seguroService.deleteAll(seguroService.findByVehiculo(matricula));
+		ITVService.deleteAll(ITVService.findByVehiculo(matricula));
 		vehiculoRepository.deleteById(id);
 	}
-	@Transactional(readOnly = true)
+	
+	@Transactional
 	public void deleteByMatricula(String matricula) throws DataAccessException{
-		 vehiculoRepository.deleteByMatricula(matricula);
+		reparacionService.deleteAll(reparacionService.findByMatricula(matricula));
+		seguroService.deleteAll(seguroService.findByVehiculo(matricula));
+		ITVService.deleteAll(ITVService.findByVehiculo(matricula));
+		vehiculoRepository.deleteByMatricula(matricula);
 	}
 	
 	@Transactional
 	public void deleteAll() throws DataAccessException{
+		reparacionService.deleteAll();
+		seguroService.deleteAll();
+		ITVService.deleteAll();
 		vehiculoRepository.deleteAll();
 	}
 	

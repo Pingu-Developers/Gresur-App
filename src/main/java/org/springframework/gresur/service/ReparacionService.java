@@ -48,9 +48,14 @@ public class ReparacionService {
 		return reparacionRepo.save(reparacion);
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public void deleteAll() throws DataAccessException{
 		reparacionRepo.deleteAll();
+	}
+	
+	@Transactional
+	public void deleteAll(List<Reparacion> lr) throws DataAccessException{
+		reparacionRepo.deleteAll(lr);
 	}
 	
 }
