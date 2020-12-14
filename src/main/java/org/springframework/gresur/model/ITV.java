@@ -2,6 +2,7 @@ package org.springframework.gresur.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -25,24 +26,28 @@ public class ITV extends BaseEntity implements Comparable<ITV>{
 	
 	@NotNull
 	@PastOrPresent
+	@Column(name = "fecha")
 	private LocalDate fecha;
 
 	@NotNull
+	@Column(name = "expiracion")
 	private LocalDate expiracion;
 	
 	@NotNull
 	@Enumerated(value = EnumType.STRING)
+	@Column(name = "resultado")
 	private ResultadoITV resultado;
 	
 	@JsonIgnore
 	@NotNull
 	@OneToOne(optional = false)
-	@JoinColumn(name = "facturas_recibidas")
+	@JoinColumn(name = "factura_recibida_id")
 	private FacturaRecibida recibidas;
 	
 	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
+	@JoinColumn(name = "vehiculo_id")
 	private Vehiculo vehiculo;
 
 	@Override

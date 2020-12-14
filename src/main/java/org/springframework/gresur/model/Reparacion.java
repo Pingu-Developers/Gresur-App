@@ -2,6 +2,7 @@ package org.springframework.gresur.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -23,19 +24,21 @@ public class Reparacion extends BaseEntity{
 
 	@NotNull
 	@PastOrPresent
+	@Column(name = "fecha_entrada_taller")
 	protected LocalDate fechaEntradaTaller;
 	
-	
+	@Column(name = "fecha_salida_taller")
 	protected LocalDate fechaSalidaTaller;
 	
 	@JsonIgnore
 	@NotNull
 	@OneToOne(optional = false)
-	@JoinColumn(name = "facturas_recibidas")
+	@JoinColumn(name = "factura_recibida_id")
 	private FacturaRecibida recibidas;
 	
 	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
+	@JoinColumn(name= "vehiculo_id")
 	private Vehiculo vehiculo;
 }
