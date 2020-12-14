@@ -53,6 +53,10 @@ public class SeguroService {
 	public void deleteAll() {
 		seguroRepo.deleteAll();
 	}
+	@Transactional
+	public void deleteAll(List<Seguro> ls) {
+		seguroRepo.deleteAll(ls);
+	}
 	
 	@Transactional(readOnly = true)
 	public Seguro findLastSeguroByVehiculo(String matricula) {

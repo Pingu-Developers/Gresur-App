@@ -11,15 +11,12 @@ import org.springframework.gresur.service.EncargadoDeAlmacenService;
 import org.springframework.gresur.service.EstanteriaService;
 import org.springframework.gresur.service.FacturaEmitidaService;
 import org.springframework.gresur.service.FacturaRecibidaService;
-import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.LineasEnviadoService;
 import org.springframework.gresur.service.LineasFacturaService;
 import org.springframework.gresur.service.NotificacionService;
 import org.springframework.gresur.service.PedidoService;
 import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.service.ProveedorService;
-import org.springframework.gresur.service.ReparacionService;
-import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.TransportistaService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.stereotype.Service;
@@ -29,12 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DBUtility {
 	@Autowired
 	private ConfiguracionService configService;
-	@Autowired
-	private SeguroService seguroService;
-	@Autowired
-	private ITVService ITVService;
-	@Autowired
-	private ReparacionService reparacionService;
 	@Autowired
 	private VehiculoService vehiculoService;
 	@Autowired
@@ -78,9 +69,6 @@ public class DBUtility {
 	public void clearDB() {
 		configService.deleteAll();
 		pedidoService.deleteAll();
-		seguroService.deleteAll();
-		ITVService.deleteAll();
-		reparacionService.deleteAll();
 		vehiculoService.deleteAll();
 		lfService.deleteAll();
 		facturaEmitidaService.deleteAll();
