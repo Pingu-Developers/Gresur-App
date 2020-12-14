@@ -72,7 +72,7 @@ class NotificacionServiceTests {
 		Configuracion config = new Configuracion();
 		config.setNumMaxNotificaciones(1);
 		config.setSalarioMinimo(950.);
-		configuracionService.updateConfig(config);
+		configuracionService.save(config);
 		
 		
 		//Creamos personal que se envía y recibe la notificacion

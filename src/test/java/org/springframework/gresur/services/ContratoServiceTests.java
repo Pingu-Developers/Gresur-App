@@ -66,7 +66,7 @@ class ContratoServiceTests {
 		conf.setSalarioMinimo(900.00);
 		conf.setNumMaxNotificaciones(100);
 		
-		confService.updateConfig(conf);
+		confService.save(conf);
 		
 		//CREACION DE ADMINISTRADOR
 		Administrador adm = new Administrador();
