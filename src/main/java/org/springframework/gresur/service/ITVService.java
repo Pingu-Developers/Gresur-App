@@ -2,10 +2,11 @@ package org.springframework.gresur.service;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import javax.persistence.Persistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.ITV;
-import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.ITVRepository;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
@@ -80,7 +81,9 @@ public class ITVService {
 			}
 		}
 
-		return itvRepository.save(itv);
+		ITV ret = itvRepository.save(itv);
+		Persistence.createEntityManagerFactory("ITV").createEntityManager().flush(); //TODO añadir a todos los servicios (si funciona)
+		return ret;
 	}
 	
 	@Transactional
