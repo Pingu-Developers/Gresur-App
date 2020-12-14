@@ -2,9 +2,11 @@ package org.springframework.gresur.model;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -23,6 +25,7 @@ import lombok.EqualsAndHashCode;
 public class Pedido extends BaseEntity{
 
 	@NotBlank
+	@Column(name = "direccion_envio")
 	private String direccionEnvio;
 	
 	@Enumerated(value = EnumType.STRING)
@@ -30,17 +33,21 @@ public class Pedido extends BaseEntity{
 	private EstadoPedido estado;
 	
 	@NotNull
+	@Column(name = "fecha_envio")
 	private LocalDate fechaEnvio;
 	
 	@JsonIgnore
 	@NotNull
 	@OneToOne(optional = false)
+	@JoinColumn(name = "factura_emitida_id")
 	private FacturaEmitida facturaEmitida;
 	
 	@JsonIgnore
 	@ManyToOne
+	@JoinColumn(name = "vehiculo_id")
 	private Vehiculo vehiculo;
 	
 	@ManyToOne
+	@JoinColumn(name = "transportista_id")
 	private Transportista transportista;
 }
