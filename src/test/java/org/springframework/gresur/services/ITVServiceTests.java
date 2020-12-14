@@ -67,7 +67,7 @@ class ITVServiceTests {
 		
 	@BeforeEach
 	@Transactional
-	void initAll() {
+	void initAll() { //TODO USAR NOMBRES MAS INTUITIVOS
 		
 		List<Reparacion> ls = new ArrayList<>();
 		Vehiculo vehiculo = new Vehiculo();
