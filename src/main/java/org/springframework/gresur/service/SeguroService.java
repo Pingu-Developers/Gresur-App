@@ -42,6 +42,13 @@ public class SeguroService {
 	public List<Seguro> findByVehiculo(String matricula) throws DataAccessException{
 		return seguroRepo.findByVehiculoMatricula(matricula);
 	}
+	
+	@Transactional
+	public void deleteById(Long id) throws DataAccessException{
+		seguroRepo.deleteById(id);
+	}
+	
+	
 	@Transactional
 	public void deleteAll() {
 		seguroRepo.deleteAll();

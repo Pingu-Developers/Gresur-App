@@ -72,7 +72,7 @@ class ReparacionServiceTests {
 		vehiculo.setMatricula("4040GND");
 		vehiculo.setImagen("doc/images/camionpluma.png");
 		vehiculo.setCapacidad(100.);
-		vehiculo.setDisponibilidad(false); //Probar
+		vehiculo.setDisponibilidad(false);
 		vehiculo.setTipoVehiculo(TipoVehiculo.FURGONETA);
 		vehiculo.setMMA(450.);
 		/* Guardamos el vehiculo con sus reparaciones*/
@@ -130,6 +130,8 @@ class ReparacionServiceTests {
 		reparaciones.add(reparacion);
 		reparaciones.add(reparacion2);
 		reparaciones.add(reparacion3);
+		
+		vehiculo.setDisponibilidad(true);
 	}
 
 	
