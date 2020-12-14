@@ -286,23 +286,23 @@ INSERT INTO LINEAS_ENVIADO(leido, notificacion_id, personal_id)
 	
 	
 INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
-	VALUES (1, TRUE, TO_DATE('2020/06/10', 'YYYY/MM/DD'), 207.87, 1, 4);
+	VALUES (1, TRUE, TO_DATE('2020/12/20', 'YYYY/MM/DD'), 207.87, 1, 4);
 
 INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
-	VALUES (2, FALSE, TO_DATE('2020/09/15', 'YYYY/MM/DD'), 92.95, 2, 4);
+	VALUES (2, FALSE, TO_DATE('2020/12/21', 'YYYY/MM/DD'), 92.95, 2, 4);
 	
 INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
-	VALUES (3, TRUE, TO_DATE('2020/11/12', 'YYYY/MM/DD'), 497.99, 3, 4);
+	VALUES (3, TRUE, TO_DATE('2020/12/22', 'YYYY/MM/DD'), 497.99, 3, 4);
 
 INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
-	VALUES (4, TRUE, TO_DATE('2020/07/09', 'YYYY/MM/DD'), 1111.38, 4, 4);
+	VALUES (4, TRUE, TO_DATE('2020/12/23', 'YYYY/MM/DD'), 1111.38, 4, 4);
 	
 INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
-	VALUES (5, TRUE, TO_DATE('2020/07/09', 'YYYY/MM/DD'), 1157.38, 5, 4);
+	VALUES (5, TRUE, TO_DATE('2019/12/24', 'YYYY/MM/DD'), 1157.38, 5, 4);
 	
 	
 INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
-	VALUES (6, TRUE, TO_DATE('2020/06/10', 'YYYY/MM/DD'), 150.00, 'REPOSICION_STOCK', 'Reposicion de stock de Azulejo Kenia de pasta blanca blanco', 1);
+	VALUES (6, TRUE, TO_DATE('2019/05/09', 'YYYY/MM/DD'), 150.00, 'REPOSICION_STOCK', 'Reposicion de stock de Azulejo Kenia de pasta blanca blanco', 1);
 
 INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
 	VALUES (7, FALSE, TO_DATE('2020/09/15', 'YYYY/MM/DD'), 123.20, 'GASTOS_VEHICULOS', 'Reparacion pinchazo rueda camion', null);
@@ -314,10 +314,40 @@ INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, pr
 	VALUES (9, TRUE, TO_DATE('2020/07/10', 'YYYY/MM/DD'), 75.00, 'REPOSICION_STOCK', 'Reposicion de stock de Azulejo Kenia de pasta blanca blanco', 1);
 	
 INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
-	VALUES (10, TRUE, TO_DATE('2020/11/14', 'YYYY/MM/DD'), 99.20, 'GASTOS_VEHICULOS', 'Picaporte puerta trasera', null);
+	VALUES (10, TRUE, TO_DATE('2020/12/12', 'YYYY/MM/DD'), 99.20, 'GASTOS_VEHICULOS', 'Reparacion Picaporte puerta trasera', null);
 	
 INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
 	VALUES (11, TRUE, TO_DATE('2020/10/10', 'YYYY/MM/DD'), 29.15, 'PAGO_IMPUESTOS', 'Pago impuestos del trimestre', null);
+	
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (12, TRUE, TO_DATE('2020/08/12', 'YYYY/MM/DD'), 100.00, 'GASTOS_VEHICULOS', 'Pago de Seguro Mapfre', null);
+	
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (13, TRUE, TO_DATE('2020/07/12', 'YYYY/MM/DD'), 140.00, 'GASTOS_VEHICULOS', 'Pago de Seguro Liberty', null);
+	
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (14, TRUE, TO_DATE('2020/09/12', 'YYYY/MM/DD'), 99.00, 'GASTOS_VEHICULOS', 'Pago de Seguro Mutua', null);
+	
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (15, TRUE, TO_DATE('2020/11/12', 'YYYY/MM/DD'), 79.00, 'GASTOS_VEHICULOS', 'Pago de Seguro Pelayo', null);
+
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (16, TRUE, TO_DATE('2019/12/12', 'YYYY/MM/DD'), 103.00, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
+	
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (17, TRUE, TO_DATE('2020/01/13', 'YYYY/MM/DD'), 98.00, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
+	
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (18, TRUE, TO_DATE('2020/02/17', 'YYYY/MM/DD'), 102.40, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
+	
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (19, FALSE, TO_DATE('2020/03/01', 'YYYY/MM/DD'), 68.30, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
+	
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (20, TRUE, TO_DATE('2019/12/20', 'YYYY/MM/DD'), 107.10, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
+
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+	VALUES (21, TRUE, TO_DATE('2020/05/07', 'YYYY/MM/DD'), 198.30, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
 
 
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
@@ -392,8 +422,8 @@ INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, disponibilidad, tipo_veh
 	VALUES ('8456LDX', 'https://i.pinimg.com/originals/61/56/21/615621dc25f20260922e993d6bfac872.png', 28.00, FALSE, 'CAMION', 3000.00);
 
 INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, disponibilidad, tipo_vehiculo, MMA)
-	VALUES ('E5798JMC', 'https://images.vexels.com/media/users/3/127764/isolated/preview/44ae2845c5a453b600b68b6e49e85326-icono-log--stico-de-carretilla-elevadora-by-vexels.png',
-				4.00, TRUE, 'CARRETILLA_ELEVADORA', 7339.00);
+	VALUES ('E5798JMC', 'https://images.vexels.com/media/users/3/127764/isolated/preview/44ae2845c5a453b600b68b6e49e85326-icono-log--stico-de-carretilla-elevadora-by-vexels.png'
+				,4.00, TRUE, 'CARRETILLA_ELEVADORA', 7339.00);
 
 INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, disponibilidad, tipo_vehiculo, MMA)
 	VALUES ('7329MSG', 'https://cdn.pixabay.com/photo/2017/01/23/10/54/van-2002079_960_720.png', 12.00, TRUE, 'FURGONETA', 3500.00);
@@ -402,18 +432,59 @@ INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, disponibilidad, tipo_veh
 	VALUES ('6539LOP', 'https://cdn.pixabay.com/photo/2017/01/23/10/54/van-2002079_960_720.png', 9.00, FALSE, 'FURGONETA', 2700.00);
 
 INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, disponibilidad, tipo_vehiculo, MMA)
-	VALUES ('5319KKF', 'https://e7.pngegg.com/pngimages/967/575/png-clipart-crane-crane.png', 25.00, TRUE, 'GRUA', 9000.00);
+	VALUES ('5319KKF', 'https://e7.pngegg.com/pngimages/967/575/png-clipart-crane-crane.png', 25.00, FALSE, 'GRUA', 9000.00);
 
 
+INSERT INTO REPARACIONES(fecha_entrada_taller, fecha_salida_taller, factura_recibida_id, vehiculo_id)
+	VALUES (TO_DATE('2019/05/09','YYYY/MM/DD'), TO_DATE('2019/07/09','YYYY/MM/DD'), 7, 1);
+
+INSERT INTO REPARACIONES(fecha_entrada_taller, fecha_salida_taller, factura_recibida_id, vehiculo_id)
+	VALUES (TO_DATE('2020/12/12','YYYY/MM/DD'), null, 10, 2);
+
+	
+INSERT INTO SEGUROS(compania, tipo_seguro, fecha_contrato, fecha_expiracion, factura_recibida_id, vehiculo_id)
+	VALUES ('MAPFRE', 'TODORRIESGO', TO_DATE('2020/08/12','YYYY/MM/DD'), TO_DATE('2020/12/01','YYYY/MM/DD'), 12, 1);
+	
+INSERT INTO SEGUROS(compania, tipo_seguro, fecha_contrato, fecha_expiracion, factura_recibida_id, vehiculo_id)
+	VALUES ('LIBERTY', 'TERCEROS', TO_DATE('2020/07/12','YYYY/MM/DD'), TO_DATE('2020/12/01','YYYY/MM/DD'), 13, 2);
+
+INSERT INTO SEGUROS(compania, tipo_seguro, fecha_contrato, fecha_expiracion, factura_recibida_id, vehiculo_id)
+	VALUES ('MUTUA', 'TERCEROS_AMPLIADO', TO_DATE('2020/09/12','YYYY/MM/DD'), TO_DATE('2020/12/01','YYYY/MM/DD'), 14, 3);
+
+INSERT INTO SEGUROS(compania, tipo_seguro, fecha_contrato, fecha_expiracion, factura_recibida_id, vehiculo_id)
+	VALUES ('PELAYO', 'TODORRIESGO', TO_DATE('2020/11/12','YYYY/MM/DD'), TO_DATE('2020/12/01','YYYY/MM/DD'), 15, 4);
 
 
+INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
+	VALUES (TO_DATE('2019/12/12','YYYY/MM/DD'), TO_DATE('2020/12/12','YYYY/MM/DD'), 'FAVORABLE', 16, 1);
+	
+INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
+	VALUES (TO_DATE('2020/01/13','YYYY/MM/DD'), TO_DATE('2020/11/10','YYYY/MM/DD'), 'DESFAVORABLE', 17, 2);
+	
+INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
+	VALUES (TO_DATE('2020/02/17','YYYY/MM/DD'), TO_DATE('2020/10/21','YYYY/MM/DD'), 'FAVORABLE', 18, 3);
+	
+INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
+	VALUES (TO_DATE('2020/03/01','YYYY/MM/DD'), TO_DATE('2020/09/09','YYYY/MM/DD'), 'FAVORABLE', 19, 4);
+	
+INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
+	VALUES (TO_DATE('2019/12/20','YYYY/MM/DD'), TO_DATE('2020/12/01','YYYY/MM/DD'), 'DESFAVORABLE', 20, 5);
+	
+INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
+	VALUES (TO_DATE('2020/05/07','YYYY/MM/DD'), TO_DATE('2020/11/11','YYYY/MM/DD'), 'NEGATIVA', 21, 6);
+	
 
+INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
+	VALUES ('Calle Der Cadi Depe nº1 Bloque C Piso 3 Puerta 1 (Cadiz)', 'EN_ESPERA', TO_DATE('2021/01/01','YYYY/MM/DD'), 1, NULL, NULL);
 
-
-
-
-
-
-
-
-
+INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
+	VALUES ('Ronda Iglesia, 44, 49492, Fresno De Sayago(Zamora)', 'PREPARADO', TO_DATE('2020/12/23','YYYY/MM/DD'), 2, NULL, 5);
+	
+INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
+	VALUES ('Campo Horno, 51, 18355, Dúdar(Granada)', 'PREPARADO', TO_DATE('2021/01/01','YYYY/MM/DD'), 3, NULL, 6);
+	
+INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
+	VALUES ('Kalea De España, 66, 46107, Sant Joanet(Valencia)', 'EN_REPARTO', TO_DATE('2021/01/01','YYYY/MM/DD'), 4, 1, 5);
+	
+INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
+	VALUES ('Praza Catalunya, 2, 20341, Itsasondo(Gipuzkoa)', 'ENTREGADO', TO_DATE('2019/14/01','YYYY/MM/DD'), 5, 4, 6);
