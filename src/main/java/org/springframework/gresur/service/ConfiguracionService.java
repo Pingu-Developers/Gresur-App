@@ -23,14 +23,8 @@ public class ConfiguracionService {
 	}
 	
 	@Transactional
-	public Configuracion updateConfig(Configuracion config) {
-		Configuracion actual = this.getConfig();
-		if (config.getSalarioMinimo() != actual.getSalarioMinimo()) {
-			actual.setSalarioMinimo(config.getSalarioMinimo());
-		} if (config.getNumMaxNotificaciones() != actual.getNumMaxNotificaciones()) {
-			actual.setNumMaxNotificaciones(config.getNumMaxNotificaciones());
-		}
-		return configRepo.save(actual);
+	public Configuracion save(Configuracion config) {
+		return configRepo.save(config);
 	}
 	
 	public Double getSalarioMinimo() {
