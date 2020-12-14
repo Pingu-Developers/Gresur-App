@@ -171,6 +171,7 @@ class ReparacionServiceTests {
 		Reparacion reparacion = reparacionService.findAll().iterator().next();
 		reparacion.setFechaEntradaTaller(LocalDate.of(2020, 10, 22));
 		assertThrows(FechaFinNotAfterFechaInicioException.class, ()->{reparacionService.save(reparacion);});
+		//TODO comprobar que se haga rollback
 	}
 
 

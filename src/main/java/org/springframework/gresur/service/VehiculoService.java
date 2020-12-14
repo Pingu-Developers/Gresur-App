@@ -55,7 +55,7 @@ public class VehiculoService {
 	}
 	@Transactional(readOnly = true)
 	public Vehiculo findByMatricula(String matricula) throws DataAccessException{
-		return vehiculoRepository.findByMatricula(matricula);
+		return vehiculoRepository.findByMatricula(matricula).orElse(null);
 	}
 	
 	@Transactional(readOnly = true)
