@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SeguroService {
+
+	@PersistenceContext
+	private EntityManager em;
 	
 	private SeguroRepository seguroRepo;
 
@@ -25,10 +28,6 @@ public class SeguroService {
 	
 	@Autowired
 	private VehiculoService vehiculoService;
-	
-	@PersistenceContext
-	private EntityManager em;
-	
 	
 	@Autowired
 	public SeguroService(SeguroRepository seguroRepo) {
@@ -53,7 +52,6 @@ public class SeguroService {
 	public void deleteById(Long id) throws DataAccessException{
 		seguroRepo.deleteById(id);
 	}
-	
 	
 	@Transactional
 	public void deleteAll() {
@@ -91,6 +89,7 @@ public class SeguroService {
 		em.flush();
 		return ret;
 	}
+	
 	@Transactional
 	public Long count() {
 		return seguroRepo.count();

@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Administrador;
@@ -27,6 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ProductoService {
+
+	@PersistenceContext
+	private EntityManager em;
 	
 	private ProductoRepository productoRepository;
 	private PedidoRepository pedidoRepository;
@@ -94,7 +100,9 @@ public class ProductoService {
 			notificacionService.save(noti, adminReceptores);
 		}
 		
-		return productoRepository.save(producto);
+		Producto ret = productoRepository.save(producto);
+		em.flush();
+		return ret;
 	}
 	
 	@Transactional

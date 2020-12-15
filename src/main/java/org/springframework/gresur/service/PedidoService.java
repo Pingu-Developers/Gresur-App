@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.EstadoPedido;
@@ -24,6 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class PedidoService {
 
+	@PersistenceContext
+	private EntityManager em;
+	
 	private PedidoRepository pedidoRepo;
 
 	@Autowired
@@ -54,7 +60,7 @@ public class PedidoService {
 
 	@Transactional
 	public Pedido save(Pedido pedido) throws DataAccessException {
-		
+		Pedido ret;
 		Vehiculo vehiculo = pedido.getVehiculo();
 		LocalDate fecha = pedido.getFechaEnvio();
 		
@@ -95,19 +101,20 @@ public class PedidoService {
 				}
 				
 				else {
-					return pedidoRepo.save(pedido);
+					ret =  pedidoRepo.save(pedido);
 				}
 			} else {
 				throw new PedidoLogisticException();
 			}
 		} else {
 			if(pedido.getTransportista() == null && pedido.getEstado().equals(EstadoPedido.EN_ESPERA) || pedido.getTransportista()!= null && pedido.getEstado().equals(EstadoPedido.PREPARADO)) {
-				return pedidoRepo.save(pedido);
+				ret = pedidoRepo.save(pedido);
 			} else {
 				throw new PedidoLogisticException();
 			}
 		}
-		
+		em.flush();
+		return ret;
 	}
 	
 	@Transactional(readOnly = true)

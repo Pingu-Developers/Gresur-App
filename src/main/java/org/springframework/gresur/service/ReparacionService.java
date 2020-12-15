@@ -3,6 +3,9 @@ package org.springframework.gresur.service;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Reparacion;
@@ -14,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ReparacionService {
 
+	@PersistenceContext
+	private EntityManager em;
+	
 	private ReparacionRepository reparacionRepo;
 	
 	@Autowired
@@ -44,7 +50,9 @@ public class ReparacionService {
 		
 		FechaInicioFinValidation.fechaInicioFinValidation(Reparacion.class,fechaInicio, fechaFin);
 		
-		return reparacionRepo.save(reparacion);
+		Reparacion ret = reparacionRepo.save(reparacion);
+		em.flush();
+		return ret;
 	}
 
 	@Transactional

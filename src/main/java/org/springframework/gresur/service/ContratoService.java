@@ -2,6 +2,9 @@ package org.springframework.gresur.service;
 
 import java.time.LocalDate;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Contrato;
@@ -13,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ContratoService {
+	
+	@PersistenceContext
+	private EntityManager em;
 	
 	private ContratoRepository contratoRepository;
 	
@@ -46,7 +52,9 @@ public class ContratoService {
 
 		FechaInicioFinValidation.fechaInicioFinValidation(Contrato.class,fechaInicio, fechaFin);
 		
-		return contratoRepository.save(contrato);
+		Contrato ret = contratoRepository.save(contrato);
+		em.flush();
+		return ret;
 	}
 	
 	@Transactional
