@@ -169,9 +169,7 @@ class NotificacionServiceTests {
 	@Transactional
 	@DisplayName("RN: Limite de notificaciones (NotificacionesLimitException)")
 	void saveNotificacionesLimitExceded() {
-		
-		// Creamos una notificacion para comprobar que se excede el limite de notificaciones
-		
+				
 		Personal emisor = personalService.findByNIF("11170284R");
 		Personal receptor = personalService.findByNIF("12170284R");
 		Personal receptor2 = personalService.findByNIF("12240284R");
@@ -181,15 +179,14 @@ class NotificacionServiceTests {
 		noc.setTipoNotificacion(TipoNotificacion.NORMAL);
 		noc.setFechaHora(LocalDateTime.of(2020, 12, 13, 18, 30));
 		noc.setEmisor(emisor);
+		noc.setId(201L);
 		List<Personal> receptores = new ArrayList<Personal>();
 		receptores.add(receptor);
 		receptores.add(receptor2);
 		notificacionService.save(noc,receptores);
 
 		assertThrows(NotificacionesLimitException.class, ()->{notificacionService.save(noc,receptores);});
-		//TODO Comprobar que se haga rollback
+		assertThat(notificacionService.findById(201L)).isNotEqualTo(noc);
 	}
-
-	
 	
 }

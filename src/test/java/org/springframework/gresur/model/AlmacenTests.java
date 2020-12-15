@@ -2,8 +2,6 @@ package org.springframework.gresur.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;

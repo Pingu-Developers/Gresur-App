@@ -67,12 +67,11 @@ public class DBUtility {
 	
 	@Transactional
 	public void clearDB() {
-		configService.deleteAll();
 		pedidoService.deleteAll();
 		vehiculoService.deleteAll();
 		lfService.deleteAll();
-		facturaEmitidaService.deleteAll();
 		facturaRecibidaService.deleteAll();
+		facturaEmitidaService.deleteAll();
 		lnService.deleteAll();
 		notificacionService.deleteAll();
 		contratoService.deleteAll();
@@ -85,5 +84,6 @@ public class DBUtility {
 		productoService.deleteAll();
 		estanteriaService.deleteAll();
 		almacenService.deleteAll();	
+		configService.deleteAll();
 	}
 }

@@ -123,13 +123,7 @@ class VehiculoServiceTests {
 		seguro.setTipoSeguro(TipoSeguro.TODORRIESGO);
 		seguro.setVehiculo(vehiculo);
 		seguroService.save(seguro);	
-		
-		
-		/* Como tiene ITV Favorable y Seguro en vigor*/		
-//		vehiculo.setDisponibilidad(true);
-//		vehiculoService.save(vehiculo);
-		
-		
+				
 		/* Vehiculo 2*/
 		
 		Vehiculo vehiculo2 = new Vehiculo();
@@ -178,10 +172,7 @@ class VehiculoServiceTests {
 		seguro2.setTipoSeguro(TipoSeguro.TODORRIESGO);
 		seguro2.setVehiculo(vehiculo2);
 		seguroService.save(seguro2);
-		
-		/* Como tiene ITV Favorable y Seguro en vigor*/		
-//		vehiculo2.setDisponibilidad(true);
-//		vehiculoService.save(vehiculo2);
+				
 	}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -207,7 +198,7 @@ class VehiculoServiceTests {
 	@Transactional
 	@DisplayName("findVehiculoByMatricula -- Caso Negativo")
 	void findVehiculoByMatriculaNotFound() {
-
+		
 		Vehiculo vehiculo = vehiculoService.findByMatricula("4040LNE");
 		Vehiculo vehiculo2 = vehiculoService.findByMatricula("E3010UND");
 		assertThat(vehiculo).isEqualTo(null);
@@ -250,6 +241,8 @@ class VehiculoServiceTests {
 		vehiculo2.setMatricula("EE4040GND");
 		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculoService.save(vehiculo);});
 		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculoService.save(vehiculo2);});
+		assertThat(vehiculoService.findByMatricula("4040GNDD")).isNotEqualTo(vehiculo);		//NO SE HACE ROLLBACk
+		assertThat(vehiculoService.findByMatricula("EE4040GND")).isNotEqualTo(vehiculo2);	//NO SE HACE ROLLBACK
 
 	}
 	
@@ -260,13 +253,9 @@ class VehiculoServiceTests {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		ITV itv = itvService.findLastITVFavorableByVehiculo(vehiculo.getMatricula());
 		itv.setResultado(ResultadoITV.NEGATIVA);		
-
-		Vehiculo vehiculo2 = vehiculoService.findAll().iterator().next();
-		ITV itv2 = itvService.findLastITVFavorableByVehiculo(vehiculo2.getMatricula());;
-		itv2.setResultado(ResultadoITV.NEGATIVA);
 		
 		assertThrows(VehiculoIllegalException.class, ()->{itvService.save(itv);});
-		assertThrows(VehiculoIllegalException.class, ()->{itvService.save(itv2);});
+		assertThat(itvService.findById(itv.getId())).isNotEqualTo(itv);	//NO SE HACE ROLLBACK
 	}
 
 
@@ -277,13 +266,11 @@ class VehiculoServiceTests {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		Seguro seguro = seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula());
 		seguro.setFechaExpiracion(LocalDate.of(2020, 2, 11));
-		
-		Vehiculo vehiculo2 = vehiculoService.findAll().iterator().next();
-		Seguro seguro2 = seguroService.findLastSeguroByVehiculo(vehiculo2.getMatricula());
-		seguro2.setFechaExpiracion(LocalDate.of(2020, 2, 11));
 
-		assertThrows(VehiculoIllegalException.class, ()->{seguroService.save(seguro);});
-		assertThrows(VehiculoIllegalException.class, ()->{seguroService.save(seguro2);});
+		assertThrows(VehiculoIllegalException.class, ()->{seguroService.save(seguro);});	
+		assertThat(seguroService.findById(seguro.getId())).isNotEqualTo(seguro);		//NO SE HACE ROLLBACK
 	}
+	
+	//TODO Falta probar las RN cuando es nuevo
 
 }

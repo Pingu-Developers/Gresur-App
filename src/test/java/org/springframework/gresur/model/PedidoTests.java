@@ -97,20 +97,5 @@ class PedidoTests extends ValidatorTests{
 		
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
-	
-	@ParameterizedTest
-	@CsvSource({
-		"C/Ligastorro, PREPARADO, 20/02/2020, 3, 0",
-		"C/Diseño y pruebas, ENTREGADO, 20/04/2020, 2, ",
-	})
-	void validatePedidoVehiculoNotNullTest(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
-		
-		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaEnvio, facturaEmitida, vehiculo);
-		
-		Validator validator = createValidator();
-		Set<ConstraintViolation<Pedido>> constraintViolations = validator.validate(pedido);
-		
-		assertThat(constraintViolations.size()).isEqualTo(1);
-	}
-	
+
 }

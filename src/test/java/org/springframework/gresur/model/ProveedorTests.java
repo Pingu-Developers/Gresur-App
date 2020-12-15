@@ -2,8 +2,6 @@ package org.springframework.gresur.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -171,7 +169,7 @@ class ProveedorTests extends ValidatorTests {
 	@ParameterizedTest
 	@CsvSource({
 		"Alberto, 98856332T, manolo@correo.es, 123456789, Up, ES6621000418401234567891",
-		"Wos, 96658774Y, ja@correo.es, 987654321, NFSDIFNSDIFNSIFNSIFNSDUIFNSDUIFNSDIUNFSUDNFUSDNFSUDNFUSDNFUSDNFIUSDNFUNSDFUNSDUFNSDNUFDDDD, ES6621000418401234567891"
+		"Wos, 96658774Y, ja@correo.es, 987654321, C/ Direccion super larga de mas de cien caracteres hecha solo para que explote este campo y s efastidie el sistema, ES6621000418401234567891"
 	})
 	void validateProveedorDireccionSizeTest(String name, String NIF, String email, String tlf, String direccion, String IBAN) {
 		Proveedor proveedor = this.createSUT(name, NIF, email, tlf, direccion, IBAN);

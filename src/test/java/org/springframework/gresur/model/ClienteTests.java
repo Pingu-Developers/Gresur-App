@@ -189,7 +189,7 @@ class ClienteTests extends ValidatorTests{
 	@ParameterizedTest
 	@CsvSource({
 		"Pepe, 98856332T, 123456789, manolo@correo.es, Al, 0",
-		"Pepe2, 98856332X, 123456789, manolo2@correo.es, Aljamir Software S.L. Glorieta Fernando Quiñones Ti, 1"
+		"Pepe2, 98856332X, 123456789, manolo2@correo.es, Aljamir Software S.L. Glorieta Fernando Quiñones Tengo que inventarme cosas mas largas porque esto ahora ocupa cien caracteres, 1"
 		})
 	void validateClienteDireccionSizeTest(String name, String NIF,String tlf, String email, String direccion, Integer ListaFactura) {
 		Cliente cliente = this.createSUT(name, NIF, tlf, email, direccion, ListaFactura);	

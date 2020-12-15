@@ -8,7 +8,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Factura;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.repository.FacturaRepository;
-import org.springframework.gresur.service.exceptions.ClienteDefaulterException;
 import org.springframework.transaction.annotation.Transactional;
 
 public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
@@ -25,11 +24,11 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	
 	@Transactional(readOnly = true)
 	public T findByNumFactura(Long numFactura) throws DataAccessException{
-		return facturaRepo.findById(numFactura).get();
+		return facturaRepo.findById(numFactura).orElse(null);
 	}
 	
 	@Transactional
-	public T save(T facturaRecibida) throws DataAccessException, ClienteDefaulterException {
+	public T save(T facturaRecibida) throws DataAccessException {
 		return facturaRepo.save(facturaRecibida);
 	}
 	
@@ -53,12 +52,7 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	public Iterable<Factura> findAllFacturas() throws DataAccessException{
 		return facturaGRepo.findAll();
 	}
-	
-	@Transactional(readOnly = true)
-	public Factura findFactura(Long numFactura) {
-		return facturaGRepo.findById(numFactura).get();
-	}
-	
+		
 	@Transactional
 	public Long count() {
 		return facturaRepo.count();

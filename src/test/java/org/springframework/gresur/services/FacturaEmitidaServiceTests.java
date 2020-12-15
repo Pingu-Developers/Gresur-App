@@ -220,4 +220,6 @@ public class FacturaEmitidaServiceTests {
 	/* * * * * * * * * * * * * * * *
 	 *   REGLAS DE NEGOCIO TESTS   *
 	 * * * * * * * * * * * * * * * */
+	
+	//TODO RN: No se vende a clientes con impagos
 }

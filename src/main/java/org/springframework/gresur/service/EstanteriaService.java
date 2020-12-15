@@ -36,11 +36,12 @@ public class EstanteriaService{
 		return estanteriaRepository.findByAlmacenId(id);
 	}
 	
-	//TODO Revisar JSQL todos menos uno mismo(filter(x->!x.getId().equals(estanteria.getId())))
+	
 	@Transactional
-	public Estanteria save(Estanteria estanteria) throws DataAccessException,CapacidadEstanteriaExcededException{
+	public Estanteria save(Estanteria estanteria) throws DataAccessException{
 		Almacen almacen = estanteria.getAlmacen();
 		
+		//TODO Revisar JSQL todos menos uno mismo(filter(x->!x.getId().equals(estanteria.getId())))
 		if(almacen.getCapacidad()<(findAllEstanteriaByAlmacen(almacen.getId()).stream().filter(x->!x.getId().equals(estanteria.getId()))
 				.mapToDouble(x->x.getCapacidad()).sum() + estanteria.getCapacidad())) {
 			throw new CapacidadEstanteriaExcededException("Las estanterias exceden la capacidad disponible del almacen");

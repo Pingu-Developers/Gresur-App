@@ -168,20 +168,19 @@ class ITVServiceTests {
 	 *   REGLAS DE NEGOCIO TESTS   *
 	 * * * * * * * * * * * * * * * */
 	
-	//TODO ITV Fantasma
 	@Test
 	@Transactional
-	@DisplayName("RN: Fechas inicio y fin incongruentes")
+	@DisplayName("RN: Fechas inicio y fin incongruentes (update)")
 	void updateFechaException() {
 		ITV itv = itvService.findAll().iterator().next();
 		itv.setExpiracion(LocalDate.of(2020, 1, 1));
 		itv.setFecha(LocalDate.of(2020, 12, 1));
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {itvService.save(itv);});
-		assertThat(itvService.findById(itv.getId())).isNotEqualTo(itv); // TODO NO HACE ROLLBACK
+		assertThat(itvService.findById(itv.getId())).isNotEqualTo(itv); // NO HACE ROLLBACK
 	}
 	
 	@Test
-	@DisplayName("RN: Fechas inicio y fin incongruentes")
+	@DisplayName("RN: Fechas inicio y fin incongruentes (new ITV)")
 	void saveNewFechaException() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		
@@ -201,7 +200,7 @@ class ITVServiceTests {
 		itv.setId(50L);
 		
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {itvService.save(itv);});
-		assertThat(itvService.findLastITVFavorableByVehiculo(vehiculo.getMatricula())).isNotEqualTo(itv);
+		assertThat(itvService.findById(50L)).isNotEqualTo(itv);
 	}
 	
 

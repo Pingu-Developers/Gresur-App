@@ -2,12 +2,15 @@ package org.springframework.gresur.service;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.SeguroRepository;
-import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +25,9 @@ public class SeguroService {
 	
 	@Autowired
 	private VehiculoService vehiculoService;
+	
+	@PersistenceContext
+	private EntityManager em;
 	
 	
 	@Autowired
@@ -61,27 +67,29 @@ public class SeguroService {
 	@Transactional(readOnly = true)
 	public Seguro findLastSeguroByVehiculo(String matricula) {
 		return seguroRepo.findFirstByVehiculoMatriculaOrderByFechaExpiracionDesc(matricula);
-//		return seguroRepo.findByVehiculoMatriculaAndFechaExpiracionAfter(matricula, LocalDate.now())
-//				.stream().max((x,y) -> x.getFechaExpiracion().compareTo(y.getFechaExpiracion())).orElse(null);
 	}
 	
 	@Transactional
-	public Seguro save(Seguro seguro) throws DataAccessException, FechaFinNotAfterFechaInicioException{
+	public Seguro save(Seguro seguro) throws DataAccessException{
 		
 		LocalDate fechaInicio = seguro.getFechaContrato();
 		LocalDate fechaFin = seguro.getFechaExpiracion();
 		
 		FechaInicioFinValidation.fechaInicioFinValidation(Seguro.class,fechaInicio, fechaFin);
 		
-		if(seguro.getFechaExpiracion().isAfter(LocalDate.now())) {
-			Vehiculo vehiculo = seguro.getVehiculo();
+		Vehiculo vehiculo = seguro.getVehiculo();
+		Seguro ultimoSeguroGuardado = findLastSeguroByVehiculo(vehiculo.getMatricula());
+		Boolean isLast = ultimoSeguroGuardado == null || !ultimoSeguroGuardado.getFechaExpiracion().isAfter(seguro.getFechaExpiracion());
+			
 
-			if(ITVService.findLastITVFavorableByVehiculo(vehiculo.getMatricula()) != null) {
-				vehiculo.setDisponibilidad(true);
-				vehiculoService.save(vehiculo); 
-			}
+		if(isLast && ITVService.findLastITVFavorableByVehiculo(vehiculo.getMatricula()) != null) {
+			vehiculo.setDisponibilidad(true);			
 		}
-		return seguroRepo.save(seguro);
+		
+		Seguro ret = seguroRepo.save(seguro);
+		vehiculoService.save(vehiculo); 
+		em.flush();
+		return ret;
 	}
 	@Transactional
 	public Long count() {

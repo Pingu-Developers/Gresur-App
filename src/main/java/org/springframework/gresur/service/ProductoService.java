@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.EstadoPedido;
 import org.springframework.gresur.model.Estanteria;
-import org.springframework.gresur.model.LineaEnviado;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Personal;
@@ -35,9 +33,6 @@ public class ProductoService {
 	
 	@Autowired
 	private NotificacionService notificacionService;
-	
-	@Autowired
-	private LineasEnviadoService lineaEnviadoService;
 	
 	@Autowired
 	private AdministradorService adminService;
@@ -61,11 +56,11 @@ public class ProductoService {
 
 	@Transactional(readOnly = true)
 	public Producto findById(Long id) throws DataAccessException{
-		return productoRepository.findById(id).get();
+		return productoRepository.findById(id).orElse(null);
 	}
 
-	@Transactional(rollbackFor = {CapacidadProductoExcededException.class,StockWithoutEstanteriaException.class})
-	public Producto save(Producto producto) throws DataAccessException,CapacidadProductoExcededException, StockWithoutEstanteriaException {
+	@Transactional
+	public Producto save(Producto producto) throws DataAccessException {
 		Estanteria estanteria = producto.getEstanteria();
 		if(estanteria != null) {
 			Double capacidadE = estanteria.getCapacidad();

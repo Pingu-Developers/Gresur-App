@@ -66,10 +66,8 @@ public class VehiculoService {
 		return vehiculoRepository.findById(id).get();
 	}
 
-	
-	//TODO COMPROBAR TODOS LOS PATRONES. NO SE VALIDAN CON .equals, SE VALIDAN CON Pattern.matches
-	@Transactional(rollbackFor = MatriculaUnsupportedPatternException.class)
-	public Vehiculo save(Vehiculo vehiculo) throws DataAccessException, MatriculaUnsupportedPatternException, VehiculoIllegalException{
+		@Transactional
+	public Vehiculo save(Vehiculo vehiculo) throws DataAccessException{
 		 TipoVehiculo tipo = vehiculo.getTipoVehiculo();
 		 switch(tipo) {
 		case CAMION:
@@ -82,7 +80,7 @@ public class VehiculoService {
 			if(!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para furgoneta");
 			break;
 		case GRUA:
-			if(!!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para grua");
+			if(!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para grua");
 			break;
 		default:
 			throw new NullPointerException();
@@ -92,12 +90,11 @@ public class VehiculoService {
 		 if((ultimaITV == null || ultimaITV.getResultado() != ResultadoITV.FAVORABLE) && vehiculo.getDisponibilidad()==true){
 			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin ITV valida");
 		 }
-		 //TODO Hay que revisar el findByVehiculoIdAndFechaExpiracionAfter de Seguro porque sino no va a ir
-//		 Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula());
-//		 if(ultimoSeguro == null && vehiculo.getDisponibilidad()==true){
-//			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin Seguro");
-//		 }
-//		 
+		 Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula());
+		 if((ultimoSeguro == null || ultimoSeguro.getFechaExpiracion().isBefore(LocalDate.now())) && vehiculo.getDisponibilidad()==true){
+			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin Seguro");
+		 }
+		 
 		return vehiculoRepository.save(vehiculo);
 	}
 	
@@ -127,9 +124,9 @@ public class VehiculoService {
 	}
 	
 	
-	// Validacion de la ITV y Seguros de los vehículos
+	// TODO Hacer el test de esto de alguna manera
 	@Scheduled(cron = "0 7 * * * *")
-	@Transactional(readOnly = true)
+	@Transactional
 	public void ITVSegurovalidation() throws UnknownException{
 		Iterator<Vehiculo> vehiculos = vehiculoRepository.findAll().iterator();
 		

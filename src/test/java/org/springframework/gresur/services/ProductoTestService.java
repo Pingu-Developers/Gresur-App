@@ -355,16 +355,17 @@ public class ProductoTestService {
 
 	@Test
 	@Transactional
-	@DisplayName("RN: La capacidad de el/los productos excede a la capacidad de la estanteria")
+	@DisplayName("RN: La capacidad de el/los productos excede a la capacidad de la estanteria (update)")
 	void updateProductoVolumenExceded() {
 		Producto p = productoService.findAll().iterator().next();
 		p.setStock(999999);
 		assertThrows(CapacidadProductoExcededException.class, () -> {productoService.save(p);});
+		assertThat(productoService.findById(p.getId())).isNotEqualTo(p); // NO SE HACE ROLLBACK
 	}
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: La capacidad de el/los productos excede a la capacidad de la estanteria")
+	@DisplayName("RN: La capacidad de el/los productos excede a la capacidad de la estanteria (new producto)")
 	void addProductoVolumenExceded() {
 		Estanteria est = estanteriaService.findAll().iterator().next();
 		Producto p = new Producto();
@@ -380,13 +381,15 @@ public class ProductoTestService {
 		p.setStock(200000);
 		p.setStockSeguridad(0);
 		p.setUnidad(Unidad.UNIDADES);
+		p.setId(200L);
 		
 		assertThrows(CapacidadProductoExcededException.class, () -> {productoService.save(p);});
+		assertThat(productoService.findById(200L)).isNotEqualTo(p);
 	}
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: No se puede añadir stock a un producto sin estanteria asociada")
+	@DisplayName("RN: No se puede añadir stock a un producto sin estanteria asociada (new)")
 	void addStockToProductoWithoutEstanteria() {
 		Producto p = new Producto();
 		p.setAlto(1.);
@@ -399,12 +402,14 @@ public class ProductoTestService {
 		p.setProfundo(1.);
 		p.setStock(1);
 		p.setUnidad(Unidad.UNIDADES);
+		p.setId(201L);
 		assertThrows(StockWithoutEstanteriaException.class, () -> {productoService.save(p);});
+		assertThat(productoService.findById(201L)).isNotEqualTo(p);
 	}
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: No se puede añadir stock a un producto sin estanteria asociada")
+	@DisplayName("RN: No se puede añadir stock a un producto sin estanteria asociada (update)")
 	void updateStockToProductoWithoutEstanteria() {
 		Producto p = new Producto();
 		p.setAlto(1.);
@@ -421,6 +426,7 @@ public class ProductoTestService {
 		
 		p.setStock(2);
 		assertThrows(StockWithoutEstanteriaException.class, () -> {productoService.save(p);});
+		assertThat(productoService.findAllProductosByName("Otro vater").get(0)).isNotEqualTo(p);
 	}
 	
 	@Test

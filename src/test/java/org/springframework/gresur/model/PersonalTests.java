@@ -233,8 +233,8 @@ class PersonalTests extends ValidatorTests{
 	@ParameterizedTest
 	@CsvSource({
 		"Pepe, 12345678A, email@email.com, 696823445, C/, 12 1234567890, /resources/lucas.png",
-		"Juan, 12345678C, email2@email.com, 696823445, C/ Semiglorieta candida ruiz de la virgen santisima de las hermanas santas de la santisima concepcion, 12 1234567891, /resources/alex.jpeg",
-		"Paco , 12345678A, email@email.com, 696823445, C/ Este texto tiene exactamente 51 caractere y peta, 12 1234567890, /resources/lucas.png",
+		"Juan, 12345678C, email2@email.com, 696823445, C , 12 1234567891, /resources/alex.jpeg",
+		"Paco , 12345678A, email@email.com, 696823445, C/ Semiglorieta candida ruiz de la virgen santisima de las hermanas santas de la santisima concepcion, 12 1234567890, /resources/lucas.png",
 	})
 	void validatePersonalDireccionSizeTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
 		

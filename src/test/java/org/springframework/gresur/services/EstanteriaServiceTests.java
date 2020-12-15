@@ -133,6 +133,6 @@ class EstanteriaServiceTests {
 		Estanteria est = estanteriaService.findAll().iterator().next();
 		est.setCapacidad(1000000.00);
 		assertThrows(CapacidadEstanteriaExcededException.class, () -> {estanteriaService.save(est);});
-		assertThat(estanteriaService.findAll().iterator().next().getCapacidad()).isNotEqualTo(1000000.00); //TODO No se hace rollback
+		assertThat(estanteriaService.findAll().iterator().next().getCapacidad()).isNotEqualTo(1000000.00); // NO SE HACE ROLLBACK
 	}
 }

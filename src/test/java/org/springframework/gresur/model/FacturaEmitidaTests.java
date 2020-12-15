@@ -17,10 +17,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class FacturaEmitidaTests extends ValidatorTests {
 	
-	//TODO quitar pedido de los datos de entrada de todos los tests y de esta funcion
-	private FacturaEmitida createSUT(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {
+	private FacturaEmitida createSUT(String fecha,Double importe,Boolean pagada,Integer lineasFacturas, Integer dependiente,Integer cliente) {
 		List<LineaFactura> lf = new ArrayList<LineaFactura>();
-		Pedido p = null;
 		Cliente c = null;
 		Dependiente d = null;
 		
@@ -29,8 +27,6 @@ class FacturaEmitidaTests extends ValidatorTests {
 			LineaFactura lf2 = new LineaFactura();
 			lf.add(lf1);
 			lf.add(lf2);
-		} if(pedido != null && pedido > 0) {
-			p = new Pedido();
 		} if(dependiente != null && dependiente > 0) {
 			d = new Dependiente();
 		} if(cliente!= null && cliente > 0) {
@@ -49,14 +45,14 @@ class FacturaEmitidaTests extends ValidatorTests {
 		
 	@ParameterizedTest
 	@CsvSource({
-		"22/11/2020,40.3,true,0,0,1,1",
-		"22/11/2021,40.3,false,1,0,1,1",
-		"22/12/2020,4.3,true,0,1,1,1",
-		"20/11/2021,40.3,false,0,0,1,1",
-		"22/12/2020,400.3,true,0,0,1,1",
+		"22/11/2020,40.3,true,0,1,1",
+		"22/11/2021,40.3,false,1,1,1",
+		"22/12/2020,4.3,true,0,1,1",
+		"20/11/2021,40.3,false,0,1,1",
+		"22/12/2020,400.3,true,0,1,1",
 	})
-	void validateFacturaEmitidaNoErrorsTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {	
-		FacturaEmitida emi = this.createSUT(fecha, importe, pagada, lineasFacturas, pedido, dependiente, cliente);
+	void validateFacturaEmitidaNoErrorsTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas, Integer dependiente,Integer cliente) {	
+		FacturaEmitida emi = this.createSUT(fecha, importe, pagada, lineasFacturas, dependiente, cliente);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<FacturaEmitida>> constraintViolations = validator.validate(emi);
@@ -65,12 +61,12 @@ class FacturaEmitidaTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"20/11/2021,,false,0,0,1,1",
-		"22/12/2020,,true,1,1,1,1",
+		"20/11/2021,,false,0,1,1",
+		"22/12/2020,,true,1,1,1",
 	})
-	void validateFacturaEmitidaImporteNotNullTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {
+	void validateFacturaEmitidaImporteNotNullTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas, Integer dependiente,Integer cliente) {
 		
-		FacturaEmitida facturaEmitida = this.createSUT(fecha, importe, pagada, lineasFacturas, pedido, dependiente, cliente);
+		FacturaEmitida facturaEmitida = this.createSUT(fecha, importe, pagada, lineasFacturas, dependiente, cliente);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<FacturaEmitida>> constraintViolations = validator.validate(facturaEmitida);
@@ -80,12 +76,12 @@ class FacturaEmitidaTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"20/11/2021,-43,false,0,0,1,1",
-		"22/12/2020,-222,true,1,1,1,1",
+		"20/11/2021,-43,false,0,1,1",
+		"22/12/2020,-222,true,1,1,1",
 	})
-	void validateFacturaEmitidaImporteMinTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {
+	void validateFacturaEmitidaImporteMinTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas, Integer dependiente,Integer cliente) {
 		
-		FacturaEmitida facturaEmitida = this.createSUT(fecha, importe, pagada, lineasFacturas, pedido, dependiente, cliente);
+		FacturaEmitida facturaEmitida = this.createSUT(fecha, importe, pagada, lineasFacturas, dependiente, cliente);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<FacturaEmitida>> constraintViolations = validator.validate(facturaEmitida);
@@ -95,12 +91,12 @@ class FacturaEmitidaTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"20/11/2021,454,,0,0,1,1",
-		"22/12/2020,212,,1,1,1,1",
+		"20/11/2021,454,,0,1,1",
+		"22/12/2020,212,,1,1,1",
 	})
-	void validateFacturaEmitidaEstaPagadaNotNullTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {
+	void validateFacturaEmitidaEstaPagadaNotNullTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas, Integer dependiente,Integer cliente) {
 		
-		FacturaEmitida facturaEmitida = this.createSUT(fecha, importe, pagada, lineasFacturas, pedido, dependiente, cliente);
+		FacturaEmitida facturaEmitida = this.createSUT(fecha, importe, pagada, lineasFacturas, dependiente, cliente);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<FacturaEmitida>> constraintViolations = validator.validate(facturaEmitida);
@@ -109,12 +105,12 @@ class FacturaEmitidaTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"20/11/2021,454,true,0,0,0,1",
-		"22/12/2020,212,false,1,1,,1",
+		"20/11/2021,454,true,0,0,1",
+		"22/12/2020,212,false,1,,1",
 	})
-	void validateFacturaEmitidaDependienteNotNullTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {
+	void validateFacturaEmitidaDependienteNotNullTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas ,Integer dependiente,Integer cliente) {
 		
-		FacturaEmitida facturaEmitida = this.createSUT(fecha, importe, pagada, lineasFacturas, pedido, dependiente, cliente);
+		FacturaEmitida facturaEmitida = this.createSUT(fecha, importe, pagada, lineasFacturas, dependiente, cliente);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<FacturaEmitida>> constraintViolations = validator.validate(facturaEmitida);
@@ -123,12 +119,12 @@ class FacturaEmitidaTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"20/11/2021,454,true,0,0,1,0",
-		"22/12/2020,212,false,1,1,1,",
+		"20/11/2021,454,true,0,1,0",
+		"22/12/2020,212,false,1,1,",
 	})
-	void validateFacturaEmitidaClienteNotNullTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas,Integer pedido,Integer dependiente,Integer cliente) {
+	void validateFacturaEmitidaClienteNotNullTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas, Integer dependiente,Integer cliente) {
 		
-		FacturaEmitida facturaEmitida = this.createSUT(fecha, importe, pagada, lineasFacturas, pedido, dependiente, cliente);
+		FacturaEmitida facturaEmitida = this.createSUT(fecha, importe, pagada, lineasFacturas, dependiente, cliente);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<FacturaEmitida>> constraintViolations = validator.validate(facturaEmitida);

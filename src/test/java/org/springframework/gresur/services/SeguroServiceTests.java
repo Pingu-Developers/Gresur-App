@@ -156,19 +156,19 @@ class SeguroServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion")
+	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion (update seguro)")
 
 	void updateSeguroFechaException() {
 		Seguro seguro = seguroService.findAll().iterator().next();
 		seguro.setFechaContrato(LocalDate.of(2020, 1, 1));
 		seguro.setFechaExpiracion(LocalDate.of(2005, 1, 1));
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);});
-		//TODO comprobar que se haga rollback
+		assertThat(seguroService.findAll().iterator().next().getFechaExpiracion()).isNotEqualTo(LocalDate.of(2005, 1, 1)); //No hace rollback
 	}
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion")
+	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion (new seguro)")
 	void addSeguroFechaException() {
 		FacturaRecibida fra = new FacturaRecibida();
 		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
@@ -176,18 +176,23 @@ class SeguroServiceTests {
 		fra.setFecha(LocalDate.of(2020, 1, 10));
 		fra.setImporte(300.50);
 		fra.setProveedor(proveedorService.findByNIF("80871031A"));
+		fra.setId(202L);
 		fraService.save(fra);
 		
 		Seguro seguro = new Seguro();
 		seguro.setCompania("Linea Directa");
-		seguro.setFechaExpiracion(LocalDate.of(2020, 1, 10));
-		seguro.setFechaContrato(LocalDate.of(2100, 12, 12));
+		seguro.setFechaExpiracion(LocalDate.of(2010, 1, 10));
+		seguro.setFechaContrato(LocalDate.of(2020, 1, 10));
 		seguro.setRecibidas(fra);
 		seguro.setTipoSeguro(TipoSeguro.TODORRIESGO);
 		seguro.setVehiculo(vehiculoService.findByMatricula("1526MVC"));
+		seguro.setId(100L);
 		
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);});
-		//TODO comprobar que se haga rollback
+		assertThat(fraService.findByNumFactura(202L)).isNotEqualTo(fra);
+		assertThat(seguroService.findById(100L)).isNotEqualTo(seguro);
 	}
+	//TODO faltan casos positivos de las RN, negativos de los find (los not found) y algunas RN no estan 
+	//testeadas para NUEVOS (si lo estan para los UPDATE) en varios tests de los servicios, no solo aqui
 
 }
