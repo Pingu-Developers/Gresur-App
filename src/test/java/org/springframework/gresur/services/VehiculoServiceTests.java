@@ -230,47 +230,92 @@ class VehiculoServiceTests {
 	/* * * * * * * * * * * * * * * *
 	 *   REGLAS DE NEGOCIO TESTS   *
 	 * * * * * * * * * * * * * * * */	
+	
 
 	@Test
 	@Transactional
-	@DisplayName("RN: Formato de Matricula (MatriculaUnsupportedPatternException)")
+	@DisplayName("RN: Formato de Matricula (new) -- caso negativo")
 	void saveVehiculoWithIncorrectPlate() {
-		Vehiculo vehiculo = vehiculoService.findByMatricula("4040GND");
-		vehiculo.setMatricula("4040GNDD");
-		Vehiculo vehiculo2 = vehiculoService.findByMatricula("E4040GND");
-		vehiculo2.setMatricula("EE4040GND");
+		Vehiculo vehiculo = new Vehiculo();
+		vehiculo.setMatricula("1919291299SKJS");
+		vehiculo.setDisponibilidad(false);
+		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
+		vehiculo.setCapacidad(200.);
+		vehiculo.setMMA(180.0);
+		
 		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculoService.save(vehiculo);});
-		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculoService.save(vehiculo2);});
-		assertThat(vehiculoService.findByMatricula("4040GNDD")).isNotEqualTo(vehiculo);		//NO SE HACE ROLLBACk
-		assertThat(vehiculoService.findByMatricula("EE4040GND")).isNotEqualTo(vehiculo2);	//NO SE HACE ROLLBACK
+		assertThat(vehiculoService.findByMatricula("1919291299SKJS")).isEqualTo(null);	// Comprobacion de rollback
 
 	}
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: ITV no en vigor (VehiculoIllegalException)")
+	@DisplayName("RN: Formato de Matricula (update) -- caso negativo")
+	void updateVehiculoWithIncorrectPlate() {
+		Vehiculo vehiculo = vehiculoService.findByMatricula("4040GND");	
+		Vehiculo vehiculo2 = vehiculoService.findByMatricula("E4040GND");
+		
+		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculo.setMatricula("4040GNDD");});		//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculo2.setMatricula("EE4040GND");});	//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		
+		assertThat(vehiculoService.findByMatricula("4040GNDD")).isNotEqualTo(vehiculo);		// Comprobacion de rollback
+		assertThat(vehiculoService.findByMatricula("EE4040GND")).isNotEqualTo(vehiculo2);	// Comprobacion de rollback
+
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: ITV no en vigor (new) -- caso negativo")
 	void saveVehiculoWithITV() {
+		Vehiculo vehiculo = new Vehiculo();
+		vehiculo.setMatricula("4041GND");
+		vehiculo.setDisponibilidad(true);
+		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
+		vehiculo.setCapacidad(200.);
+		vehiculo.setMMA(180.0);
+						
+		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo);});
+		assertThat(vehiculoService.findByMatricula("4041GND")).isEqualTo(null);	// Comprobacion de rollback
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: ITV no en vigor (update) -- caso negativo")
+	void updateVehiculoWithITV() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		ITV itv = itvService.findLastITVFavorableByVehiculo(vehiculo.getMatricula());
-		itv.setResultado(ResultadoITV.NEGATIVA);		
 		
-		assertThrows(VehiculoIllegalException.class, ()->{itvService.save(itv);});
-		assertThat(itvService.findById(itv.getId())).isNotEqualTo(itv);	//NO SE HACE ROLLBACK
+		assertThrows(VehiculoIllegalException.class, ()->{itv.setResultado(ResultadoITV.NEGATIVA);}); //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		assertThat(itvService.findById(itv.getId())).isNotEqualTo(itv);	// Comprobacion de rollback
 	}
-
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Seguro no en vigor (new) -- caso negativo")
+	void saveVehiculoWithSeguro() {
+		Vehiculo vehiculo = new Vehiculo();
+		vehiculo.setMatricula("4041GND");
+		vehiculo.setDisponibilidad(true);
+		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
+		vehiculo.setCapacidad(200.);
+		vehiculo.setMMA(180.0);
+						
+		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo);});
+		assertThat(vehiculoService.findByMatricula("4041GND")).isEqualTo(null);	// Comprobacion de rollback
+	}
 
 	@Test
 	@Transactional
-	@DisplayName("RN: Seguro no en vigor (VehiculoIllegalException)")
-	void saveIllegalVehiculoSeguro() {
+	@DisplayName("RN: Seguro no en vigor (update) -- caso negativo")
+	void updateIllegalVehiculoSeguro() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		Seguro seguro = seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula());
-		seguro.setFechaExpiracion(LocalDate.of(2020, 2, 11));
+		
 
-		assertThrows(VehiculoIllegalException.class, ()->{seguroService.save(seguro);});	
-		assertThat(seguroService.findById(seguro.getId())).isNotEqualTo(seguro);		//NO SE HACE ROLLBACK
+		assertThrows(VehiculoIllegalException.class, ()->{seguro.setFechaExpiracion(LocalDate.of(2020, 2, 11));});	//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		assertThat(seguroService.findById(seguro.getId())).isNotEqualTo(seguro);		// Comprobacion de rollback
 	}
 	
-	//TODO Falta probar las RN cuando es nuevo
+	//TODO Falta probar un save y un update que funcionen bien (caso positivo)
 
 }

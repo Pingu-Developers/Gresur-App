@@ -137,6 +137,7 @@ class SeguroServiceTests {
 	
 	@Test
 	@Transactional
+	@DisplayName("Busca los seguros de un vehiculo en funcion de su matricula -- caso positivo")
 	void findSegurosByMatricula() {
 		List<Seguro> ls = seguroService.findByVehiculo("1526MVC");
 		assertThat(ls.size()).isEqualTo(2);
@@ -144,9 +145,26 @@ class SeguroServiceTests {
 	
 	@Test
 	@Transactional
+	@DisplayName("Busca los seguros de un vehiculo en funcion de su matricula -- caso negativo")
+	void findSegurosByMatriculaNotFound() {
+		List<Seguro> ls = seguroService.findByVehiculo("1126MSC");
+		assertThat(ls.size()).isEqualTo(0);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Busca el ultimo seguro de un vehiculo -- caso positivo")
 	void findLastSeguroByVehiculo() {
 		Seguro lastSeguro = seguroService.findLastSeguroByVehiculo("1526MVC");
 		assertThat(lastSeguro.getFechaContrato()).isEqualTo(LocalDate.of(2020, 1, 10));
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Busca el ultimo seguro de un vehiculo -- caso negativo")
+	void findLastSeguroByVehiculoNotFound() {
+		Seguro lastSeguro = seguroService.findLastSeguroByVehiculo("1521MSC");
+		assertThat(lastSeguro).isEqualTo(null);
 	}
 	
 	
@@ -156,43 +174,77 @@ class SeguroServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion (update seguro)")
+	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion (update) -- caso positivo")
 
-	void updateSeguroFechaException() {
+	void updateSeguroFechaExceptionPositive() {
 		Seguro seguro = seguroService.findAll().iterator().next();
 		seguro.setFechaContrato(LocalDate.of(2020, 1, 1));
-		seguro.setFechaExpiracion(LocalDate.of(2005, 1, 1));
-		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);});
-		assertThat(seguroService.findAll().iterator().next().getFechaExpiracion()).isNotEqualTo(LocalDate.of(2005, 1, 1)); //No hace rollback
+		seguro.setFechaExpiracion(LocalDate.of(2030, 1, 1));
+		
+		assertThat(seguroService.findAll().iterator().next().getFechaExpiracion()).isEqualTo(LocalDate.of(2030, 1, 1));
 	}
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion (new seguro)")
-	void addSeguroFechaException() {
+	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion (new) -- caso positivo")
+	void addSeguroFechaExceptionPositive() {
 		FacturaRecibida fra = new FacturaRecibida();
 		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
 		fra.setEstaPagada(true);
 		fra.setFecha(LocalDate.of(2020, 1, 10));
 		fra.setImporte(300.50);
 		fra.setProveedor(proveedorService.findByNIF("80871031A"));
-		fra.setId(202L);
-		fraService.save(fra);
+		fra = fraService.save(fra);
 		
 		Seguro seguro = new Seguro();
 		seguro.setCompania("Linea Directa");
-		seguro.setFechaExpiracion(LocalDate.of(2010, 1, 10));
+		seguro.setFechaExpiracion(LocalDate.of(2030, 1, 10));
 		seguro.setFechaContrato(LocalDate.of(2020, 1, 10));
 		seguro.setRecibidas(fra);
 		seguro.setTipoSeguro(TipoSeguro.TODORRIESGO);
 		seguro.setVehiculo(vehiculoService.findByMatricula("1526MVC"));
-		seguro.setId(100L);
+		seguro = seguroService.save(seguro);
+		
+		assertThat(fraService.findByNumFactura(fra.getId())).isEqualTo(fra);
+		assertThat(seguroService.findById(seguro.getId())).isEqualTo(seguro);
+	}
+	
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion (update) -- caso negativo")
+
+	void updateSeguroFechaException() {
+		Seguro seguro = seguroService.findAll().iterator().next();
+		seguro.setFechaContrato(LocalDate.of(2020, 1, 1));
+		
+		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguro.setFechaExpiracion(LocalDate.of(2005, 1, 1));}); //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		assertThat(seguroService.findAll().iterator().next().getFechaExpiracion()).isNotEqualTo(LocalDate.of(2005, 1, 1)); 		//comprobacion de rollback
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Fecha expiracion debe ser posterior a fecha contratacion (new) -- caso negativo")
+	void addSeguroFechaException() {
+		FacturaRecibida fra = new FacturaRecibida();
+		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
+		fra.setEstaPagada(true);
+		fra.setFecha(LocalDate.now());
+		fra.setImporte(300.50);
+		fra.setProveedor(proveedorService.findByNIF("80871031A"));
+		fraService.save(fra);
+		
+		Seguro seguro = new Seguro();
+		seguro.setCompania("Linea Directa");
+		seguro.setFechaExpiracion(LocalDate.now().minusDays(1L));
+		seguro.setFechaContrato(fra.getFecha());
+		seguro.setRecibidas(fra);
+		seguro.setTipoSeguro(TipoSeguro.TODORRIESGO);
+		seguro.setVehiculo(vehiculoService.findByMatricula("1526MVC"));
 		
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);});
-		assertThat(fraService.findByNumFactura(202L)).isNotEqualTo(fra);
-		assertThat(seguroService.findById(100L)).isNotEqualTo(seguro);
+		Seguro lastSeguroBD = seguroService.findLastSeguroByVehiculo(seguro.getVehiculo().getMatricula());
+		assertThat(lastSeguroBD.getRecibidas().getFecha()).isNotEqualTo(LocalDate.now());
+		assertThat(lastSeguroBD).isNotEqualTo(seguro);
 	}
-	//TODO faltan casos positivos de las RN, negativos de los find (los not found) y algunas RN no estan 
-	//testeadas para NUEVOS (si lo estan para los UPDATE) en varios tests de los servicios, no solo aqui
-
 }

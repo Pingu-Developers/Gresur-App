@@ -142,7 +142,7 @@ class ContratoServiceTests {
 		Contrato contrato = contratoService.findAll().iterator().next();
 				
 		assertThrows(SalarioMinimoException.class, () -> {contrato.setNomina(450.00);});		  //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThat(contratoService.findAll().iterator().next().getNomina()).isNotEqualTo(450.00);
+		assertThat(contratoService.findAll().iterator().next().getNomina()).isNotEqualTo(450.00); //Comprobacion de rollback
 	}
 	
 	@Test
