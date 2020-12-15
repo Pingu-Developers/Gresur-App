@@ -40,12 +40,5 @@ public class Vehiculo extends BaseEntity {
 	
 	@NotNull
 	@Min(value = 0, message = "debe ser mayor que cero")
-	private Double MMA;
-	
-	//TODO Esta bidireccionalidad deberiamos quiza quitarla?
-//	@JsonIgnore
-//	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
-//	@ToString.Exclude
-//	private List<Reparacion> reparaciones;
-	
+	private Double MMA;	
 }
