@@ -140,15 +140,16 @@ class ContratoServiceTests {
 	void updateSaveContratoSalarioMinimoExceptionNegative() {
 		
 		Contrato contrato = contratoService.findAll().iterator().next();
-				
-		assertThrows(SalarioMinimoException.class, () -> {contrato.setNomina(450.00);});		  //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThat(contratoService.findAll().iterator().next().getNomina()).isNotEqualTo(450.00); //Comprobacion de rollback
+		contrato.setNomina(450.0);
+		
+		assertThrows(SalarioMinimoException.class, () -> {contratoService.save(contrato);});
 	}
 	
 	@Test
 	@Transactional
 	@DisplayName("RN: Salario Minimo (new) -- caso negativo")
 	void newSaveContratoSalarioMinimoExceptionNegative() {
+		
 		Contrato contrato = new Contrato();
 		contrato.setEntidadBancaria("Cajasol");
 		contrato.setFechaFin(LocalDate.of(2200, 12, 12));

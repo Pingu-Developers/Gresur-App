@@ -226,10 +226,10 @@ class ITVServiceTests {
 	@DisplayName("RN: Fechas inicio y fin incongruentes (update) -- caso negativo")
 	void updateFechaException() {
 		ITV itv = itvService.findAll().iterator().next();
-		itv.setExpiracion(LocalDate.of(2030, 1, 1));
+		itv.setExpiracion(LocalDate.of(2010, 1, 1));
+		itv.setFecha(LocalDate.of(2020, 12, 1));
 		
-		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {itv.setFecha(LocalDate.of(2020, 12, 1));}); //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThat(itvService.findById(itv.getId())).isNotEqualTo(itv); // Comprobacion de rollback
+		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {itvService.save(itv);}); 
 	}
 	
 	@Test

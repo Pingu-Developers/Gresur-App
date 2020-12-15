@@ -54,11 +54,4 @@ public class AlmacenService {
 	public long count() throws DataAccessException{
 		return almacenRepository.count();
 	} 
-	
-	@Transactional
-	public void deletAll() {
-		almacenRepository.deleteAll();
-	}
-	
-
 }
