@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -46,8 +47,10 @@ public class Vehiculo extends BaseEntity {
 	@Min(value = 0, message = "debe ser mayor que cero")
 	private Double MMA;
 	
+	//TODO Esta bidireccionalidad deberiamos quiza quitarla?
 	@JsonIgnore
 	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
+	@ToString.Exclude
 	private List<Reparacion> reparaciones;
 	
 }

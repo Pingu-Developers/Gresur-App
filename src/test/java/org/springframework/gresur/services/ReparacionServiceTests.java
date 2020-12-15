@@ -168,13 +168,69 @@ class ReparacionServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Fecha de entrada debe ser anterior o igual a la de salida (FechaFinNotAfterFechaInicioException)")
-	void saveReparacionWithFechaInicioAfterFechaFin() {
+	@DisplayName("RN: Fecha de entrada debe ser anterior o igual a la de salida (update) -- caso positivo")
+	void updateReparacionWithFechaInicioAfterFechaFinPositive() {
 		Reparacion reparacion = reparacionService.findAll().iterator().next();
-		reparacion.setFechaEntradaTaller(LocalDate.of(2020, 10, 22));
-		assertThrows(FechaFinNotAfterFechaInicioException.class, ()->{reparacionService.save(reparacion);});
-		assertThat(reparacionService.findAll().iterator().next().getFechaEntradaTaller()).isNotEqualTo(LocalDate.of(2020, 10, 22));
+		reparacion.setFechaEntradaTaller(LocalDate.of(2019, 12, 22));
+
+		assertThat(reparacionService.findAll().iterator().next().getFechaEntradaTaller()).isEqualTo(LocalDate.of(2019, 12, 22));
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Fecha de entrada debe ser anterior o igual a la de salida (new) -- caso positivo")
+	void saveReparacionWithFechaInicioAfterFechaFinPositive() {
+		Reparacion reparacion = reparacionService.findAll().iterator().next();
+		
+		FacturaRecibida facturaRecibidaReparacion4 = new FacturaRecibida();
+		facturaRecibidaReparacion4.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaReparacion4.setEstaPagada(true);
+		facturaRecibidaReparacion4.setImporte(820.);
+		facturaRecibidaReparacion4.setFecha(LocalDate.now());
+		facturaRecibidaService.save(facturaRecibidaReparacion4);
+		
+		Reparacion reparacionFechaCongruente = new Reparacion();
+		reparacionFechaCongruente.setFechaEntradaTaller(LocalDate.now());
+		reparacionFechaCongruente.setFechaSalidaTaller(LocalDate.now().plusDays(1L));
+		reparacionFechaCongruente.setRecibidas(facturaRecibidaReparacion4);
+		reparacionFechaCongruente.setVehiculo(reparacion.getVehiculo());
+		
+		reparacionFechaCongruente = reparacionService.save(reparacionFechaCongruente);
+
+		assertThat(reparacionService.findById(reparacionFechaCongruente.getId())).isEqualTo(reparacionFechaCongruente);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Fecha de entrada debe ser anterior o igual a la de salida (update) -- caso negativo")
+	void updateReparacionWithFechaInicioAfterFechaFin() {
+		Reparacion reparacion = reparacionService.findAll().iterator().next();
+		
+		assertThrows(FechaFinNotAfterFechaInicioException.class, ()->{reparacion.setFechaEntradaTaller(LocalDate.of(2020, 10, 22));});	//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		assertThat(reparacionService.findAll().iterator().next().getFechaEntradaTaller()).isNotEqualTo(LocalDate.of(2020, 10, 22));		//Comprobacion de rollback
 	}
 
-	//TODO falta probar la RN cuando es nuevo
+	@Test
+	@Transactional
+	@DisplayName("RN: Fecha de entrada debe ser anterior o igual a la de salida (new) -- caso negativo")
+	void saveReparacionWithFechaInicioAfterFechaFin() {
+		Reparacion reparacion = reparacionService.findAll().iterator().next();
+		
+		FacturaRecibida facturaRecibidaReparacion4 = new FacturaRecibida();
+		facturaRecibidaReparacion4.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaReparacion4.setEstaPagada(true);
+		facturaRecibidaReparacion4.setImporte(820.);
+		facturaRecibidaReparacion4.setFecha(LocalDate.now());
+		facturaRecibidaService.save(facturaRecibidaReparacion4);
+		
+		Reparacion reparacionFechaCongruente = new Reparacion();
+		reparacionFechaCongruente.setFechaEntradaTaller(LocalDate.now());
+		reparacionFechaCongruente.setFechaSalidaTaller(LocalDate.now().minusDays(1L));
+		reparacionFechaCongruente.setRecibidas(facturaRecibidaReparacion4);
+		reparacionFechaCongruente.setVehiculo(reparacion.getVehiculo());
+		
+		assertThrows(FechaFinNotAfterFechaInicioException.class, ()->{reparacionService.save(reparacionFechaCongruente);});
+		List<Reparacion> lr = reparacionService.findByMatricula(reparacion.getVehiculo().getMatricula());
+		assertThat(lr.get(lr.size()-1)).isNotEqualTo(reparacionFechaCongruente);
+	}
 }

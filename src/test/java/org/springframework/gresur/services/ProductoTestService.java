@@ -267,18 +267,47 @@ public class ProductoTestService {
 	/* * * * * * * * * * * * *
 	 *   FIND-REMOVE TESTS   *
 	 * * * * * * * * * * * * */
-
 	
 	@Test
 	@Transactional
+	@DisplayName("Encuentra un producto con el nombre exacto -- caso positivo")
+	void findProductoByNameComplete() {
+		List<Producto> p = productoService.findAllProductosByName("Vater inteligente");
+		assertThat(p.size()).isEqualTo(1);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Encuentra los productos segun el nombre introducido -- caso positivo")
+	void findProductoByNameIncomplete() {
+		List<Producto> p = productoService.findAllProductosByName("Vater in");
+		assertThat(p.size()).isEqualTo(1);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Encuentra los productos segun el nombre introducido -- caso negativo")
+	void findProductosByNameNotFound() {
+		List<Producto> p = productoService.findAllProductosByName("Lavabo ROCA");
+		assertThat(p.size()).isEqualTo(0);
+	}
+	
+
+	/* * * * * * * * * * * * * * * *
+	 *   REGLAS DE NEGOCIO TESTS   *
+	 * * * * * * * * * * * * * * * */
+		
+	@Test
+	@Transactional
+	@DisplayName("Actualizar un producto - caso positivo")
 	void updateProductoWithoutProblems() {
 		Producto p = productoService.findAll().iterator().next();
 		p.setStock(2);
-		productoService.save(p);
 		assertThat(productoService.count()).isEqualTo(3);
 	}
 	@Test
 	@Transactional
+	@DisplayName("Guardar un nuevo producto - caso positivo")
 	void addProductoWithoutProblems() {
 		Estanteria est = estanteriaService.findAll().iterator().next();
 		Producto p = new Producto();
@@ -297,75 +326,20 @@ public class ProductoTestService {
 		productoService.save(p);
 		assertThat(productoService.count()).isEqualTo(4);
 	}
-	
-	@Test
-	@Transactional
-	void findProductoByNameComplete() {
-		List<Producto> p = productoService.findAllProductosByName("Vater inteligente");
-		assertThat(p.size()).isEqualTo(1);
-	}
-	
-	@Test
-	@Transactional
-	void findProductoByNameIncomplete() {
-		List<Producto> p = productoService.findAllProductosByName("Vater in");
-		assertThat(p.size()).isEqualTo(1);
-	}
-	
-	@Test
-	@Transactional
-	void findProductosByNameNotFound() {
-		List<Producto> p = productoService.findAllProductosByName("Lavabo ROCA");
-		assertThat(p.size()).isEqualTo(0);
-	}
-	
-	@Test
-	@Transactional
-	void addProductoWithoutEstanteriaWithoutProblems() {
-		Producto p = new Producto();
-		p.setAlto(1.);
-		p.setAncho(1.);
-		p.setDescripcion("otro vater");
-		p.setNombre("Otro vater");
-		p.setPesoUnitario(80.);
-		p.setPrecioCompra(150.);
-		p.setPrecioVenta(200.);
-		p.setProfundo(1.);
-		p.setStock(0);
-		p.setUnidad(Unidad.UNIDADES);
-		productoService.save(p);
-		assertThat(productoService.count()).isEqualTo(4);
-	}
-	
-	@Test
-	@Transactional
-	void updateProductoThrowNotificacionAlertaStock() {
-		Producto p = productoService.findAll().iterator().next();
-		p.setStockSeguridad(10);
-		productoService.save(p);
-		
-		assertThat(notificacionService.findAll().size()).isEqualTo(1);	
-	}
-
-
-	/* * * * * * * * * * * * * * * *
-	 *   REGLAS DE NEGOCIO TESTS   *
-	 * * * * * * * * * * * * * * * */
-
 
 	@Test
 	@Transactional
-	@DisplayName("RN: La capacidad de el/los productos excede a la capacidad de la estanteria (update)")
+	@DisplayName("RN: La capacidad de el/los productos excede a la capacidad de la estanteria (update) -- caso negativo")
 	void updateProductoVolumenExceded() {
 		Producto p = productoService.findAll().iterator().next();
-		p.setStock(999999);
-		assertThrows(CapacidadProductoExcededException.class, () -> {productoService.save(p);});
-		assertThat(productoService.findById(p.getId())).isNotEqualTo(p); // NO SE HACE ROLLBACK
+		
+		assertThrows(CapacidadProductoExcededException.class, () -> {p.setStock(999999);});  //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		assertThat(productoService.findById(p.getId())).isNotEqualTo(p);					 //Compronacion de rollback
 	}
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: La capacidad de el/los productos excede a la capacidad de la estanteria (new producto)")
+	@DisplayName("RN: La capacidad de el/los productos excede a la capacidad de la estanteria (new) -- caso negativo")
 	void addProductoVolumenExceded() {
 		Estanteria est = estanteriaService.findAll().iterator().next();
 		Producto p = new Producto();
@@ -389,7 +363,26 @@ public class ProductoTestService {
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: No se puede añadir stock a un producto sin estanteria asociada (new)")
+	@DisplayName("RN: No se puede añadir stock a un producto sin estanteria asociada (new) -- caso positivo")
+	void addProductoWithoutEstanteriaWithoutProblems() {
+		Producto p = new Producto();
+		p.setAlto(1.);
+		p.setAncho(1.);
+		p.setDescripcion("otro vater");
+		p.setNombre("Otro vater");
+		p.setPesoUnitario(80.);
+		p.setPrecioCompra(150.);
+		p.setPrecioVenta(200.);
+		p.setProfundo(1.);
+		p.setStock(0);
+		p.setUnidad(Unidad.UNIDADES);
+		productoService.save(p);
+		assertThat(productoService.count()).isEqualTo(4);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: No se puede añadir stock a un producto sin estanteria asociada (new) -- caso negativo")
 	void addStockToProductoWithoutEstanteria() {
 		Producto p = new Producto();
 		p.setAlto(1.);
@@ -409,7 +402,7 @@ public class ProductoTestService {
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: No se puede añadir stock a un producto sin estanteria asociada (update)")
+	@DisplayName("RN: No se puede añadir stock a un producto sin estanteria asociada (update) -- caso negativo")
 	void updateStockToProductoWithoutEstanteria() {
 		Producto p = new Producto();
 		p.setAlto(1.);
@@ -423,14 +416,14 @@ public class ProductoTestService {
 		p.setStock(0);
 		p.setUnidad(Unidad.UNIDADES);
 		productoService.save(p);
-		
-		p.setStock(2);
-		assertThrows(StockWithoutEstanteriaException.class, () -> {productoService.save(p);});
-		assertThat(productoService.findAllProductosByName("Otro vater").get(0)).isNotEqualTo(p);
+			
+		assertThrows(StockWithoutEstanteriaException.class, () -> {p.setStock(2);});				//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		assertThat(productoService.findAllProductosByName("Otro vater").get(0)).isNotEqualTo(p);	//Comprobacion de rollback
 	}
 	
 	@Test
 	@Transactional
+	@DisplayName("Propiedad derivada: Demanda")
 	void checkDemandaProducto() {
 		List<Producto> ls = productoService.findAll();
 		Double acum = 0.;
@@ -438,6 +431,30 @@ public class ProductoTestService {
 			acum += productoService.getDemanda(p, LocalDate.of(0, 1, 1));
 		}
 		assertThat(acum).isEqualTo(1);
+	}
+	
+	/* * * * * * * * * * * * * * * *
+	 *   FUNCIONALIDADES TESTS     *
+	 * * * * * * * * * * * * * * * */
+	
+	@Test
+	@Transactional
+	@DisplayName("Cuando el stock de un producto está por debajo del de seguridad se lanza notificación -- caso positivo (se lanza)")
+	void updateProductoThrowNotificacionAlertaStock() {
+		Producto p = productoService.findAll().iterator().next();
+		p.setStockSeguridad(10);	
+		
+		assertThat(notificacionService.findAll().size()).isEqualTo(1);	//NO SE LANZA LA NOTIFICACION PORQUE AL SER UN UPDATE NO PASA POR EL SAVE, DEBERIA LANZARSE EN EL SET
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Cuando el stock de un producto está por debajo del de seguridad se lanza notificación -- caso negativo (no se lanza)")
+	void updateProductoThrowNotificacionAlertaStockNegative() {
+		Producto p = productoService.findAll().iterator().next();
+		p.setStockSeguridad(100);
+		
+		assertThat(notificacionService.findAll().size()).isEqualTo(0);	
 	}
 	
 }
