@@ -2,6 +2,9 @@ package org.springframework.gresur.service;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Almacen;
@@ -14,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class EstanteriaService{
 	
+	@PersistenceContext
+	private EntityManager em;
+	
 	private EstanteriaRepository estanteriaRepository;
 	
 	@Autowired
@@ -22,7 +28,7 @@ public class EstanteriaService{
 	}
 	
 	@Transactional(readOnly = true)
-	public Iterable<Estanteria> findAll() throws DataAccessException{
+	public List<Estanteria> findAll() throws DataAccessException{
 		return estanteriaRepository.findAll();
 	}
 	
@@ -47,7 +53,9 @@ public class EstanteriaService{
 			throw new CapacidadEstanteriaExcededException("Las estanterias exceden la capacidad disponible del almacen");
 		}
 		
-		return estanteriaRepository.save(estanteria);
+		Estanteria ret = estanteriaRepository.save(estanteria);
+		em.flush();
+		return ret;
 	}
 	
 	@Transactional

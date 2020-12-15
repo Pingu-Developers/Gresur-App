@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -107,14 +108,58 @@ class ContratoServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Salario Minimo")
-	void saveContratoSalarioMinimoException() {
+	@DisplayName("RN: Salario Minimo (update) -- caso positivo")
+	void updateSaveContratoSalarioMinimoExceptionPositive() {
 		
 		Contrato contrato = contratoService.findAll().iterator().next();
-		contrato.setNomina(450.00);
+		contrato.setNomina(1450.00);
+		
+		assertThat(contratoService.findAll().iterator().next().getNomina()).isEqualTo(1450.00);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Salario Minimo (new) -- caso positivo")
+	void newSaveContratoSalarioMinimoExceptionPositive() {
+		
+		Contrato contrato = new Contrato();
+		contrato.setEntidadBancaria("Cajasol");
+		contrato.setFechaFin(LocalDate.of(2200, 12, 12));
+		contrato.setFechaInicio(LocalDate.of(2009, 5, 5));
+		contrato.setNomina(1300.00);
+		contrato.setPersonal(administradorService.findByNIF("18845878A"));
+		contrato.setTipoJornada(TipoJornada.COMPLETA);
+		contrato = contratoService.save(contrato);
+		
+		assertThat(contratoService.findById(contrato.getId())).isEqualTo(contrato);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Salario Minimo (update) -- caso negativo")
+	void updateSaveContratoSalarioMinimoExceptionNegative() {
+		
+		Contrato contrato = contratoService.findAll().iterator().next();
+				
+		assertThrows(SalarioMinimoException.class, () -> {contrato.setNomina(450.00);});		  //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		assertThat(contratoService.findAll().iterator().next().getNomina()).isNotEqualTo(450.00);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Salario Minimo (new) -- caso negativo")
+	void newSaveContratoSalarioMinimoExceptionNegative() {
+		Contrato contrato = new Contrato();
+		contrato.setEntidadBancaria("Cajasol");
+		contrato.setFechaFin(LocalDate.of(2200, 12, 12));
+		contrato.setFechaInicio(LocalDate.of(2009, 5, 5));
+		contrato.setNomina(300.00);
+		contrato.setPersonal(administradorService.findByNIF("18845878A"));
+		contrato.setTipoJornada(TipoJornada.COMPLETA);
 		
 		assertThrows(SalarioMinimoException.class, () -> {contratoService.save(contrato);});
-		assertThat(contratoService.findAll().iterator().next().getNomina()).isNotEqualTo(450.00); //NO HACE ROLLBACK
+		List<Contrato> lc = contratoService.findAll();
+		assertThat(lc.get(lc.size()-1)).isNotEqualTo(contrato);
 	}
 
 }

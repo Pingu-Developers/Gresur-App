@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -79,13 +80,15 @@ class EncargadoDeAlmacenServiceTests {
 	
 	@Test
 	@Transactional	
+	@DisplayName("Buscar Encargado por su NIF -- caso positivo")
 	void findEncargadoByNif() {
 		EncargadoDeAlmacen adm = encargadoService.findByNIF("18845878A");
 		assertThat(adm.getName()).isEqualTo("Jose Luis Gresur");
 	}
 	
 	@Test
-	@Transactional	
+	@Transactional
+	@DisplayName("Buscar Encargado por su NIF -- caso negativo")
 	void findEncargadoByNifNotFound() {
 		EncargadoDeAlmacen adm = encargadoService.findByNIF("18845878S");
 		assertThat(adm).isEqualTo(null);
@@ -93,6 +96,7 @@ class EncargadoDeAlmacenServiceTests {
 	
 	@Test
 	@Transactional	
+	@DisplayName("Borrar Encargado por su NIF -- caso positivo")
 	void deleteEncargadoByNIF() {
 		encargadoService.deleteByNIF("18845878A");
 		assertThat(encargadoService.count()).isEqualTo(0);
@@ -100,6 +104,7 @@ class EncargadoDeAlmacenServiceTests {
 	
 	@Test
 	@Transactional	
+	@DisplayName("Borrar Encargado por su NIF -- caso negativo")
 	void deleteEncargadoByNIFNotFound() {
 		encargadoService.deleteByNIF("18845878V");
 		assertThat(encargadoService.count()).isEqualTo(1);

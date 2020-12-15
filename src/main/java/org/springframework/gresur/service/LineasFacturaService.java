@@ -3,6 +3,9 @@ package org.springframework.gresur.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.repository.LineasFacturaRepository;
@@ -11,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LineasFacturaService {
+
+	@PersistenceContext
+	private EntityManager em;
 	
 	private LineasFacturaRepository lineasRepo;
 	
@@ -18,7 +24,6 @@ public class LineasFacturaService {
 	public LineasFacturaService(LineasFacturaRepository lineasRepo) {
 		this.lineasRepo = lineasRepo;
 	}
-	
 	
 	@Transactional(readOnly = true)
 	public List<LineaFactura> findAll(){
@@ -40,7 +45,9 @@ public class LineasFacturaService {
 			otherLinea.setPrecio(otherLinea.getPrecio() + linea.getPrecio());
 			linea = otherLinea;
 		}
-		return lineasRepo.save(linea);
+		LineaFactura ret = lineasRepo.save(linea);
+		em.flush();
+		return ret;
 	}
 	
 	@Transactional

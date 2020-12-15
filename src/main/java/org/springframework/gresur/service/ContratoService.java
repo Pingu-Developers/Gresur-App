@@ -1,6 +1,10 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -14,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ContratoService {
 	
+	@PersistenceContext
+	private EntityManager em;
+	
 	private ContratoRepository contratoRepository;
 	
 	@Autowired
@@ -25,13 +32,13 @@ public class ContratoService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Iterable<Contrato> findAll() throws DataAccessException{
+	public List<Contrato> findAll() throws DataAccessException{
 		return contratoRepository.findAll();
 	}
 	
 	@Transactional(readOnly = true)
 	public Contrato findById(Long id) throws DataAccessException{
-		return contratoRepository.findById(id).get();
+		return contratoRepository.findById(id).orElse(null);
 	}
 	
 	@Transactional
@@ -46,7 +53,9 @@ public class ContratoService {
 
 		FechaInicioFinValidation.fechaInicioFinValidation(Contrato.class,fechaInicio, fechaFin);
 		
-		return contratoRepository.save(contrato);
+		Contrato ret = contratoRepository.save(contrato);
+		em.flush();
+		return ret;
 	}
 	
 	@Transactional

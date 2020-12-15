@@ -1,5 +1,8 @@
 package org.springframework.gresur.service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Almacen;
@@ -10,8 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AlmacenService {
 	
-	private AlmacenRepository almacenRepository;
+	@PersistenceContext
+	private EntityManager em;
 	
+	private AlmacenRepository almacenRepository;
+		
 	@Autowired
 	public AlmacenService(AlmacenRepository almacenRepository) {
 		this.almacenRepository = almacenRepository;
@@ -34,7 +40,9 @@ public class AlmacenService {
 	
 	@Transactional
 	public Almacen save(Almacen almacen) throws DataAccessException {
-		return almacenRepository.save(almacen);
+		Almacen ret = almacenRepository.save(almacen);
+		em.flush();
+		return ret;
 	}
 	
 	@Transactional

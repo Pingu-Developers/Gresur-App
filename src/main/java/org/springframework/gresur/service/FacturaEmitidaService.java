@@ -1,6 +1,9 @@
 package org.springframework.gresur.service;
 
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Cliente;
@@ -13,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class FacturaEmitidaService extends FacturaService<FacturaEmitida, FacturaEmitidaRepository>{
 	
+	@PersistenceContext
+	private EntityManager em;
+	
 	@Autowired
 	public FacturaEmitidaService(FacturaEmitidaRepository feRepo) {
 		super.facturaRepo = feRepo;
@@ -24,6 +30,8 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 		if(!facturaRepo.findByClienteIdAndEstaPagadaFalse(cliente.getId()).isEmpty())
 			throw new ClienteDefaulterException("El cliente tiene facturas pendientes");
 		
-		return facturaRepo.save(emitida);
+		FacturaEmitida ret = facturaRepo.save(emitida);
+		em.flush();
+		return ret;
 	}
 }

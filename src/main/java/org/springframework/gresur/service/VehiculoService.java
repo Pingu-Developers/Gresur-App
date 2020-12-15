@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.omg.CORBA.portable.UnknownException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -28,6 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class VehiculoService {
 
+	@PersistenceContext
+	private EntityManager em;
+	
 	private VehiculoRepository vehiculoRepository;
 	
 	@Autowired
@@ -95,7 +101,9 @@ public class VehiculoService {
 			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin Seguro");
 		 }
 		 
-		return vehiculoRepository.save(vehiculo);
+		Vehiculo ret = vehiculoRepository.save(vehiculo);
+		em.flush();
+		return ret;
 	}
 	
 	@Transactional

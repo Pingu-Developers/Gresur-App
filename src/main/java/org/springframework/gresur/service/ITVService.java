@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ITVService {
 
+	@PersistenceContext
+	private EntityManager em;
+	
 	private ITVRepository itvRepository;
 
 	@Autowired
@@ -26,9 +29,6 @@ public class ITVService {
 	
 	@Autowired
 	private SeguroService seguroService;
-	
-	@PersistenceContext
-	private EntityManager em;
 	
 	@Autowired
 	public ITVService(ITVRepository itvRepository) {

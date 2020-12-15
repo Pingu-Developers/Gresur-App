@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -66,6 +67,7 @@ class DependienteServiceTests {
 	
 	@Test
 	@Transactional	
+	@DisplayName("Buscar Dependiente por su NIF -- caso positivo")
 	void findDependienteByNif() {
 		Dependiente adm = dependienteService.findByNIF("18845878A");
 		assertThat(adm.getName()).isEqualTo("Jose Luis Gresur");
@@ -73,13 +75,15 @@ class DependienteServiceTests {
 	
 	@Test
 	@Transactional	
+	@DisplayName("Buscar Dependiente por su NIF -- caso negativo")
 	void findDependienteByNifNotFound() {
 		Dependiente adm = dependienteService.findByNIF("18845878K");
 		assertThat(adm).isEqualTo(null);
 	}
 	
 	@Test
-	@Transactional	
+	@Transactional
+	@DisplayName("Borrar Dependiente por su NIF -- caso positivo")
 	void deleteDependienteByNIF() {
 		dependienteService.deleteByNIF("18845878A");
 		assertThat(dependienteService.count()).isEqualTo(0);
@@ -87,6 +91,7 @@ class DependienteServiceTests {
 	
 	@Test
 	@Transactional	
+	@DisplayName("Borrar Dependiente por su NIF -- caso negativo")
 	void deleteDependienteByNIFNotFound() {
 		dependienteService.deleteByNIF("18845878K");
 		assertThat(dependienteService.count()).isEqualTo(1);

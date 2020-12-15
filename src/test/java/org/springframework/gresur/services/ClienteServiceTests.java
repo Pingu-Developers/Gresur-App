@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -64,6 +65,7 @@ class ClienteServiceTests {
 	
 	@Test
 	@Transactional
+	@DisplayName("Buscar Cliente por su NIF -- caso positivo")
 	void findClienteByNIF() {
 		Cliente cliente = clienteService.findByNIF("54789663T");
 		assertThat(cliente.getName()).isEqualTo("Jose Luis");
@@ -71,6 +73,7 @@ class ClienteServiceTests {
 
 	@Test
 	@Transactional
+	@DisplayName("Buscar Cliente por su NIF -- caso negativo")
 	void findClienteByNifNotFound() {
 		Cliente cliente = clienteService.findByNIF("54789662K");
 		assertThat(cliente).isEqualTo(null);
@@ -78,6 +81,7 @@ class ClienteServiceTests {
 	
 	@Test
 	@Transactional
+	@DisplayName("Borrar Cliente por su NIF -- caso positivo")
 	void deleteClienteByNIF() {
 		clienteService.deleteByNIF("54789663T");
 		assertThat(clienteService.count()).isEqualTo(0);
@@ -85,6 +89,7 @@ class ClienteServiceTests {
 	
 	@Test
 	@Transactional
+	@DisplayName("Borrar Cliente por su NIF -- caso negativo")
 	void deleteClienteByNIFNotFound() {
 		clienteService.deleteByNIF("54789669J");
 		assertThat(clienteService.count()).isEqualTo(1);

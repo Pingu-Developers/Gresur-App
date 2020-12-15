@@ -1,5 +1,7 @@
 package org.springframework.gresur.service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ConfiguracionService {
+	
+	@PersistenceContext
+	private EntityManager em;
 	
 	private ConfiguracionRepository configRepo;
 	
@@ -24,7 +29,9 @@ public class ConfiguracionService {
 	
 	@Transactional
 	public Configuracion save(Configuracion config) {
-		return configRepo.save(config);
+		Configuracion ret = configRepo.save(config);
+		em.flush();
+		return ret;
 	}
 	
 	public Double getSalarioMinimo() {

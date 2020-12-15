@@ -1,6 +1,7 @@
 package org.springframework.gresur.services;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -36,6 +38,7 @@ import org.springframework.gresur.service.FacturaEmitidaService;
 import org.springframework.gresur.service.LineasFacturaService;
 import org.springframework.gresur.service.PedidoService;
 import org.springframework.gresur.service.ProductoService;
+import org.springframework.gresur.service.exceptions.ClienteDefaulterException;
 import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -210,6 +213,7 @@ public class FacturaEmitidaServiceTests {
 	
 	@Test
 	@Transactional
+	@DisplayName("Busca todas las lineas facturas asociadas a facturas emitidas")
 	void findLineasFactura() {
 		List<LineaFactura> lf = facturaEmitidaService.findLineasFactura();
 		assertThat(lf.get(0).getPrecio()).isEqualTo(100.15);
@@ -221,5 +225,74 @@ public class FacturaEmitidaServiceTests {
 	 *   REGLAS DE NEGOCIO TESTS   *
 	 * * * * * * * * * * * * * * * */
 	
-	//TODO RN: No se vende a clientes con impagos
+	@Test
+	@Transactional
+	@DisplayName("RN: No se vende a clientes con impagos (new) -- caso positivo")
+	void saveClienteDefaulterPositive() {
+		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
+		Cliente noDefaulter = fem.getCliente();
+		
+		FacturaEmitida nuevaCompra = new FacturaEmitida();
+		nuevaCompra.setCliente(noDefaulter);
+		nuevaCompra.setDependiente(dependienteService.findByNIF("12345678L"));
+		nuevaCompra.setImporte(290.01);
+		nuevaCompra.setFecha(LocalDate.of(2020, 12, 1));
+		nuevaCompra.setEstaPagada(true);
+		
+		nuevaCompra = facturaEmitidaService.save(nuevaCompra);
+		
+		assertThat(facturaEmitidaService.findByNumFactura(nuevaCompra.getId())).isEqualTo(nuevaCompra);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: No se vende a clientes con impagos (update) -- caso positivo")
+	void updateClienteDefaulterPositive() {
+		
+		/* pongo la factura en sin pagar (esto no da problema al hacerlo)*/
+		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
+		fem.setEstaPagada(false);		
+		assertThat(facturaEmitidaService.findByNumFactura(fem.getId()).getEstaPagada()).isEqualTo(false);
+		
+		/* Para una factura sin pagar debe dejarme cambiar el atributo estaPagada, pero ningun otro*/
+		fem.setEstaPagada(true);
+		assertThat(facturaEmitidaService.findByNumFactura(fem.getId()).getEstaPagada()).isEqualTo(true);
+
+	}
+		
+	@Test
+	@Transactional
+	@DisplayName("RN: No se vende a clientes con impagos (new) -- caso negativo")
+	void saveClienteDefaulterNegative() {
+		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
+		fem.setEstaPagada(false);
+		Cliente defaulter = fem.getCliente();
+		
+		FacturaEmitida nuevaCompra = new FacturaEmitida();
+		nuevaCompra.setCliente(defaulter);
+		nuevaCompra.setDependiente(dependienteService.findByNIF("12345678L"));
+		nuevaCompra.setImporte(290.01);
+		nuevaCompra.setFecha(LocalDate.of(2020, 12, 1));
+		nuevaCompra.setEstaPagada(true);
+		
+		assertThrows(ClienteDefaulterException.class, () -> {facturaEmitidaService.save(nuevaCompra);});
+		List<FacturaEmitida> lfem = facturaEmitidaService.findAll();
+		assertThat(lfem.get(lfem.size()-1)).isNotEqualTo(nuevaCompra);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: No se vende a clientes con impagos (update) -- caso negativo")
+	void updateClienteDefaulterNegative() {
+		
+		/* pongo la factura en sin pagar (esto no da problema al hacerlo)*/
+		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
+		fem.setEstaPagada(false);		
+		assertThat(facturaEmitidaService.findByNumFactura(fem.getId()).getEstaPagada()).isEqualTo(false);
+		
+		/* Para una factura sin pagar debe dejarme cambiar el atributo estaPagada, pero ningun otro*/		
+		assertThrows(ClienteDefaulterException.class, ()->{fem.setImporte(928.13929);});					  //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		assertThat(facturaEmitidaService.findByNumFactura(fem.getId()).getImporte()).isNotEqualTo(928.13929); //comprobacion de rollback
+
+	}
 }

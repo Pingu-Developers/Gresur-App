@@ -93,6 +93,7 @@ class EstanteriaServiceTests {
 
 	@Test
 	@Transactional
+	@DisplayName("Buscar todas las Estanterias en un almacen -- caso positivo")
 	void listAllEstanteriasInAlmacen() {
 		Long idAlmacen = almacenService.findAll().iterator().next().getId();
 		List<Estanteria> ls = estanteriaService.findAllEstanteriaByAlmacen(idAlmacen);
@@ -101,6 +102,7 @@ class EstanteriaServiceTests {
 	
 	@Test
 	@Transactional
+	@DisplayName("Buscar todas las Estanterias en un almacen -- caso negativo")
 	void listAllEstanteriasInAlmacenNotFound() {
 		Long idAlmacen = 200L;
 		List<Estanteria> ls = estanteriaService.findAllEstanteriaByAlmacen(idAlmacen);
@@ -111,28 +113,52 @@ class EstanteriaServiceTests {
 	/* * * * * * * * * * * * * * * *
 	 *   REGLAS DE NEGOCIO TESTS   *
 	 * * * * * * * * * * * * * * * */
+	@Test
+	@Transactional
+	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen (new) -- caso positivo")
+	void saveEstanteriaWithCapacidadExcededPositive() {
+		Almacen alm = almacenService.findAll().iterator().next();
+		Estanteria est = new Estanteria();
+		est.setAlmacen(alm);
+		est.setCapacidad(160.00);
+		est.setCategoria(Categoria.PINTURAS);
+		est = estanteriaService.save(est);
+		
+		assertThat(estanteriaService.findById(est.getId())).isEqualTo(est);
+	}
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen - (nueva estanteria)")
-	void saveEstanteriaWithCapacidadExceded() {
+	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen (update) -- caso positivo")
+	void updateEstanteriaWithCapacidadExcededPositive() {
+		Estanteria est = estanteriaService.findAll().iterator().next();
+		est.setCapacidad(159.00);
+		assertThat(estanteriaService.findAll().iterator().next().getCapacidad()).isEqualTo(159.00);
+	}
+	
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen (new) -- caso negativo")
+	void saveEstanteriaWithCapacidadExcededNegative() {
 		Almacen alm = almacenService.findAll().iterator().next();
 		Estanteria est = new Estanteria();
 		est.setAlmacen(alm);
 		est.setCapacidad(1000000.00);
 		est.setCategoria(Categoria.PINTURAS);
-		est.setId(20L);
+		
 		assertThrows(CapacidadEstanteriaExcededException.class, () -> {estanteriaService.save(est);});
-		assertThat(estanteriaService.findById(20L)).isEqualTo(null);
+		List<Estanteria> le = estanteriaService.findAllEstanteriaByAlmacen(alm.getId());
+		assertThat(le.get(le.size()-1)).isNotEqualTo(est);
 	}
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen - (update estanteria)")
-	void updateEstanteriaWithCapacidadExceded() {
+	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen (update) -- caso negativo")
+	void updateEstanteriaWithCapacidadExcededNegative() {
 		Estanteria est = estanteriaService.findAll().iterator().next();
-		est.setCapacidad(1000000.00);
-		assertThrows(CapacidadEstanteriaExcededException.class, () -> {estanteriaService.save(est);});
-		assertThat(estanteriaService.findAll().iterator().next().getCapacidad()).isNotEqualTo(1000000.00); // NO SE HACE ROLLBACK
+		
+		assertThrows(CapacidadEstanteriaExcededException.class, () -> {est.setCapacidad(1000000.00);}); 	//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		assertThat(estanteriaService.findAll().iterator().next().getCapacidad()).isNotEqualTo(1000000.00);
 	}
 }

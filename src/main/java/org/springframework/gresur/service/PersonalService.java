@@ -1,5 +1,8 @@
 package org.springframework.gresur.service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Personal;
@@ -9,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PersonalService<T extends Personal, E extends PersonalRepository<T>> {
+
+	@PersistenceContext
+	private EntityManager em;
 	
 	protected E personalRepo;
 	
@@ -27,7 +33,9 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	
 	@Transactional
 	public T save(T personal) throws DataAccessException{
-		return personalRepo.save(personal);
+		T ret = personalRepo.save(personal);
+		em.flush();
+		return ret;
 	}
 	
 	@Transactional

@@ -26,12 +26,7 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	public T findByNumFactura(Long numFactura) throws DataAccessException{
 		return facturaRepo.findById(numFactura).orElse(null);
 	}
-	
-	@Transactional
-	public T save(T facturaRecibida) throws DataAccessException {
-		return facturaRepo.save(facturaRecibida);
-	}
-	
+		
 	@Transactional
 	public void deleteByNumFactura(Long numFactura) throws DataAccessException{
 		facturaRepo.deleteById(numFactura);

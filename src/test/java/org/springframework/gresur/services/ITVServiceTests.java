@@ -151,6 +151,7 @@ class ITVServiceTests {
 	
 	@Test
 	@Transactional
+	@DisplayName("Busca todas las ITVs por la matricula de un vehiculo -- caso positivo")
 	void findITVsByVehiculoTest() {
 		List<ITV> ls = itvService.findByVehiculo("1526MVC");
 		assertThat(ls.size()).isEqualTo(3);
@@ -158,9 +159,26 @@ class ITVServiceTests {
 	
 	@Test
 	@Transactional
+	@DisplayName("Busca todas las ITVs por la matricula de un vehiculo -- caso negativo")
+	void findITVsByVehiculoTestNotFound() {
+		List<ITV> ls = itvService.findByVehiculo("1586MQB");
+		assertThat(ls.size()).isEqualTo(0);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Busca la ultima ITV favorable por matricula -- caso positivo")
 	void findLastItvFavorable(){
 		ITV itv = itvService.findLastITVFavorableByVehiculo("1526MVC");
 		assertThat(itv.getExpiracion()).isEqualTo(LocalDate.of(2025, 1, 10));
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Busca la ultima ITV favorable por matricula -- caso negativo")
+	void findLastItvFavorableNotFound(){
+		ITV itv = itvService.findLastITVFavorableByVehiculo("1126MSC");
+		assertThat(itv).isEqualTo(null);
 	}
 	
 	
@@ -170,17 +188,53 @@ class ITVServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Fechas inicio y fin incongruentes (update)")
-	void updateFechaException() {
+	@DisplayName("RN: Fechas inicio y fin incongruentes (update) -- caso positivo")
+	void updateFechaExceptionPositivo() {
 		ITV itv = itvService.findAll().iterator().next();
 		itv.setExpiracion(LocalDate.of(2020, 1, 1));
-		itv.setFecha(LocalDate.of(2020, 12, 1));
-		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {itvService.save(itv);});
-		assertThat(itvService.findById(itv.getId())).isNotEqualTo(itv); // NO HACE ROLLBACK
+		
+		assertThat(itvService.findById(itv.getId())).isEqualTo(itv);
 	}
 	
 	@Test
-	@DisplayName("RN: Fechas inicio y fin incongruentes (new ITV)")
+	@Transactional
+	@DisplayName("RN: Fechas inicio y fin incongruentes (new) -- caso positivo")
+	void saveNewFechaExceptionPositivo() {
+		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
+		
+		FacturaRecibida fra = new FacturaRecibida();
+		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
+		fra.setEstaPagada(true);
+		fra.setFecha(LocalDate.of(2020, 1, 12));
+		fra.setImporte(65.50);
+		fraService.save(fra);
+		
+		ITV itv = new ITV();
+		itv.setExpiracion(LocalDate.of(2030, 1, 10));
+		itv.setFecha(LocalDate.of(2020, 1, 12));
+		itv.setResultado(ResultadoITV.FAVORABLE);
+		itv.setVehiculo(vehiculo);
+		itv.setRecibidas(fra);
+		
+		itvService.save(itv);
+		
+		assertThat(itvService.findLastITVVehiculo(vehiculo.getMatricula())).isEqualTo(itv);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Fechas inicio y fin incongruentes (update) -- caso negativo")
+	void updateFechaException() {
+		ITV itv = itvService.findAll().iterator().next();
+		itv.setExpiracion(LocalDate.of(2030, 1, 1));
+		
+		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {itv.setFecha(LocalDate.of(2020, 12, 1));}); //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
+		assertThat(itvService.findById(itv.getId())).isNotEqualTo(itv); // Comprobacion de rollback
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Fechas inicio y fin incongruentes (new) -- caso negativo")
 	void saveNewFechaException() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		
@@ -197,10 +251,9 @@ class ITVServiceTests {
 		itv.setResultado(ResultadoITV.FAVORABLE);
 		itv.setVehiculo(vehiculo);
 		itv.setRecibidas(fra);
-		itv.setId(50L);
 		
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {itvService.save(itv);});
-		assertThat(itvService.findById(50L)).isNotEqualTo(itv);
+		assertThat(itvService.findLastITVVehiculo(vehiculo.getMatricula())).isNotEqualTo(itv);
 	}
 	
 

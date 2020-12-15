@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.LineaEnviado;
@@ -19,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class NotificacionService {
 
+	@PersistenceContext
+	private EntityManager em;
+	
 	private NotificacionRepository notificacionRepo;
 	
 	@Autowired
@@ -78,6 +84,7 @@ public class NotificacionService {
 		List<LineaEnviado> lenviado = receptores.stream().map(x ->new LineaEnviado(result,x)).collect(Collectors.toList());
 		
 		lineaEnviadoService.saveAll(lenviado);
+		em.flush();
 		return result;
 	}
 	
