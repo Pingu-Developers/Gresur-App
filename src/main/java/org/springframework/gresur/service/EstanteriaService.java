@@ -28,7 +28,7 @@ public class EstanteriaService{
 	}
 	
 	@Transactional(readOnly = true)
-	public Iterable<Estanteria> findAll() throws DataAccessException{
+	public List<Estanteria> findAll() throws DataAccessException{
 		return estanteriaRepository.findAll();
 	}
 	

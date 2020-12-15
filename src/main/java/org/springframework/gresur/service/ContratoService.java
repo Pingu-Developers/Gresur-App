@@ -1,6 +1,7 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,13 +32,13 @@ public class ContratoService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Iterable<Contrato> findAll() throws DataAccessException{
+	public List<Contrato> findAll() throws DataAccessException{
 		return contratoRepository.findAll();
 	}
 	
 	@Transactional(readOnly = true)
 	public Contrato findById(Long id) throws DataAccessException{
-		return contratoRepository.findById(id).get();
+		return contratoRepository.findById(id).orElse(null);
 	}
 	
 	@Transactional

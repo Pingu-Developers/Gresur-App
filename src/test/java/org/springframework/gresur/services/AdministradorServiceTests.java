@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -69,7 +70,8 @@ class AdministradorServiceTests {
 	 * * * * * * * * * * * * */
 	
 	@Test
-	@Transactional	
+	@Transactional
+	@DisplayName("Buscar Administrador por su NIF -- caso positivo")
 	void findAdminByNif() {
 		Administrador adm = administradorService.findByNIF("18845878A");
 		assertThat(adm.getName()).isEqualTo("Jose Luis Gresur");
@@ -77,6 +79,7 @@ class AdministradorServiceTests {
 	
 	@Test
 	@Transactional
+	@DisplayName("Buscar Administrador por su NIF -- caso negativo")
 	void findAdminByNifNotFound() {
 		Administrador adm = administradorService.findByNIF("18845878C");
 		assertThat(adm).isEqualTo(null);
@@ -84,13 +87,15 @@ class AdministradorServiceTests {
 	
 	@Test
 	@Transactional	
+	@DisplayName("Borrar Administrador por su NIF -- caso positivo")
 	void deleteAdminByNIF() {
 		administradorService.deleteByNIF("18845878A");
 		assertThat(administradorService.count()).isEqualTo(0);
 	}
 	
 	@Test
-	@Transactional	
+	@Transactional
+	@DisplayName("Buscar Administrador por su NIF -- caso negativo")
 	void deleteAdminByNIFNotFound() {
 		administradorService.deleteByNIF("18845878S");
 		assertThat(administradorService.count()).isEqualTo(1);

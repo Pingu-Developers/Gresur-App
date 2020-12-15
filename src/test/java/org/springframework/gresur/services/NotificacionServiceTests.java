@@ -111,7 +111,7 @@ class NotificacionServiceTests {
 		Notificacion noc1 = new Notificacion();
 		noc1.setCuerpo("Pepe y Jose a ver si podeis ayudarme esta tarde a cambiarle el aceite al camion grua");
 		noc1.setTipoNotificacion(TipoNotificacion.NORMAL);
-		noc1.setFechaHora(LocalDateTime.of(2020, 12, 13, 17, 30));
+		noc1.setFechaHora(LocalDateTime.of(2022, 12, 13, 17, 30));
 		noc1.setEmisor(emisor);
 		List<Personal> receptores = new ArrayList<Personal>();
 		receptores.add(receptor);
@@ -165,9 +165,35 @@ class NotificacionServiceTests {
 	/* * * * * * * * * * * * * * * *
 	 *   REGLAS DE NEGOCIO TESTS   *
 	 * * * * * * * * * * * * * * * */
+	
 	@Test
 	@Transactional
-	@DisplayName("RN: Limite de notificaciones (NotificacionesLimitException)")
+	@DisplayName("RN: Limite de notificaciones (new) -- caso positivo")
+	void saveNotificacionesLimitExcededPositive() {
+		configuracionService.getConfig().setNumMaxNotificaciones(10);
+		
+		Personal emisor = personalService.findByNIF("11170284R");
+		Personal receptor = personalService.findByNIF("12170284R");
+		Personal receptor2 = personalService.findByNIF("12240284R");
+
+		Notificacion noc = new Notificacion();
+		noc.setCuerpo("Cena de empresa hoy ¿quien se apunta?");
+		noc.setTipoNotificacion(TipoNotificacion.NORMAL);
+		noc.setFechaHora(LocalDateTime.of(2022, 12, 13, 18, 30));
+		noc.setEmisor(emisor);
+		
+		List<Personal> receptores = new ArrayList<Personal>();
+		receptores.add(receptor);
+		receptores.add(receptor2);
+		
+		noc = notificacionService.save(noc,receptores);
+
+		assertThat(notificacionService.findById(noc.getId())).isEqualTo(noc);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Limite de notificaciones (new) -- caso negativo")
 	void saveNotificacionesLimitExceded() {
 				
 		Personal emisor = personalService.findByNIF("11170284R");
@@ -177,16 +203,16 @@ class NotificacionServiceTests {
 		Notificacion noc = new Notificacion();
 		noc.setCuerpo("Cena de empresa hoy ¿quien se apunta?");
 		noc.setTipoNotificacion(TipoNotificacion.NORMAL);
-		noc.setFechaHora(LocalDateTime.of(2020, 12, 13, 18, 30));
+		noc.setFechaHora(LocalDateTime.of(2022, 12, 13, 18, 30));
 		noc.setEmisor(emisor);
-		noc.setId(201L);
+
 		List<Personal> receptores = new ArrayList<Personal>();
 		receptores.add(receptor);
 		receptores.add(receptor2);
-		notificacionService.save(noc,receptores);
-
+		
 		assertThrows(NotificacionesLimitException.class, ()->{notificacionService.save(noc,receptores);});
-		assertThat(notificacionService.findById(201L)).isNotEqualTo(noc);
+		List<Notificacion> lnoc = notificacionService.findAllNotificacionesByEmisor(emisor.getId());
+		assertThat(lnoc.get(lnoc.size()-1)).isNotEqualTo(noc);
 	}
 	
 }
