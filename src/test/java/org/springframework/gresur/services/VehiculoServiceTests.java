@@ -3,7 +3,6 @@ package org.springframework.gresur.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +17,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Concepto;
 import org.springframework.gresur.model.FacturaRecibida;
 import org.springframework.gresur.model.ITV;
-import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoSeguro;
@@ -84,7 +82,6 @@ class VehiculoServiceTests {
 		vehiculo.setDisponibilidad(false); 
 		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculo.setMMA(450.);
-		vehiculo.setReparaciones(new ArrayList<Reparacion>());
 		
 		vehiculo = vehiculoService.save(vehiculo);
 		
@@ -133,7 +130,6 @@ class VehiculoServiceTests {
 		vehiculo2.setDisponibilidad(false);
 		vehiculo2.setTipoVehiculo(TipoVehiculo.CARRETILLA_ELEVADORA);
 		vehiculo2.setMMA(500.);
-		vehiculo2.setReparaciones(new ArrayList<Reparacion>());
 		
 		vehiculoService.save(vehiculo2);
 	

@@ -126,7 +126,6 @@ class ReparacionServiceTests {
 		reparacion3.setVehiculo(vehiculo);
 		reparacionService.save(reparacion3);
 
-		vehiculo.setReparaciones(reparaciones);
 		reparaciones.add(reparacion);
 		reparaciones.add(reparacion2);
 		reparaciones.add(reparacion3);

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -21,7 +20,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Concepto;
 import org.springframework.gresur.model.FacturaRecibida;
 import org.springframework.gresur.model.Proveedor;
-import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoSeguro;
 import org.springframework.gresur.model.TipoVehiculo;
@@ -72,14 +70,12 @@ class SeguroServiceTests {
 	@Transactional
 	void initAll() {
 		
-		List<Reparacion> ls = new ArrayList<>();
 		Vehiculo vehiculo = new Vehiculo();
 		vehiculo.setCapacidad(130.00);
 		vehiculo.setDisponibilidad(false);
 		vehiculo.setMatricula("1526MVC");
 		vehiculo.setMMA(3000.00);
 		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
-		vehiculo.setReparaciones(ls);
 		vehiculoService.save(vehiculo);
 		
 		Proveedor prov = new Proveedor();

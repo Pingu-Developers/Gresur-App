@@ -1,22 +1,17 @@
 package org.springframework.gresur.model;
 
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -48,9 +43,9 @@ public class Vehiculo extends BaseEntity {
 	private Double MMA;
 	
 	//TODO Esta bidireccionalidad deberiamos quiza quitarla?
-	@JsonIgnore
-	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
-	@ToString.Exclude
-	private List<Reparacion> reparaciones;
+//	@JsonIgnore
+//	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
+//	@ToString.Exclude
+//	private List<Reparacion> reparaciones;
 	
 }
