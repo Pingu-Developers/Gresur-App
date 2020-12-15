@@ -332,9 +332,9 @@ public class ProductoTestService {
 	@DisplayName("RN: La capacidad de el/los productos excede a la capacidad de la estanteria (update) -- caso negativo")
 	void updateProductoVolumenExceded() {
 		Producto p = productoService.findAll().iterator().next();
+		p.setStock(999999);
 		
-		assertThrows(CapacidadProductoExcededException.class, () -> {p.setStock(999999);});  //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThat(productoService.findById(p.getId())).isNotEqualTo(p);					 //Compronacion de rollback
+		assertThrows(CapacidadProductoExcededException.class, () -> {productoService.save(p);});
 	}
 	
 	@Test
@@ -416,9 +416,9 @@ public class ProductoTestService {
 		p.setStock(0);
 		p.setUnidad(Unidad.UNIDADES);
 		productoService.save(p);
+		p.setStock(2);
 			
-		assertThrows(StockWithoutEstanteriaException.class, () -> {p.setStock(2);});				//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThat(productoService.findAllProductosByName("Otro vater").get(0)).isNotEqualTo(p);	//Comprobacion de rollback
+		assertThrows(StockWithoutEstanteriaException.class, () -> {productoService.save(p);});
 	}
 	
 	@Test
@@ -442,9 +442,10 @@ public class ProductoTestService {
 	@DisplayName("Cuando el stock de un producto está por debajo del de seguridad se lanza notificación -- caso positivo (se lanza)")
 	void updateProductoThrowNotificacionAlertaStock() {
 		Producto p = productoService.findAll().iterator().next();
-		p.setStockSeguridad(10);	
+		p.setStockSeguridad(100);
+		productoService.save(p);
 		
-		assertThat(notificacionService.findAll().size()).isEqualTo(1);	//NO SE LANZA LA NOTIFICACION PORQUE AL SER UN UPDATE NO PASA POR EL SAVE, DEBERIA LANZARSE EN EL SET
+		assertThat(notificacionService.findAll().size()).isEqualTo(1);
 	}
 	
 	@Test
@@ -452,7 +453,8 @@ public class ProductoTestService {
 	@DisplayName("Cuando el stock de un producto está por debajo del de seguridad se lanza notificación -- caso negativo (no se lanza)")
 	void updateProductoThrowNotificacionAlertaStockNegative() {
 		Producto p = productoService.findAll().iterator().next();
-		p.setStockSeguridad(100);
+		p.setStockSeguridad(1);
+		productoService.save(p);
 		
 		assertThat(notificacionService.findAll().size()).isEqualTo(0);	
 	}

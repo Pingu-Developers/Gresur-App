@@ -229,6 +229,7 @@ public class FacturaEmitidaServiceTests {
 	@Transactional
 	@DisplayName("RN: No se vende a clientes con impagos (new) -- caso positivo")
 	void saveClienteDefaulterPositive() {
+		
 		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
 		Cliente noDefaulter = fem.getCliente();
 		
@@ -264,6 +265,7 @@ public class FacturaEmitidaServiceTests {
 	@Transactional
 	@DisplayName("RN: No se vende a clientes con impagos (new) -- caso negativo")
 	void saveClienteDefaulterNegative() {
+		
 		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
 		fem.setEstaPagada(false);
 		Cliente defaulter = fem.getCliente();
@@ -290,9 +292,8 @@ public class FacturaEmitidaServiceTests {
 		fem.setEstaPagada(false);		
 		assertThat(facturaEmitidaService.findByNumFactura(fem.getId()).getEstaPagada()).isEqualTo(false);
 		
-		/* Para una factura sin pagar debe dejarme cambiar el atributo estaPagada, pero ningun otro*/		
-		assertThrows(ClienteDefaulterException.class, ()->{fem.setImporte(928.13929);});					  //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThat(facturaEmitidaService.findByNumFactura(fem.getId()).getImporte()).isNotEqualTo(928.13929); //comprobacion de rollback
-
+		/* Para una factura sin pagar debe dejarme cambiar el atributo estaPagada, pero ningun otro*/
+		fem.setImporte(928.13929);
+		assertThrows(ClienteDefaulterException.class, ()->{facturaEmitidaService.save(fem);});
 	}
 }

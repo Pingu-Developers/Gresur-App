@@ -171,9 +171,10 @@ class ReparacionServiceTests {
 	@DisplayName("RN: Fecha de entrada debe ser anterior o igual a la de salida (update) -- caso positivo")
 	void updateReparacionWithFechaInicioAfterFechaFinPositive() {
 		Reparacion reparacion = reparacionService.findAll().iterator().next();
-		reparacion.setFechaEntradaTaller(LocalDate.of(2019, 12, 22));
+		reparacion.setFechaEntradaTaller(LocalDate.of(2018, 12, 22));
+		reparacionService.save(reparacion);
 
-		assertThat(reparacionService.findAll().iterator().next().getFechaEntradaTaller()).isEqualTo(LocalDate.of(2019, 12, 22));
+		assertThat(reparacionService.findAll().iterator().next().getFechaEntradaTaller()).isEqualTo(LocalDate.of(2018, 12, 22));
 	}
 	
 	@Test
@@ -205,9 +206,9 @@ class ReparacionServiceTests {
 	@DisplayName("RN: Fecha de entrada debe ser anterior o igual a la de salida (update) -- caso negativo")
 	void updateReparacionWithFechaInicioAfterFechaFin() {
 		Reparacion reparacion = reparacionService.findAll().iterator().next();
+		reparacion.setFechaEntradaTaller(LocalDate.of(2020, 10, 22));
 		
-		assertThrows(FechaFinNotAfterFechaInicioException.class, ()->{reparacion.setFechaEntradaTaller(LocalDate.of(2020, 10, 22));});	//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThat(reparacionService.findAll().iterator().next().getFechaEntradaTaller()).isNotEqualTo(LocalDate.of(2020, 10, 22));		//Comprobacion de rollback
+		assertThrows(FechaFinNotAfterFechaInicioException.class, ()->{reparacionService.save(reparacion);});	
 	}
 
 	@Test

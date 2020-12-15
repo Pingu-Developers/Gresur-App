@@ -254,13 +254,11 @@ class VehiculoServiceTests {
 	void updateVehiculoWithIncorrectPlate() {
 		Vehiculo vehiculo = vehiculoService.findByMatricula("4040GND");	
 		Vehiculo vehiculo2 = vehiculoService.findByMatricula("E4040GND");
+		vehiculo.setMatricula("4040GNDD");
+		vehiculo2.setMatricula("EE4040GND");
 		
-		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculo.setMatricula("4040GNDD");});		//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculo2.setMatricula("EE4040GND");});	//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		
-		assertThat(vehiculoService.findByMatricula("4040GNDD")).isNotEqualTo(vehiculo);		// Comprobacion de rollback
-		assertThat(vehiculoService.findByMatricula("EE4040GND")).isNotEqualTo(vehiculo2);	// Comprobacion de rollback
-
+		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculoService.save(vehiculo2);});		
+		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculoService.save(vehiculo2);});	
 	}
 	
 	@Test
@@ -284,9 +282,9 @@ class VehiculoServiceTests {
 	void updateVehiculoWithITV() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		ITV itv = itvService.findLastITVFavorableByVehiculo(vehiculo.getMatricula());
+		itv.setResultado(ResultadoITV.NEGATIVA);
 		
-		assertThrows(VehiculoIllegalException.class, ()->{itv.setResultado(ResultadoITV.NEGATIVA);}); //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThat(itvService.findById(itv.getId())).isNotEqualTo(itv);	// Comprobacion de rollback
+		assertThrows(VehiculoIllegalException.class, ()->{itvService.save(itv);});
 	}
 	
 	@Test
@@ -310,10 +308,9 @@ class VehiculoServiceTests {
 	void updateIllegalVehiculoSeguro() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		Seguro seguro = seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula());
-		
+		seguro.setFechaExpiracion(LocalDate.of(2020, 2, 11));
 
-		assertThrows(VehiculoIllegalException.class, ()->{seguro.setFechaExpiracion(LocalDate.of(2020, 2, 11));});	//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThat(seguroService.findById(seguro.getId())).isNotEqualTo(seguro);		// Comprobacion de rollback
+		assertThrows(VehiculoIllegalException.class, ()->{seguroService.save(seguro);});
 	}
 	
 	//TODO Falta probar un save y un update que funcionen bien (caso positivo)

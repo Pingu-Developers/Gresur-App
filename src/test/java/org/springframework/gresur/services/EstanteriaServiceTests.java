@@ -117,6 +117,7 @@ class EstanteriaServiceTests {
 	@Transactional
 	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen (new) -- caso positivo")
 	void saveEstanteriaWithCapacidadExcededPositive() {
+		
 		Almacen alm = almacenService.findAll().iterator().next();
 		Estanteria est = new Estanteria();
 		est.setAlmacen(alm);
@@ -131,6 +132,7 @@ class EstanteriaServiceTests {
 	@Transactional
 	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen (update) -- caso positivo")
 	void updateEstanteriaWithCapacidadExcededPositive() {
+		
 		Estanteria est = estanteriaService.findAll().iterator().next();
 		est.setCapacidad(159.00);
 		assertThat(estanteriaService.findAll().iterator().next().getCapacidad()).isEqualTo(159.00);
@@ -141,6 +143,7 @@ class EstanteriaServiceTests {
 	@Transactional
 	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen (new) -- caso negativo")
 	void saveEstanteriaWithCapacidadExcededNegative() {
+		
 		Almacen alm = almacenService.findAll().iterator().next();
 		Estanteria est = new Estanteria();
 		est.setAlmacen(alm);
@@ -156,9 +159,10 @@ class EstanteriaServiceTests {
 	@Transactional
 	@DisplayName("RN: Capacidad Estanteria menor que capacidad Almacen (update) -- caso negativo")
 	void updateEstanteriaWithCapacidadExcededNegative() {
-		Estanteria est = estanteriaService.findAll().iterator().next();
 		
-		assertThrows(CapacidadEstanteriaExcededException.class, () -> {est.setCapacidad(1000000.00);}); 	//DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThat(estanteriaService.findAll().iterator().next().getCapacidad()).isNotEqualTo(1000000.00);
+		Estanteria est = estanteriaService.findAll().iterator().next();
+		est.setCapacidad(1000000.00);
+		
+		assertThrows(CapacidadEstanteriaExcededException.class, () -> {estanteriaService.save(est);});
 	}
 }

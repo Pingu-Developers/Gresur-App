@@ -180,6 +180,7 @@ class SeguroServiceTests {
 		Seguro seguro = seguroService.findAll().iterator().next();
 		seguro.setFechaContrato(LocalDate.of(2020, 1, 1));
 		seguro.setFechaExpiracion(LocalDate.of(2030, 1, 1));
+		seguroService.save(seguro);
 		
 		assertThat(seguroService.findAll().iterator().next().getFechaExpiracion()).isEqualTo(LocalDate.of(2030, 1, 1));
 	}
@@ -217,9 +218,9 @@ class SeguroServiceTests {
 	void updateSeguroFechaException() {
 		Seguro seguro = seguroService.findAll().iterator().next();
 		seguro.setFechaContrato(LocalDate.of(2020, 1, 1));
+		seguro.setFechaExpiracion(LocalDate.of(2005, 1, 1));
 		
-		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguro.setFechaExpiracion(LocalDate.of(2005, 1, 1));}); //DEBEMOS VALIDAR ESTOS SET DE ALGUNA MANERA, LOS UPDATE SE HACEN DIRECTAMENTE EN EL SET, SIN SAVE
-		assertThat(seguroService.findAll().iterator().next().getFechaExpiracion()).isNotEqualTo(LocalDate.of(2005, 1, 1)); 		//comprobacion de rollback
+		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);}); 
 	}
 	
 	@Test
