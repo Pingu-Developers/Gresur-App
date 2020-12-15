@@ -488,3 +488,14 @@ INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, ve
 	
 INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
 	VALUES ('Praza Catalunya, 2, 20341, Itsasondo(Gipuzkoa)', 'ENTREGADO', TO_DATE('2019/11/01','YYYY/MM/DD'), 5, 4, 6);
+
+
+UPDATE ID_Generator SET sequence = 6 WHERE name = 'personal';
+		
+UPDATE ID_GENERATOR SET sequence = 10 WHERE name = 'clientes';
+
+UPDATE ID_GENERATOR SET sequence = 5 WHERE name = 'proveedores';
+
+UPDATE ID_GENERATOR SET sequence = 21 WHERE name = 'facturas';
+
+--FIN DE LA CARGA DE DATOS
