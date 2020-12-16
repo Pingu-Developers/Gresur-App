@@ -421,6 +421,10 @@ public class ProductoTestService {
 		assertThrows(StockWithoutEstanteriaException.class, () -> {productoService.save(p);});
 	}
 	
+	
+	/* * * * * * * * * * * * * * * *
+	 *   FUNCIONALIDADES TESTS     *
+	 * * * * * * * * * * * * * * * */
 	@Test
 	@Transactional
 	@DisplayName("Propiedad derivada: Demanda")
@@ -433,9 +437,6 @@ public class ProductoTestService {
 		assertThat(acum).isEqualTo(1);
 	}
 	
-	/* * * * * * * * * * * * * * * *
-	 *   FUNCIONALIDADES TESTS     *
-	 * * * * * * * * * * * * * * * */
 	
 	@Test
 	@Transactional
