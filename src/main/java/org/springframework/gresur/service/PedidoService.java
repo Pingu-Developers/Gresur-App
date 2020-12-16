@@ -18,7 +18,7 @@ import org.springframework.gresur.repository.PedidoRepository;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
 import org.springframework.gresur.service.exceptions.PedidoLogisticException;
 import org.springframework.gresur.service.exceptions.PedidoNoDeleteableException;
-import org.springframework.gresur.service.exceptions.PedidoSinTransportistaException;
+import org.springframework.gresur.service.exceptions.PedidoConVehiculoSinTransportistaException;
 import org.springframework.gresur.service.exceptions.VehiculoNotAvailableException;
 import org.springframework.gresur.service.exceptions.VehiculoDimensionesExceededException;
 import org.springframework.stereotype.Service;
@@ -67,7 +67,7 @@ public class PedidoService {
 		if(vehiculo != null) {
 			Double MMA = vehiculo.getMMA();
 			if(pedido.getTransportista() == null) {
-				throw new PedidoSinTransportistaException();
+				throw new PedidoConVehiculoSinTransportistaException();
 			} if(!vehiculo.getDisponibilidad()) {
 				throw new VehiculoNotAvailableException();
 			} if(pedido.getEstado().equals(EstadoPedido.EN_REPARTO) || pedido.getEstado().equals(EstadoPedido.ENTREGADO)) {

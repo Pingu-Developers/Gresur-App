@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @SuppressWarnings("serial")
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class PedidoSinTransportistaException extends RuntimeException{
+public class PedidoConVehiculoSinTransportistaException extends RuntimeException{
 	
-	public PedidoSinTransportistaException() {
+	public PedidoConVehiculoSinTransportistaException() {
 		super();
 	}
 
-	public PedidoSinTransportistaException(String message) {
+	public PedidoConVehiculoSinTransportistaException(String message) {
 		super(message);
 	}
 }
