@@ -35,7 +35,8 @@ public class LineasEnviadoService {
 		return lineasEnviadoRepo.save(l);
 	}
 	
-	@Transactional Iterable<LineaEnviado> saveAll(List<LineaEnviado> list){
+	@Transactional 
+	public Iterable<LineaEnviado> saveAll(List<LineaEnviado> list){
 		return lineasEnviadoRepo.saveAll(list);
 	}
 	
