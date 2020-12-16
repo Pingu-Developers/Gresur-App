@@ -227,7 +227,40 @@ class VehiculoServiceTests {
 	 *   REGLAS DE NEGOCIO TESTS   *
 	 * * * * * * * * * * * * * * * */	
 	
-
+	@Test
+	@Transactional
+	@DisplayName("Actualizar un vehiculo -- caso positivo")
+	void updateVehiculoWithoutProblems() {
+		Vehiculo v = vehiculoService.findAll().iterator().next();
+		v.setMMA(413.00);
+		
+		assertThat(vehiculoService.count()).isEqualTo(2);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Guardar un nuevo vehiculo -- caso positivo")
+	void addVehiculoWithoutProblems() {
+		
+		Vehiculo vehiculo = new Vehiculo();
+		vehiculo.setMatricula("4323BLD");
+		vehiculo.setDisponibilidad(false); //se puede guardar un vehiculo con disponibilidad false (entonces no hara falta ni ITV y Seguro...)
+		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
+		vehiculo.setCapacidad(300.);
+		vehiculo.setMMA(201.0);
+		vehiculo = vehiculoService.save(vehiculo);
+				
+		ITV itv = itvService.findAll().iterator().next();
+		itv.setVehiculo(vehiculo);
+		itvService.save(itv);
+		
+		Seguro seguro = seguroService.findAll().iterator().next();
+		seguro.setVehiculo(vehiculo);
+		seguroService.save(seguro);
+		
+		assertThat(vehiculoService.count()).isEqualTo(3);
+	}
+	
 	@Test
 	@Transactional
 	@DisplayName("RN: Formato de Matricula (new) -- caso negativo")
@@ -308,7 +341,4 @@ class VehiculoServiceTests {
 
 		assertThrows(VehiculoIllegalException.class, ()->{seguroService.save(seguro);});
 	}
-	
-	//TODO Falta probar un save y un update que funcionen bien (caso positivo)
-
 }
