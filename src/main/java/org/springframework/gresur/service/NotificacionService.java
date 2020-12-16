@@ -75,7 +75,7 @@ public class NotificacionService {
 					findByEmisorIdAndFechaHoraAfterAndTipoNotificacionIn(persona.getId(), LocalDateTime.now().minusDays(1), Arrays.asList(TipoNotificacion.NORMAL))
 					.size();
 			
-			if(n>maxNotificaciones) {
+			if(n+1>maxNotificaciones) {
 				throw new NotificacionesLimitException("Ha excedido el limite diario de notificaciones");
 			}
 		}
