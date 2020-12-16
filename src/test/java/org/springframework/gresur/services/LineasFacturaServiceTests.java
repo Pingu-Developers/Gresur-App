@@ -213,6 +213,12 @@ class LineasFacturaServiceTests {
 		lf.setPrecio(500.);
 		lf.setCantidad(2);
 		
+		LineaFactura lf2 = new LineaFactura();
+		lf2.setProducto(productoService.findAll().get(1));
+		lf2.setFactura(lf1.getFactura());
+		lf2.setPrecio(500.);
+		lf2.setCantidad(2);
+		
 		Producto azulejo = new Producto();
 		azulejo.setAlto(0.3);
 		azulejo.setAncho(0.1);
@@ -228,15 +234,16 @@ class LineasFacturaServiceTests {
 		azulejo.setEstanteria(estanteriaService.findAll().get(0));
 		azulejo = productoService.save(azulejo);
 		
-		LineaFactura lf2 = new LineaFactura();
-		lf2.setFactura(lf1.getFactura());
-		lf2.setPrecio(200.);
-		lf2.setCantidad(3);
-		lf2.setProducto(azulejo);
+		LineaFactura lf3 = new LineaFactura();
+		lf3.setFactura(lf1.getFactura());
+		lf3.setPrecio(200.);
+		lf3.setCantidad(3);
+		lf3.setProducto(azulejo);
 		
 		List<LineaFactura> lineas = new ArrayList<LineaFactura>();
 		lineas.add(lf);
 		lineas.add(lf2);
+		lineas.add(lf3);
 		
 		lineaFacturaService.saveAll(lineas);
 		
