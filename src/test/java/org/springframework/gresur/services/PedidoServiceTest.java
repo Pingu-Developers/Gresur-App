@@ -3,7 +3,6 @@ package org.springframework.gresur.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -53,7 +52,6 @@ import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.TransportistaService;
 import org.springframework.gresur.service.VehiculoService;
-import org.springframework.gresur.service.exceptions.ClienteDefaulterException;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
 import org.springframework.gresur.service.exceptions.PedidoConVehiculoSinTransportistaException;
 import org.springframework.gresur.service.exceptions.PedidoLogisticException;
