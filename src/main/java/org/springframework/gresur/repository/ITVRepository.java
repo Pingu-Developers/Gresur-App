@@ -11,6 +11,8 @@ import org.springframework.gresur.model.ResultadoITV;
 
 public interface ITVRepository extends CrudRepository<ITV, Long>{
 	
+	List<ITV> findAll();
+	
 	List<ITV> findByVehiculoMatricula(String matricula);
 	
 	List<ITV> findByVehiculoMatriculaAndExpiracionAfterAndResultadoIn(String matricula, LocalDate fecha,Collection<ResultadoITV> res);
@@ -21,4 +23,5 @@ public interface ITVRepository extends CrudRepository<ITV, Long>{
 	
 	void deleteByVehiculoMatricula(String matricula);
 	
+	void deleteByRecibidasId(Long id);
 }

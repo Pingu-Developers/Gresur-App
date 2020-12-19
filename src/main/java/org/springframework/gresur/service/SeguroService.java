@@ -35,7 +35,7 @@ public class SeguroService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Iterable<Seguro> findAll() throws DataAccessException{
+	public List<Seguro> findAll() throws DataAccessException{
 		return seguroRepo.findAll();
 	}
 	
@@ -56,6 +56,11 @@ public class SeguroService {
 	@Transactional
 	public void deleteByVehiculoId(Long id) throws DataAccessException{
 		seguroRepo.deleteByVehiculoId(id);
+	}
+	
+	@Transactional
+	public void deleteByRecibidasId(Long id) throws DataAccessException{
+		seguroRepo.deleteByRecibidasId(id);
 	}
 	
 	@Transactional

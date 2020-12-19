@@ -116,9 +116,9 @@ public class VehiculoService {
 	
 	@Transactional
 	public void deleteByMatricula(String matricula) throws DataAccessException{
-		reparacionService.deleteByVehiculoMatricula(matricula);;
-		ITVService.deleteByVehiculoMatricula(matricula);;
-		seguroService.deleteByVehiculoMatricula(matricula);;
+		reparacionService.deleteByVehiculoMatricula(matricula);
+		ITVService.deleteByVehiculoMatricula(matricula);
+		seguroService.deleteByVehiculoMatricula(matricula);
 		vehiculoRepository.deleteByMatricula(matricula);
 	}
 	

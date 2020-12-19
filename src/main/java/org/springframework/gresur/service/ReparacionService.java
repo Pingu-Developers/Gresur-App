@@ -28,7 +28,7 @@ public class ReparacionService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Iterable<Reparacion> findAll() throws DataAccessException{
+	public List<Reparacion> findAll() throws DataAccessException{
 		return reparacionRepo.findAll();
 	}
 	
@@ -73,6 +73,16 @@ public class ReparacionService {
 	@Transactional
 	public void deleteByVehiculoMatricula(String matricula) throws DataAccessException{
 		reparacionRepo.deleteByVehiculoMatricula(matricula);
+	}
+	
+	@Transactional
+	public void deleteByRecibidasId(Long id) throws DataAccessException{
+		reparacionRepo.deleteByRecibidasId(id);
+	}
+	
+	@Transactional
+	public Long count() {
+		return reparacionRepo.count();
 	}
 	
 }

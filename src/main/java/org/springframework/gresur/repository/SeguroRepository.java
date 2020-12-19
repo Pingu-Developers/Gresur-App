@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.gresur.model.Seguro;
 
-public interface SeguroRepository extends CrudRepository<Seguro, Long> {	
+public interface SeguroRepository extends CrudRepository<Seguro, Long> {
+	
+	List<Seguro> findAll();
 	
 	List<Seguro> findByVehiculoMatricula(String Matricula);
 	
@@ -17,4 +19,6 @@ public interface SeguroRepository extends CrudRepository<Seguro, Long> {
 	void deleteByVehiculoId(Long id);
 	
 	void deleteByVehiculoMatricula(String matricula);
+	
+	void deleteByRecibidasId(Long id);
 }

@@ -22,16 +22,25 @@ import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.Concepto;
 import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.model.FacturaRecibida;
+import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.model.Producto;
 import org.springframework.gresur.model.Proveedor;
+import org.springframework.gresur.model.Reparacion;
+import org.springframework.gresur.model.Seguro;
+import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Unidad;
+import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.service.AlmacenService;
 import org.springframework.gresur.service.EstanteriaService;
 import org.springframework.gresur.service.FacturaRecibidaService;
+import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.LineasFacturaService;
 import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.service.ProveedorService;
+import org.springframework.gresur.service.ReparacionService;
+import org.springframework.gresur.service.SeguroService;
+import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +52,15 @@ public class FacturaRecibidaServiceTests {
 
 	@Autowired
 	protected DBUtility util;
+	
+	@Autowired
+	private ITVService ITVService;
+	
+	@Autowired
+	private SeguroService seguroService;
+	
+	@Autowired
+	private ReparacionService reparacionService;
 	
 	@Autowired
 	protected ProveedorService proveedorService;
@@ -61,6 +79,10 @@ public class FacturaRecibidaServiceTests {
 
 	@Autowired
 	protected LineasFacturaService lineaFacturaService;
+	
+	@Autowired
+	protected VehiculoService vehiculoService;
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -191,8 +213,41 @@ public class FacturaRecibidaServiceTests {
 		assertThat(lf.get(0).getPrecio()).isEqualTo(12.);
 		assertThat(lf.get(1).getPrecio()).isEqualTo(5.);
 
-
 	}
+	
+	
+	/* * * * * * * * * * * * * *
+	 *   DELETE CASCADE TESTS  *
+	 * * * * * * * * * * * * * */
 
+	@Test
+	@Transactional
+	@DisplayName("Borrar FacturaRecibida por su id -- Caso positivo")
+	void deleteRecibidaById() {
+		List<FacturaRecibida> lfr = facturaRecibidaService.findAll();
+		FacturaRecibida fr = lfr.get(0);
+		
+		facturaRecibidaService.deleteById(fr.getId());
+		
+		assertThat(facturaRecibidaService.count()).isEqualTo(0);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }
