@@ -97,7 +97,7 @@ public class LineaFacturaTests extends ValidatorTests {
 	@ParameterizedTest
 	@CsvSource({
 		"15,1,1,",
-		"8,1,1,",
+		"8,1,1,-5",
 		"1,1,1,"
 	})
 	void validateLineaFacturaNotNullPrecioTest(Integer cantidad,Long factura, Long producto, Double precio) {
