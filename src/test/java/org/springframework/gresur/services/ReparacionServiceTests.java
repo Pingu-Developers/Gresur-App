@@ -144,7 +144,7 @@ class ReparacionServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("findVehiculoByMatricula -- Caso Positivo")
+	@DisplayName("Busca un vehiculo dado su matricula -- Caso Positivo")
 	void findVehiculoByMatricula() {
 
 		List<Reparacion> reparaciones = reparacionService.findByMatricula("4040GND");
@@ -153,7 +153,7 @@ class ReparacionServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("findVehiculoByMatricula -- Caso Negativo")
+	@DisplayName("Busca un vehiculo dado su matricula -- Caso Negativo")
 	void findVehiculoByMatriculaNotFound() {
 
 		List<Reparacion> reparaciones = reparacionService.findByMatricula("4040LNE");

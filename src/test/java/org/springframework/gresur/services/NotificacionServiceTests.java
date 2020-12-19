@@ -130,14 +130,14 @@ class NotificacionServiceTests {
 	 * * * * * * * * * * * * */
 	@Test
 	@Transactional
-	@DisplayName("findAllNotificacionesByEmisor -- Caso Positivo")
+	@DisplayName("Busca todas las notificaciones enviadas por un emisor concreto -- Caso Positivo")
 	void findAllNotificacionesByEmisor() {
 		List<Notificacion> noc = notificacionService.findAllNotificacionesByEmisorName("Paco Pepe");
 		assertThat(noc.size()).isEqualTo(1);
 	}
 	@Test
 	@Transactional
-	@DisplayName("findAllNotificacionesByEmisorNotFound -- Caso Negativo")
+	@DisplayName("Busca todas las notificaciones enviadas por un emisor concreto -- Caso Negativo")
 	void findAllNotificacionesByEmisorNotFound() {
 		List<Notificacion> noc = notificacionService.findAllNotificacionesByEmisorName("Paco Manuel");
 		assertThat(noc.size()).isEqualTo(0);
@@ -145,7 +145,7 @@ class NotificacionServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("findNoLeidasPersonal -- Caso Positivo")
+	@DisplayName("Busca todas las notificaciones no leidas por un empleado concreto -- Caso Positivo")
 	void findNoLeidasPersonal() {
 		Personal p = personalService.findByNIF("12170284R");
 		List<Notificacion> noc = notificacionService.findNoLeidasPersonal(p);
@@ -154,7 +154,7 @@ class NotificacionServiceTests {
 		
 	@Test
 	@Transactional
-	@DisplayName("findNoLeidasPersonal -- Caso Negativo")
+	@DisplayName("Busca todas las notificaciones no leidas por un empleado concreto -- Caso Negativo")
 	void findNoLeidasPersonalNotFound() {
 		Personal p = personalService.findByNIF("11170284R");
 		List<Notificacion> noc = notificacionService.findNoLeidasPersonal(p);
