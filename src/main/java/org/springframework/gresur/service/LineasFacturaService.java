@@ -37,10 +37,8 @@ public class LineasFacturaService {
 	
 	@Transactional
 	public LineaFactura save(LineaFactura linea) {		
-		
 		LineaFactura otherLinea = lineasRepo.findByFacturaIdAndProductoId(linea.getFactura().getId(), linea.getProducto().getId()).orElse(null);
-			
-		if(otherLinea != null) {
+		if(otherLinea != null && linea.getId()==null) {
 			otherLinea.setCantidad(otherLinea.getCantidad() + linea.getCantidad());
 			otherLinea.setPrecio(otherLinea.getPrecio() + linea.getPrecio());
 			linea = otherLinea;
