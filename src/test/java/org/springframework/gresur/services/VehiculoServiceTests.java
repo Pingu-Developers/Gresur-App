@@ -3,6 +3,8 @@ package org.springframework.gresur.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.gresur.model.Concepto;
 import org.springframework.gresur.model.FacturaRecibida;
 import org.springframework.gresur.model.ITV;
@@ -199,6 +202,27 @@ class VehiculoServiceTests {
 		Vehiculo vehiculo2 = vehiculoService.findByMatricula("E3010UND");
 		assertThat(vehiculo).isEqualTo(null);
 		assertThat(vehiculo2).isEqualTo(null);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Elimina un vehiculo dada su id -- Caso Positivo")
+	void deleteVehiculoById() {
+
+		Vehiculo v = vehiculoService.findAll().iterator().next();
+		vehiculoService.deleteById(v.getId());
+		List<ITV> itvs = itvService.findByVehiculo(v.getMatricula());
+		assertThat(itvs.size()).isEqualTo(0);
+		assertThat(vehiculoService.count()).isEqualTo(1);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Elimina un vehiculo dada su id -- Caso Negativo")
+	void deleteVehiculoByIdNotFound() {
+
+		assertThrows(EmptyResultDataAccessException.class, ()->{vehiculoService.deleteById(3L);});	
+		assertThat(vehiculoService.count()).isEqualTo(2);
 	}
 	
 	@Test

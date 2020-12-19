@@ -13,4 +13,8 @@ public interface SeguroRepository extends CrudRepository<Seguro, Long> {
 	List<Seguro> findByVehiculoMatriculaAndFechaExpiracionAfter(String matricula, LocalDate fecha);
 	
 	Seguro findFirstByVehiculoMatriculaOrderByFechaExpiracionDesc(String matricula);
+	
+	void deleteByVehiculoId(Long id);
+	
+	void deleteByVehiculoMatricula(String matricula);
 }

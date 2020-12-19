@@ -106,20 +106,19 @@ public class VehiculoService {
 		return ret;
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor = DataAccessException.class)
 	public void deleteById(Long id) throws DataAccessException{
-		String matricula = vehiculoRepository.findById(id).get().getMatricula();
-		reparacionService.deleteAll(reparacionService.findByMatricula(matricula));
-		seguroService.deleteAll(seguroService.findByVehiculo(matricula));
-		ITVService.deleteAll(ITVService.findByVehiculo(matricula));
+		reparacionService.deleteByVehiculoId(id);
+		ITVService.deleteByVehiculoId(id);
+		seguroService.deleteByVehiculoId(id);
 		vehiculoRepository.deleteById(id);
 	}
 	
 	@Transactional
 	public void deleteByMatricula(String matricula) throws DataAccessException{
-		reparacionService.deleteAll(reparacionService.findByMatricula(matricula));
-		seguroService.deleteAll(seguroService.findByVehiculo(matricula));
-		ITVService.deleteAll(ITVService.findByVehiculo(matricula));
+		reparacionService.deleteByVehiculoMatricula(matricula);;
+		ITVService.deleteByVehiculoMatricula(matricula);;
+		seguroService.deleteByVehiculoMatricula(matricula);;
 		vehiculoRepository.deleteByMatricula(matricula);
 	}
 	
@@ -177,6 +176,10 @@ public class VehiculoService {
 			}
 		}
 	}
+	
+	
+	
+	
 	@Transactional
 	public Long count() {
 		return vehiculoRepository.count();

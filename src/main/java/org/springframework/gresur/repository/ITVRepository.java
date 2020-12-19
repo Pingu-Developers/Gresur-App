@@ -17,4 +17,8 @@ public interface ITVRepository extends CrudRepository<ITV, Long>{
 	
 	Optional<ITV> findFirstByVehiculoMatriculaOrderByExpiracionDesc(String matricula);
 	
+	void deleteByVehiculoId(Long id);
+	
+	void deleteByVehiculoMatricula(String matricula);
+	
 }
