@@ -77,7 +77,7 @@ public class ProveedorServiceTests {
 
 	@Test
 	@Transactional
-	@DisplayName("findByNif -- caso positivo")
+	@DisplayName("Encontrar proveedor dado su NIF -- caso positivo")
 	void findByNif() {
 		Proveedor proveedor = proveedorService.findByNIF("10030284R");
 		Proveedor proveedor2 = proveedorService.findByNIF("20070245J");
@@ -89,7 +89,7 @@ public class ProveedorServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("findByNif -- caso negativo")
+	@DisplayName("Encontrar proveedor dado su NIF -- caso negativo")
 	void findByNifNotFound() {
 		Proveedor proveedor = proveedorService.findByNIF("20070245Y");
 		assertThat(proveedor).isEqualTo(null);

@@ -71,7 +71,7 @@ class TransportistaServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("Buscar Transportista por su NIF -- caso positivo")
+	@DisplayName("Busca Transportista por su NIF -- caso positivo")
 	void findTransportistaByNif() {
 		Transportista transportista = transportistaService.findByNIF("18845878A");
 		assertThat(transportista.getName()).isEqualTo("Jose Luis Gresur");
@@ -79,7 +79,7 @@ class TransportistaServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("Buscar Transportista por su NIF -- caso negativo")
+	@DisplayName("Busca Transportista por su NIF -- caso negativo")
 	void findTransportistaByNifNotFound() {
 		Transportista transportista = transportistaService.findByNIF("18845878C");
 		assertThat(transportista).isEqualTo(null);
