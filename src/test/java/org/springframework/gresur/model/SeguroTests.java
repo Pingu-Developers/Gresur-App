@@ -72,13 +72,38 @@ class SeguroTests extends ValidatorTests{
 		Set<ConstraintViolation<Seguro>> constraintViolations = validator.validate(seguro);
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
+
+	@ParameterizedTest
+	@CsvSource({
+		"Mutua, TODORRIESGO,, 17/08/2052, 1, 1",
+		"Linea Directa, TERCEROS,, 17/08/2021, 1, 1"
+	})
+	void validateSeguroFechaContratoNotNullTest(String compañia, String tipoSeguro, String fechaContrato, String fechaExpiracion, Integer recibidas, Integer vehiculo){
+		Seguro seguro = this.createSUT(compañia, tipoSeguro, fechaContrato, fechaExpiracion, recibidas, vehiculo);
 		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Seguro>> constraintViolations = validator.validate(seguro);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
 	@ParameterizedTest
 	@CsvSource({
 		"Mutua, TODORRIESGO, 17/08/2038, 17/08/2052, 1, 1",
 		"Linea Directa, TERCEROS, 12/09/2056, 17/08/2021, 1, 1"
 	})
 	void validateSeguroFechaContratoPastOrPresentTest(String compañia, String tipoSeguro, String fechaContrato, String fechaExpiracion, Integer recibidas, Integer vehiculo){
+		Seguro seguro = this.createSUT(compañia, tipoSeguro, fechaContrato, fechaExpiracion, recibidas, vehiculo);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Seguro>> constraintViolations = validator.validate(seguro);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@CsvSource({
+		"Mutua, TODORRIESGO, 17/08/2018,22, 1, 1",
+		"Linea Directa, TERCEROS, 12/09/2016,, 1, 1"
+	})
+	void validateSeguroFechaExpiracionNotNullTest(String compañia, String tipoSeguro, String fechaContrato, String fechaExpiracion, Integer recibidas, Integer vehiculo){
 		Seguro seguro = this.createSUT(compañia, tipoSeguro, fechaContrato, fechaExpiracion, recibidas, vehiculo);
 		
 		Validator validator = createValidator();
