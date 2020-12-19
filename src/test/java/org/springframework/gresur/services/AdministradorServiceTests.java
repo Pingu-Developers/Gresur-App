@@ -2,6 +2,8 @@ package org.springframework.gresur.services;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +16,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Administrador;
+import org.springframework.gresur.model.Configuracion;
+import org.springframework.gresur.model.Contrato;
+import org.springframework.gresur.model.TipoJornada;
 import org.springframework.gresur.service.AdministradorService;
+import org.springframework.gresur.service.ConfiguracionService;
+import org.springframework.gresur.service.ContratoService;
 import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +35,14 @@ class AdministradorServiceTests {
 	protected AdministradorService administradorService;
 	
 	@Autowired
+	protected ContratoService contratoService;
+	
+	@Autowired
+	protected ConfiguracionService configService;
+	
+	@Autowired
 	protected DBUtility util;
+	
 	
 	
 	
@@ -46,6 +60,11 @@ class AdministradorServiceTests {
 	@BeforeEach
 	@Transactional
 	void initAll() {
+		//CREACION DE CONFIGURACION
+		Configuracion cfg = new Configuracion();
+		cfg.setSalarioMinimo(900.);
+		cfg.setNumMaxNotificaciones(10);
+		configService.save(cfg);
 		
 		// CREACION DEL ADMINISTRADOR
 		Administrador adm = new Administrador();
@@ -57,7 +76,18 @@ class AdministradorServiceTests {
 		adm.setNSS("12 1234123890");
 		adm.setImage("/resources/foto.png");
 		
-		administradorService.save(adm);
+		adm = administradorService.save(adm);
+		
+		//CREACION DE UN CONTRATO
+		Contrato cont = new Contrato();
+		cont.setEntidadBancaria("IBERBANK");
+		cont.setFechaInicio(LocalDate.of(2017, 12, 31));
+		cont.setFechaFin(LocalDate.of(2100, 12, 31));
+		cont.setNomina(2563.99);
+		cont.setTipoJornada(TipoJornada.COMPLETA);
+		cont.setPersonal(adm);
+		
+		cont = contratoService.save(cont);
 	}
 	
 	
@@ -85,20 +115,27 @@ class AdministradorServiceTests {
 		assertThat(adm).isEqualTo(null);
 	}
 	
+
+	/* * * * * * * * * * * * * *
+	 *   DELETE CASCADE TESTS  *
+	 * * * * * * * * * * * * * */
+	
 	@Test
 	@Transactional	
 	@DisplayName("Borrar Administrador por su NIF -- caso positivo")
 	void deleteAdminByNIF() {
 		administradorService.deleteByNIF("18845878A");
 		assertThat(administradorService.count()).isEqualTo(0);
+		assertThat(contratoService.count()).isEqualTo(0);
 	}
 	
 	@Test
 	@Transactional
-	@DisplayName("Buscar Administrador por su NIF -- caso negativo")
+	@DisplayName("Borrar Administrador por su NIF -- caso negativo")
 	void deleteAdminByNIFNotFound() {
 		administradorService.deleteByNIF("18845878S");
 		assertThat(administradorService.count()).isEqualTo(1);
+		assertThat(contratoService.count()).isEqualTo(1);
 	}
-
+	
 }
