@@ -44,11 +44,63 @@ class ContratoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
+		",La Caixa,21/10/2017,23/09/2026,COMPLETA,1",
+		",La Caixa,20/10/2016,21/12/2030,MEDIA_JORNADA,1"
+	})
+	void validateContratoNominaNotNullTest(Double nomina, String entidadBancaria,String fechaInicio, String fechaFin,String tipoJornada,Integer personal) {
+		Contrato contrato = this.createSUT(nomina, entidadBancaria, fechaInicio, fechaFin, tipoJornada, personal);
+
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Contrato>> constraintViolations = validator.validate(contrato);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		",La Caixa,21/10/2017,23/09/2026,COMPLETA,1",
+		" ,La Caixa,20/10/2016,21/12/2030,MEDIA_JORNADA,1"
+	})
+	void validateContratoEntidadBancariaNotBlankTest(Double nomina, String entidadBancaria,String fechaInicio, String fechaFin,String tipoJornada,Integer personal) {
+		Contrato contrato = this.createSUT(nomina, entidadBancaria, fechaInicio, fechaFin, tipoJornada, personal);
+
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Contrato>> constraintViolations = validator.validate(contrato);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"1500.50,La Caixa,,21/10/2021,COMPLETA,1",
+	})	
+	void validateContratoFechaInicioNotNullTest(Double nomina, String entidadBancaria,String fechaInicio, String fechaFin,String tipoJornada,Integer personal) {
+		Contrato contrato = this.createSUT(nomina, entidadBancaria, fechaInicio, fechaFin, tipoJornada, personal);
+
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Contrato>> constraintViolations = validator.validate(contrato);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
 		"1500.50,La Caixa,22/10/2021,21/10/2021,COMPLETA,1",
 		"1600.50,La Caixa,20/10/2022,21/12/2020,MEDIA_JORNADA,1",
 		"1600.50,La Caixa,20/10/2023,21/10/2025,PARCIAL,1"
 	})	
 	void validateContratoFechaInicioIsFutureTest(Double nomina, String entidadBancaria,String fechaInicio, String fechaFin,String tipoJornada,Integer personal) {
+		Contrato contrato = this.createSUT(nomina, entidadBancaria, fechaInicio, fechaFin, tipoJornada, personal);
+
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Contrato>> constraintViolations = validator.validate(contrato);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"1500.50,La Caixa,,21/10/2021,COMPLETA,1",
+	})	
+	void validateContratoFechaFinNotNullTest(Double nomina, String entidadBancaria,String fechaInicio, String fechaFin,String tipoJornada,Integer personal) {
 		Contrato contrato = this.createSUT(nomina, entidadBancaria, fechaInicio, fechaFin, tipoJornada, personal);
 
 		Validator validator = createValidator();

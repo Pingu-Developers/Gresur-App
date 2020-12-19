@@ -61,6 +61,19 @@ class FacturaEmitidaTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
+		",40.3,true,0,1,1",
+		",40.3,false,1,1,1"
+	})
+	void validateFacturaEmitidaFechaNotNullTest(String fecha,Double importe,Boolean pagada,Integer lineasFacturas, Integer dependiente,Integer cliente) {	
+		FacturaEmitida emi = this.createSUT(fecha, importe, pagada, lineasFacturas, dependiente, cliente);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<FacturaEmitida>> constraintViolations = validator.validate(emi);
+		assertThat(constraintViolations.size()).isEqualTo(1);	
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
 		"20/11/2021,,false,0,1,1",
 		"22/12/2020,,true,1,1,1",
 	})
