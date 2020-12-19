@@ -36,7 +36,7 @@ public class ITVService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Iterable<ITV> findAll() throws DataAccessException{
+	public List<ITV> findAll() throws DataAccessException{
 		return itvRepository.findAll();
 	}
 	
@@ -53,6 +53,7 @@ public class ITVService {
 	public ITV findById(Long id) throws DataAccessException{
 		return itvRepository.findById(id).orElse(null);
 	}
+	
 	@Transactional(readOnly = true)
 	public List<ITV> findByVehiculo(String matricula) throws DataAccessException{
 		return itvRepository.findByVehiculoMatricula(matricula);
@@ -103,6 +104,16 @@ public class ITVService {
 	
 	@Transactional
 	public void deleteByVehiculoMatricula(String matricula) throws DataAccessException{
-		itvRepository.deleteByVehiculoMatricula(matricula);;
+		itvRepository.deleteByVehiculoMatricula(matricula);
+	}
+	
+	@Transactional
+	public void deleteByRecibidasId(Long id) throws DataAccessException{
+		itvRepository.deleteByRecibidasId(id);
+	}
+	
+	@Transactional
+	public Long count() {
+		return itvRepository.count();
 	}
 }

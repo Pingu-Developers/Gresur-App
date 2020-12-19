@@ -17,11 +17,20 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 	private EntityManager em;
 	
 	@Autowired
+	private ITVService ITVService;
+	
+	@Autowired
+	private SeguroService seguroService;
+	
+	@Autowired
+	private ReparacionService reparacionService;
+	
+	@Autowired
 	public FacturaRecibidaService(FacturaRecibidaRepository frRepo) {
 		super.facturaRepo = frRepo;
 	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	public Long count() {
 		return super.count();
 	}
@@ -32,4 +41,21 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 		em.flush();
 		return ret;
 	}
+	
+	@Transactional(rollbackFor = DataAccessException.class)
+	public void deleteById(Long id) throws DataAccessException {
+		reparacionService.deleteByRecibidasId(id);
+		seguroService.deleteByRecibidasId(id);
+		ITVService.deleteByRecibidasId(id);
+		facturaRepo.deleteById(id);
+	}
+	
+	@Transactional
+	public void deleteAll(Long id) throws DataAccessException {
+		reparacionService.deleteAll();
+		seguroService.deleteAll();
+		ITVService.deleteAll();
+		facturaRepo.deleteAll();
+	}
+	
 }
