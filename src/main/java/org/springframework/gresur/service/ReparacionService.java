@@ -65,4 +65,14 @@ public class ReparacionService {
 		reparacionRepo.deleteAll(lr);
 	}
 	
+	@Transactional
+	public void deleteByVehiculoId(Long id) throws DataAccessException{
+		reparacionRepo.deleteByVehiculoId(id);
+	}
+	
+	@Transactional
+	public void deleteByVehiculoMatricula(String matricula) throws DataAccessException{
+		reparacionRepo.deleteByVehiculoMatricula(matricula);
+	}
+	
 }

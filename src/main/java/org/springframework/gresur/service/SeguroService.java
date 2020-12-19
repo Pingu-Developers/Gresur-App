@@ -54,6 +54,16 @@ public class SeguroService {
 	}
 	
 	@Transactional
+	public void deleteByVehiculoId(Long id) throws DataAccessException{
+		seguroRepo.deleteByVehiculoId(id);
+	}
+	
+	@Transactional
+	public void deleteByVehiculoMatricula(String matricula) throws DataAccessException{
+		seguroRepo.deleteByVehiculoMatricula(matricula);;
+	}
+	
+	@Transactional
 	public void deleteAll() {
 		seguroRepo.deleteAll();
 	}

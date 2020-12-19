@@ -10,4 +10,8 @@ public interface ReparacionRepository extends CrudRepository<Reparacion, Long>{
 	
 	List<Reparacion> findByVehiculoMatricula(String matricula) throws DataAccessException;
 	
+	void deleteByVehiculoId(Long id);
+	
+	void deleteByVehiculoMatricula(String matricula);
+	
 }

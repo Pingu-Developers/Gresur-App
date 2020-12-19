@@ -95,4 +95,14 @@ public class ITVService {
 	public void deleteById(Long id) throws DataAccessException{
 		itvRepository.deleteById(id);
 	}
+	
+	@Transactional
+	public void deleteByVehiculoId(Long id) throws DataAccessException{
+		itvRepository.deleteByVehiculoId(id);
+	}
+	
+	@Transactional
+	public void deleteByVehiculoMatricula(String matricula) throws DataAccessException{
+		itvRepository.deleteByVehiculoMatricula(matricula);;
+	}
 }
