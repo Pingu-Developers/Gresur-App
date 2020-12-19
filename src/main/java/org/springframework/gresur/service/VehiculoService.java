@@ -132,7 +132,6 @@ public class VehiculoService {
 	}
 	
 	
-	// TODO Hacer el test de esto de alguna manera
 	@Scheduled(cron = "0 7 * * * *")
 	@Transactional
 	public void ITVSegurovalidation() throws UnknownException{

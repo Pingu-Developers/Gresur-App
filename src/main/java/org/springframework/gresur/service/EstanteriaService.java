@@ -42,14 +42,20 @@ public class EstanteriaService{
 		return estanteriaRepository.findByAlmacenId(id);
 	}
 	
-	
+	@Transactional(readOnly = true)
+	public Double sumCapacidadEstanteriasAlmacenNotEstanteria(Almacen almacen, Long estanteriaId) throws DataAccessException{
+		if(almacen == null || almacen.getId() == null) {
+			return null;
+		} else {
+			return this.estanteriaRepository.sumCapacidadEstanteriasAlmacenNotEqualTo(almacen, estanteriaId).orElse(0.);
+		}
+	}
+		
 	@Transactional
 	public Estanteria save(Estanteria estanteria) throws DataAccessException{
 		Almacen almacen = estanteria.getAlmacen();
 		
-		//TODO Revisar JSQL todos menos uno mismo(filter(x->!x.getId().equals(estanteria.getId())))
-		if(almacen.getCapacidad()<(findAllEstanteriaByAlmacen(almacen.getId()).stream().filter(x->!x.getId().equals(estanteria.getId()))
-				.mapToDouble(x->x.getCapacidad()).sum() + estanteria.getCapacidad())) {
+		if(almacen.getCapacidad()<(sumCapacidadEstanteriasAlmacenNotEstanteria(almacen, estanteria.getId()) + estanteria.getCapacidad())) {
 			throw new CapacidadEstanteriaExcededException("Las estanterias exceden la capacidad disponible del almacen");
 		}
 		

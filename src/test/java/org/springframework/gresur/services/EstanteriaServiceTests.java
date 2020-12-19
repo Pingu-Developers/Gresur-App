@@ -109,6 +109,16 @@ class EstanteriaServiceTests {
 		assertThat(ls).isEmpty();
 	}
 	
+	@Test
+	@Transactional
+	@DisplayName("Suma de capacidad de estanterias exceptuando una concreta -- caso positivo")
+	void sumCapacidadEstanteriasAlmacenNotEqualTo() {
+		Almacen almacen = almacenService.findAll().iterator().next();
+		Estanteria estanteria = estanteriaService.findAllEstanteriaByAlmacen(almacen.getId()).get(0);
+		Double sumCapacidad = estanteriaService.sumCapacidadEstanteriasAlmacenNotEstanteria(almacen, estanteria.getId());
+		assertThat(sumCapacidad).isEqualTo(6000.);
+	}
+	
 	
 	/* * * * * * * * * * * * * * * *
 	 *   REGLAS DE NEGOCIO TESTS   *

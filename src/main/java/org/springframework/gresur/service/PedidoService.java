@@ -138,5 +138,10 @@ public class PedidoService {
 			throw new PedidoNoDeleteableException();
 		}
 	}
+	
+	//prop derivada
+	public Boolean recogeEnTienda(Pedido p) {
+		return p.getDireccionEnvio() == "C/ Ligastorro nº 9" || p.getDireccionEnvio() == "Avenida Gresur edificio AG";
+	}
 
 }
