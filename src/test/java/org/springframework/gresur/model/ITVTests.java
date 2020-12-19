@@ -18,8 +18,8 @@ class ITVTests extends ValidatorTests {
 		
 		ITV itv = new ITV();
 		
-		itv.setFecha(LocalDate.parse(fecha,DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		itv.setExpiracion(LocalDate.parse(fechaExpiracion,DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		itv.setFecha(fecha == null ? null : LocalDate.parse(fecha,DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		itv.setExpiracion(fechaExpiracion == null ? null : LocalDate.parse(fechaExpiracion,DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		itv.setResultado(resultadoITV == null ? null : ResultadoITV.valueOf(resultadoITV));
 		
 		if(facturaRecibida!=null && facturaRecibida>0) {
@@ -36,12 +36,31 @@ class ITVTests extends ValidatorTests {
 	}
 	
 	/*LOS ATRIBUTOS VEHICULO Y FACTURA_RECIBIDA SI NO APARECEN O BIEN VALEN 0, SIGNIFICAN QUE SON NULOS */
+	@ParameterizedTest
+	@CsvSource({
+		"21/10/2019,21/10/2020,FAVORABLE,1,1",
+		"10/01/2018,16/01/2019,DESFAVORABLE,1,1",
+		"11/01/2017,11/01/2018,NEGATIVA,1,1"
+	})
 	void validateITVNoErrorsTest(String fecha, String fechaExpiracion, String resultadoITV,Long facturaRecibida, Long vehiculo) {
 		ITV itv = this.createSUT(fecha, fechaExpiracion, resultadoITV, facturaRecibida, vehiculo);
 		Validator validator = createValidator();
 		Set<ConstraintViolation<ITV>> constraintViolations = validator.validate(itv);
 		assertThat(constraintViolations.size()).isEqualTo(0);
 	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		",21/10/2022,FAVORABLE,1,1",
+		",16/01/2022,DESFAVORABLE,1,1"
+	})
+	void validateITVFechaNotNullTest(String fecha, String fechaExpiracion, String resultadoITV,Long facturaRecibida, Long vehiculo) {
+		ITV itv = this.createSUT(fecha, fechaExpiracion, resultadoITV, facturaRecibida, vehiculo);
+		Validator validator = createValidator();
+		Set<ConstraintViolation<ITV>> constraintViolations = validator.validate(itv);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
 	@ParameterizedTest
 	@CsvSource({
 		"21/10/2023,21/10/2022,FAVORABLE,1,1",
@@ -54,6 +73,19 @@ class ITVTests extends ValidatorTests {
 		Set<ConstraintViolation<ITV>> constraintViolations = validator.validate(itv);
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"21/10/2019,,FAVORABLE,1,1",
+		"16/01/2018,,DESFAVORABLE,1,1"
+	})
+	void validateITVExpiracionNotNullTest(String fecha, String fechaExpiracion, String resultadoITV,Long facturaRecibida, Long vehiculo) {
+		ITV itv = this.createSUT(fecha, fechaExpiracion, resultadoITV, facturaRecibida, vehiculo);
+		Validator validator = createValidator();
+		Set<ConstraintViolation<ITV>> constraintViolations = validator.validate(itv);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
 	@ParameterizedTest
 	@CsvSource({
 		"21/10/2018,21/10/2019,,1,1",
