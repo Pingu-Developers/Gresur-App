@@ -131,11 +131,91 @@ class ProductoTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 0, 12, 14, 3, 4",
-		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 21, 0, 14, 3, 4",
-		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 21, 12, -4, 3, 4"
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, , 12, 14, 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, , 32, 14, 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, , 12, 34, 3, 4"
 	})
-	void validateProductoAltoAnchoProfundoTest(String nombre, String descripcion, String unidad, Integer stock, Integer stockSeguridad, String URLImagen, Double precioVenta, Double precioCompra, Double alto, Double ancho, Double profundo, Double pesoUnitario, Integer estanteria) {
+	void validateProductoAltoNotNull(String nombre, String descripcion, String unidad, Integer stock, Integer stockSeguridad, String URLImagen, Double precioVenta, Double precioCompra, Double alto, Double ancho, Double profundo, Double pesoUnitario, Integer estanteria) {
+		
+		Producto producto = this.createSUT(nombre, descripcion, unidad, stock, stockSeguridad, URLImagen, precioVenta, precioCompra, alto, ancho, profundo, pesoUnitario, estanteria);
+				
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Producto>> constraintViolations = validator.validate(producto);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 0, 12, 14, 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, -100, 12, 14, 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, -1, 12, 14, 3, 4"
+	})
+	void validateProductoAltoPositive(String nombre, String descripcion, String unidad, Integer stock, Integer stockSeguridad, String URLImagen, Double precioVenta, Double precioCompra, Double alto, Double ancho, Double profundo, Double pesoUnitario, Integer estanteria) {
+		
+		Producto producto = this.createSUT(nombre, descripcion, unidad, stock, stockSeguridad, URLImagen, precioVenta, precioCompra, alto, ancho, profundo, pesoUnitario, estanteria);
+				
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Producto>> constraintViolations = validator.validate(producto);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 32, , 14, 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 12, , 14, 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 10, , 54, 3, 4"
+	})
+	void validateProductoAnchoNotNull(String nombre, String descripcion, String unidad, Integer stock, Integer stockSeguridad, String URLImagen, Double precioVenta, Double precioCompra, Double alto, Double ancho, Double profundo, Double pesoUnitario, Integer estanteria) {
+		
+		Producto producto = this.createSUT(nombre, descripcion, unidad, stock, stockSeguridad, URLImagen, precioVenta, precioCompra, alto, ancho, profundo, pesoUnitario, estanteria);
+				
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Producto>> constraintViolations = validator.validate(producto);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 10, -12, 14, 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 20, 0, 14, 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 32, -12, 44, 3, 4"
+	})
+	void validateProductoAnchoPositive(String nombre, String descripcion, String unidad, Integer stock, Integer stockSeguridad, String URLImagen, Double precioVenta, Double precioCompra, Double alto, Double ancho, Double profundo, Double pesoUnitario, Integer estanteria) {
+		
+		Producto producto = this.createSUT(nombre, descripcion, unidad, stock, stockSeguridad, URLImagen, precioVenta, precioCompra, alto, ancho, profundo, pesoUnitario, estanteria);
+				
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Producto>> constraintViolations = validator.validate(producto);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 12, 12, , 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 31, 1, , 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 12, 12, , 3, 4"
+	})
+	void validateProductoProfundoNotNull(String nombre, String descripcion, String unidad, Integer stock, Integer stockSeguridad, String URLImagen, Double precioVenta, Double precioCompra, Double alto, Double ancho, Double profundo, Double pesoUnitario, Integer estanteria) {
+		
+		Producto producto = this.createSUT(nombre, descripcion, unidad, stock, stockSeguridad, URLImagen, precioVenta, precioCompra, alto, ancho, profundo, pesoUnitario, estanteria);
+				
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Producto>> constraintViolations = validator.validate(producto);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 32, 12, 0, 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 30, 32, -14, 3, 4",
+		"Azulejo, Es de color rojo, m2, 200, 30, azulejoRojo.jpg, 50, 35, 53, 12, -4, 3, 4"
+	})
+	void validateProductoProfundoPositive(String nombre, String descripcion, String unidad, Integer stock, Integer stockSeguridad, String URLImagen, Double precioVenta, Double precioCompra, Double alto, Double ancho, Double profundo, Double pesoUnitario, Integer estanteria) {
 		
 		Producto producto = this.createSUT(nombre, descripcion, unidad, stock, stockSeguridad, URLImagen, precioVenta, precioCompra, alto, ancho, profundo, pesoUnitario, estanteria);
 				

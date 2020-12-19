@@ -185,6 +185,21 @@ class PersonalTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
+		"Pepe, 12345678A, asolkdslk, 696823445, C/ patata, 12 1234567890, /resources/lucas.png",
+		"Juan, 12345678C, allm, 696823445, C/ patata4, 12 1234567891, /resources/alex.jpeg",
+		"Paco , 12345678A, asaaaaaaaaaaaaaaaaa@, 696823445, C/ patata, 12 1234567890, /resources/lucas.png",
+	})
+	void validatePersonalEmailEmailTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image) {
+		
+		Personal personal = this.createSUT(name, NIF, email, tlf, direccion, NSS, image);
+
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Personal>> constraintViolations = validator.validate(personal);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
 		"Pepe, 12345678A, email@email.com, '    ', C/ patata, 12 1234567890, /resources/lucas.png",
 		"Juan, 12345678C, email2@email.com, '', C/ patata4, 12 1234567891, /resources/alex.jpeg",
 		"Paco , 12345678A, email@email.com, , C/ patata, 12 1234567890, /resources/lucas.png",
