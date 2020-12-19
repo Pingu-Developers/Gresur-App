@@ -181,7 +181,7 @@ class VehiculoServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("findVehiculoByMatricula -- Caso Positivo")
+	@DisplayName("Busca un vehiculo dada su matricula -- Caso Positivo")
 	void findVehiculoByMatricula() {
 
 		Vehiculo vehiculo = vehiculoService.findByMatricula("4040GND");
@@ -192,7 +192,7 @@ class VehiculoServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("findVehiculoByMatricula -- Caso Negativo")
+	@DisplayName("Busca un vehiculo dada su matricula -- Caso Negativo")
 	void findVehiculoByMatriculaNotFound() {
 		
 		Vehiculo vehiculo = vehiculoService.findByMatricula("4040LNE");
@@ -203,7 +203,7 @@ class VehiculoServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("deleteVehiculoByMatricula -- Caso Positivo")
+	@DisplayName("Elimina un vehiculo dada su matricula -- Caso Positivo")
 	void deleteVehiculoByMatricula() {
 
 		vehiculoService.deleteByMatricula("4040GND");
@@ -213,7 +213,7 @@ class VehiculoServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("deleteVehiculoByMatricula -- Caso Negativo")
+	@DisplayName("Elimina un vehiculo dada su matricula -- Caso Negativo")
 	void deleteVehiculoByMatriculaNotFound() {
 
 		vehiculoService.deleteByMatricula("4040LNE");

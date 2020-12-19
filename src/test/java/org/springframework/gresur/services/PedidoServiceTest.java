@@ -429,12 +429,10 @@ public class PedidoServiceTest {
 	
 	/* * * * * * * * * * * * *
 	 *   FIND-REMOVE TESTS   *
-	 * * * * * * * * * * * * */
-	//TODO REVISAR NOMBRE FUNCIONES PORQUE ME MOLESTA QUE CADA UNA SIGUA UN FORMATO DISTINTO DE NOMINACION PUTOS
-	
+	 * * * * * * * * * * * * */	
 	@Test
 	@Transactional
-	@DisplayName("findAllByVehiculo -- Caso Positivo")
+	@DisplayName("Busca todos los pedidos asociados a un vehiculo -- Caso Positivo")
 	void findAllByVehiculo() {
 		Vehiculo VehiculoMatricula4040GND = vehiculoService.findByMatricula("4040GND");
 		List<Pedido> pedidosConVehiculoMatricula4040GND = pedidoService.findAllByVehiculo(VehiculoMatricula4040GND.getId());
@@ -443,7 +441,7 @@ public class PedidoServiceTest {
 	
 	@Test
 	@Transactional
-	@DisplayName("findAllByVehiculo -- Caso Negativo")
+	@DisplayName("Busca todos los pedidos asociados a un vehiculo -- Caso Negativo")
 	void findAllByVehiculoNotFound() {
 		Vehiculo VehiculoMatricula0000BBB = vehiculoService.findByMatricula("0000BBB");
 		List<Pedido> pedidosConVehiculoMatricula0000BBB = pedidoService.findAllByVehiculo(VehiculoMatricula0000BBB.getId());
@@ -452,7 +450,7 @@ public class PedidoServiceTest {
 	
 	@Test
 	@Transactional
-	@DisplayName("findPedidosByFecha -- Caso Positivo")
+	@DisplayName("Busca todos los pedidos realizados en una determinada fecha -- Caso Positivo")
 	void findPedidosByFecha() {
 		List<Pedido> pedidosConFecha = pedidoService.findPedidosByFecha(LocalDate.of(2020, 12, 20));
 		assertThat(pedidosConFecha.size()).isEqualTo(2);
@@ -460,7 +458,7 @@ public class PedidoServiceTest {
 	
 	@Test
 	@Transactional
-	@DisplayName("findPedidosByFecha -- Caso Negativo")
+	@DisplayName("Busca todos los pedidos realizados en una determinada fecha -- Caso Negativo")
 	void findPedidosByFechaNotFound() {
 		List<Pedido> pedidosConFecha = pedidoService.findPedidosByFecha(LocalDate.of(2020, 12, 18));
 		assertThat(pedidosConFecha.size()).isEqualTo(0);
@@ -468,7 +466,7 @@ public class PedidoServiceTest {
 
 	@Test
 	@Transactional
-	@DisplayName("findPedidosEnRepartoByFecha -- Caso Positivo")
+	@DisplayName("Busca todos los pedidos en reparto de una determinada fecha -- Caso Positivo")
 	void findPedidosEnRepartoByFecha() {
 		List<Pedido> pedidosConFechaEnReparto = pedidoService.findPedidosEnRepartoByFecha(LocalDate.of(2020, 12, 20));
 		assertThat(pedidosConFechaEnReparto.size()).isEqualTo(1);
@@ -476,7 +474,7 @@ public class PedidoServiceTest {
 	
 	@Test
 	@Transactional
-	@DisplayName("findPedidosEnRepartoByFecha -- Caso Negativo")
+	@DisplayName("Busca todos los pedidos en reparto de una determinada fecha -- Caso Negativo")
 	void findPedidosEnRepartoByFechaNotFound() {
 		List<Pedido> pedidosConFechaEnReparto = pedidoService.findPedidosEnRepartoByFecha(LocalDate.of(2020, 12, 18));
 		assertThat(pedidosConFechaEnReparto.size()).isEqualTo(0);

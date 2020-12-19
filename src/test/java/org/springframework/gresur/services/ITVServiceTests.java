@@ -65,7 +65,7 @@ class ITVServiceTests {
 		
 	@BeforeEach
 	@Transactional
-	void initAll() { //TODO USAR NOMBRES MAS INTUITIVOS
+	void initAll() { 
 		
 		Vehiculo vehiculo = new Vehiculo();
 		vehiculo.setCapacidad(130.00);
