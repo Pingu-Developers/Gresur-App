@@ -36,6 +36,16 @@ public class LineasFacturaService {
 	}
 	
 	@Transactional
+	public void deleteAll(Iterable<LineaFactura> facturas) {
+		this.lineasRepo.deleteAll(facturas);
+	}
+	
+	@Transactional
+	public void deleteByFacturaId(Long id) {
+		this.lineasRepo.deleteByFacturaId(id);
+	}
+	
+	@Transactional
 	public LineaFactura save(LineaFactura linea) {		
 		LineaFactura otherLinea = lineasRepo.findByFacturaIdAndProductoId(linea.getFactura().getId(), linea.getProducto().getId()).orElse(null);
 		if(otherLinea != null && linea.getId()==null) {

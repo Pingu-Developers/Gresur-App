@@ -25,6 +25,7 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 	@Autowired
 	private ReparacionService reparacionService;
 	
+	
 	@Autowired
 	public FacturaRecibidaService(FacturaRecibidaRepository frRepo) {
 		super.facturaRepo = frRepo;
@@ -42,16 +43,20 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 		return ret;
 	}
 	
+	@Override
 	@Transactional(rollbackFor = DataAccessException.class)
-	public void deleteById(Long id) throws DataAccessException {
+	public void deleteByNumFactura(Long id) throws DataAccessException {
+		lfService.deleteByFacturaId(id);
 		reparacionService.deleteByRecibidasId(id);
 		seguroService.deleteByRecibidasId(id);
 		ITVService.deleteByRecibidasId(id);
 		facturaRepo.deleteById(id);
 	}
 	
+	@Override
 	@Transactional
-	public void deleteAll(Long id) throws DataAccessException {
+	public void deleteAll() throws DataAccessException {
+		lfService.deleteAll(this.findLineasFactura());
 		reparacionService.deleteAll();
 		seguroService.deleteAll();
 		ITVService.deleteAll();

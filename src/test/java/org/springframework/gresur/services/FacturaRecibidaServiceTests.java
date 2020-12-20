@@ -22,24 +22,16 @@ import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.Concepto;
 import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.model.FacturaRecibida;
-import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.model.Producto;
 import org.springframework.gresur.model.Proveedor;
-import org.springframework.gresur.model.Reparacion;
-import org.springframework.gresur.model.Seguro;
-import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Unidad;
-import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.service.AlmacenService;
 import org.springframework.gresur.service.EstanteriaService;
 import org.springframework.gresur.service.FacturaRecibidaService;
-import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.LineasFacturaService;
 import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.service.ProveedorService;
-import org.springframework.gresur.service.ReparacionService;
-import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
@@ -52,16 +44,7 @@ public class FacturaRecibidaServiceTests {
 
 	@Autowired
 	protected DBUtility util;
-	
-	@Autowired
-	private ITVService ITVService;
-	
-	@Autowired
-	private SeguroService seguroService;
-	
-	@Autowired
-	private ReparacionService reparacionService;
-	
+		
 	@Autowired
 	protected ProveedorService proveedorService;
 	
@@ -202,7 +185,6 @@ public class FacturaRecibidaServiceTests {
 	/* * * * * * * * * * * * *
 	 *   FIND-REMOVE TESTS   *
 	 * * * * * * * * * * * * */
-
 	
 	@Test
 	@Transactional
@@ -215,11 +197,6 @@ public class FacturaRecibidaServiceTests {
 
 	}
 	
-	
-	/* * * * * * * * * * * * * *
-	 *   DELETE CASCADE TESTS  *
-	 * * * * * * * * * * * * * */
-
 	@Test
 	@Transactional
 	@DisplayName("Borrar FacturaRecibida por su id -- Caso positivo")
@@ -227,27 +204,17 @@ public class FacturaRecibidaServiceTests {
 		List<FacturaRecibida> lfr = facturaRecibidaService.findAll();
 		FacturaRecibida fr = lfr.get(0);
 		
-		facturaRecibidaService.deleteById(fr.getId());
+		facturaRecibidaService.deleteByNumFactura(fr.getId());
 		
 		assertThat(facturaRecibidaService.count()).isEqualTo(0);
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	/* * * * * * * * * * * * * *
+	 *   DELETE CASCADE TESTS  *
+	 * * * * * * * * * * * * * */
+
+	//TODO Si tenemos tiempo, añadir los tests de los delete cascade, para ello hay que crear ITV, Seg, Reparacion y un vehiculo asociado
+	//y comprobar que se borran y que el vehiculo pasa a "no disponible" en caso de que la ITV o el Seguro fueran los mas recientes en vigor
 
 }

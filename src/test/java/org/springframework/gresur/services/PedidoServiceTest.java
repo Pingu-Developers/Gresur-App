@@ -188,10 +188,7 @@ public class PedidoServiceTest {
 		listaProductosEstanteria.add(producto1);
 		listaProductosEstanteria.add(producto2);
 		listaProductosEstanteria.add(producto3);
-		
-		estanteria.setProductos(listaProductosEstanteria);
-		estanteria = estanteriaService.save(estanteria);
-		
+				
 		// CREACION DE CLIENTE
 		
 		Cliente cliente = new Cliente();
