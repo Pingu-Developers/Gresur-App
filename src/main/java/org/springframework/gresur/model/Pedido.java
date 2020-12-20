@@ -51,4 +51,9 @@ public class Pedido extends BaseEntity{
 	@ManyToOne
 	@JoinColumn(name = "transportista_id")
 	private Transportista transportista;
+	
+	/* Propiedad derivada */
+	public Boolean recogeEnTienda(Pedido p) {
+		return p.getDireccionEnvio() == "C/ Ligastorro nº 9" || p.getDireccionEnvio() == "Avenida Gresur edificio AG";
+	}
 }
