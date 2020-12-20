@@ -133,7 +133,6 @@ public class ProductoTestService {
 		p.setUnidad(Unidad.UNIDADES);
 		
 		ls.add(p);
-		est.setProductos(ls);
 		
 		estanteriaService.save(est);
 		productoService.save(p);

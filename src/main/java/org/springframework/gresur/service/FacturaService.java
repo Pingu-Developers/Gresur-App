@@ -1,5 +1,6 @@
 package org.springframework.gresur.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,9 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	@Autowired
 	protected FacturaRepository<Factura> facturaGRepo;
 	
+	@Autowired
+	protected LineasFacturaService lfService;
+	
 	@Transactional(readOnly = true)
 	public List<T> findAll() throws DataAccessException {
 		return facturaRepo.findAll();
@@ -27,19 +31,30 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 		return facturaRepo.findById(numFactura).orElse(null);
 	}
 		
-	@Transactional
+	@Transactional(rollbackFor = DataAccessException.class)
 	public void deleteByNumFactura(Long numFactura) throws DataAccessException{
+		lfService.deleteByFacturaId(numFactura);
 		facturaRepo.deleteById(numFactura);
 	}
 	
 	@Transactional
 	public void deleteAll() throws DataAccessException{
+		lfService.deleteAll(this.findLineasFactura());
 		facturaRepo.deleteAll();
 	}
 	
 	@Transactional(readOnly = true)
 	public List<LineaFactura> findLineasFactura(){
-		return facturaRepo.findAll().stream().map(x->x.getLineasFacturas()).flatMap(List::stream).collect(Collectors.toList());
+		try {
+			return facturaRepo.findAll().stream().map(x->x.getLineasFacturas()).flatMap(List::stream).collect(Collectors.toList()); //TODO Revisar este stream
+		} catch (NullPointerException e) {
+			return new ArrayList<LineaFactura>();
+		}
+	}
+	
+	@Transactional(readOnly = true)
+	public Long count() {
+		return facturaRepo.count();
 	}
 	
 	/*METODOS GENERALES PARA TODAS LAS FACTURAS (superclase)*/
@@ -48,9 +63,9 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 		return facturaGRepo.findAll();
 	}
 		
-	@Transactional
-	public Long count() {
-		return facturaRepo.count();
+	@Transactional(readOnly = true)
+	public Long countAllFacturas() {
+		return facturaGRepo.count();
 	}
 	
 }

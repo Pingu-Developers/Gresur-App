@@ -12,26 +12,20 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class AlmacenTests extends ValidatorTests{	
 	
-	private Almacen createSUT(String direccion, Double capacidad, Integer encargado) {
-		EncargadoDeAlmacen e = null;
-		
-		if (encargado != null && encargado > 0) {
-			e = new EncargadoDeAlmacen();
-		}
+	private Almacen createSUT(String direccion, Double capacidad) {
 		Almacen almacen = new Almacen();
 		almacen.setDireccion(direccion);
 		almacen.setCapacidad(capacidad);
-		almacen.setEncargado(e);
 		return almacen;
 	}
 	
 	@ParameterizedTest
 	@CsvSource({
-		"C/Ligastorro 333, 0., 0",
-		"C/Efe v3000 test, 7.0, 1"
+		"C/Ligastorro 333, 0.",
+		"C/Efe v3000 test, 7.0"
 	})
-	void validateAlmacenNoErrorsTest(String direccion, Double capacidad, Integer encargado) {
-		Almacen almacen = this.createSUT(direccion, capacidad, encargado);
+	void validateAlmacenNoErrorsTest(String direccion, Double capacidad) {
+		Almacen almacen = this.createSUT(direccion, capacidad);
 				
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Almacen>> constraintViolations = validator.validate(almacen);		
@@ -40,12 +34,12 @@ class AlmacenTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"' ', 3.9, 1",
-		"'' , 19.29, 0",
-		" , 392.9, 0"
+		"' ', 3.9",
+		"'' , 19.29",
+		" , 392.9"
 	})
-	void validateAlmacenDireccionNotBlankTest(String direccion, Double capacidad, Integer encargado) {
-		Almacen almacen = this.createSUT(direccion, capacidad, encargado);
+	void validateAlmacenDireccionNotBlankTest(String direccion, Double capacidad) {
+		Almacen almacen = this.createSUT(direccion, capacidad);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Almacen>> constraintViolations = validator.validate(almacen);
@@ -56,12 +50,12 @@ class AlmacenTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"C/, 3.9, 1",
-		"C/ esto es un nombre muy largo que debe tener mas de cincuenta caracteres, 19.29, 0",
-		"C, 392.9, 0"
+		"C/, 3.9",
+		"C/ esto es un nombre muy largo que debe tener mas de cincuenta caracteres, 19.29",
+		"C, 392.9"
 	})
-	void validateAlmacenDireccionSizeTest(String direccion, Double capacidad, Integer encargado) {
-		Almacen almacen = this.createSUT(direccion, capacidad, encargado);
+	void validateAlmacenDireccionSizeTest(String direccion, Double capacidad) {
+		Almacen almacen = this.createSUT(direccion, capacidad);
 
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Almacen>> constraintViolations = validator.validate(almacen);
@@ -73,12 +67,12 @@ class AlmacenTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"C/ Ligastorro, , 1",
-		"C/ Prueba , , ",
-		"C/ uwu , , 0"
+		"C/ Ligastorro, ",
+		"C/ Prueba , ",
+		"C/ uwu , "
 	})
-	void validateAlmacenCapacidadNotNullTest(String direccion, Double capacidad, Integer encargado) {
-		Almacen almacen = this.createSUT(direccion, capacidad, encargado);
+	void validateAlmacenCapacidadNotNullTest(String direccion, Double capacidad) {
+		Almacen almacen = this.createSUT(direccion, capacidad);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Almacen>> constraintViolations = validator.validate(almacen);
@@ -88,12 +82,12 @@ class AlmacenTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"C/ Ligastorro, -0.0001 , 1",
-		"C/ Prueba, -1.2923, ",
-		"C/ uwu, -283.3929, 0"
+		"C/ Ligastorro, -0.0001",
+		"C/ Prueba, -1.2923",
+		"C/ uwu, -283.3929"
 	})
-	void validateAlmacenCapacidadMinTest(String direccion, Double capacidad, Integer encargado) {
-		Almacen almacen = this.createSUT(direccion, capacidad, encargado);
+	void validateAlmacenCapacidadMinTest(String direccion, Double capacidad) {
+		Almacen almacen = this.createSUT(direccion, capacidad);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Almacen>> constraintViolations = validator.validate(almacen);
