@@ -95,6 +95,7 @@ public class NotificacionService {
 	
 	@Transactional
 	public void deleteAll() throws DataAccessException{
+		lineaEnviadoService.deleteAll();
 		notificacionRepo.deleteAll();
 	}
 }

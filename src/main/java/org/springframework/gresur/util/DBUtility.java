@@ -11,7 +11,6 @@ import org.springframework.gresur.service.EncargadoDeAlmacenService;
 import org.springframework.gresur.service.EstanteriaService;
 import org.springframework.gresur.service.FacturaEmitidaService;
 import org.springframework.gresur.service.FacturaRecibidaService;
-import org.springframework.gresur.service.LineasEnviadoService;
 import org.springframework.gresur.service.NotificacionService;
 import org.springframework.gresur.service.PedidoService;
 import org.springframework.gresur.service.ProductoService;
@@ -33,8 +32,6 @@ public class DBUtility {
 	private FacturaEmitidaService facturaEmitidaService;
 	@Autowired
 	private FacturaRecibidaService facturaRecibidaService;
-	@Autowired
-	private LineasEnviadoService lnService;
 	@Autowired
 	private NotificacionService notificacionService;
 	@Autowired
@@ -68,7 +65,6 @@ public class DBUtility {
 		vehiculoService.deleteAll();
 		facturaRecibidaService.deleteAll();
 		facturaEmitidaService.deleteAll();
-		lnService.deleteAll();
 		notificacionService.deleteAll();
 		contratoService.deleteAll();
 		transportistaService.deleteAll();
