@@ -31,6 +31,7 @@ public class Producto extends BaseEntity{
 	@Lob
 	private String descripcion;
 	
+	@NotNull
 	@Enumerated(value = EnumType.STRING)
 	private Unidad unidad;
 	
