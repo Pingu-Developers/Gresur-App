@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -29,6 +30,9 @@ public class Reparacion extends BaseEntity{
 	
 	@Column(name = "fecha_salida_taller")
 	protected LocalDate fechaSalidaTaller;
+	
+	@Lob
+	protected String descripcion;
 	
 	@JsonIgnore
 	@NotNull

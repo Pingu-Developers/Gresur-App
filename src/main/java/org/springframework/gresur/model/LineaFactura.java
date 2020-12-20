@@ -22,6 +22,10 @@ public class LineaFactura extends BaseEntity {
 	@Min(value = 1)
 	private Integer cantidad;
 	
+	@NotNull
+	@Positive
+	private Double precio;
+	
 	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
@@ -33,10 +37,6 @@ public class LineaFactura extends BaseEntity {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "producto_id")
 	private Producto producto;
-
-	@NotNull
-	@Positive
-	private Double precio;
 
 	@Override
 	public int hashCode() {

@@ -33,13 +33,11 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 		
 	@Transactional(rollbackFor = DataAccessException.class)
 	public void deleteByNumFactura(Long numFactura) throws DataAccessException{
-		lfService.deleteByFacturaId(numFactura);
 		facturaRepo.deleteById(numFactura);
 	}
 	
 	@Transactional
 	public void deleteAll() throws DataAccessException{
-		lfService.deleteAll(this.findLineasFactura());
 		facturaRepo.deleteAll();
 	}
 	
