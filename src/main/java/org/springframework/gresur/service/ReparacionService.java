@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Reparacion;
+import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.ReparacionRepository;
 import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class ReparacionService {
 	private EntityManager em;
 	
 	private ReparacionRepository reparacionRepo;
+	
+	@Autowired
+	private VehiculoService vehiculoService;
 	
 	@Autowired
 	public ReparacionService(ReparacionRepository reparacionRepo) {
@@ -49,6 +53,12 @@ public class ReparacionService {
 		LocalDate fechaFin = reparacion.getFechaSalidaTaller();
 		
 		FechaInicioFinValidation.fechaInicioFinValidation(Reparacion.class,fechaInicio, fechaFin);
+		
+		if(fechaFin.isAfter(LocalDate.now())) {
+			Vehiculo v = reparacion.getVehiculo();
+			v.setDisponibilidad(false);
+			vehiculoService.save(v);
+		}
 		
 		Reparacion ret = reparacionRepo.save(reparacion);
 		em.flush();

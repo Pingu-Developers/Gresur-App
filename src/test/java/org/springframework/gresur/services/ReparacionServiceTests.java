@@ -233,4 +233,35 @@ class ReparacionServiceTests {
 		List<Reparacion> lr = reparacionService.findByMatricula(reparacion.getVehiculo().getMatricula());
 		assertThat(lr.get(lr.size()-1)).isNotEqualTo(reparacionFechaCongruente);
 	}
+	
+	/* * * * * * * * * * * * * * * *
+	 *    FUNCIONALIDADES TESTS    *
+	 * * * * * * * * * * * * * * * */
+	
+	@Test
+	@Transactional
+	@DisplayName("Si la fecha de salida es posterior a hoy el vehiculo pasa a estar no disponible")
+	void saveReparacionVehiculoNoDisponiblePositive() {
+		
+		Reparacion reparacion = reparacionService.findAll().iterator().next();
+		
+		FacturaRecibida facturaRecibidaReparacion4 = new FacturaRecibida();
+		facturaRecibidaReparacion4.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaReparacion4.setEstaPagada(true);
+		facturaRecibidaReparacion4.setImporte(820.);
+		facturaRecibidaReparacion4.setFecha(LocalDate.now());
+		facturaRecibidaService.save(facturaRecibidaReparacion4);
+		
+		Reparacion reparacionFechaCongruente = new Reparacion();
+		reparacionFechaCongruente.setFechaEntradaTaller(LocalDate.now());
+		reparacionFechaCongruente.setFechaSalidaTaller(LocalDate.now().plusDays(1L));
+		reparacionFechaCongruente.setRecibidas(facturaRecibidaReparacion4);
+		reparacionFechaCongruente.setVehiculo(reparacion.getVehiculo());
+		
+		assertThat(reparacionFechaCongruente.getVehiculo().getDisponibilidad()).isEqualTo(true);
+		
+		reparacionFechaCongruente = reparacionService.save(reparacionFechaCongruente);
+
+		assertThat(reparacionFechaCongruente.getVehiculo().getDisponibilidad()).isEqualTo(false);
+	}
 }
