@@ -29,7 +29,7 @@ public class LineasFacturaService {
 	public List<LineaFactura> findAll(){
 		return lineasRepo.findAll();
 	}
-	
+
 	@Transactional
 	public void deleteAll() {
 		this.lineasRepo.deleteAll();

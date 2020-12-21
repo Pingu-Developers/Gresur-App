@@ -46,7 +46,6 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 	@Override
 	@Transactional(rollbackFor = DataAccessException.class)
 	public void deleteByNumFactura(Long id) throws DataAccessException {
-		lfService.deleteByFacturaId(id);
 		reparacionService.deleteByRecibidasId(id);
 		seguroService.deleteByRecibidasId(id);
 		ITVService.deleteByRecibidasId(id);
@@ -56,7 +55,6 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 	@Override
 	@Transactional
 	public void deleteAll() throws DataAccessException {
-		lfService.deleteAll(this.findLineasFactura());
 		reparacionService.deleteAll();
 		seguroService.deleteAll();
 		ITVService.deleteAll();

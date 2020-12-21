@@ -22,16 +22,26 @@ import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.Concepto;
 import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.model.FacturaRecibida;
+import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.model.Producto;
 import org.springframework.gresur.model.Proveedor;
+import org.springframework.gresur.model.Reparacion;
+import org.springframework.gresur.model.ResultadoITV;
+import org.springframework.gresur.model.Seguro;
+import org.springframework.gresur.model.TipoSeguro;
+import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Unidad;
+import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.service.AlmacenService;
 import org.springframework.gresur.service.EstanteriaService;
 import org.springframework.gresur.service.FacturaRecibidaService;
+import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.LineasFacturaService;
 import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.service.ProveedorService;
+import org.springframework.gresur.service.ReparacionService;
+import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
@@ -65,6 +75,15 @@ public class FacturaRecibidaServiceTests {
 	
 	@Autowired
 	protected VehiculoService vehiculoService;
+	
+	@Autowired
+	protected ITVService itvService;
+	
+	@Autowired
+	protected SeguroService seguroService;
+	
+	@Autowired
+	protected ReparacionService reparacionService;
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
@@ -176,6 +195,73 @@ public class FacturaRecibidaServiceTests {
 		facturaRecibida.setLineasFacturas(lineas);
 		facturaRecibidaService.save(facturaRecibida);
 		
+		
+		//CREACION DE VEHICULO JUNTO A SU REPACION, SEGURO E ITV
+		
+		Vehiculo vehiculo = new Vehiculo();
+		vehiculo.setMatricula("4040GND");
+		vehiculo.setImagen("doc/images/camionpluma.png");
+		vehiculo.setCapacidad(100.);
+		vehiculo.setDisponibilidad(false); 
+		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
+		vehiculo.setMMA(450.);
+		
+		vehiculo = vehiculoService.save(vehiculo);
+		
+		
+		//Reparacion de vehiculo
+		
+		FacturaRecibida facturaRecibidaReparacion = new FacturaRecibida();
+		facturaRecibidaReparacion.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaReparacion.setEstaPagada(true);
+		facturaRecibidaReparacion.setImporte(220.);
+		facturaRecibidaReparacion.setFecha(LocalDate.of(2019, 10, 20));
+		facturaRecibidaService.save(facturaRecibidaReparacion);
+		
+		Reparacion reparacion = new Reparacion();
+		reparacion.setFechaEntradaTaller(LocalDate.of(2019, 10, 19));
+		reparacion.setFechaSalidaTaller(LocalDate.of(2019, 10, 20));
+		reparacion.setRecibidas(facturaRecibidaReparacion);
+		reparacion.setVehiculo(vehiculo);
+		reparacionService.save(reparacion);		
+		
+		//ITV de vehiculo
+		
+		FacturaRecibida facturaRecibidaITV = new FacturaRecibida();
+		facturaRecibidaITV.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaITV.setEstaPagada(true);
+		facturaRecibidaITV.setImporte(50.);
+		facturaRecibidaITV.setFecha(LocalDate.of(2019, 10, 21));
+		facturaRecibidaService.save(facturaRecibidaITV);
+		
+		ITV itv = new ITV();
+		itv.setVehiculo(vehiculo);
+		itv.setFecha(LocalDate.of(2019, 10, 21));
+		itv.setExpiracion(LocalDate.of(2022, 10, 21));
+		itv.setRecibidas(facturaRecibidaITV);
+		itv.setResultado(ResultadoITV.FAVORABLE);
+		itvService.save(itv);
+		
+		//Seguro de vehiculo
+		
+		FacturaRecibida facturaRecibidaSeguro = new FacturaRecibida();
+		facturaRecibidaSeguro.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaSeguro.setEstaPagada(true);
+		facturaRecibidaSeguro.setImporte(220.);
+		facturaRecibidaSeguro.setFecha(LocalDate.of(2019, 05, 21));
+		facturaRecibidaService.save(facturaRecibidaSeguro);
+
+		
+		Seguro seguro = new Seguro();
+		seguro.setCompania("Linea Directa");
+		seguro.setFechaContrato(LocalDate.of(2018, 05, 21));
+		seguro.setFechaExpiracion(LocalDate.of(2025, 07, 21));
+		seguro.setRecibidas(facturaRecibidaSeguro);
+		seguro.setTipoSeguro(TipoSeguro.TODORRIESGO);
+		seguro.setVehiculo(vehiculo);
+		seguroService.save(seguro);
+		
+				
 	}
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -188,25 +274,14 @@ public class FacturaRecibidaServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("Busca todas las lineas facturas asociadas a facturas emitidas")
+	@DisplayName("Busca todas las lineas facturas asociadas a facturas recibidas")
 	void findLineasFactura() {
 
 		List<LineaFactura> lf = facturaRecibidaService.findLineasFactura();
+
 		assertThat(lf.get(0).getPrecio()).isEqualTo(12.);
 		assertThat(lf.get(1).getPrecio()).isEqualTo(5.);
 
-	}
-	
-	@Test
-	@Transactional
-	@DisplayName("Borrar FacturaRecibida por su id -- Caso positivo")
-	void deleteRecibidaById() {
-		List<FacturaRecibida> lfr = facturaRecibidaService.findAll();
-		FacturaRecibida fr = lfr.get(0);
-		
-		facturaRecibidaService.deleteByNumFactura(fr.getId());
-		
-		assertThat(facturaRecibidaService.count()).isEqualTo(0);
 	}
 	
 	
@@ -214,7 +289,60 @@ public class FacturaRecibidaServiceTests {
 	 *   DELETE CASCADE TESTS  *
 	 * * * * * * * * * * * * * */
 
+	@Test
+	@Transactional
+	@DisplayName("Borrar FacturaRecibida-ITV por su id -- Caso positivo")
+	void deleteRecibidaByIdITV() {
+		List<FacturaRecibida> lfr = facturaRecibidaService.findAll();
+		FacturaRecibida fr = lfr.get(2);
+		
+		facturaRecibidaService.deleteByNumFactura(fr.getId());
+				
+		assertThat(itvService.count()).isEqualTo(0);
+		assertThat(reparacionService.count()).isEqualTo(1);
+		assertThat(seguroService.count()).isEqualTo(1);
+		
+		assertThat(vehiculoService.findByMatricula("4040GND").getDisponibilidad()).isFalse();
+		
+		assertThat(facturaRecibidaService.count()).isEqualTo(3);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Borrar FacturaRecibida-Reparacion por su id -- Caso positivo")
+	void deleteRecibidaByIdReparacion() {
+		List<FacturaRecibida> lfr = facturaRecibidaService.findAll();
+		FacturaRecibida fr = lfr.get(1);
+		
+		facturaRecibidaService.deleteByNumFactura(fr.getId());
+				
+		assertThat(itvService.count()).isEqualTo(1);
+		assertThat(reparacionService.count()).isEqualTo(0);
+		assertThat(seguroService.count()).isEqualTo(1);
+		
+		assertThat(vehiculoService.findByMatricula("4040GND").getDisponibilidad()).isTrue();
+		
+		assertThat(facturaRecibidaService.count()).isEqualTo(3);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Borrar FacturaRecibida-Seguro por su id -- Caso positivo")
+	void deleteRecibidaByIdSeguro() {
+		List<FacturaRecibida> lfr = facturaRecibidaService.findAll();
+		FacturaRecibida fr = lfr.get(3);
+		
+		facturaRecibidaService.deleteByNumFactura(fr.getId());
+				
+		assertThat(itvService.count()).isEqualTo(1);
+		assertThat(reparacionService.count()).isEqualTo(1);
+		assertThat(seguroService.count()).isEqualTo(0);
+		
+		assertThat(vehiculoService.findByMatricula("4040GND").getDisponibilidad()).isFalse();
+		
+		assertThat(facturaRecibidaService.count()).isEqualTo(3);
+	}
+	
 	//TODO Si tenemos tiempo, añadir los tests de los delete cascade, para ello hay que crear ITV, Seg, Reparacion y un vehiculo asociado
-	//y comprobar que se borran y que el vehiculo pasa a "no disponible" en caso de que la ITV o el Seguro fueran los mas recientes en vigor
-
+	//y comprobar que se borran y que el vehiculo pasa a "no disponible" en caso de que la ITV o el Seguro fueran los mas recientes en vigor	
 }

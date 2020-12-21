@@ -1,6 +1,5 @@
 package org.springframework.gresur.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,11 +42,9 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	
 	@Transactional(readOnly = true)
 	public List<LineaFactura> findLineasFactura(){
-		try {
-			return facturaRepo.findAll().stream().map(x->x.getLineasFacturas()).flatMap(List::stream).collect(Collectors.toList()); //TODO Revisar este stream
-		} catch (NullPointerException e) {
-			return new ArrayList<LineaFactura>();
-		}
+
+		return facturaRepo.findAll().stream().map(x->x.getLineasFacturas())
+			.filter(x->x!=null).flatMap(List::stream).collect(Collectors.toList());
 	}
 	
 	@Transactional(readOnly = true)
