@@ -85,7 +85,7 @@ class ContratoTests extends ValidatorTests{
 	@ParameterizedTest
 	@CsvSource({
 		"1500.50,La Caixa,22/10/2021,21/10/2021,COMPLETA,1",
-		"1600.50,La Caixa,20/10/2022,21/12/2020,MEDIA_JORNADA,1",
+		"1600.50,La Caixa,20/10/2022,21/12/2040,MEDIA_JORNADA,1",
 		"1600.50,La Caixa,20/10/2023,21/10/2025,PARCIAL,1"
 	})	
 	void validateContratoFechaInicioIsFutureTest(Double nomina, String entidadBancaria,String fechaInicio, String fechaFin,String tipoJornada,Integer personal) {

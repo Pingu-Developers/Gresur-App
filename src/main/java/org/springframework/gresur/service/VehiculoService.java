@@ -16,10 +16,12 @@ import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Personal;
+import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoNotificacion;
 import org.springframework.gresur.model.TipoVehiculo;
+import org.springframework.gresur.model.Transportista;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.VehiculoRepository;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -100,6 +102,10 @@ public class VehiculoService {
 		 if((ultimoSeguro == null || ultimoSeguro.getFechaExpiracion().isBefore(LocalDate.now())) && vehiculo.getDisponibilidad()==true){
 			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin Seguro");
 		 }
+		 Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo(vehiculo.getMatricula());
+		 if(ultimaReparacion != null && (ultimaReparacion.getFechaSalidaTaller() == null || ultimaReparacion.getFechaSalidaTaller().isAfter(LocalDate.now())) && vehiculo.getDisponibilidad()==true) {
+			 throw new VehiculoIllegalException("No valido el vehiculo disponible en reparacion");
+		 }
 		 
 		Vehiculo ret = vehiculoRepository.save(vehiculo);
 		em.flush();
@@ -133,7 +139,7 @@ public class VehiculoService {
 	
 	@Scheduled(cron = "0 7 * * * *")
 	@Transactional
-	public void ITVSegurovalidation() throws UnknownException{
+	public void ITVSeguroReparacionvalidation() throws UnknownException{
 		Iterator<Vehiculo> vehiculos = vehiculoRepository.findAll().iterator();
 		
 		while (vehiculos.hasNext()) {
@@ -141,8 +147,9 @@ public class VehiculoService {
 			Vehiculo v = vehiculos.next();
 			ITV ultimaITV = ITVService.findLastITVFavorableByVehiculo(v.getMatricula());
 			Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(v.getMatricula());
+			Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo(v.getMatricula());
 			
-			if(ultimaITV == null || ultimaITV.getResultado()==ResultadoITV.NEGATIVA || ultimaITV.getResultado()==ResultadoITV.DESFAVORABLE) {
+			if(v.getDisponibilidad() && (ultimaITV == null || ultimaITV.getResultado()==ResultadoITV.NEGATIVA || ultimaITV.getResultado()==ResultadoITV.DESFAVORABLE)) {
 				v.setDisponibilidad(false);
 				vehiculoRepository.save(v);
 				Notificacion warning = new Notificacion();
@@ -150,15 +157,16 @@ public class VehiculoService {
 				warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
 				try {
 					List<Personal> lPer = new ArrayList<>();
-					for (Administrador adm : adminService.findAll()) {
-						lPer.add(adm);
+					for (Personal per : adminService.findAllPersonal()) {
+						if(per.getClass() == Administrador.class || per.getClass() == Transportista.class)
+							lPer.add(per);
 					}
 					notificacionService.save(warning,lPer);
 				} catch (Exception e) {
 					throw new UnknownException(e);
 				}
 			}
-			if(ultimoSeguro == null || ultimoSeguro.getFechaExpiracion().isBefore(LocalDate.now())) {
+			if(v.getDisponibilidad() && (ultimoSeguro == null || ultimoSeguro.getFechaExpiracion().isBefore(LocalDate.now()))) {
 				v.setDisponibilidad(false);
 				vehiculoRepository.save(v);
 				Notificacion warning = new Notificacion();
@@ -166,8 +174,26 @@ public class VehiculoService {
 				warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
 				try {
 					List<Personal> lPer = new ArrayList<>();
-					for (Administrador adm : adminService.findAll()) {
-						lPer.add(adm);
+					for (Personal per : adminService.findAllPersonal()) {
+						if(per.getClass() == Administrador.class || per.getClass() == Transportista.class)
+							lPer.add(per);
+					}
+					notificacionService.save(warning,lPer);
+				} catch (Exception e) {
+					throw new UnknownException(e);
+				}
+			}
+			if(v.getDisponibilidad() && ultimaReparacion != null && (ultimaReparacion.getFechaSalidaTaller() == null || ultimaReparacion.getFechaSalidaTaller().isAfter(LocalDate.now()))) {
+				v.setDisponibilidad(false);
+				vehiculoRepository.save(v);
+				Notificacion warning = new Notificacion();
+				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a que esta en reparacion");
+				warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
+				try {
+					List<Personal> lPer = new ArrayList<>();
+					for (Personal per : adminService.findAllPersonal()) {
+						if(per.getClass() == Administrador.class || per.getClass() == Transportista.class)
+							lPer.add(per);
 					}
 					notificacionService.save(warning,lPer);
 				} catch (Exception e) {
@@ -176,9 +202,6 @@ public class VehiculoService {
 			}
 		}
 	}
-	
-	
-	
 	
 	@Transactional
 	public Long count() {

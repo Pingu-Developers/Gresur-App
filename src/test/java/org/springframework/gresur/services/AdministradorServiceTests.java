@@ -3,6 +3,7 @@ package org.springframework.gresur.services;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -18,10 +19,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.Configuracion;
 import org.springframework.gresur.model.Contrato;
+import org.springframework.gresur.model.Dependiente;
+import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.TipoJornada;
 import org.springframework.gresur.service.AdministradorService;
 import org.springframework.gresur.service.ConfiguracionService;
 import org.springframework.gresur.service.ContratoService;
+import org.springframework.gresur.service.DependienteService;
 import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +37,9 @@ class AdministradorServiceTests {
 	
 	@Autowired
 	protected AdministradorService administradorService;
+	
+	@Autowired
+	protected DependienteService dependienteService;
 	
 	@Autowired
 	protected ContratoService contratoService;
@@ -65,6 +72,18 @@ class AdministradorServiceTests {
 		cfg.setSalarioMinimo(900.);
 		cfg.setNumMaxNotificaciones(10);
 		configService.save(cfg);
+		
+		//CREACION DE UN DEPENDIENTE
+		Dependiente dp = new Dependiente();
+		dp.setName("Dependiente de prueba");
+		dp.setNIF("18845878W");
+		dp.setEmail("e2@email.com");
+		dp.setTlf("696823449");
+		dp.setDireccion("Av. Reina Mercedes");
+		dp.setNSS("12 1234123891");
+		dp.setImage("/resources/foto1.png");
+		
+		dp = dependienteService.save(dp);
 		
 		// CREACION DEL ADMINISTRADOR
 		Administrador adm = new Administrador();
@@ -113,6 +132,17 @@ class AdministradorServiceTests {
 	void findAdminByNifNotFound() {
 		Administrador adm = administradorService.findByNIF("18845878C");
 		assertThat(adm).isEqualTo(null);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Buscar a todo el personal")
+	void findAllPersonal() {
+		List<Personal> lp = administradorService.findAllPersonal();
+		assertThat(lp.size()).isEqualTo(2);
+		assertThat(lp.get(0).getId()).isNotEqualTo(lp.get(1).getId());
+		assertThat(lp.get(0).getClass()).isEqualTo(Administrador.class);
+		assertThat(lp.get(1).getClass()).isEqualTo(Dependiente.class);
 	}
 	
 

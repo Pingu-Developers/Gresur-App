@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.SeguroRepository;
@@ -28,6 +29,9 @@ public class SeguroService {
 	
 	@Autowired
 	private VehiculoService vehiculoService;
+	
+	@Autowired
+	private ReparacionService reparacionService;
 	
 	@Autowired
 	public SeguroService(SeguroRepository seguroRepo) {
@@ -93,9 +97,11 @@ public class SeguroService {
 		Vehiculo vehiculo = seguro.getVehiculo();
 		Seguro ultimoSeguroGuardado = findLastSeguroByVehiculo(vehiculo.getMatricula());
 		Boolean isLast = ultimoSeguroGuardado == null || !ultimoSeguroGuardado.getFechaExpiracion().isAfter(seguro.getFechaExpiracion());
-			
+		
+		Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo(vehiculo.getMatricula());
+		Boolean enReparacion = ultimaReparacion != null && (ultimaReparacion.getFechaSalidaTaller() == null || ultimaReparacion.getFechaSalidaTaller().isAfter(LocalDate.now()));
 
-		if(isLast && ITVService.findLastITVFavorableByVehiculo(vehiculo.getMatricula()) != null) {
+		if(!enReparacion && isLast && ITVService.findLastITVFavorableByVehiculo(vehiculo.getMatricula()) != null) {
 			vehiculo.setDisponibilidad(true);			
 		}
 		
