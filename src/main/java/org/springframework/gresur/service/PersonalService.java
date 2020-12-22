@@ -1,5 +1,7 @@
 package org.springframework.gresur.service;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -26,7 +28,7 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	protected PersonalRepository<Personal> personalGRepo;
 	
 	@Transactional(readOnly = true)
-	public Iterable<T> findAll() throws DataAccessException{
+	public List<T> findAll() throws DataAccessException{
 		return personalRepo.findAll();
 	}
 	
@@ -61,7 +63,7 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	
 	/* METODOS GENERALES PARA EL PERSONAL AL COMPLETO (superclase)*/
 	@Transactional(readOnly = true)
-	public Iterable<Personal> findAllPersonal() throws DataAccessException{
+	public List<Personal> findAllPersonal() throws DataAccessException{
 		return personalGRepo.findAll();
 	}
 	
