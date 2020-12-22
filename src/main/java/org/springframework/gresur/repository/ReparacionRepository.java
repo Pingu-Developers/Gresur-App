@@ -1,7 +1,6 @@
 package org.springframework.gresur.repository;
 
 import java.util.List;
-
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.gresur.model.Reparacion;

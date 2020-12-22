@@ -18,11 +18,17 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Concepto;
 import org.springframework.gresur.model.FacturaRecibida;
+import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Reparacion;
+import org.springframework.gresur.model.ResultadoITV;
+import org.springframework.gresur.model.Seguro;
+import org.springframework.gresur.model.TipoSeguro;
 import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.service.FacturaRecibidaService;
+import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.ReparacionService;
+import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.gresur.util.DBUtility;
@@ -43,6 +49,12 @@ class ReparacionServiceTests {
 	
 	@Autowired
 	protected FacturaRecibidaService facturaRecibidaService;
+	
+	@Autowired
+	protected SeguroService seguroService;
+	
+	@Autowired
+	protected ITVService itvService;
 
 	@Autowired
 	protected DBUtility util;
@@ -75,9 +87,45 @@ class ReparacionServiceTests {
 		vehiculo.setDisponibilidad(false);
 		vehiculo.setTipoVehiculo(TipoVehiculo.FURGONETA);
 		vehiculo.setMMA(450.);
-		/* Guardamos el vehiculo con sus reparaciones*/
+		
+		/* Guardamos el vehiculo*/
 		vehiculoService.save(vehiculo);
-	
+		
+		/* ITV */
+		
+		FacturaRecibida facturaRecibidaITV = new FacturaRecibida();
+		facturaRecibidaITV.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaITV.setEstaPagada(true);
+		facturaRecibidaITV.setImporte(50.);
+		facturaRecibidaITV.setFecha(LocalDate.of(2019, 10, 21));
+		facturaRecibidaService.save(facturaRecibidaITV);
+				
+		ITV itv = new ITV();
+		itv.setVehiculo(vehiculo);
+		itv.setFecha(LocalDate.of(2019, 10, 21));
+		itv.setExpiracion(LocalDate.of(2022, 10, 21));
+		itv.setRecibidas(facturaRecibidaITV);
+		itv.setResultado(ResultadoITV.FAVORABLE);
+		itvService.save(itv);
+				
+		/* SEGURO */
+				
+		FacturaRecibida facturaRecibidaSeguro = new FacturaRecibida();
+		facturaRecibidaSeguro.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaSeguro.setEstaPagada(true);
+		facturaRecibidaSeguro.setImporte(220.);
+		facturaRecibidaSeguro.setFecha(LocalDate.of(2019, 05, 21));
+		facturaRecibidaService.save(facturaRecibidaSeguro);
+
+				
+		Seguro seguro = new Seguro();
+		seguro.setCompania("Linea Directa");
+		seguro.setFechaContrato(LocalDate.of(2018, 05, 21));
+		seguro.setFechaExpiracion(LocalDate.of(2025, 07, 21));
+		seguro.setRecibidas(facturaRecibidaSeguro);
+		seguro.setTipoSeguro(TipoSeguro.TODORRIESGO);
+		seguro.setVehiculo(vehiculo);
+		seguroService.save(seguro);			
 		
 		/*Creamos varias facturas para cada repracion */
 		
@@ -86,21 +134,21 @@ class ReparacionServiceTests {
 		facturaRecibidaReparacion.setEstaPagada(true);
 		facturaRecibidaReparacion.setImporte(220.);
 		facturaRecibidaReparacion.setFecha(LocalDate.of(2019, 10, 20));
-		facturaRecibidaService.save(facturaRecibidaReparacion);
+		facturaRecibidaReparacion = facturaRecibidaService.save(facturaRecibidaReparacion);
 		
 		FacturaRecibida facturaRecibidaReparacion2 = new FacturaRecibida();
 		facturaRecibidaReparacion2.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaReparacion2.setEstaPagada(true);
 		facturaRecibidaReparacion2.setImporte(520.);
 		facturaRecibidaReparacion2.setFecha(LocalDate.of(2019, 12, 20));
-		facturaRecibidaService.save(facturaRecibidaReparacion2);
+		facturaRecibidaReparacion2 = facturaRecibidaService.save(facturaRecibidaReparacion2);
 		
 		FacturaRecibida facturaRecibidaReparacion3 = new FacturaRecibida();
 		facturaRecibidaReparacion3.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaReparacion3.setEstaPagada(true);
 		facturaRecibidaReparacion3.setImporte(820.);
 		facturaRecibidaReparacion3.setFecha(LocalDate.of(2020, 3, 25));
-		facturaRecibidaService.save(facturaRecibidaReparacion3);
+		facturaRecibidaReparacion3 = facturaRecibidaService.save(facturaRecibidaReparacion3);
 		
 		
 		/* Creamos varias reparaciones del vehiculo */
@@ -129,8 +177,6 @@ class ReparacionServiceTests {
 		reparaciones.add(reparacion);
 		reparaciones.add(reparacion2);
 		reparaciones.add(reparacion3);
-		
-		vehiculo.setDisponibilidad(true);
 	}
 
 	
@@ -158,6 +204,43 @@ class ReparacionServiceTests {
 
 		List<Reparacion> reparaciones = reparacionService.findByMatricula("4040LNE");
 		assertThat(reparaciones.size()).isEqualTo(0);
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Busca la ultima reparacion de un vehiculo dado -- Caso positivo")
+	void findLastReparacionByVehiculo() {
+		
+		/* Pongo el vehiculo en reparacion */
+		Vehiculo vehiculo = vehiculoService.findByMatricula("4040GND");
+		
+		FacturaRecibida facturaRecibidaReparacionActual = new FacturaRecibida();
+		facturaRecibidaReparacionActual.setConcepto(Concepto.GASTOS_VEHICULOS);
+		facturaRecibidaReparacionActual.setEstaPagada(true);
+		facturaRecibidaReparacionActual.setImporte(820.);
+		facturaRecibidaReparacionActual.setFecha(LocalDate.now());
+		facturaRecibidaReparacionActual = facturaRecibidaService.save(facturaRecibidaReparacionActual);
+		
+		Reparacion reparacionActual = new Reparacion();
+		reparacionActual.setFechaEntradaTaller(LocalDate.now());
+		reparacionActual.setFechaSalidaTaller(null);
+		reparacionActual.setRecibidas(facturaRecibidaReparacionActual);
+		reparacionActual.setVehiculo(vehiculo);
+		reparacionService.save(reparacionActual);
+				
+		Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo("4040GND");
+		assertThat(ultimaReparacion.getFechaSalidaTaller()).isNull();
+		assertThat(vehiculoService.findByMatricula("4040GND").getDisponibilidad()).isFalse();
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Busca la ultima reparacion de un vehiculo dado -- Caso negativo")
+	void findLastReparacionByVehiculoNotFound() {
+		
+		Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo("1829LSK");
+		assertThat(ultimaReparacion).isNull();
+		assertThat(vehiculoService.findByMatricula("1829LSK")).isNull();
 	}
 
 	

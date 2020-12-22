@@ -1,6 +1,7 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -27,6 +28,12 @@ public class ReparacionService {
 	private VehiculoService vehiculoService;
 	
 	@Autowired
+	private SeguroService seguroService;
+	
+	@Autowired
+	private ITVService itvService;
+	
+	@Autowired
 	public ReparacionService(ReparacionRepository reparacionRepo) {
 		this.reparacionRepo = reparacionRepo;
 	}
@@ -46,21 +53,41 @@ public class ReparacionService {
 		return reparacionRepo.findByVehiculoMatricula(matricula);
 	}
 	
+	@Transactional(readOnly = true)
+	public Reparacion findLastReparacionByVehiculo(String matricula) {
+		List<Reparacion> l = this.findByMatricula(matricula);
+		l.sort(Comparator.reverseOrder());
+		return l.size() == 0 ? null : l.get(0);
+	}
+	
 	@Transactional
 	public Reparacion save(Reparacion reparacion) throws DataAccessException {
 		
 		LocalDate fechaInicio = reparacion.getFechaEntradaTaller();
 		LocalDate fechaFin = reparacion.getFechaSalidaTaller();
 		
+		Vehiculo v = reparacion.getVehiculo();
+		
 		FechaInicioFinValidation.fechaInicioFinValidation(Reparacion.class,fechaInicio, fechaFin);
 		
-		if(fechaFin.isAfter(LocalDate.now())) {
-			Vehiculo v = reparacion.getVehiculo();
+		Reparacion ultimaGuardada = this.findLastReparacionByVehiculo(v.getMatricula());
+		Boolean isLast = ultimaGuardada == null || (fechaFin == null ? !ultimaGuardada.getFechaEntradaTaller().isAfter(fechaInicio) : !ultimaGuardada.getFechaSalidaTaller().isAfter(fechaFin));
+		
+		if(!isLast && fechaFin == null) {
+			throw new IllegalArgumentException("Solo la ultima reparacion de un vehiculo puede tener fecha de salida desconocida");
+			//TODO nueva  RN: excepcion - solo la ultima reparacion puede tener fecha desconocida
+		}
+		if(fechaFin == null || fechaFin.isAfter(LocalDate.now())) {
 			v.setDisponibilidad(false);
-			vehiculoService.save(v);
+		}
+		if(isLast && fechaFin != null && !fechaFin.isAfter(LocalDate.now()) 
+				  && itvService.findLastITVFavorableByVehiculo(v.getMatricula()) != null
+				  && seguroService.findLastSeguroByVehiculo(v.getMatricula()) != null) {
+			v.setDisponibilidad(true);
 		}
 		
 		Reparacion ret = reparacionRepo.save(reparacion);
+		vehiculoService.save(v);
 		em.flush();
 		return ret;
 	}

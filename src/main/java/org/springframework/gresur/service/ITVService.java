@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.ITV;
+import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.ITVRepository;
@@ -29,6 +30,9 @@ public class ITVService {
 	
 	@Autowired
 	private SeguroService seguroService;
+	
+	@Autowired
+	private ReparacionService reparacionService;
 	
 	@Autowired
 	public ITVService(ITVRepository itvRepository) {
@@ -82,7 +86,10 @@ public class ITVService {
 		ITV ultimaITVGuardada = findLastITVVehiculo(vehiculo.getMatricula());
 		Boolean isLast = ultimaITVGuardada == null || !ultimaITVGuardada.getExpiracion().isAfter(itv.getExpiracion());
 		
-		if(isLast && itv.getResultado().equals(ResultadoITV.FAVORABLE) && seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula()) != null) {
+		Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo(vehiculo.getMatricula());
+		Boolean enReparacion = ultimaReparacion != null && (ultimaReparacion.getFechaSalidaTaller() == null || ultimaReparacion.getFechaSalidaTaller().isAfter(LocalDate.now()));
+		
+		if(!enReparacion && isLast && itv.getResultado().equals(ResultadoITV.FAVORABLE) && seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula()) != null) {
 			vehiculo.setDisponibilidad(true);	
 		}	
 

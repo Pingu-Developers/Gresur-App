@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "reparaciones")
-public class Reparacion extends BaseEntity{
+public class Reparacion extends BaseEntity implements Comparable<Reparacion>{
 
 	@NotNull
 	@PastOrPresent
@@ -45,4 +45,18 @@ public class Reparacion extends BaseEntity{
 	@ManyToOne(optional = false)
 	@JoinColumn(name= "vehiculo_id")
 	private Vehiculo vehiculo;
+
+	@Override
+	public int compareTo(Reparacion o) {
+		if(o.fechaSalidaTaller == null && o.fechaSalidaTaller == null)
+			return this.fechaEntradaTaller.compareTo(o.fechaEntradaTaller);
+		else if(this.fechaSalidaTaller == null)
+			return -1;
+		else if (o.fechaSalidaTaller == null)
+			return 1;
+		else {
+			int ret = this.fechaSalidaTaller.compareTo(o.fechaSalidaTaller);
+			return ret == 0 ? this.fechaEntradaTaller.compareTo(o.fechaEntradaTaller) : ret ;
+		}
+	}
 }

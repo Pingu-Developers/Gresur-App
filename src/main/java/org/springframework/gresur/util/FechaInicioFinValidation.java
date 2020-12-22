@@ -9,9 +9,9 @@ public class FechaInicioFinValidation {
 
 	public static <T> void fechaInicioFinValidation(Class<T> c,LocalDate fechaInicio, LocalDate fechaFin) {
 		
-		if(c.equals(Reparacion.class) && fechaInicio.isAfter(fechaFin)) {
+		if(c.equals(Reparacion.class) && fechaFin != null && fechaInicio.isAfter(fechaFin)) {
 			throw new FechaFinNotAfterFechaInicioException("La fecha de finalizacion debe ser posterior o igual a la fecha de inicio!");
-		} else if((fechaInicio.isAfter(fechaFin) || fechaInicio.isEqual(fechaFin))) {
+		} else if(!c.equals(Reparacion.class) && (fechaInicio.isAfter(fechaFin) || fechaInicio.isEqual(fechaFin))) {
 			throw new FechaFinNotAfterFechaInicioException("La fecha de finalizacion debe ser posterior a la fecha de inicio!");
 		}
 	}
