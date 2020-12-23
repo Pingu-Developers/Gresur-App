@@ -29,10 +29,7 @@ public class Vehiculo extends BaseEntity {
 	@NotNull
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Double capacidad; 
-	
-	@NotNull
-	private Boolean disponibilidad;
-	
+		
 	@NotNull
 	@Enumerated(value = EnumType.STRING)
 	@Column(name ="tipo_vehiculo")

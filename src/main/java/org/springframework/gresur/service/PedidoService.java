@@ -26,6 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PedidoService {
+	
+	@Autowired
+	private VehiculoService vehiculoService;
 
 	@PersistenceContext
 	private EntityManager em;
@@ -68,7 +71,7 @@ public class PedidoService {
 			Double MMA = vehiculo.getMMA();
 			if(pedido.getTransportista() == null) {
 				throw new PedidoConVehiculoSinTransportistaException();
-			} if(!vehiculo.getDisponibilidad()) {
+			} if(!vehiculoService.getDisponibilidad(vehiculo.getMatricula())) {
 				throw new VehiculoNotAvailableException();
 			} if(pedido.getEstado().equals(EstadoPedido.EN_REPARTO) || pedido.getEstado().equals(EstadoPedido.ENTREGADO)) {
 				

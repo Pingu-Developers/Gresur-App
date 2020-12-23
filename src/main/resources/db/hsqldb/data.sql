@@ -415,24 +415,24 @@ INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
 	VALUES (21, 1, 29.99, 5);
 
 
-INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, disponibilidad, tipo_vehiculo, MMA)
-	VALUES ('6543MJK', 'https://i.pinimg.com/originals/61/56/21/615621dc25f20260922e993d6bfac872.png', 30.00, TRUE, 'CAMION', 3500.00);
+INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, tipo_vehiculo, MMA)
+	VALUES ('6543MJK', 'https://i.pinimg.com/originals/61/56/21/615621dc25f20260922e993d6bfac872.png', 30.00, 'CAMION', 3500.00);
 	
-INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, disponibilidad, tipo_vehiculo, MMA)
-	VALUES ('8456LDX', 'https://i.pinimg.com/originals/61/56/21/615621dc25f20260922e993d6bfac872.png', 28.00, FALSE, 'CAMION', 3000.00);
+INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, tipo_vehiculo, MMA)
+	VALUES ('8456LDX', 'https://i.pinimg.com/originals/61/56/21/615621dc25f20260922e993d6bfac872.png', 28.00, 'CAMION', 3000.00);
 
-INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, disponibilidad, tipo_vehiculo, MMA)
+INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, tipo_vehiculo, MMA)
 	VALUES ('E5798JMC', 'https://images.vexels.com/media/users/3/127764/isolated/preview/44ae2845c5a453b600b68b6e49e85326-icono-log--stico-de-carretilla-elevadora-by-vexels.png'
-				,4.00, TRUE, 'CARRETILLA_ELEVADORA', 7339.00);
+				,4.00, 'CARRETILLA_ELEVADORA', 7339.00);
 
-INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, disponibilidad, tipo_vehiculo, MMA)
-	VALUES ('7329MSG', 'https://cdn.pixabay.com/photo/2017/01/23/10/54/van-2002079_960_720.png', 12.00, TRUE, 'FURGONETA', 3500.00);
+INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, tipo_vehiculo, MMA)
+	VALUES ('7329MSG', 'https://cdn.pixabay.com/photo/2017/01/23/10/54/van-2002079_960_720.png', 12.00, 'FURGONETA', 3500.00);
 
-INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, disponibilidad, tipo_vehiculo, MMA)
-	VALUES ('6539LOP', 'https://cdn.pixabay.com/photo/2017/01/23/10/54/van-2002079_960_720.png', 9.00, FALSE, 'FURGONETA', 2700.00);
+INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, tipo_vehiculo, MMA)
+	VALUES ('6539LOP', 'https://cdn.pixabay.com/photo/2017/01/23/10/54/van-2002079_960_720.png', 9.00, 'FURGONETA', 2700.00);
 
-INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, disponibilidad, tipo_vehiculo, MMA)
-	VALUES ('5319KKF', 'https://e7.pngegg.com/pngimages/967/575/png-clipart-crane-crane.png', 25.00, FALSE, 'GRUA', 9000.00);
+INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, tipo_vehiculo, MMA)
+	VALUES ('5319KKF', 'https://e7.pngegg.com/pngimages/967/575/png-clipart-crane-crane.png', 25.00, 'GRUA', 9000.00);
 
 
 INSERT INTO REPARACIONES(fecha_entrada_taller, fecha_salida_taller, factura_recibida_id, vehiculo_id)
