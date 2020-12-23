@@ -25,15 +25,6 @@ public class ReparacionService {
 	private ReparacionRepository reparacionRepo;
 	
 	@Autowired
-	private VehiculoService vehiculoService;
-	
-	@Autowired
-	private SeguroService seguroService;
-	
-	@Autowired
-	private ITVService itvService;
-	
-	@Autowired
 	public ReparacionService(ReparacionRepository reparacionRepo) {
 		this.reparacionRepo = reparacionRepo;
 	}
@@ -66,10 +57,9 @@ public class ReparacionService {
 		LocalDate fechaInicio = reparacion.getFechaEntradaTaller();
 		LocalDate fechaFin = reparacion.getFechaSalidaTaller();
 		
-		Vehiculo v = reparacion.getVehiculo();
-		
 		FechaInicioFinValidation.fechaInicioFinValidation(Reparacion.class,fechaInicio, fechaFin);
 		
+		Vehiculo v = reparacion.getVehiculo();
 		Reparacion ultimaGuardada = this.findLastReparacionByVehiculo(v.getMatricula());
 		Boolean isLast = ultimaGuardada == null || (fechaFin == null ? !ultimaGuardada.getFechaEntradaTaller().isAfter(fechaInicio) : !ultimaGuardada.getFechaSalidaTaller().isAfter(fechaFin));
 		
@@ -77,17 +67,8 @@ public class ReparacionService {
 			throw new IllegalArgumentException("Solo la ultima reparacion de un vehiculo puede tener fecha de salida desconocida");
 			//TODO nueva  RN: excepcion - solo la ultima reparacion puede tener fecha desconocida
 		}
-		if(fechaFin == null || fechaFin.isAfter(LocalDate.now())) {
-			v.setDisponibilidad(false);
-		}
-		if(isLast && fechaFin != null && !fechaFin.isAfter(LocalDate.now()) 
-				  && itvService.findLastITVFavorableByVehiculo(v.getMatricula()) != null
-				  && seguroService.findLastSeguroByVehiculo(v.getMatricula()) != null) {
-			v.setDisponibilidad(true);
-		}
 		
 		Reparacion ret = reparacionRepo.save(reparacion);
-		vehiculoService.save(v);
 		em.flush();
 		return ret;
 	}

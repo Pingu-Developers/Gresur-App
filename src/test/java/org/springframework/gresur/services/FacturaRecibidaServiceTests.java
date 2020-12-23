@@ -202,7 +202,6 @@ public class FacturaRecibidaServiceTests {
 		vehiculo.setMatricula("4040GND");
 		vehiculo.setImagen("doc/images/camionpluma.png");
 		vehiculo.setCapacidad(100.);
-		vehiculo.setDisponibilidad(false); 
 		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculo.setMMA(450.);
 		
@@ -302,7 +301,7 @@ public class FacturaRecibidaServiceTests {
 		assertThat(reparacionService.count()).isEqualTo(1);
 		assertThat(seguroService.count()).isEqualTo(1);
 		
-		assertThat(vehiculoService.findByMatricula("4040GND").getDisponibilidad()).isFalse();
+		assertThat(vehiculoService.getDisponibilidad("4040GND")).isFalse();
 		
 		assertThat(facturaRecibidaService.count()).isEqualTo(3);
 	}
@@ -320,7 +319,7 @@ public class FacturaRecibidaServiceTests {
 		assertThat(reparacionService.count()).isEqualTo(0);
 		assertThat(seguroService.count()).isEqualTo(1);
 		
-		assertThat(vehiculoService.findByMatricula("4040GND").getDisponibilidad()).isTrue();
+		assertThat(vehiculoService.getDisponibilidad("4040GND")).isTrue();
 		
 		assertThat(facturaRecibidaService.count()).isEqualTo(3);
 	}
@@ -338,7 +337,7 @@ public class FacturaRecibidaServiceTests {
 		assertThat(reparacionService.count()).isEqualTo(1);
 		assertThat(seguroService.count()).isEqualTo(0);
 		
-		assertThat(vehiculoService.findByMatricula("4040GND").getDisponibilidad()).isFalse();
+		assertThat(vehiculoService.getDisponibilidad("4040GND")).isFalse();
 		
 		assertThat(facturaRecibidaService.count()).isEqualTo(3);
 	}

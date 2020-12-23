@@ -84,7 +84,6 @@ class ReparacionServiceTests {
 		vehiculo.setMatricula("4040GND");
 		vehiculo.setImagen("doc/images/camionpluma.png");
 		vehiculo.setCapacidad(100.);
-		vehiculo.setDisponibilidad(false);
 		vehiculo.setTipoVehiculo(TipoVehiculo.FURGONETA);
 		vehiculo.setMMA(450.);
 		
@@ -230,7 +229,7 @@ class ReparacionServiceTests {
 				
 		Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo("4040GND");
 		assertThat(ultimaReparacion.getFechaSalidaTaller()).isNull();
-		assertThat(vehiculoService.findByMatricula("4040GND").getDisponibilidad()).isFalse();
+		assertThat(vehiculoService.getDisponibilidad("4040GND")).isFalse();
 	}
 	
 	@Test
@@ -341,10 +340,10 @@ class ReparacionServiceTests {
 		reparacionFechaCongruente.setRecibidas(facturaRecibidaReparacion4);
 		reparacionFechaCongruente.setVehiculo(reparacion.getVehiculo());
 		
-		assertThat(reparacionFechaCongruente.getVehiculo().getDisponibilidad()).isEqualTo(true);
+		assertThat(vehiculoService.getDisponibilidad(reparacion.getVehiculo().getMatricula())).isTrue();
 		
 		reparacionFechaCongruente = reparacionService.save(reparacionFechaCongruente);
 
-		assertThat(reparacionFechaCongruente.getVehiculo().getDisponibilidad()).isEqualTo(false);
+		assertThat(vehiculoService.getDisponibilidad(reparacion.getVehiculo().getMatricula())).isFalse();
 	}
 }

@@ -72,7 +72,6 @@ class SeguroServiceTests {
 		
 		Vehiculo vehiculo = new Vehiculo();
 		vehiculo.setCapacidad(130.00);
-		vehiculo.setDisponibilidad(false);
 		vehiculo.setMatricula("1526MVC");
 		vehiculo.setMMA(3000.00);
 		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);

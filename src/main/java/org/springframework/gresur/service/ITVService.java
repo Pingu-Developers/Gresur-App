@@ -9,9 +9,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.ITV;
-import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.ResultadoITV;
-import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.ITVRepository;
 import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
@@ -25,15 +23,6 @@ public class ITVService {
 	
 	private ITVRepository itvRepository;
 
-	@Autowired
-	private VehiculoService vehiculoService;
-	
-	@Autowired
-	private SeguroService seguroService;
-	
-	@Autowired
-	private ReparacionService reparacionService;
-	
 	@Autowired
 	public ITVService(ITVRepository itvRepository) {
 		this.itvRepository = itvRepository;
@@ -71,7 +60,7 @@ public class ITVService {
 	@Transactional(readOnly = true)
 	public ITV findLastITVFavorableByVehiculo(String matricula) {
 		ITV itv = findLastITVVehiculo(matricula);
-		return (itv != null && itv.getResultado().equals(ResultadoITV.FAVORABLE) && itv.getExpiracion().isAfter(LocalDate.now())) ? itv : null;
+		return (itv != null && itv.getResultado().equals(ResultadoITV.FAVORABLE) && !itv.getExpiracion().isBefore(LocalDate.now())) ? itv : null;
 	}
 			
 	@Transactional
@@ -82,19 +71,7 @@ public class ITVService {
 		
 		FechaInicioFinValidation.fechaInicioFinValidation(ITV.class,fechaInicio, fechaFin);
 		
-		Vehiculo vehiculo = itv.getVehiculo();
-		ITV ultimaITVGuardada = findLastITVVehiculo(vehiculo.getMatricula());
-		Boolean isLast = ultimaITVGuardada == null || !ultimaITVGuardada.getExpiracion().isAfter(itv.getExpiracion());
-		
-		Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo(vehiculo.getMatricula());
-		Boolean enReparacion = ultimaReparacion != null && (ultimaReparacion.getFechaSalidaTaller() == null || ultimaReparacion.getFechaSalidaTaller().isAfter(LocalDate.now()));
-		
-		if(!enReparacion && isLast && itv.getResultado().equals(ResultadoITV.FAVORABLE) && seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula()) != null) {
-			vehiculo.setDisponibilidad(true);	
-		}	
-
 		ITV ret = itvRepository.save(itv);
-		vehiculoService.save(vehiculo);
 		em.flush();
 		return ret;
 	}

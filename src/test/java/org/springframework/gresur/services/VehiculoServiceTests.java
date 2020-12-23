@@ -31,7 +31,6 @@ import org.springframework.gresur.service.ReparacionService;
 import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.service.exceptions.MatriculaUnsupportedPatternException;
-import org.springframework.gresur.service.exceptions.VehiculoIllegalException;
 import org.springframework.gresur.util.DBUtility;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,7 +81,6 @@ class VehiculoServiceTests {
 		vehiculo.setMatricula("4040GND");
 		vehiculo.setImagen("doc/images/camionpluma.png");
 		vehiculo.setCapacidad(100.);
-		vehiculo.setDisponibilidad(false); 
 		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculo.setMMA(450.);
 		
@@ -130,7 +128,6 @@ class VehiculoServiceTests {
 		vehiculo2.setMatricula("E4040GND");
 		vehiculo2.setImagen("doc/images/carretilaelevadora.png");
 		vehiculo2.setCapacidad(20.);
-		vehiculo2.setDisponibilidad(false);
 		vehiculo2.setTipoVehiculo(TipoVehiculo.CARRETILLA_ELEVADORA);
 		vehiculo2.setMMA(500.);
 		
@@ -259,6 +256,7 @@ class VehiculoServiceTests {
 		v.setMMA(413.00);
 		
 		assertThat(vehiculoService.count()).isEqualTo(2);
+		assertThat(vehiculoService.getDisponibilidad(v.getMatricula())).isTrue();
 	}
 	
 	@Test
@@ -268,7 +266,6 @@ class VehiculoServiceTests {
 		
 		Vehiculo vehiculo = new Vehiculo();
 		vehiculo.setMatricula("4323BLD");
-		vehiculo.setDisponibilidad(false); //se puede guardar un vehiculo con disponibilidad false (entonces no hara falta ni ITV y Seguro...)
 		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculo.setCapacidad(300.);
 		vehiculo.setMMA(201.0);
@@ -283,6 +280,7 @@ class VehiculoServiceTests {
 		seguroService.save(seguro);
 		
 		assertThat(vehiculoService.count()).isEqualTo(3);
+		assertThat(vehiculoService.getDisponibilidad(vehiculo.getMatricula())).isTrue();
 	}
 	
 	@Test
@@ -291,7 +289,6 @@ class VehiculoServiceTests {
 	void saveVehiculoWithIncorrectPlate() {
 		Vehiculo vehiculo = new Vehiculo();
 		vehiculo.setMatricula("1919291299SKJS");
-		vehiculo.setDisponibilidad(false);
 		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculo.setCapacidad(200.);
 		vehiculo.setMMA(180.0);
@@ -314,30 +311,33 @@ class VehiculoServiceTests {
 		assertThrows(MatriculaUnsupportedPatternException.class, ()->{vehiculoService.save(vehiculo2);});	
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * */
+	/*	PROPIEDAD DERIVADA DISPONIBILIDAD  */
+	/* * * * * * * * * * * * * * * * * * * */
 	@Test
 	@Transactional
-	@DisplayName("RN: ITV no en vigor (new) -- caso negativo")
+	@DisplayName("ITV no en vigor (new) -- caso negativo")
 	void saveVehiculoWithITV() {
 		Vehiculo vehiculo = new Vehiculo();
 		vehiculo.setMatricula("4041GND");
-		vehiculo.setDisponibilidad(true);
 		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculo.setCapacidad(200.);
 		vehiculo.setMMA(180.0);
+		vehiculoService.save(vehiculo);
 						
-		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo);});
-		assertThat(vehiculoService.findByMatricula("4041GND")).isEqualTo(null);	// Comprobacion de rollback
+		assertThat(vehiculoService.getDisponibilidad("4041GND")).isFalse();
 	}
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: ITV no en vigor (update) -- caso negativo")
+	@DisplayName("ITV no en vigor (update) -- caso negativo")
 	void updateVehiculoWithITV() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		ITV itv = itvService.findLastITVFavorableByVehiculo(vehiculo.getMatricula());
-		itv.setResultado(ResultadoITV.NEGATIVA);
+		itv.setResultado(ResultadoITV.NEGATIVA);		
+		itvService.save(itv);
 		
-		assertThrows(VehiculoIllegalException.class, ()->{itvService.save(itv);});
+		assertThat(vehiculoService.getDisponibilidad(vehiculo.getMatricula())).isFalse();
 	}
 	
 	@Test
@@ -346,13 +346,13 @@ class VehiculoServiceTests {
 	void saveVehiculoWithSeguro() {
 		Vehiculo vehiculo = new Vehiculo();
 		vehiculo.setMatricula("4041GND");
-		vehiculo.setDisponibilidad(true);
 		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculo.setCapacidad(200.);
 		vehiculo.setMMA(180.0);
-						
-		assertThrows(VehiculoIllegalException.class, ()->{vehiculoService.save(vehiculo);});
-		assertThat(vehiculoService.findByMatricula("4041GND")).isEqualTo(null);	// Comprobacion de rollback
+		
+		vehiculoService.save(vehiculo);
+		
+		assertThat(vehiculoService.getDisponibilidad(vehiculo.getMatricula())).isFalse();
 	}
 
 	@Test
@@ -362,7 +362,8 @@ class VehiculoServiceTests {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		Seguro seguro = seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula());
 		seguro.setFechaExpiracion(LocalDate.of(2020, 2, 11));
+		seguroService.save(seguro);
 
-		assertThrows(VehiculoIllegalException.class, ()->{seguroService.save(seguro);});
+		assertThat(vehiculoService.getDisponibilidad(vehiculo.getMatricula())).isFalse();
 	}
 }

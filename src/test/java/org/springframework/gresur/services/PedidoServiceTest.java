@@ -362,7 +362,6 @@ public class PedidoServiceTest {
 		vehiculoDisponible.setMatricula("4040GND");
 		vehiculoDisponible.setImagen("doc/images/camionpluma.png");
 		vehiculoDisponible.setCapacidad(10000.);
-		vehiculoDisponible.setDisponibilidad(false); 
 		vehiculoDisponible.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculoDisponible.setMMA(10000.);
 		
@@ -373,7 +372,6 @@ public class PedidoServiceTest {
 		vehiculoNoDisponible.setMatricula("0000BBB");
 		vehiculoNoDisponible.setImagen("doc/images/camionpluma.png");
 		vehiculoNoDisponible.setCapacidad(100.);
-		vehiculoNoDisponible.setDisponibilidad(false); 
 		vehiculoNoDisponible.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculoNoDisponible.setMMA(450.);
 		
@@ -731,7 +729,6 @@ public class PedidoServiceTest {
 		vehiculoDisponibleTest.setMatricula("2000BRD");
 		vehiculoDisponibleTest.setImagen("doc/images/camionpluma.png");
 		vehiculoDisponibleTest.setCapacidad(10000.);
-		vehiculoDisponibleTest.setDisponibilidad(false); 
 		vehiculoDisponibleTest.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculoDisponibleTest.setMMA(500.);
 		
@@ -819,7 +816,6 @@ public class PedidoServiceTest {
 		vehiculoDisponibleTest.setMatricula("2000BRD");
 		vehiculoDisponibleTest.setImagen("doc/images/camionpluma.png");
 		vehiculoDisponibleTest.setCapacidad(10000.);
-		vehiculoDisponibleTest.setDisponibilidad(false); 
 		vehiculoDisponibleTest.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculoDisponibleTest.setMMA(500.);
 		
@@ -922,7 +918,6 @@ public class PedidoServiceTest {
 		vehiculoDisponibleTest.setMatricula("2000BRD");
 		vehiculoDisponibleTest.setImagen("doc/images/camionpluma.png");
 		vehiculoDisponibleTest.setCapacidad(10.);
-		vehiculoDisponibleTest.setDisponibilidad(false); 
 		vehiculoDisponibleTest.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculoDisponibleTest.setMMA(10000.);
 		
@@ -1011,7 +1006,6 @@ public class PedidoServiceTest {
 		vehiculoDisponibleTest.setMatricula("2000BRD");
 		vehiculoDisponibleTest.setImagen("doc/images/camionpluma.png");
 		vehiculoDisponibleTest.setCapacidad(10.);
-		vehiculoDisponibleTest.setDisponibilidad(false); 
 		vehiculoDisponibleTest.setTipoVehiculo(TipoVehiculo.CAMION);
 		vehiculoDisponibleTest.setMMA(100000.);
 		

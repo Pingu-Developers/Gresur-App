@@ -8,9 +8,7 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.Seguro;
-import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.SeguroRepository;
 import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
@@ -24,15 +22,6 @@ public class SeguroService {
 	
 	private SeguroRepository seguroRepo;
 
-	@Autowired
-	private ITVService ITVService;
-	
-	@Autowired
-	private VehiculoService vehiculoService;
-	
-	@Autowired
-	private ReparacionService reparacionService;
-	
 	@Autowired
 	public SeguroService(SeguroRepository seguroRepo) {
 		this.seguroRepo = seguroRepo;
@@ -94,19 +83,7 @@ public class SeguroService {
 		
 		FechaInicioFinValidation.fechaInicioFinValidation(Seguro.class,fechaInicio, fechaFin);
 		
-		Vehiculo vehiculo = seguro.getVehiculo();
-		Seguro ultimoSeguroGuardado = findLastSeguroByVehiculo(vehiculo.getMatricula());
-		Boolean isLast = ultimoSeguroGuardado == null || !ultimoSeguroGuardado.getFechaExpiracion().isAfter(seguro.getFechaExpiracion());
-		
-		Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo(vehiculo.getMatricula());
-		Boolean enReparacion = ultimaReparacion != null && (ultimaReparacion.getFechaSalidaTaller() == null || ultimaReparacion.getFechaSalidaTaller().isAfter(LocalDate.now()));
-
-		if(!enReparacion && isLast && ITVService.findLastITVFavorableByVehiculo(vehiculo.getMatricula()) != null) {
-			vehiculo.setDisponibilidad(true);			
-		}
-		
 		Seguro ret = seguroRepo.save(seguro);
-		vehiculoService.save(vehiculo); 
 		em.flush();
 		return ret;
 	}
