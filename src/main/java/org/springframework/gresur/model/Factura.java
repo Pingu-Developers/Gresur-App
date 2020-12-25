@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -44,4 +45,7 @@ public class Factura{
 	@JsonIgnore
 	@OneToMany(mappedBy = "factura", cascade = CascadeType.REMOVE)
 	protected List<LineaFactura> lineasFacturas;
+	
+	@Lob
+	private String descripcion;
 }
