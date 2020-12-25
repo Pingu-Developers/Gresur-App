@@ -17,8 +17,8 @@ import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.PedidoRepository;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
 import org.springframework.gresur.service.exceptions.PedidoLogisticException;
-import org.springframework.gresur.service.exceptions.PedidoNoDeleteableException;
 import org.springframework.gresur.service.exceptions.PedidoConVehiculoSinTransportistaException;
+import org.springframework.gresur.service.exceptions.PedidoEntregadoCanceladoException;
 import org.springframework.gresur.service.exceptions.VehiculoNotAvailableException;
 import org.springframework.gresur.service.exceptions.VehiculoDimensionesExceededException;
 import org.springframework.stereotype.Service;
@@ -66,6 +66,11 @@ public class PedidoService {
 		Pedido ret;
 		Vehiculo vehiculo = pedido.getVehiculo();
 		LocalDate fecha = pedido.getFechaEnvio();
+		
+		Pedido anterior = pedido.getId() == null ? null : pedidoRepo.findById(pedido.getId()).orElse(null);
+		if(anterior != null && (anterior.getEstado().equals(EstadoPedido.ENTREGADO) || anterior.getEstado().equals(EstadoPedido.CANCELADO))) {
+			throw new PedidoEntregadoCanceladoException("El pedido ya ha sido entregado y no puede modificarse");
+		}
 		
 		if(vehiculo != null) {
 			Double MMA = vehiculo.getMMA();
@@ -132,13 +137,6 @@ public class PedidoService {
 	
 	@Transactional
 	public void deleteById(Long id) throws DataAccessException {
-		Pedido p = pedidoRepo.findById(id).orElse(null);
-		
-		if(p.getEstado().equals(EstadoPedido.EN_ESPERA)) {
-			pedidoRepo.deleteById(id);
-		}
-		else {
-			throw new PedidoNoDeleteableException();
-		}
+		pedidoRepo.deleteById(id);
 	}
 }

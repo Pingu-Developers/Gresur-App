@@ -316,6 +316,8 @@ class ReparacionServiceTests {
 		assertThat(lr.get(lr.size()-1)).isNotEqualTo(reparacionFechaCongruente);
 	}
 	
+	//TODO Test de que la ultima reparacion es la unica con fecha salida nula
+	
 	/* * * * * * * * * * * * * * * *
 	 *    FUNCIONALIDADES TESTS    *
 	 * * * * * * * * * * * * * * * */
