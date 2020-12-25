@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @SuppressWarnings("serial")
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class PedidoEntregadoCanceladoException extends RuntimeException{
+public class UnmodifablePedidoException extends RuntimeException{
 	
-	public PedidoEntregadoCanceladoException () {
+	public UnmodifablePedidoException () {
 		super();
 	}
 	
-	public PedidoEntregadoCanceladoException (String message) {
+	public UnmodifablePedidoException (String message) {
 		super(message);
 	}
 }

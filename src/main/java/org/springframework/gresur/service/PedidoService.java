@@ -18,7 +18,7 @@ import org.springframework.gresur.repository.PedidoRepository;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
 import org.springframework.gresur.service.exceptions.PedidoLogisticException;
 import org.springframework.gresur.service.exceptions.PedidoConVehiculoSinTransportistaException;
-import org.springframework.gresur.service.exceptions.PedidoEntregadoCanceladoException;
+import org.springframework.gresur.service.exceptions.UnmodifablePedidoException;
 import org.springframework.gresur.service.exceptions.VehiculoNotAvailableException;
 import org.springframework.gresur.service.exceptions.VehiculoDimensionesExceededException;
 import org.springframework.stereotype.Service;
@@ -69,7 +69,7 @@ public class PedidoService {
 		
 		Pedido anterior = pedido.getId() == null ? null : pedidoRepo.findById(pedido.getId()).orElse(null);
 		if(anterior != null && (anterior.getEstado().equals(EstadoPedido.ENTREGADO) || anterior.getEstado().equals(EstadoPedido.CANCELADO))) {
-			throw new PedidoEntregadoCanceladoException("El pedido ya ha sido entregado y no puede modificarse");
+			throw new UnmodifablePedidoException("El pedido ya ha sido entregado o cancelado y no puede modificarse"); //TODO Testear esta RN
 		}
 		
 		if(vehiculo != null) {
