@@ -341,7 +341,4 @@ public class FacturaRecibidaServiceTests {
 		
 		assertThat(facturaRecibidaService.count()).isEqualTo(3);
 	}
-	
-	//TODO Si tenemos tiempo, añadir los tests de los delete cascade, para ello hay que crear ITV, Seg, Reparacion y un vehiculo asociado
-	//y comprobar que se borran y que el vehiculo pasa a "no disponible" en caso de que la ITV o el Seguro fueran los mas recientes en vigor	
 }
