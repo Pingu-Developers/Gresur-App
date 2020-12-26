@@ -136,6 +136,8 @@ public class PedidoServiceTest {
 		conf.setNumMaxNotificaciones(100);
 		conf.setFacturaEmitidaSeq(0L);
 		conf.setFacturaRecibidaSeq(0L);
+		conf.setFacturaEmitidaRectSeq(0L);
+		conf.setFacturaRecibidaRectSeq(0L);
 				
 		confService.save(conf);
 		
@@ -1376,5 +1378,59 @@ public class PedidoServiceTest {
 		pedidoEnviado.setDireccionEnvio("Direccion ilegalisima");
 				
 		assertThrows(UnmodifablePedidoException.class, () -> pedidoService.save(pedidoEnviado));
+	}
+	
+	/* * * * * * * * * * * * *
+	 *  FUNCIONALIDAD TEST   *
+	 * * * * * * * * * * * * */
+	@Test
+	@Transactional
+	@DisplayName("Añadir factura rectificada ya enviado- caso positivo")
+	void PedidoYaEnviadoRectificacion() {
+		Pedido pedidoEnviado = pedidoService.findPedidosEnRepartoByFecha(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy"))).get(0);
+		Producto producto1 = pedidoEnviado.getFacturaEmitida().getLineasFacturas().get(0).getProducto();
+		Producto producto2 = pedidoEnviado.getFacturaEmitida().getLineasFacturas().get(1).getProducto();
+		FacturaEmitida factOriginal = pedidoEnviado.getFacturaEmitida();
+		
+		FacturaEmitida facturaPedido3Rect = new FacturaEmitida();
+		facturaPedido3Rect.setCliente(factOriginal.getCliente());
+		facturaPedido3Rect.setDependiente(factOriginal.getDependiente());
+		facturaPedido3Rect.setEstaPagada(true);
+		facturaPedido3Rect.setImporte(3100.15);
+		
+		facturaPedido3Rect.setOriginal(pedidoEnviado.getFacturaEmitida());
+		factOriginal.setRectificativa(facturaPedido3Rect);
+		
+		facturaPedido3Rect = facturaEmitidaService.save(facturaPedido3Rect);
+		factOriginal = facturaEmitidaService.save(factOriginal);
+		
+		List<LineaFactura> lineasFacturaPedido3 = new ArrayList<LineaFactura>();
+		
+		LineaFactura lf1 = new LineaFactura();
+		lf1.setFactura(facturaPedido3Rect);
+		lf1.setProducto(producto1);
+		lf1.setCantidad(10);
+		lf1.setPrecio(producto1.getPrecioVenta()*lf1.getCantidad());
+		
+		lf1 = lineaFacturaService.save(lf1);
+		
+		LineaFactura lf2 = new LineaFactura();
+		lf2.setFactura(facturaPedido3Rect);
+		lf2.setProducto(producto2);
+		lf2.setCantidad(10);
+		lf2.setPrecio(producto2.getPrecioVenta()*lf2.getCantidad());
+		
+		lf2 = lineaFacturaService.save(lf2);
+		
+		lineasFacturaPedido3.add(lf1);
+		lineasFacturaPedido3.add(lf2);
+
+		facturaPedido3Rect.setLineasFacturas(lineasFacturaPedido3);
+		facturaPedido3Rect = facturaEmitidaService.save(facturaPedido3Rect);
+		
+		
+		assertThat(pedidoEnviado.getFacturaEmitida()).isEqualTo(facturaPedido3Rect);
+		assertThat(pedidoEnviado.getFacturaEmitida().getNumFactura()).isEqualTo("RCTE-1");
+		assertThat(pedidoEnviado.getFacturaEmitida().getFechaEmision()).isEqualTo(factOriginal.getFechaEmision());
 	}
 }

@@ -242,7 +242,7 @@ public class FacturaEmitidaServiceTests {
 		
 		nuevaCompra = facturaEmitidaService.save(nuevaCompra);
 		
-		assertThat(facturaEmitidaService.findByNumId(nuevaCompra.getId())).isEqualTo(nuevaCompra);
+		assertThat(facturaEmitidaService.findById(nuevaCompra.getId())).isEqualTo(nuevaCompra);
 	}
 	
 	@Test
@@ -253,11 +253,11 @@ public class FacturaEmitidaServiceTests {
 		/* pongo la factura en sin pagar (esto no da problema al hacerlo)*/
 		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
 		fem.setEstaPagada(false);		
-		assertThat(facturaEmitidaService.findByNumId(fem.getId()).getEstaPagada()).isEqualTo(false);
+		assertThat(facturaEmitidaService.findById(fem.getId()).getEstaPagada()).isEqualTo(false);
 		
 		/* Para una factura sin pagar debe dejarme cambiar el atributo estaPagada, pero ningun otro*/
 		fem.setEstaPagada(true);
-		assertThat(facturaEmitidaService.findByNumId(fem.getId()).getEstaPagada()).isEqualTo(true);
+		assertThat(facturaEmitidaService.findById(fem.getId()).getEstaPagada()).isEqualTo(true);
 
 	}
 		
@@ -294,7 +294,7 @@ public class FacturaEmitidaServiceTests {
 		fem.setEstaPagada(false);		
 		FacturaEmitida femUpdate = facturaEmitidaService.save(fem);
 
-		assertThat(facturaEmitidaService.findByNumId(fem.getId()).getEstaPagada()).isEqualTo(false);
+		assertThat(facturaEmitidaService.findById(fem.getId()).getEstaPagada()).isEqualTo(false);
 		
 		/* Para una factura sin pagar debe dejarme cambiar el atributo estaPagada, pero ningun otro*/
 		fem.setImporte(928.13929);

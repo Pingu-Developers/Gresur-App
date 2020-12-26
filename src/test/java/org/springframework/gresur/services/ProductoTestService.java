@@ -104,6 +104,17 @@ public class ProductoTestService {
 	@BeforeEach
 	@Transactional
 	void InitAll() {
+		
+		// CREACION DE CONFIGURACION
+		Configuracion config = new Configuracion();
+		config.setNumMaxNotificaciones(1);
+		config.setSalarioMinimo(950.);
+		config.setFacturaEmitidaSeq(0L);
+		config.setFacturaRecibidaSeq(0L);
+		config.setFacturaEmitidaRectSeq(0L);
+		config.setFacturaRecibidaRectSeq(0L);
+		configuracionService.save(config);
+				
 		// CREACION DE ALMACEN
 		Almacen alm = new Almacen();
 		alm.setCapacidad(3000.0);
@@ -250,14 +261,6 @@ public class ProductoTestService {
 		lf.add(lf2);
 		fem.setLineasFacturas(lf);
 		facturaEmitidaService.save(fem);
-
-		// CREACION DE CONFIGURACION
-		Configuracion config = new Configuracion();
-		config.setNumMaxNotificaciones(1);
-		config.setSalarioMinimo(950.);
-		config.setFacturaEmitidaSeq(0L);
-		config.setFacturaRecibidaSeq(0L);
-		configuracionService.save(config);
 
 	}
 

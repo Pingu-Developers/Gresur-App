@@ -26,8 +26,8 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	}
 	
 	@Transactional(readOnly = true)
-	public T findByNumId(Long numFactura) throws DataAccessException{
-		return facturaRepo.findById(numFactura).orElse(null);
+	public T findById(Long id) throws DataAccessException{
+		return facturaRepo.findById(id).orElse(null);
 	}
 		
 	@Transactional(rollbackFor = DataAccessException.class)

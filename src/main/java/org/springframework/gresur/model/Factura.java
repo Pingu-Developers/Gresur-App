@@ -14,6 +14,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -55,10 +56,40 @@ public class Factura{
 	@Lob
 	private String descripcion;
 	
+	/* RELACIONES */
+	
+	@JsonIgnore
+	@OneToOne
+	protected Factura original;
+	
+	@JsonIgnore
+	@OneToOne(mappedBy = "original", cascade = CascadeType.REMOVE)
+	protected Factura rectificativa;
+	
+	
 	/* PROPIEDAD DERIVADA */
 	public Boolean esRectificativa() {
-		return true;
+		return original != null;
 	}
+	public Boolean esDefinitiva() {
+		return rectificativa == null;
+	}
+	
+	public Factura getDefinitiva() {
+		if(esDefinitiva()) {
+			return this;
+		}
+		return rectificativa.getDefinitiva();
+	}
+	
+	public Factura getPrimeraOriginal() {
+		if(!esRectificativa()) {
+			return this;
+		} 
+		return original.getPrimeraOriginal();
+	}
+	
+	/* EQUALS & HASHCODE */
 	
 	@Override
 	public boolean equals(Object obj) {

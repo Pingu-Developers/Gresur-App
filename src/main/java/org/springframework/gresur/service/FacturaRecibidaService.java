@@ -43,7 +43,12 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 	public FacturaRecibida save(FacturaRecibida facturaRecibida) throws DataAccessException {
 		em.clear();
 		
-		facturaRecibida.setNumFactura(configService.nextValRecibidas());
+		if(facturaRecibida.getId() == null && facturaRecibida.esRectificativa()) {
+			facturaRecibida.setFechaEmision(facturaRecibida.getOriginal().getFechaEmision());	
+			facturaRecibida.setNumFactura(configService.nextValRecibidasRectificada());
+		}else {
+			facturaRecibida.setNumFactura(configService.nextValRecibidas());
+		}
 		
 		FacturaRecibida ret = facturaRepo.save(facturaRecibida);
 		em.flush();

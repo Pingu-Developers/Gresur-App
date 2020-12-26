@@ -20,6 +20,9 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 	private EntityManager em;
 	
 	@Autowired
+	private ConfiguracionService configService;
+	
+	@Autowired
 	public FacturaEmitidaService(FacturaEmitidaRepository feRepo) {
 		super.facturaRepo = feRepo;
 	}
@@ -31,6 +34,11 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 		Cliente cliente = emitida.getCliente();
 		if(!facturaRepo.findByClienteIdAndEstaPagadaFalse(cliente.getId()).isEmpty())
 			throw new ClienteDefaulterException("El cliente tiene facturas pendientes");
+		
+		if(emitida.getId() == null && emitida.esRectificativa()) {
+			emitida.setFechaEmision(emitida.getOriginal().getFechaEmision());
+			emitida.setNumFactura(configService.nextValEmitidasRectificada());
+		}
 		
 		FacturaEmitida ret = facturaRepo.save(emitida);
 		em.flush();

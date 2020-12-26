@@ -83,6 +83,8 @@ class SeguroServiceTests {
 		conf.setNumMaxNotificaciones(100);
 		conf.setFacturaEmitidaSeq(0L);
 		conf.setFacturaRecibidaSeq(0L);
+		conf.setFacturaEmitidaRectSeq(0L);
+		conf.setFacturaRecibidaRectSeq(0L);
 						
 		confService.save(conf);
 		
@@ -217,7 +219,7 @@ class SeguroServiceTests {
 		seguro.setVehiculo(vehiculoService.findByMatricula("1526MVC"));
 		seguro = seguroService.save(seguro);
 		
-		assertThat(fraService.findByNumId(fra.getId())).isEqualTo(fra);
+		assertThat(fraService.findById(fra.getId())).isEqualTo(fra);
 		assertThat(seguroService.findById(seguro.getId())).isEqualTo(seguro);
 	}
 	

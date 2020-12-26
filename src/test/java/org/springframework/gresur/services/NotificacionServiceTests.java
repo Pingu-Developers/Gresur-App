@@ -74,6 +74,9 @@ class NotificacionServiceTests {
 		config.setSalarioMinimo(950.);
 		config.setFacturaEmitidaSeq(0L);
 		config.setFacturaRecibidaSeq(0L);
+		config.setFacturaEmitidaRectSeq(0L);
+		config.setFacturaRecibidaRectSeq(0L);
+		
 		configuracionService.save(config);
 		
 		

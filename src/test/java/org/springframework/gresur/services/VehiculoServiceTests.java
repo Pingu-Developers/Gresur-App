@@ -88,6 +88,8 @@ class VehiculoServiceTests {
 		conf.setNumMaxNotificaciones(100);
 		conf.setFacturaEmitidaSeq(0L);
 		conf.setFacturaRecibidaSeq(0L);
+		conf.setFacturaEmitidaRectSeq(0L);
+		conf.setFacturaRecibidaRectSeq(0L);
 						
 		confService.save(conf);
 		

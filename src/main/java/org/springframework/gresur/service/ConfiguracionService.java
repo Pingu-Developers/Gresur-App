@@ -58,6 +58,20 @@ public class ConfiguracionService {
 		return "R-" + config.getFacturaRecibidaSeq();
 	}
 	
+	public String nextValEmitidasRectificada() {
+		Configuracion config = this.getConfig();
+		config.setFacturaEmitidaRectSeq(config.getFacturaEmitidaRectSeq()+1);
+		config = this.save(config);
+		return "RCTE-" + config.getFacturaEmitidaRectSeq();
+	}
+	
+	public String nextValRecibidasRectificada() {
+		Configuracion config = this.getConfig();
+		config.setFacturaRecibidaRectSeq(config.getFacturaRecibidaRectSeq()+1);
+		config = this.save(config);
+		return "RCTR-" + config.getFacturaRecibidaRectSeq();
+	}
+	
 	@Transactional
 	public void deleteAll() {
 		configRepo.deleteAll();
