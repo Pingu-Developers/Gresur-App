@@ -17,10 +17,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Getter;
 
 @Data
 @Entity
@@ -32,8 +35,13 @@ public class Factura{
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ENTITY_ID")
 	protected Long id;
 	
-	@NotNull
-	protected LocalDate fecha;
+	@Column(unique = true)
+	@Getter(value = AccessLevel.NONE)
+	protected Long numFactura;
+	
+	@PastOrPresent
+	@Column(name = "fecha_emision")
+	protected LocalDate fechaEmision;
 	
 	@NotNull
 	@Min(value=0, message = "debe ser mayor o igual a cero")  
@@ -49,6 +57,11 @@ public class Factura{
 	
 	@Lob
 	private String descripcion;
+	
+	/* PROPIEDAD DERIVADA */
+	public String getNumFactura() {
+		return ""; //TODO TENER EN CUENTA LAS RECTIFICADAS
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -69,10 +82,10 @@ public class Factura{
 				return false;
 		} else if (!estaPagada.equals(other.estaPagada))
 			return false;
-		if (fecha == null) {
-			if (other.fecha != null)
+		if (fechaEmision == null) {
+			if (other.fechaEmision != null)
 				return false;
-		} else if (!fecha.equals(other.fecha))
+		} else if (!fechaEmision.equals(other.fechaEmision))
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -98,7 +111,7 @@ public class Factura{
 		int result = 1;
 		result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
 		result = prime * result + ((estaPagada == null) ? 0 : estaPagada.hashCode());
-		result = prime * result + ((fecha == null) ? 0 : fecha.hashCode());
+		result = prime * result + ((fechaEmision == null) ? 0 : fechaEmision.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((importe == null) ? 0 : importe.hashCode());
 		result = prime * result + ((lineasFacturas == null) ? 0 : lineasFacturas.hashCode());

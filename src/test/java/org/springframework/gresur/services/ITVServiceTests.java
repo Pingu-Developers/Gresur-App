@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Concepto;
+import org.springframework.gresur.model.Configuracion;
 import org.springframework.gresur.model.FacturaRecibida;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.ResultadoITV;
@@ -25,6 +26,7 @@ import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoSeguro;
 import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Vehiculo;
+import org.springframework.gresur.service.ConfiguracionService;
 import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.VehiculoService;
@@ -48,7 +50,12 @@ class ITVServiceTests {
 	protected VehiculoService vehiculoService;
 	
 	@Autowired
+	protected ConfiguracionService confService;
+	
+	@Autowired
 	protected DBUtility util;
+	
+
 	
 	
 	
@@ -62,10 +69,19 @@ class ITVServiceTests {
 	void clearDB() {
 		util.clearDB();
 	}
-		
+	
 	@BeforeEach
 	@Transactional
-	void initAll() { 
+	void initAll() {
+		
+		//CREACION DE CONFIGURACION
+		Configuracion conf = new Configuracion();
+		conf.setSalarioMinimo(900.00);
+		conf.setNumMaxNotificaciones(100);
+		conf.setFacturaEmitidaSeq(0L);
+		conf.setFacturaRecibidaSeq(0L);
+						
+		confService.save(conf);
 		
 		Vehiculo vehiculo = new Vehiculo();
 		vehiculo.setCapacidad(130.00);
@@ -77,28 +93,28 @@ class ITVServiceTests {
 		FacturaRecibida fra = new FacturaRecibida();
 		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
 		fra.setEstaPagada(true);
-		fra.setFecha(LocalDate.of(2020, 1, 10));
+		fra.setFechaEmision(LocalDate.of(2020, 1, 10));
 		fra.setImporte(65.50);
 		fraService.save(fra);
 		
 		FacturaRecibida fra1 = new FacturaRecibida();
 		fra1.setConcepto(Concepto.GASTOS_VEHICULOS);
 		fra1.setEstaPagada(true);
-		fra1.setFecha(LocalDate.of(2000, 1, 10));
+		fra1.setFechaEmision(LocalDate.of(2000, 1, 10));
 		fra1.setImporte(65.50);
 		fraService.save(fra1);
 		
 		FacturaRecibida fra2 = new FacturaRecibida();
 		fra2.setConcepto(Concepto.GASTOS_VEHICULOS);
 		fra2.setEstaPagada(true);
-		fra2.setFecha(LocalDate.of(2005, 1, 10));
+		fra2.setFechaEmision(LocalDate.of(2005, 1, 10));
 		fra2.setImporte(65.50);
 		fraService.save(fra2);
 		
 		FacturaRecibida fra3 = new FacturaRecibida();
 		fra3.setConcepto(Concepto.GASTOS_VEHICULOS);
 		fra3.setEstaPagada(true);
-		fra3.setFecha(LocalDate.of(2020, 1, 10));
+		fra3.setFechaEmision(LocalDate.of(2020, 1, 10));
 		fra3.setImporte(650.50);
 		fraService.save(fra3);
 		
@@ -200,7 +216,7 @@ class ITVServiceTests {
 		FacturaRecibida fra = new FacturaRecibida();
 		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
 		fra.setEstaPagada(true);
-		fra.setFecha(LocalDate.of(2020, 1, 12));
+		fra.setFechaEmision(LocalDate.of(2020, 1, 12));
 		fra.setImporte(65.50);
 		fraService.save(fra);
 		
@@ -236,7 +252,7 @@ class ITVServiceTests {
 		FacturaRecibida fra = new FacturaRecibida();
 		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
 		fra.setEstaPagada(true);
-		fra.setFecha(LocalDate.of(2020, 1, 12));
+		fra.setFechaEmision(LocalDate.of(2020, 1, 12));
 		fra.setImporte(65.50);
 		fraService.save(fra);
 		

@@ -25,6 +25,9 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 	@Autowired
 	private ReparacionService reparacionService;
 	
+	@Autowired
+	private ConfiguracionService configService;
+	
 	
 	@Autowired
 	public FacturaRecibidaService(FacturaRecibidaRepository frRepo) {
@@ -39,7 +42,9 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 	@Transactional
 	public FacturaRecibida save(FacturaRecibida facturaRecibida) throws DataAccessException {
 		em.clear();
-
+		
+		facturaRecibida.setNumFactura(configService.nextValRecibidas());
+		
 		FacturaRecibida ret = facturaRepo.save(facturaRecibida);
 		em.flush();
 		return ret;
@@ -47,7 +52,7 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 	
 	@Override
 	@Transactional(rollbackFor = DataAccessException.class)
-	public void deleteByNumFactura(Long id) throws DataAccessException {
+	public void deleteById(Long id) throws DataAccessException {
 		reparacionService.deleteByRecibidasId(id);
 		seguroService.deleteByRecibidasId(id);
 		ITVService.deleteByRecibidasId(id);

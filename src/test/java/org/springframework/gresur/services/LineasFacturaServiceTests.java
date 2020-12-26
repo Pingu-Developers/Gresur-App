@@ -20,6 +20,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Almacen;
 import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.Concepto;
+import org.springframework.gresur.model.Configuracion;
 import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.model.FacturaRecibida;
 import org.springframework.gresur.model.LineaFactura;
@@ -27,6 +28,7 @@ import org.springframework.gresur.model.Producto;
 import org.springframework.gresur.model.Proveedor;
 import org.springframework.gresur.model.Unidad;
 import org.springframework.gresur.service.AlmacenService;
+import org.springframework.gresur.service.ConfiguracionService;
 import org.springframework.gresur.service.EstanteriaService;
 import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.LineasFacturaService;
@@ -60,11 +62,18 @@ class LineasFacturaServiceTests {
 	protected LineasFacturaService lineaFacturaService;
 	
 	@Autowired
+	protected ConfiguracionService confService;
+	
+	@Autowired
 	protected DBUtility util;
 	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	
 	@BeforeAll
 	@AfterEach
@@ -75,7 +84,17 @@ class LineasFacturaServiceTests {
 	
 	@BeforeEach
 	@Transactional
-	void initAll() { 
+	void initAll() {
+		
+		//CREACION DE CONFIGURACION
+		Configuracion conf = new Configuracion();
+		conf.setSalarioMinimo(900.00);
+		conf.setNumMaxNotificaciones(100);
+		conf.setFacturaEmitidaSeq(0L);
+		conf.setFacturaRecibidaSeq(0L);
+						
+		confService.save(conf);
+		
 		
 		Almacen almacen = new Almacen();
 		almacen.setCapacidad(2000.);
@@ -132,7 +151,7 @@ class LineasFacturaServiceTests {
 		FacturaRecibida facturaRecibida = new FacturaRecibida();
 		facturaRecibida.setConcepto(Concepto.REPOSICION_STOCK);
 		facturaRecibida.setEstaPagada(true);
-		facturaRecibida.setFecha(LocalDate.now());
+		facturaRecibida.setFechaEmision(LocalDate.now());
 		facturaRecibida.setImporte(1750.);
 		facturaRecibida.setProveedor(proveedor);
 		facturaRecibida = facturaRecibidaService.save(facturaRecibida);

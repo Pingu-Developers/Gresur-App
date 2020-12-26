@@ -214,7 +214,7 @@ public class ProductoTestService {
 		fem.setCliente(cliente);
 		fem.setDependiente(dependiente);
 		fem.setEstaPagada(true);
-		fem.setFecha(LocalDate.parse("17/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		fem.setFechaEmision(LocalDate.parse("17/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		fem.setImporte(320.15);
 
 		
@@ -255,6 +255,8 @@ public class ProductoTestService {
 		Configuracion config = new Configuracion();
 		config.setNumMaxNotificaciones(1);
 		config.setSalarioMinimo(950.);
+		config.setFacturaEmitidaSeq(0L);
+		config.setFacturaRecibidaSeq(0L);
 		configuracionService.save(config);
 
 	}

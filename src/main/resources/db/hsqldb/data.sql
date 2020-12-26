@@ -1,4 +1,4 @@
-INSERT INTO CONFIG(salario_minimo, num_max_notificaciones) VALUES(900.00, 10);
+INSERT INTO CONFIG(salario_minimo, num_max_notificaciones, factura_emitida_seq, factura_recibida_seq) VALUES(900.00, 10, 5, 16);
 
 INSERT INTO ROLES(name) VALUES('ROLE_ADMIN');
 INSERT INTO ROLES(name) VALUES('ROLE_DEPENDIENTE');
@@ -285,68 +285,68 @@ INSERT INTO LINEAS_ENVIADO(leido, notificacion_id, personal_id)
 	VALUES (TRUE, 3, 1);
 	
 	
-INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
+INSERT INTO EMITIDAS(id, esta_pagada, fecha_emision, importe, cliente_id, dependiente_id)
 	VALUES (1, TRUE, TO_DATE('2020/12/20', 'YYYY/MM/DD'), 207.87, 1, 4);
 
-INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
+INSERT INTO EMITIDAS(id, esta_pagada, fecha_emision, importe, cliente_id, dependiente_id)
 	VALUES (2, FALSE, TO_DATE('2020/12/21', 'YYYY/MM/DD'), 92.95, 2, 4);
 	
-INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
+INSERT INTO EMITIDAS(id, esta_pagada, fecha_emision, importe, cliente_id, dependiente_id)
 	VALUES (3, TRUE, TO_DATE('2020/12/22', 'YYYY/MM/DD'), 497.99, 3, 4);
 
-INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
+INSERT INTO EMITIDAS(id, esta_pagada, fecha_emision, importe, cliente_id, dependiente_id)
 	VALUES (4, TRUE, TO_DATE('2020/12/23', 'YYYY/MM/DD'), 1111.38, 4, 4);
 	
-INSERT INTO EMITIDAS(id, esta_pagada, fecha, importe, cliente_id, dependiente_id)
+INSERT INTO EMITIDAS(id, esta_pagada, fecha_emision, importe, cliente_id, dependiente_id)
 	VALUES (5, TRUE, TO_DATE('2019/12/24', 'YYYY/MM/DD'), 1157.38, 5, 4);
 	
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (6, TRUE, TO_DATE('2019/05/09', 'YYYY/MM/DD'), 150.00, 'REPOSICION_STOCK', 'Reposicion de stock de Azulejo Kenia de pasta blanca blanco', 1);
 
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (7, FALSE, TO_DATE('2020/09/15', 'YYYY/MM/DD'), 123.20, 'GASTOS_VEHICULOS', 'Reparacion pinchazo rueda camion', null);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (8, TRUE, TO_DATE('2020/11/12', 'YYYY/MM/DD'), 59.15, 'PAGO_IMPUESTOS', 'Pago impuestos del trimestre', null);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (9, TRUE, TO_DATE('2020/07/10', 'YYYY/MM/DD'), 75.00, 'REPOSICION_STOCK', 'Reposicion de stock de Azulejo Kenia de pasta blanca blanco', 1);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (10, TRUE, TO_DATE('2020/12/12', 'YYYY/MM/DD'), 99.20, 'GASTOS_VEHICULOS', 'Reparacion Picaporte puerta trasera', null);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (11, TRUE, TO_DATE('2020/10/10', 'YYYY/MM/DD'), 29.15, 'PAGO_IMPUESTOS', 'Pago impuestos del trimestre', null);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (12, TRUE, TO_DATE('2020/08/12', 'YYYY/MM/DD'), 100.00, 'GASTOS_VEHICULOS', 'Pago de Seguro Mapfre', null);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (13, TRUE, TO_DATE('2020/07/12', 'YYYY/MM/DD'), 140.00, 'GASTOS_VEHICULOS', 'Pago de Seguro Liberty', null);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (14, TRUE, TO_DATE('2020/09/12', 'YYYY/MM/DD'), 99.00, 'GASTOS_VEHICULOS', 'Pago de Seguro Mutua', null);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (15, TRUE, TO_DATE('2020/11/12', 'YYYY/MM/DD'), 79.00, 'GASTOS_VEHICULOS', 'Pago de Seguro Pelayo', null);
 
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (16, TRUE, TO_DATE('2019/12/12', 'YYYY/MM/DD'), 103.00, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (17, TRUE, TO_DATE('2020/01/13', 'YYYY/MM/DD'), 98.00, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (18, TRUE, TO_DATE('2020/02/17', 'YYYY/MM/DD'), 102.40, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (19, FALSE, TO_DATE('2020/03/01', 'YYYY/MM/DD'), 68.30, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
 	
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (20, TRUE, TO_DATE('2019/12/20', 'YYYY/MM/DD'), 107.10, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
 
-INSERT INTO RECIBIDAS(id, esta_pagada, fecha, importe, concepto, descripcion, proveedor_id)
+INSERT INTO RECIBIDAS(id, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (21, TRUE, TO_DATE('2020/05/07', 'YYYY/MM/DD'), 198.30, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
 
 

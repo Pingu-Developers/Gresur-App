@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.gresur.model.Concepto;
+import org.springframework.gresur.model.Configuracion;
 import org.springframework.gresur.model.FacturaRecibida;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.ResultadoITV;
@@ -25,6 +26,7 @@ import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoSeguro;
 import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Vehiculo;
+import org.springframework.gresur.service.ConfiguracionService;
 import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.ReparacionService;
@@ -56,7 +58,12 @@ class VehiculoServiceTests {
 	protected FacturaRecibidaService facturaRecibidaService;
 	
 	@Autowired
+	protected ConfiguracionService confService;
+	
+	@Autowired
 	protected DBUtility util;
+	
+
 	
 	
 	
@@ -70,10 +77,19 @@ class VehiculoServiceTests {
 	void clearDB() {
 		util.clearDB();
 	}
-		
+	
 	@BeforeEach
 	@Transactional
 	void initAll() {
+		
+		//CREACION DE CONFIGURACION
+		Configuracion conf = new Configuracion();
+		conf.setSalarioMinimo(900.00);
+		conf.setNumMaxNotificaciones(100);
+		conf.setFacturaEmitidaSeq(0L);
+		conf.setFacturaRecibidaSeq(0L);
+						
+		confService.save(conf);
 		
 		/* Vehiculo 1*/
 		
@@ -92,7 +108,7 @@ class VehiculoServiceTests {
 		facturaRecibidaITV.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaITV.setEstaPagada(true);
 		facturaRecibidaITV.setImporte(50.);
-		facturaRecibidaITV.setFecha(LocalDate.of(2019, 10, 21));
+		facturaRecibidaITV.setFechaEmision(LocalDate.of(2019, 10, 21));
 		facturaRecibidaService.save(facturaRecibidaITV);
 		
 		ITV itv = new ITV();
@@ -109,7 +125,7 @@ class VehiculoServiceTests {
 		facturaRecibidaSeguro.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaSeguro.setEstaPagada(true);
 		facturaRecibidaSeguro.setImporte(220.);
-		facturaRecibidaSeguro.setFecha(LocalDate.of(2019, 05, 21));
+		facturaRecibidaSeguro.setFechaEmision(LocalDate.of(2019, 05, 21));
 		facturaRecibidaService.save(facturaRecibidaSeguro);
 
 		
@@ -139,7 +155,7 @@ class VehiculoServiceTests {
 		facturaRecibidaITV2.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaITV2.setEstaPagada(true);
 		facturaRecibidaITV2.setImporte(30.);
-		facturaRecibidaITV2.setFecha(LocalDate.of(2019, 9, 23));
+		facturaRecibidaITV2.setFechaEmision(LocalDate.of(2019, 9, 23));
 		facturaRecibidaService.save(facturaRecibidaITV2);
 		
 		ITV itv2 = new ITV();
@@ -156,7 +172,7 @@ class VehiculoServiceTests {
 		facturaRecibidaSeguro2.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaSeguro2.setEstaPagada(true);
 		facturaRecibidaSeguro2.setImporte(220.);
-		facturaRecibidaSeguro2.setFecha(LocalDate.of(2019, 03, 10));
+		facturaRecibidaSeguro2.setFechaEmision(LocalDate.of(2019, 03, 10));
 		facturaRecibidaService.save(facturaRecibidaSeguro2);
 
 		

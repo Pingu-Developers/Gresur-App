@@ -44,6 +44,20 @@ public class ConfiguracionService {
 		return this.getConfig().getNumMaxNotificaciones();
 	}
 	
+	public Long nextValEmitidas() {
+		Configuracion config = this.getConfig();
+		config.setFacturaEmitidaSeq(config.getFacturaEmitidaSeq()+1);
+		config = this.save(config);
+		return config.getFacturaEmitidaSeq();
+	}
+	
+	public Long nextValRecibidas() {
+		Configuracion config = this.getConfig();
+		config.setFacturaRecibidaSeq(config.getFacturaRecibidaSeq()+1);
+		config = this.save(config);
+		return config.getFacturaRecibidaSeq();
+	}
+	
 	@Transactional
 	public void deleteAll() {
 		configRepo.deleteAll();

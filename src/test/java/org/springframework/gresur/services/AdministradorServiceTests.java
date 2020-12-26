@@ -71,6 +71,8 @@ class AdministradorServiceTests {
 		Configuracion cfg = new Configuracion();
 		cfg.setSalarioMinimo(900.);
 		cfg.setNumMaxNotificaciones(10);
+		cfg.setFacturaEmitidaSeq(0L);
+		cfg.setFacturaRecibidaSeq(0L);
 		configService.save(cfg);
 		
 		//CREACION DE UN DEPENDIENTE
