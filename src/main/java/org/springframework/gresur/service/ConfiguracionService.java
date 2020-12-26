@@ -44,18 +44,18 @@ public class ConfiguracionService {
 		return this.getConfig().getNumMaxNotificaciones();
 	}
 	
-	public Long nextValEmitidas() {
+	public String nextValEmitidas() {
 		Configuracion config = this.getConfig();
 		config.setFacturaEmitidaSeq(config.getFacturaEmitidaSeq()+1);
 		config = this.save(config);
-		return config.getFacturaEmitidaSeq();
+		return "E-" + config.getFacturaEmitidaSeq();
 	}
 	
-	public Long nextValRecibidas() {
+	public String nextValRecibidas() {
 		Configuracion config = this.getConfig();
 		config.setFacturaRecibidaSeq(config.getFacturaRecibidaSeq()+1);
 		config = this.save(config);
-		return config.getFacturaRecibidaSeq();
+		return "R-" + config.getFacturaRecibidaSeq();
 	}
 	
 	@Transactional

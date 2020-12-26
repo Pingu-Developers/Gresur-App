@@ -21,9 +21,7 @@ import javax.validation.constraints.PastOrPresent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 @Entity
@@ -36,8 +34,7 @@ public class Factura{
 	protected Long id;
 	
 	@Column(name = "num_factura", unique = true)
-	@Getter(value = AccessLevel.NONE)
-	protected Long numFactura;
+	protected String numFactura;
 	
 	@PastOrPresent
 	@Column(name = "fecha_emision")
@@ -59,10 +56,10 @@ public class Factura{
 	private String descripcion;
 	
 	/* PROPIEDAD DERIVADA */
-	public String getNumFactura() {
-		return ""; //TODO TENER EN CUENTA LAS RECTIFICADAS
+	public Boolean esRectificativa() {
+		return true;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

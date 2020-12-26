@@ -77,7 +77,7 @@ public class PedidoService {
 		LocalDate fecha = pedido.getFechaEnvio();
 		
 		Pedido anterior = pedido.getId() == null ? null : pedidoRepo.findById(pedido.getId()).orElse(null);
-		if(anterior != null && anterior.getEstado().equals(EstadoPedido.EN_ESPERA) && pedido.getEstado().equals(EstadoPedido.PREPARADO)) {
+		if(anterior != null && anterior.getEstado().equals(EstadoPedido.EN_ESPERA) && (!pedido.getEstado().equals(EstadoPedido.EN_ESPERA) || !pedido.getEstado().equals(EstadoPedido.CANCELADO))) {
 			FacturaEmitida fem = pedido.getFacturaEmitida();	
 			fem.setNumFactura(configService.nextValEmitidas());
 			fem.setFechaEmision(LocalDate.now());

@@ -248,7 +248,6 @@ public class PedidoServiceTest {
 		facturaPedido1.setCliente(cliente);
 		facturaPedido1.setDependiente(dependiente);
 		facturaPedido1.setEstaPagada(true);
-		facturaPedido1.setFechaEmision(LocalDate.parse("17/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		facturaPedido1.setImporte(320.15);
 		
 		facturaPedido1 = facturaEmitidaService.save(facturaPedido1);
@@ -257,7 +256,6 @@ public class PedidoServiceTest {
 		facturaPedido2.setCliente(cliente);
 		facturaPedido2.setDependiente(dependiente);
 		facturaPedido2.setEstaPagada(true);
-		facturaPedido2.setFechaEmision(LocalDate.parse("17/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		facturaPedido2.setImporte(320.15);
 		
 		facturaPedido2 = facturaEmitidaService.save(facturaPedido2);
@@ -266,7 +264,6 @@ public class PedidoServiceTest {
 		facturaPedido3.setCliente(cliente);
 		facturaPedido3.setDependiente(dependiente);
 		facturaPedido3.setEstaPagada(true);
-		facturaPedido3.setFechaEmision(LocalDate.parse("17/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		facturaPedido3.setImporte(320.15);
 		
 		facturaPedido3 = facturaEmitidaService.save(facturaPedido3);
@@ -365,12 +362,16 @@ public class PedidoServiceTest {
 		
 		Pedido pedido3 = new Pedido();
 		pedido3.setDireccionEnvio("C/ Ejemplo");
-		pedido3.setEstado(EstadoPedido.PREPARADO);
+		pedido3.setEstado(EstadoPedido.EN_ESPERA);
 		pedido3.setFacturaEmitida(facturaPedido3);
 		pedido3.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		pedido3.setTransportista(transportista);
 		
 		pedido3 = pedidoService.save(pedido3);
+		
+		pedido3.setTransportista(transportista);
+		pedido3.setEstado(EstadoPedido.PREPARADO);
+		pedido3 = pedidoService.save(pedido3);
+
 
 		// CREACION DE VEHICULO
 
