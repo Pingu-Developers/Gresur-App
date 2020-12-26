@@ -41,6 +41,8 @@ public class ClienteService {
 	
 	@Transactional
 	public Cliente save(Cliente cliente) throws DataAccessException {
+		em.clear();
+
 		Cliente ret = clienteRepo.save(cliente);
 		em.flush();
 		return ret;

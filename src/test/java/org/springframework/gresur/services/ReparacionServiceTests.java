@@ -316,8 +316,27 @@ class ReparacionServiceTests {
 		assertThat(lr.get(lr.size()-1)).isNotEqualTo(reparacionFechaCongruente);
 	}
 	
-	//TODO Test de que la ultima reparacion es la unica con fecha salida nula
+	@Test
+	@Transactional
+	@DisplayName("RN: La ultima reparacion es la unica con fecha de salida nula -- caso negativo")
+	void updateReparacionWithFechaSalidaNull() {
+		Reparacion reparacion = reparacionService.findAll().get(0);
+		reparacion.setFechaSalidaTaller(null);
+		
+		assertThrows(IllegalArgumentException.class, () -> reparacionService.save(reparacion));
+	}
 	
+	@Test
+	@Transactional
+	@DisplayName("RN: La ultima reparacion es la unica con fecha de salida nula -- caso positivo")
+	void updateReparacionWithFechaSalidaNullPositive() {
+		Reparacion reparacion = reparacionService.findLastReparacionByVehiculo("4040GND");
+		reparacion.setFechaSalidaTaller(null);
+		reparacion = reparacionService.save(reparacion);
+		
+		assertThat(reparacionService.findLastReparacionByVehiculo("4040GND")).isEqualTo(reparacion);
+	}
+		
 	/* * * * * * * * * * * * * * * *
 	 *    FUNCIONALIDADES TESTS    *
 	 * * * * * * * * * * * * * * * */

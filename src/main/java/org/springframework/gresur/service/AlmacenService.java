@@ -40,6 +40,8 @@ public class AlmacenService {
 	
 	@Transactional
 	public Almacen save(Almacen almacen) throws DataAccessException {
+		em.clear();
+
 		Almacen ret = almacenRepository.save(almacen);
 		em.flush();
 		return ret;

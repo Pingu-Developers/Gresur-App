@@ -67,6 +67,8 @@ public class ProductoService {
 
 	@Transactional
 	public Producto save(Producto producto) throws DataAccessException {
+		em.clear();
+
 		Estanteria estanteria = producto.getEstanteria();
 		if(estanteria != null) {
 			Double capacidadE = estanteria.getCapacidad();

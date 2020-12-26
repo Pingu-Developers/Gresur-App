@@ -65,6 +65,7 @@ public class ITVService {
 			
 	@Transactional
 	public ITV save(ITV itv) throws DataAccessException{
+		em.clear();
 		
 		LocalDate fechaInicio = itv.getFecha();
 		LocalDate fechaFin = itv.getExpiracion();		

@@ -53,6 +53,7 @@ public class ReparacionService {
 	
 	@Transactional
 	public Reparacion save(Reparacion reparacion) throws DataAccessException {
+		em.clear();
 		
 		LocalDate fechaInicio = reparacion.getFechaEntradaTaller();
 		LocalDate fechaFin = reparacion.getFechaSalidaTaller();

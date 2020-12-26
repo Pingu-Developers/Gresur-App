@@ -53,6 +53,8 @@ public class EstanteriaService{
 		
 	@Transactional
 	public Estanteria save(Estanteria estanteria) throws DataAccessException{
+		em.clear();
+
 		Almacen almacen = estanteria.getAlmacen();
 		
 		if(almacen.getCapacidad()<(sumCapacidadEstanteriasAlmacenNotEstanteria(almacen, estanteria.getId()) + estanteria.getCapacidad())) {

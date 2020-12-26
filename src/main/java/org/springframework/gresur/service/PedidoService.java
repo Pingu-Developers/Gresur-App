@@ -63,13 +63,23 @@ public class PedidoService {
 
 	@Transactional
 	public Pedido save(Pedido pedido) throws DataAccessException {
+		em.clear();
+		
 		Pedido ret;
 		Vehiculo vehiculo = pedido.getVehiculo();
 		LocalDate fecha = pedido.getFechaEnvio();
 		
 		Pedido anterior = pedido.getId() == null ? null : pedidoRepo.findById(pedido.getId()).orElse(null);
-		if(anterior != null && (anterior.getEstado().equals(EstadoPedido.ENTREGADO) || anterior.getEstado().equals(EstadoPedido.CANCELADO))) {
-			throw new UnmodifablePedidoException("El pedido ya ha sido entregado o cancelado y no puede modificarse"); //TODO Testear esta RN
+		if(anterior != null && !anterior.equals(pedido) && (anterior.getEstado().equals(EstadoPedido.ENTREGADO) || anterior.getEstado().equals(EstadoPedido.CANCELADO))) {
+			throw new UnmodifablePedidoException("El pedido ya ha sido entregado o cancelado y no puede modificarse");
+		}	
+		
+		if(anterior != null && !anterior.getEstado().equals(EstadoPedido.EN_ESPERA) && (!pedido.getFacturaEmitida().equals(anterior.getFacturaEmitida())
+																					|| !pedido.getDireccionEnvio().equals(anterior.getDireccionEnvio())
+																					|| !pedido.getFechaEnvio().equals(anterior.getFechaEnvio()))) {
+			throw new UnmodifablePedidoException("El pedido ya ha sido enviado y no puede modificarse");
+		} else if(anterior != null && !anterior.getEstado().equals(EstadoPedido.EN_ESPERA) && pedido.getEstado().equals(EstadoPedido.CANCELADO)) {
+			throw new UnmodifablePedidoException("El pedido ya ha sido enviado y no puede cancelarse"); 
 		}
 		
 		if(vehiculo != null) {
@@ -115,7 +125,8 @@ public class PedidoService {
 				throw new PedidoLogisticException();
 			}
 		} else {
-			if(pedido.getTransportista() == null && pedido.getEstado().equals(EstadoPedido.EN_ESPERA) || pedido.getTransportista()!= null && pedido.getEstado().equals(EstadoPedido.PREPARADO)) {
+			if(pedido.getTransportista() == null && (!pedido.getEstado().equals(EstadoPedido.EN_REPARTO) && !pedido.getEstado().equals(EstadoPedido.PREPARADO)) 
+					|| pedido.getTransportista()!= null && pedido.getEstado().equals(EstadoPedido.PREPARADO)) {	
 				ret = pedidoRepo.save(pedido);
 			} else {
 				throw new PedidoLogisticException();

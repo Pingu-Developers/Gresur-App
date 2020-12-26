@@ -46,7 +46,9 @@ public class LineasFacturaService {
 	}
 	
 	@Transactional
-	public LineaFactura save(LineaFactura linea) {		
+	public LineaFactura save(LineaFactura linea) {
+		em.clear();
+
 		LineaFactura otherLinea = lineasRepo.findByFacturaIdAndProductoId(linea.getFactura().getId(), linea.getProducto().getId()).orElse(null);
 		if(otherLinea != null && linea.getId()==null) {
 			otherLinea.setCantidad(otherLinea.getCantidad() + linea.getCantidad());

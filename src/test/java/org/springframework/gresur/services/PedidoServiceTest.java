@@ -55,6 +55,7 @@ import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
 import org.springframework.gresur.service.exceptions.PedidoConVehiculoSinTransportistaException;
 import org.springframework.gresur.service.exceptions.PedidoLogisticException;
+import org.springframework.gresur.service.exceptions.UnmodifablePedidoException;
 import org.springframework.gresur.service.exceptions.VehiculoDimensionesExceededException;
 import org.springframework.gresur.service.exceptions.VehiculoNotAvailableException;
 import org.springframework.gresur.util.DBUtility;
@@ -869,8 +870,8 @@ public class PedidoServiceTest {
 		lftest = lineaFacturaService.save(lftestUpdate);
 
 				
-		productoPedido = pedidoTestBDUpdated.getFacturaEmitida().getLineasFacturas().get(0).getProducto();
-		assertThat(pedidoTestBDUpdated.getFacturaEmitida().getLineasFacturas().get(0).getCantidad()*productoPedido.getPesoUnitario()).isGreaterThan(vehiculoDisponibleTest.getMMA());
+		productoPedido = pedidoService.findByID(pedidoTestBDUpdated.getId()).getFacturaEmitida().getLineasFacturas().get(0).getProducto();
+		assertThat(pedidoService.findByID(pedidoTestBDUpdated.getId()).getFacturaEmitida().getLineasFacturas().get(0).getCantidad()*productoPedido.getPesoUnitario()).isGreaterThan(vehiculoDisponibleTest.getMMA());
 		assertThrows(MMAExceededException.class, ()->{pedidoService.save(pedidoTestBD);});
 		
 	}
@@ -1051,7 +1052,7 @@ public class PedidoServiceTest {
 		Pedido pedidoTestBDUpdated = pedidoService.save(pedidoTestBD);
 		
 		//UPDATE NUMERO DE PRODUCTOS EN EL PEDIDO
-
+		
 		LineaFactura lftestUpdate = new LineaFactura();
 		lftestUpdate.setFactura(facturaPedidoTest);
 		lftestUpdate.setProducto(productoService.findAll().get(0));
@@ -1059,12 +1060,11 @@ public class PedidoServiceTest {
 		lftestUpdate.setPrecio(lftest.getProducto().getPrecioVenta()*lftest.getCantidad());
 		
 		lftest = lineaFacturaService.save(lftestUpdate);
-
-		
 				
-		productoPedido = pedidoTestBDUpdated.getFacturaEmitida().getLineasFacturas().get(0).getProducto();
+				
+		productoPedido = pedidoService.findByID(pedidoTestBDUpdated.getId()).getFacturaEmitida().getLineasFacturas().get(0).getProducto();
 		
-		assertThat(pedidoTestBDUpdated.getFacturaEmitida().getLineasFacturas().get(0).getCantidad()*dimensionesPedido).isGreaterThan(vehiculoDisponibleTest.getCapacidad());
+		assertThat(pedidoService.findByID(pedidoTestBDUpdated.getId()).getFacturaEmitida().getLineasFacturas().get(0).getCantidad()*dimensionesPedido).isGreaterThan(vehiculoDisponibleTest.getCapacidad());
 		assertThrows(VehiculoDimensionesExceededException.class, ()->{pedidoService.save(pedidoTestBD);});
 		
 	}
@@ -1312,5 +1312,53 @@ public class PedidoServiceTest {
 		pedidoTestBD.setEstado(EstadoPedido.PREPARADO);
 		
 		assertThrows(PedidoLogisticException.class, ()->{pedidoService.save(pedidoTestBD);});
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Un pedido entregado no puede modificarse -- Caso Negativo")
+	void UpdatePedidoEntregado() {
+		Pedido pedidoEntregado = pedidoService.findPedidosEnRepartoByFecha(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy"))).get(0);
+		pedidoEntregado.setEstado(EstadoPedido.ENTREGADO);
+		pedidoService.save(pedidoEntregado);
+		
+		//intento actualizar un pedido entregado
+		pedidoEntregado.setDireccionEnvio("C/ cambio de direccion ilegalisimo");
+		
+		assertThrows(UnmodifablePedidoException.class, () -> pedidoService.save(pedidoEntregado));
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: Un pedido cancelado no puede modificarse -- Caso Negativo")
+	void UpdatePedidoCancelado() {
+		Pedido pedidoCancelado = pedidoService.findAll().iterator().next();
+		pedidoCancelado.setEstado(EstadoPedido.CANCELADO);
+		pedidoService.save(pedidoCancelado);
+		
+		//intento actualizar un pedido entregado
+		pedidoCancelado.setEstado(EstadoPedido.EN_TIENDA);
+		
+		assertThrows(UnmodifablePedidoException.class, () -> pedidoService.save(pedidoCancelado));
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: No se puede cancelar un pedido enviado -- Caso Negativo")
+	void UpdateCancelaPedidoEnviado() {
+		Pedido pedidoCancelado = pedidoService.findPedidosEnRepartoByFecha(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy"))).get(0);
+		pedidoCancelado.setEstado(EstadoPedido.CANCELADO);
+				
+		assertThrows(UnmodifablePedidoException.class, () -> pedidoService.save(pedidoCancelado));
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("RN: No se puede modificar un pedido enviado -- Caso Negativo")
+	void UpdatePedidoEnviado() {
+		Pedido pedidoEnviado = pedidoService.findPedidosEnRepartoByFecha(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy"))).get(0);
+		pedidoEnviado.setDireccionEnvio("Direccion ilegalisima");
+				
+		assertThrows(UnmodifablePedidoException.class, () -> pedidoService.save(pedidoEnviado));
 	}
 }
