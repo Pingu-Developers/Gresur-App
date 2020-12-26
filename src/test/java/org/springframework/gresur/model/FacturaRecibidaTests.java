@@ -31,7 +31,7 @@ class FacturaRecibidaTests extends ValidatorTests{
 		}
 		
 		FacturaRecibida facturaRecibida = new FacturaRecibida();
-		facturaRecibida.setFecha(fecha == null ? null : LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		facturaRecibida.setFechaEmision(fecha == null ? null : LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		facturaRecibida.setImporte(importe);
 		facturaRecibida.setEstaPagada(estaPagada == null ? null : estaPagada);
 		facturaRecibida.setLineasFacturas(lLineaFactura);
@@ -60,10 +60,10 @@ class FacturaRecibidaTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		", 440.54, true, 1, OTROS, 0",
-		", 43.3, false, 0, GASTOS_VEHICULOS, 1"
+		"22/11/2090, 440.54, true, 1, OTROS, 0",
+		"22/11/2080, 43.3, false, 0, GASTOS_VEHICULOS, 1"
 	})
-	void validateFacturaRecibidaFechaNotNullTest(String fecha, Double importe, Boolean estaPagada, Integer lista, String concepto, Integer proveedor) {
+	void validateFacturaRecibidaFechaEmisionPastOrPresentTest(String fecha, Double importe, Boolean estaPagada, Integer lista, String concepto, Integer proveedor) {
 		
 		FacturaRecibida facturaRecibida = this.createSUT(fecha, importe, estaPagada, lista, concepto, proveedor);
 		

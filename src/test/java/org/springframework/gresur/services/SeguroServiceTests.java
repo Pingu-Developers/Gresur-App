@@ -18,12 +18,14 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Concepto;
+import org.springframework.gresur.model.Configuracion;
 import org.springframework.gresur.model.FacturaRecibida;
 import org.springframework.gresur.model.Proveedor;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoSeguro;
 import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Vehiculo;
+import org.springframework.gresur.service.ConfiguracionService;
 import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.ProveedorService;
 import org.springframework.gresur.service.SeguroService;
@@ -51,7 +53,12 @@ class SeguroServiceTests {
 	protected ProveedorService proveedorService;
 	
 	@Autowired
+	protected ConfiguracionService confService;
+	
+	@Autowired
 	protected DBUtility util;
+	
+
 	
 	
 	
@@ -69,6 +76,17 @@ class SeguroServiceTests {
 	@BeforeEach
 	@Transactional
 	void initAll() {
+		
+		//CREACION DE CONFIGURACION
+		Configuracion conf = new Configuracion();
+		conf.setSalarioMinimo(900.00);
+		conf.setNumMaxNotificaciones(100);
+		conf.setFacturaEmitidaSeq(0L);
+		conf.setFacturaRecibidaSeq(0L);
+		conf.setFacturaEmitidaRectSeq(0L);
+		conf.setFacturaRecibidaRectSeq(0L);
+						
+		confService.save(conf);
 		
 		Vehiculo vehiculo = new Vehiculo();
 		vehiculo.setCapacidad(130.00);
@@ -89,7 +107,7 @@ class SeguroServiceTests {
 		FacturaRecibida fra = new FacturaRecibida();
 		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
 		fra.setEstaPagada(true);
-		fra.setFecha(LocalDate.of(2020, 1, 10));
+		fra.setFechaEmision(LocalDate.of(2020, 1, 10));
 		fra.setImporte(300.50);
 		fra.setProveedor(prov);
 		fraService.save(fra);
@@ -97,7 +115,7 @@ class SeguroServiceTests {
 		FacturaRecibida fra1 = new FacturaRecibida();
 		fra1.setConcepto(Concepto.GASTOS_VEHICULOS);
 		fra1.setEstaPagada(true);
-		fra1.setFecha(LocalDate.of(1990, 1, 10));
+		fra1.setFechaEmision(LocalDate.of(1990, 1, 10));
 		fra1.setImporte(300.50);
 		fra1.setProveedor(prov);
 		fraService.save(fra1);
@@ -187,7 +205,7 @@ class SeguroServiceTests {
 		FacturaRecibida fra = new FacturaRecibida();
 		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
 		fra.setEstaPagada(true);
-		fra.setFecha(LocalDate.of(2020, 1, 10));
+		fra.setFechaEmision(LocalDate.of(2020, 1, 10));
 		fra.setImporte(300.50);
 		fra.setProveedor(proveedorService.findByNIF("80871031A"));
 		fra = fraService.save(fra);
@@ -201,7 +219,7 @@ class SeguroServiceTests {
 		seguro.setVehiculo(vehiculoService.findByMatricula("1526MVC"));
 		seguro = seguroService.save(seguro);
 		
-		assertThat(fraService.findByNumFactura(fra.getId())).isEqualTo(fra);
+		assertThat(fraService.findById(fra.getId())).isEqualTo(fra);
 		assertThat(seguroService.findById(seguro.getId())).isEqualTo(seguro);
 	}
 	
@@ -225,7 +243,7 @@ class SeguroServiceTests {
 		FacturaRecibida fra = new FacturaRecibida();
 		fra.setConcepto(Concepto.GASTOS_VEHICULOS);
 		fra.setEstaPagada(true);
-		fra.setFecha(LocalDate.now());
+		fra.setFechaEmision(LocalDate.now());
 		fra.setImporte(300.50);
 		fra.setProveedor(proveedorService.findByNIF("80871031A"));
 		fraService.save(fra);
@@ -233,14 +251,14 @@ class SeguroServiceTests {
 		Seguro seguro = new Seguro();
 		seguro.setCompania("Linea Directa");
 		seguro.setFechaExpiracion(LocalDate.now().minusDays(1L));
-		seguro.setFechaContrato(fra.getFecha());
+		seguro.setFechaContrato(fra.getFechaEmision());
 		seguro.setRecibidas(fra);
 		seguro.setTipoSeguro(TipoSeguro.TODORRIESGO);
 		seguro.setVehiculo(vehiculoService.findByMatricula("1526MVC"));
 		
 		assertThrows(FechaFinNotAfterFechaInicioException.class, () -> {seguroService.save(seguro);});
 		Seguro lastSeguroBD = seguroService.findLastSeguroByVehiculo(seguro.getVehiculo().getMatricula());
-		assertThat(lastSeguroBD.getRecibidas().getFecha()).isNotEqualTo(LocalDate.now());
+		assertThat(lastSeguroBD.getRecibidas().getFechaEmision()).isNotEqualTo(LocalDate.now());
 		assertThat(lastSeguroBD).isNotEqualTo(seguro);
 	}
 }

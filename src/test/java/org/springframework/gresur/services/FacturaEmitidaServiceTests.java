@@ -165,7 +165,7 @@ public class FacturaEmitidaServiceTests {
 		fem.setCliente(cliente);
 		fem.setDependiente(dependiente);
 		fem.setEstaPagada(true);
-		fem.setFecha(LocalDate.parse("17/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		fem.setFechaEmision(LocalDate.parse("17/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		fem.setImporte(320.15);
 
 		
@@ -237,12 +237,12 @@ public class FacturaEmitidaServiceTests {
 		nuevaCompra.setCliente(noDefaulter);
 		nuevaCompra.setDependiente(dependienteService.findByNIF("12345678L"));
 		nuevaCompra.setImporte(290.01);
-		nuevaCompra.setFecha(LocalDate.of(2020, 12, 1));
+		nuevaCompra.setFechaEmision(LocalDate.of(2020, 12, 1));
 		nuevaCompra.setEstaPagada(true);
 		
 		nuevaCompra = facturaEmitidaService.save(nuevaCompra);
 		
-		assertThat(facturaEmitidaService.findByNumFactura(nuevaCompra.getId())).isEqualTo(nuevaCompra);
+		assertThat(facturaEmitidaService.findById(nuevaCompra.getId())).isEqualTo(nuevaCompra);
 	}
 	
 	@Test
@@ -253,11 +253,11 @@ public class FacturaEmitidaServiceTests {
 		/* pongo la factura en sin pagar (esto no da problema al hacerlo)*/
 		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
 		fem.setEstaPagada(false);		
-		assertThat(facturaEmitidaService.findByNumFactura(fem.getId()).getEstaPagada()).isEqualTo(false);
+		assertThat(facturaEmitidaService.findById(fem.getId()).getEstaPagada()).isEqualTo(false);
 		
 		/* Para una factura sin pagar debe dejarme cambiar el atributo estaPagada, pero ningun otro*/
 		fem.setEstaPagada(true);
-		assertThat(facturaEmitidaService.findByNumFactura(fem.getId()).getEstaPagada()).isEqualTo(true);
+		assertThat(facturaEmitidaService.findById(fem.getId()).getEstaPagada()).isEqualTo(true);
 
 	}
 		
@@ -276,7 +276,7 @@ public class FacturaEmitidaServiceTests {
 		nuevaCompra.setCliente(defaulter);
 		nuevaCompra.setDependiente(dependienteService.findByNIF("12345678L"));
 		nuevaCompra.setImporte(290.01);
-		nuevaCompra.setFecha(LocalDate.of(2020, 12, 1));
+		nuevaCompra.setFechaEmision(LocalDate.of(2020, 12, 1));
 		nuevaCompra.setEstaPagada(true);
 		
 		assertThrows(ClienteDefaulterException.class, () -> {facturaEmitidaService.save(nuevaCompra);});
@@ -294,7 +294,7 @@ public class FacturaEmitidaServiceTests {
 		fem.setEstaPagada(false);		
 		FacturaEmitida femUpdate = facturaEmitidaService.save(fem);
 
-		assertThat(facturaEmitidaService.findByNumFactura(fem.getId()).getEstaPagada()).isEqualTo(false);
+		assertThat(facturaEmitidaService.findById(fem.getId()).getEstaPagada()).isEqualTo(false);
 		
 		/* Para una factura sin pagar debe dejarme cambiar el atributo estaPagada, pero ningun otro*/
 		fem.setImporte(928.13929);

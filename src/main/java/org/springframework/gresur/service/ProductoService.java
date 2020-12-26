@@ -127,7 +127,7 @@ public class ProductoService {
 		}
 		LocalDate tmp = fromDate;	
 		List<LineaFactura> lf = facturaService.findLineasFactura().stream()
-																	 .filter(x->x.getFactura().getFecha().isAfter(tmp))
+																	 .filter(x->x.getFactura().esDefinitiva() && x.getFactura().getFechaEmision().isAfter(tmp))
 																	 .collect(Collectors.toList());
 		Long totalVentas = lf.stream()
 							 .mapToLong(x->x.getCantidad())

@@ -25,5 +25,5 @@ public class FacturaEmitida extends Factura{
 	@NotNull
 	@ManyToOne(optional = false)
 	private Cliente cliente;
-	
+
 }

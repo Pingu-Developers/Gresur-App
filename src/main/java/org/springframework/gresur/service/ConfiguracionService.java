@@ -44,6 +44,34 @@ public class ConfiguracionService {
 		return this.getConfig().getNumMaxNotificaciones();
 	}
 	
+	public String nextValEmitidas() {
+		Configuracion config = this.getConfig();
+		config.setFacturaEmitidaSeq(config.getFacturaEmitidaSeq()+1);
+		config = this.save(config);
+		return "E-" + config.getFacturaEmitidaSeq();
+	}
+	
+	public String nextValRecibidas() {
+		Configuracion config = this.getConfig();
+		config.setFacturaRecibidaSeq(config.getFacturaRecibidaSeq()+1);
+		config = this.save(config);
+		return "R-" + config.getFacturaRecibidaSeq();
+	}
+	
+	public String nextValEmitidasRectificada() {
+		Configuracion config = this.getConfig();
+		config.setFacturaEmitidaRectSeq(config.getFacturaEmitidaRectSeq()+1);
+		config = this.save(config);
+		return "RCTE-" + config.getFacturaEmitidaRectSeq();
+	}
+	
+	public String nextValRecibidasRectificada() {
+		Configuracion config = this.getConfig();
+		config.setFacturaRecibidaRectSeq(config.getFacturaRecibidaRectSeq()+1);
+		config = this.save(config);
+		return "RCTR-" + config.getFacturaRecibidaRectSeq();
+	}
+	
 	@Transactional
 	public void deleteAll() {
 		configRepo.deleteAll();

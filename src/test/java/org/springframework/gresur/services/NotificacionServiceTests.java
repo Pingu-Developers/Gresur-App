@@ -72,6 +72,11 @@ class NotificacionServiceTests {
 		Configuracion config = new Configuracion();
 		config.setNumMaxNotificaciones(1);
 		config.setSalarioMinimo(950.);
+		config.setFacturaEmitidaSeq(0L);
+		config.setFacturaRecibidaSeq(0L);
+		config.setFacturaEmitidaRectSeq(0L);
+		config.setFacturaRecibidaRectSeq(0L);
+		
 		configuracionService.save(config);
 		
 		

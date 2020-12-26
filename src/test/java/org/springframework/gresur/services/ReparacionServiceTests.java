@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Concepto;
+import org.springframework.gresur.model.Configuracion;
 import org.springframework.gresur.model.FacturaRecibida;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Reparacion;
@@ -25,6 +26,7 @@ import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoSeguro;
 import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Vehiculo;
+import org.springframework.gresur.service.ConfiguracionService;
 import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.ReparacionService;
@@ -57,7 +59,12 @@ class ReparacionServiceTests {
 	protected ITVService itvService;
 
 	@Autowired
+	protected ConfiguracionService confService;
+	
+	@Autowired
 	protected DBUtility util;
+	
+
 	
 	
 	
@@ -72,10 +79,20 @@ class ReparacionServiceTests {
 		util.clearDB();
 	}
 	
-
 	@BeforeEach
 	@Transactional
 	void initAll() {
+		
+		//CREACION DE CONFIGURACION
+		Configuracion conf = new Configuracion();
+		conf.setSalarioMinimo(900.00);
+		conf.setNumMaxNotificaciones(100);
+		conf.setFacturaEmitidaSeq(0L);
+		conf.setFacturaRecibidaSeq(0L);
+		conf.setFacturaEmitidaRectSeq(0L);
+		conf.setFacturaRecibidaRectSeq(0L);
+						
+		confService.save(conf);
 		
 		/* Creamos el vehiculo */
 		List<Reparacion> reparaciones = new ArrayList<Reparacion>();
@@ -96,7 +113,7 @@ class ReparacionServiceTests {
 		facturaRecibidaITV.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaITV.setEstaPagada(true);
 		facturaRecibidaITV.setImporte(50.);
-		facturaRecibidaITV.setFecha(LocalDate.of(2019, 10, 21));
+		facturaRecibidaITV.setFechaEmision(LocalDate.of(2019, 10, 21));
 		facturaRecibidaService.save(facturaRecibidaITV);
 				
 		ITV itv = new ITV();
@@ -113,7 +130,7 @@ class ReparacionServiceTests {
 		facturaRecibidaSeguro.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaSeguro.setEstaPagada(true);
 		facturaRecibidaSeguro.setImporte(220.);
-		facturaRecibidaSeguro.setFecha(LocalDate.of(2019, 05, 21));
+		facturaRecibidaSeguro.setFechaEmision(LocalDate.of(2019, 05, 21));
 		facturaRecibidaService.save(facturaRecibidaSeguro);
 
 				
@@ -132,21 +149,21 @@ class ReparacionServiceTests {
 		facturaRecibidaReparacion.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaReparacion.setEstaPagada(true);
 		facturaRecibidaReparacion.setImporte(220.);
-		facturaRecibidaReparacion.setFecha(LocalDate.of(2019, 10, 20));
+		facturaRecibidaReparacion.setFechaEmision(LocalDate.of(2019, 10, 20));
 		facturaRecibidaReparacion = facturaRecibidaService.save(facturaRecibidaReparacion);
 		
 		FacturaRecibida facturaRecibidaReparacion2 = new FacturaRecibida();
 		facturaRecibidaReparacion2.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaReparacion2.setEstaPagada(true);
 		facturaRecibidaReparacion2.setImporte(520.);
-		facturaRecibidaReparacion2.setFecha(LocalDate.of(2019, 12, 20));
+		facturaRecibidaReparacion2.setFechaEmision(LocalDate.of(2019, 12, 20));
 		facturaRecibidaReparacion2 = facturaRecibidaService.save(facturaRecibidaReparacion2);
 		
 		FacturaRecibida facturaRecibidaReparacion3 = new FacturaRecibida();
 		facturaRecibidaReparacion3.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaReparacion3.setEstaPagada(true);
 		facturaRecibidaReparacion3.setImporte(820.);
-		facturaRecibidaReparacion3.setFecha(LocalDate.of(2020, 3, 25));
+		facturaRecibidaReparacion3.setFechaEmision(LocalDate.of(2020, 3, 25));
 		facturaRecibidaReparacion3 = facturaRecibidaService.save(facturaRecibidaReparacion3);
 		
 		
@@ -217,7 +234,7 @@ class ReparacionServiceTests {
 		facturaRecibidaReparacionActual.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaReparacionActual.setEstaPagada(true);
 		facturaRecibidaReparacionActual.setImporte(820.);
-		facturaRecibidaReparacionActual.setFecha(LocalDate.now());
+		facturaRecibidaReparacionActual.setFechaEmision(LocalDate.now());
 		facturaRecibidaReparacionActual = facturaRecibidaService.save(facturaRecibidaReparacionActual);
 		
 		Reparacion reparacionActual = new Reparacion();
@@ -268,7 +285,7 @@ class ReparacionServiceTests {
 		facturaRecibidaReparacion4.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaReparacion4.setEstaPagada(true);
 		facturaRecibidaReparacion4.setImporte(820.);
-		facturaRecibidaReparacion4.setFecha(LocalDate.now());
+		facturaRecibidaReparacion4.setFechaEmision(LocalDate.now());
 		facturaRecibidaService.save(facturaRecibidaReparacion4);
 		
 		Reparacion reparacionFechaCongruente = new Reparacion();
@@ -302,7 +319,7 @@ class ReparacionServiceTests {
 		facturaRecibidaReparacion4.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaReparacion4.setEstaPagada(true);
 		facturaRecibidaReparacion4.setImporte(820.);
-		facturaRecibidaReparacion4.setFecha(LocalDate.now());
+		facturaRecibidaReparacion4.setFechaEmision(LocalDate.now());
 		facturaRecibidaService.save(facturaRecibidaReparacion4);
 		
 		Reparacion reparacionFechaCongruente = new Reparacion();
@@ -352,7 +369,7 @@ class ReparacionServiceTests {
 		facturaRecibidaReparacion4.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaReparacion4.setEstaPagada(true);
 		facturaRecibidaReparacion4.setImporte(820.);
-		facturaRecibidaReparacion4.setFecha(LocalDate.now());
+		facturaRecibidaReparacion4.setFechaEmision(LocalDate.now());
 		facturaRecibidaService.save(facturaRecibidaReparacion4);
 		
 		Reparacion reparacionFechaCongruente = new Reparacion();

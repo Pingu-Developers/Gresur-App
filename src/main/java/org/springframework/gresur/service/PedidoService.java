@@ -11,16 +11,17 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.EstadoPedido;
+import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.model.Pedido;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.PedidoRepository;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
-import org.springframework.gresur.service.exceptions.PedidoLogisticException;
 import org.springframework.gresur.service.exceptions.PedidoConVehiculoSinTransportistaException;
+import org.springframework.gresur.service.exceptions.PedidoLogisticException;
 import org.springframework.gresur.service.exceptions.UnmodifablePedidoException;
-import org.springframework.gresur.service.exceptions.VehiculoNotAvailableException;
 import org.springframework.gresur.service.exceptions.VehiculoDimensionesExceededException;
+import org.springframework.gresur.service.exceptions.VehiculoNotAvailableException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,12 @@ public class PedidoService {
 	
 	@Autowired
 	private VehiculoService vehiculoService;
+	
+	@Autowired
+	private ConfiguracionService configService;
+	
+	@Autowired
+	private FacturaEmitidaService emitidaService;
 
 	@PersistenceContext
 	private EntityManager em;
@@ -70,6 +77,13 @@ public class PedidoService {
 		LocalDate fecha = pedido.getFechaEnvio();
 		
 		Pedido anterior = pedido.getId() == null ? null : pedidoRepo.findById(pedido.getId()).orElse(null);
+		if(anterior != null && anterior.getEstado().equals(EstadoPedido.EN_ESPERA) && (!pedido.getEstado().equals(EstadoPedido.EN_ESPERA) || !pedido.getEstado().equals(EstadoPedido.CANCELADO))) {
+			FacturaEmitida fem = pedido.getFacturaEmitida();	
+			fem.setNumFactura(configService.nextValEmitidas());
+			fem.setFechaEmision(LocalDate.now());
+			emitidaService.save(fem);
+		}
+		
 		if(anterior != null && !anterior.equals(pedido) && (anterior.getEstado().equals(EstadoPedido.ENTREGADO) || anterior.getEstado().equals(EstadoPedido.CANCELADO))) {
 			throw new UnmodifablePedidoException("El pedido ya ha sido entregado o cancelado y no puede modificarse");
 		}	

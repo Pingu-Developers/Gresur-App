@@ -71,6 +71,10 @@ class AdministradorServiceTests {
 		Configuracion cfg = new Configuracion();
 		cfg.setSalarioMinimo(900.);
 		cfg.setNumMaxNotificaciones(10);
+		cfg.setFacturaEmitidaSeq(0L);
+		cfg.setFacturaRecibidaSeq(0L);
+		cfg.setFacturaEmitidaRectSeq(0L);
+		cfg.setFacturaRecibidaRectSeq(0L);
 		configService.save(cfg);
 		
 		//CREACION DE UN DEPENDIENTE
@@ -82,7 +86,7 @@ class AdministradorServiceTests {
 		dp.setDireccion("Av. Reina Mercedes");
 		dp.setNSS("12 1234123891");
 		dp.setImage("/resources/foto1.png");
-		
+				
 		dp = dependienteService.save(dp);
 		
 		// CREACION DEL ADMINISTRADOR

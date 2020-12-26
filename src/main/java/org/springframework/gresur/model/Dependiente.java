@@ -12,5 +12,4 @@ import lombok.EqualsAndHashCode;
 @Table(name = "dependientes")
 public class Dependiente extends Personal{
 
-	
 }

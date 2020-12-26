@@ -56,4 +56,8 @@ public class Pedido extends BaseEntity{
 	public Boolean recogeEnTienda(Pedido p) {
 		return p.getDireccionEnvio() == "C/ Ligastorro nº 9" || p.getDireccionEnvio() == "Avenida Gresur edificio AG";
 	}
+		
+	public FacturaEmitida getFacturaEmitida() {
+		return (FacturaEmitida) this.facturaEmitida.getDefinitiva();
+	}
 }

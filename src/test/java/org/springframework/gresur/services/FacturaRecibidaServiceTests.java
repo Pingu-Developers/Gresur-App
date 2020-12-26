@@ -20,6 +20,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.gresur.model.Almacen;
 import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.Concepto;
+import org.springframework.gresur.model.Configuracion;
 import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.model.FacturaRecibida;
 import org.springframework.gresur.model.ITV;
@@ -34,6 +35,7 @@ import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Unidad;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.service.AlmacenService;
+import org.springframework.gresur.service.ConfiguracionService;
 import org.springframework.gresur.service.EstanteriaService;
 import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.ITVService;
@@ -52,9 +54,6 @@ import org.springframework.transaction.annotation.Transactional;
 @TestInstance(value = Lifecycle.PER_CLASS)
 public class FacturaRecibidaServiceTests {
 
-	@Autowired
-	protected DBUtility util;
-		
 	@Autowired
 	protected ProveedorService proveedorService;
 	
@@ -85,20 +84,41 @@ public class FacturaRecibidaServiceTests {
 	@Autowired
 	protected ReparacionService reparacionService;
 	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	@Autowired
+	protected ConfiguracionService confService;
+	
+	@Autowired
+	protected DBUtility util;
+	
 
+	
+	
+	
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 										FUNCIONES DE CARGA DE DATOS PARA LOS TESTS								 *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
 	@BeforeAll
 	@AfterEach
 	@Transactional
 	void clearDB() {
 		util.clearDB();
 	}
-
+	
 	@BeforeEach
 	@Transactional
-	void InitAll() {
+	void initAll() {
+		
+		//CREACION DE CONFIGURACION
+		Configuracion conf = new Configuracion();
+		conf.setSalarioMinimo(900.00);
+		conf.setNumMaxNotificaciones(100);
+		conf.setFacturaEmitidaSeq(0L);
+		conf.setFacturaRecibidaSeq(0L);
+		conf.setFacturaEmitidaRectSeq(0L);
+		conf.setFacturaRecibidaRectSeq(0L);
+						
+		confService.save(conf);
 		
 		// CREACION DE ALMACEN
 		
@@ -165,7 +185,7 @@ public class FacturaRecibidaServiceTests {
 		FacturaRecibida facturaRecibida = new FacturaRecibida();
 		facturaRecibida.setConcepto(Concepto.REPOSICION_STOCK);
 		facturaRecibida.setEstaPagada(true);
-		facturaRecibida.setFecha(LocalDate.now());
+		facturaRecibida.setFechaEmision(LocalDate.now());
 		facturaRecibida.setImporte(1750.);
 		facturaRecibida.setProveedor(proveedor);
 		facturaRecibida = facturaRecibidaService.save(facturaRecibida);
@@ -214,7 +234,7 @@ public class FacturaRecibidaServiceTests {
 		facturaRecibidaReparacion.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaReparacion.setEstaPagada(true);
 		facturaRecibidaReparacion.setImporte(220.);
-		facturaRecibidaReparacion.setFecha(LocalDate.of(2019, 10, 20));
+		facturaRecibidaReparacion.setFechaEmision(LocalDate.of(2019, 10, 20));
 		facturaRecibidaService.save(facturaRecibidaReparacion);
 		
 		Reparacion reparacion = new Reparacion();
@@ -230,7 +250,7 @@ public class FacturaRecibidaServiceTests {
 		facturaRecibidaITV.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaITV.setEstaPagada(true);
 		facturaRecibidaITV.setImporte(50.);
-		facturaRecibidaITV.setFecha(LocalDate.of(2019, 10, 21));
+		facturaRecibidaITV.setFechaEmision(LocalDate.of(2019, 10, 21));
 		facturaRecibidaService.save(facturaRecibidaITV);
 		
 		ITV itv = new ITV();
@@ -247,7 +267,7 @@ public class FacturaRecibidaServiceTests {
 		facturaRecibidaSeguro.setConcepto(Concepto.GASTOS_VEHICULOS);
 		facturaRecibidaSeguro.setEstaPagada(true);
 		facturaRecibidaSeguro.setImporte(220.);
-		facturaRecibidaSeguro.setFecha(LocalDate.of(2019, 05, 21));
+		facturaRecibidaSeguro.setFechaEmision(LocalDate.of(2019, 05, 21));
 		facturaRecibidaService.save(facturaRecibidaSeguro);
 
 		
@@ -295,7 +315,7 @@ public class FacturaRecibidaServiceTests {
 		List<FacturaRecibida> lfr = facturaRecibidaService.findAll();
 		FacturaRecibida fr = lfr.get(2);
 		
-		facturaRecibidaService.deleteByNumFactura(fr.getId());
+		facturaRecibidaService.deleteById(fr.getId());
 				
 		assertThat(itvService.count()).isEqualTo(0);
 		assertThat(reparacionService.count()).isEqualTo(1);
@@ -313,7 +333,7 @@ public class FacturaRecibidaServiceTests {
 		List<FacturaRecibida> lfr = facturaRecibidaService.findAll();
 		FacturaRecibida fr = lfr.get(1);
 		
-		facturaRecibidaService.deleteByNumFactura(fr.getId());
+		facturaRecibidaService.deleteById(fr.getId());
 				
 		assertThat(itvService.count()).isEqualTo(1);
 		assertThat(reparacionService.count()).isEqualTo(0);
@@ -331,7 +351,7 @@ public class FacturaRecibidaServiceTests {
 		List<FacturaRecibida> lfr = facturaRecibidaService.findAll();
 		FacturaRecibida fr = lfr.get(3);
 		
-		facturaRecibidaService.deleteByNumFactura(fr.getId());
+		facturaRecibidaService.deleteById(fr.getId());
 				
 		assertThat(itvService.count()).isEqualTo(1);
 		assertThat(reparacionService.count()).isEqualTo(1);
