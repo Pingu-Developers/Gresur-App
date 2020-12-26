@@ -35,7 +35,7 @@ public class Factura{
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ENTITY_ID")
 	protected Long id;
 	
-	@Column(unique = true)
+	@Column(name = "num_factura", unique = true)
 	@Getter(value = AccessLevel.NONE)
 	protected Long numFactura;
 	
