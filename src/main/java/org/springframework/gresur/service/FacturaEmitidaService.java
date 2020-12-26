@@ -26,6 +26,8 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 	
 	@Transactional
 	public FacturaEmitida save(FacturaEmitida emitida) throws DataAccessException {
+		em.clear();
+
 		Cliente cliente = emitida.getCliente();
 		if(!facturaRepo.findByClienteIdAndEstaPagadaFalse(cliente.getId()).isEmpty())
 			throw new ClienteDefaulterException("El cliente tiene facturas pendientes");

@@ -56,15 +56,15 @@ public class LineaFactura extends BaseEntity {
 		if (getClass() != obj.getClass())
 			return false;
 		LineaFactura other = (LineaFactura) obj;
-		if (factura == null) {
-			if (other.factura != null)
+		if (factura.id == null) {
+			if (other.factura.id != null)
 				return false;
-		} else if (!factura.equals(other.factura))
+		} else if (!factura.id.equals(other.factura.id))
 			return false;
-		if (producto == null) {
-			if (other.producto != null)
+		if (producto.id == null) {
+			if (other.producto.id != null)
 				return false;
-		} else if (!producto.equals(other.producto))
+		} else if (!producto.id.equals(other.producto.id))
 			return false;
 		return true;
 	}

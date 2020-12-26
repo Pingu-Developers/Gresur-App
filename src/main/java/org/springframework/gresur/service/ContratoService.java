@@ -43,6 +43,7 @@ public class ContratoService {
 	
 	@Transactional
 	public Contrato save(Contrato contrato) throws DataAccessException{
+		em.clear();
 		
 		LocalDate fechaInicio = contrato.getFechaInicio();
 		LocalDate fechaFin = contrato.getFechaFin();

@@ -17,8 +17,8 @@ import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.PedidoRepository;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
 import org.springframework.gresur.service.exceptions.PedidoLogisticException;
-import org.springframework.gresur.service.exceptions.PedidoNoDeleteableException;
 import org.springframework.gresur.service.exceptions.PedidoConVehiculoSinTransportistaException;
+import org.springframework.gresur.service.exceptions.UnmodifablePedidoException;
 import org.springframework.gresur.service.exceptions.VehiculoNotAvailableException;
 import org.springframework.gresur.service.exceptions.VehiculoDimensionesExceededException;
 import org.springframework.stereotype.Service;
@@ -63,9 +63,24 @@ public class PedidoService {
 
 	@Transactional
 	public Pedido save(Pedido pedido) throws DataAccessException {
+		em.clear();
+		
 		Pedido ret;
 		Vehiculo vehiculo = pedido.getVehiculo();
 		LocalDate fecha = pedido.getFechaEnvio();
+		
+		Pedido anterior = pedido.getId() == null ? null : pedidoRepo.findById(pedido.getId()).orElse(null);
+		if(anterior != null && !anterior.equals(pedido) && (anterior.getEstado().equals(EstadoPedido.ENTREGADO) || anterior.getEstado().equals(EstadoPedido.CANCELADO))) {
+			throw new UnmodifablePedidoException("El pedido ya ha sido entregado o cancelado y no puede modificarse");
+		}	
+		
+		if(anterior != null && !anterior.getEstado().equals(EstadoPedido.EN_ESPERA) && (!pedido.getFacturaEmitida().equals(anterior.getFacturaEmitida())
+																					|| !pedido.getDireccionEnvio().equals(anterior.getDireccionEnvio())
+																					|| !pedido.getFechaEnvio().equals(anterior.getFechaEnvio()))) {
+			throw new UnmodifablePedidoException("El pedido ya ha sido enviado y no puede modificarse");
+		} else if(anterior != null && !anterior.getEstado().equals(EstadoPedido.EN_ESPERA) && pedido.getEstado().equals(EstadoPedido.CANCELADO)) {
+			throw new UnmodifablePedidoException("El pedido ya ha sido enviado y no puede cancelarse"); 
+		}
 		
 		if(vehiculo != null) {
 			Double MMA = vehiculo.getMMA();
@@ -110,7 +125,8 @@ public class PedidoService {
 				throw new PedidoLogisticException();
 			}
 		} else {
-			if(pedido.getTransportista() == null && pedido.getEstado().equals(EstadoPedido.EN_ESPERA) || pedido.getTransportista()!= null && pedido.getEstado().equals(EstadoPedido.PREPARADO)) {
+			if(pedido.getTransportista() == null && (!pedido.getEstado().equals(EstadoPedido.EN_REPARTO) && !pedido.getEstado().equals(EstadoPedido.PREPARADO)) 
+					|| pedido.getTransportista()!= null && pedido.getEstado().equals(EstadoPedido.PREPARADO)) {	
 				ret = pedidoRepo.save(pedido);
 			} else {
 				throw new PedidoLogisticException();
@@ -132,13 +148,6 @@ public class PedidoService {
 	
 	@Transactional
 	public void deleteById(Long id) throws DataAccessException {
-		Pedido p = pedidoRepo.findById(id).orElse(null);
-		
-		if(p.getEstado().equals(EstadoPedido.EN_ESPERA)) {
-			pedidoRepo.deleteById(id);
-		}
-		else {
-			throw new PedidoNoDeleteableException();
-		}
+		pedidoRepo.deleteById(id);
 	}
 }

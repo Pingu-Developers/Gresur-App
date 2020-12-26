@@ -74,6 +74,8 @@ public class VehiculoService {
 
 		@Transactional
 	public Vehiculo save(Vehiculo vehiculo) throws DataAccessException{
+		em.clear();
+
 		 TipoVehiculo tipo = vehiculo.getTipoVehiculo();
 		 switch(tipo) {
 		case CAMION:

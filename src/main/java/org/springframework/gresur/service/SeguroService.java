@@ -77,6 +77,7 @@ public class SeguroService {
 	
 	@Transactional
 	public Seguro save(Seguro seguro) throws DataAccessException{
+		em.clear();
 		
 		LocalDate fechaInicio = seguro.getFechaContrato();
 		LocalDate fechaFin = seguro.getFechaExpiracion();

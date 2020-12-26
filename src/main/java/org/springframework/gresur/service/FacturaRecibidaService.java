@@ -38,6 +38,8 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 	
 	@Transactional
 	public FacturaRecibida save(FacturaRecibida facturaRecibida) throws DataAccessException {
+		em.clear();
+
 		FacturaRecibida ret = facturaRepo.save(facturaRecibida);
 		em.flush();
 		return ret;

@@ -39,6 +39,8 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	
 	@Transactional
 	public T save(T personal) throws DataAccessException{
+		em.clear();
+
 		T ret = personalRepo.save(personal);
 		em.flush();
 		return ret;

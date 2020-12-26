@@ -40,6 +40,8 @@ public class ProveedorService {
 	
 	@Transactional
 	public Proveedor save(Proveedor cliente) throws DataAccessException {
+		em.clear();
+
 		Proveedor ret = proveedorRepo.save(cliente);
 		em.flush();
 		return ret;

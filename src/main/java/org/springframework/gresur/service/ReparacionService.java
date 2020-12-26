@@ -53,6 +53,7 @@ public class ReparacionService {
 	
 	@Transactional
 	public Reparacion save(Reparacion reparacion) throws DataAccessException {
+		em.clear();
 		
 		LocalDate fechaInicio = reparacion.getFechaEntradaTaller();
 		LocalDate fechaFin = reparacion.getFechaSalidaTaller();
@@ -65,7 +66,6 @@ public class ReparacionService {
 		
 		if(!isLast && fechaFin == null) {
 			throw new IllegalArgumentException("Solo la ultima reparacion de un vehiculo puede tener fecha de salida desconocida");
-			//TODO nueva  RN: excepcion - solo la ultima reparacion puede tener fecha desconocida
 		}
 		
 		Reparacion ret = reparacionRepo.save(reparacion);

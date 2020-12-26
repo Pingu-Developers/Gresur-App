@@ -5,13 +5,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @SuppressWarnings("serial")
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class PedidoNoDeleteableException extends RuntimeException{
+public class UnmodifablePedidoException extends RuntimeException{
 	
-	public PedidoNoDeleteableException() {
+	public UnmodifablePedidoException () {
 		super();
 	}
 	
-	public PedidoNoDeleteableException(String message) {
+	public UnmodifablePedidoException (String message) {
 		super(message);
 	}
 }

@@ -268,6 +268,8 @@ public class FacturaEmitidaServiceTests {
 		
 		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
 		fem.setEstaPagada(false);
+		fem = facturaEmitidaService.save(fem);
+		
 		Cliente defaulter = fem.getCliente();
 		
 		FacturaEmitida nuevaCompra = new FacturaEmitida();
@@ -290,10 +292,12 @@ public class FacturaEmitidaServiceTests {
 		/* pongo la factura en sin pagar (esto no da problema al hacerlo)*/
 		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
 		fem.setEstaPagada(false);		
+		FacturaEmitida femUpdate = facturaEmitidaService.save(fem);
+
 		assertThat(facturaEmitidaService.findByNumFactura(fem.getId()).getEstaPagada()).isEqualTo(false);
 		
 		/* Para una factura sin pagar debe dejarme cambiar el atributo estaPagada, pero ningun otro*/
 		fem.setImporte(928.13929);
-		assertThrows(ClienteDefaulterException.class, ()->{facturaEmitidaService.save(fem);});
+		assertThrows(ClienteDefaulterException.class, ()->{facturaEmitidaService.save(femUpdate);});
 	}
 }

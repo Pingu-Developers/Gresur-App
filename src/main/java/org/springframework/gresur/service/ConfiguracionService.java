@@ -29,6 +29,8 @@ public class ConfiguracionService {
 	
 	@Transactional
 	public Configuracion save(Configuracion config) {
+		em.clear();
+
 		Configuracion ret = configRepo.save(config);
 		em.flush();
 		return ret;
