@@ -8,7 +8,6 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Personal;
-import org.springframework.gresur.repository.ContratoRepository;
 import org.springframework.gresur.repository.PersonalRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +21,13 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	protected E personalRepo;
 	
 	@Autowired
-	protected ContratoRepository contratoRepo;
+	protected ContratoService contratoService;
 	
 	@Autowired
 	protected PersonalRepository<Personal> personalGRepo;
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	
 	@Transactional(readOnly = true)
 	public List<T> findAll() throws DataAccessException{
@@ -48,13 +50,13 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	
 	@Transactional
 	public void deleteByNIF(String NIF) throws DataAccessException{
-		contratoRepo.deleteByPersonalNIF(NIF);
+		contratoService.deleteByPersonalNIF(NIF);
 		personalRepo.deleteByNIF(NIF);
 	}
 	
 	@Transactional
 	public void deleteAll() throws DataAccessException{
-		contratoRepo.deleteAll();
+		contratoService.deleteAll();
 		personalRepo.deleteAll();
 	}
 	

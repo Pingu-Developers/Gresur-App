@@ -27,6 +27,9 @@ public class EstanteriaService{
 		this.estanteriaRepository = estanteriaRepository;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional(readOnly = true)
 	public List<Estanteria> findAll() throws DataAccessException{
 		return estanteriaRepository.findAll();

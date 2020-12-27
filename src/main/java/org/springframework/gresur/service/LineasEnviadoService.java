@@ -20,6 +20,9 @@ public class LineasEnviadoService {
 		this.lineasEnviadoRepo = lineasEnviadoRepo;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional(readOnly = true)
 	public List<LineaEnviado> findAll(){
 		return lineasEnviadoRepo.findAll();

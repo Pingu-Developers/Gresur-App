@@ -28,11 +28,13 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 	@Autowired
 	private ConfiguracionService configService;
 	
-	
 	@Autowired
 	public FacturaRecibidaService(FacturaRecibidaRepository frRepo) {
 		super.facturaRepo = frRepo;
 	}
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	
 	@Transactional(readOnly = true)
 	public Long count() {

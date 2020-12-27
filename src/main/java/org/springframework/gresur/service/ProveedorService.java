@@ -23,6 +23,9 @@ public class ProveedorService {
 		this.proveedorRepo = proveedorRepo;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional(readOnly = true)
 	public Iterable<Proveedor> findAll() throws DataAccessException{
 		return proveedorRepo.findAll();

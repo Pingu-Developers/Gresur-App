@@ -29,6 +29,9 @@ public class ReparacionService {
 		this.reparacionRepo = reparacionRepo;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional(readOnly = true)
 	public List<Reparacion> findAll() throws DataAccessException{
 		return reparacionRepo.findAll();
