@@ -15,6 +15,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Notificacion;
+import org.springframework.gresur.model.Pedido;
 import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.Seguro;
@@ -50,6 +51,9 @@ public class VehiculoService {
 	
 	@Autowired
 	private AdministradorService adminService;
+	
+	@Autowired
+	private PedidoService pedidoService;
 	
 
 	@Autowired
@@ -136,6 +140,12 @@ public class VehiculoService {
 			return (ultimaITVFavorable != null && ultimoSeguro != null && !ultimoSeguro.getFechaExpiracion().isBefore(LocalDate.now()) &&
 					(ultimaReparacion == null || ultimaReparacion.getFechaSalidaTaller() != null && ultimaReparacion.getFechaSalidaTaller().isBefore(LocalDate.now())));
 		}
+	}
+	public Boolean getDisponibilidad(String matricula, Transportista t) {
+		Boolean disponibilidadVehiculo = this.getDisponibilidad(matricula);
+		List<Pedido> pedidosEnRepartoVehiculo = pedidoService.findPedidosEnRepartoByMatricula(matricula);
+		
+		return disponibilidadVehiculo && (pedidosEnRepartoVehiculo.size() == 0 || pedidosEnRepartoVehiculo.stream().allMatch(x->x.getTransportista().equals(t)));
 	}
 	
 	@Scheduled(cron = "0 7 * * * *")

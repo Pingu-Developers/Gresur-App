@@ -53,11 +53,6 @@ public class ClienteService {
 		clienteRepo.deleteByNIF(NIF);
 	}
 
-	@Transactional
-	public void deletAll() {
-		clienteRepo.deleteAll();
-		
-	}
 
 	@Transactional
 	public Long count() {

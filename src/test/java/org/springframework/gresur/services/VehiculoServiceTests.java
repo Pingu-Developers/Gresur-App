@@ -3,6 +3,7 @@ package org.springframework.gresur.services;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -17,20 +18,32 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.gresur.model.Cliente;
 import org.springframework.gresur.model.Concepto;
 import org.springframework.gresur.model.Configuracion;
+import org.springframework.gresur.model.Dependiente;
+import org.springframework.gresur.model.EstadoPedido;
+import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.FacturaRecibida;
 import org.springframework.gresur.model.ITV;
+import org.springframework.gresur.model.LineaFactura;
+import org.springframework.gresur.model.Pedido;
 import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoSeguro;
 import org.springframework.gresur.model.TipoVehiculo;
+import org.springframework.gresur.model.Transportista;
 import org.springframework.gresur.model.Vehiculo;
+import org.springframework.gresur.service.ClienteService;
 import org.springframework.gresur.service.ConfiguracionService;
+import org.springframework.gresur.service.DependienteService;
+import org.springframework.gresur.service.FacturaEmitidaService;
 import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.service.ITVService;
+import org.springframework.gresur.service.PedidoService;
 import org.springframework.gresur.service.ReparacionService;
 import org.springframework.gresur.service.SeguroService;
+import org.springframework.gresur.service.TransportistaService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.service.exceptions.MatriculaUnsupportedPatternException;
 import org.springframework.gresur.util.DBUtility;
@@ -61,8 +74,22 @@ class VehiculoServiceTests {
 	protected ConfiguracionService confService;
 	
 	@Autowired
-	protected DBUtility util;
+	protected TransportistaService transportistaService;
 	
+	@Autowired
+	protected PedidoService pedidoService;
+	
+	@Autowired
+	protected ClienteService clienteService;
+	
+	@Autowired
+	protected FacturaEmitidaService facturaEmitidaService;
+	
+	@Autowired
+	protected DependienteService dependienteService;
+	
+	@Autowired
+	protected DBUtility util;
 
 	
 	
@@ -360,7 +387,7 @@ class VehiculoServiceTests {
 	
 	@Test
 	@Transactional
-	@DisplayName("RN: Seguro no en vigor (new) -- caso negativo")
+	@DisplayName("Seguro no en vigor (new) -- caso negativo")
 	void saveVehiculoWithSeguro() {
 		Vehiculo vehiculo = new Vehiculo();
 		vehiculo.setMatricula("4041GND");
@@ -375,7 +402,7 @@ class VehiculoServiceTests {
 
 	@Test
 	@Transactional
-	@DisplayName("RN: Seguro no en vigor (update) -- caso negativo")
+	@DisplayName("Seguro no en vigor (update) -- caso negativo")
 	void updateIllegalVehiculoSeguro() {
 		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
 		Seguro seguro = seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula());
@@ -383,5 +410,86 @@ class VehiculoServiceTests {
 		seguroService.save(seguro);
 
 		assertThat(vehiculoService.getDisponibilidad(vehiculo.getMatricula())).isFalse();
+	}
+	
+	@Test
+	@Transactional
+	@DisplayName("Vehiculo en uso por otro transportista -- caso negativo")
+	void updateVehiculoEnUso() {
+		Vehiculo vehiculo = vehiculoService.findAll().iterator().next();
+
+		Transportista transportistaUsandoVehiculo = new Transportista();
+		transportistaUsandoVehiculo.setName("Jose Luis Gresur");
+		transportistaUsandoVehiculo.setNIF("18845878A");
+		transportistaUsandoVehiculo.setEmail("e1@email.com");
+		transportistaUsandoVehiculo.setTlf("696823445");
+		transportistaUsandoVehiculo.setDireccion("Av. Reina Mercedes");
+		transportistaUsandoVehiculo.setNSS("12 1234123890");
+		transportistaUsandoVehiculo.setImage("/resources/foto.png");
+		
+		transportistaService.save(transportistaUsandoVehiculo);
+		
+		
+		Transportista otroTransportista = new Transportista();
+		otroTransportista.setName("Jose Luis Gresur");
+		otroTransportista.setNIF("18845878W");
+		otroTransportista.setEmail("e1@email.com");
+		otroTransportista.setTlf("696823445");
+		otroTransportista.setDireccion("Av. Reina Mercedes");
+		otroTransportista.setNSS("12 1234123891");
+		otroTransportista.setImage("/resources/foto1.png");
+		
+		transportistaService.save(transportistaUsandoVehiculo);
+		
+		
+		Cliente cliente = new Cliente();
+		cliente.setDireccion("Calle");
+		cliente.setEmail("cliente@mail.es");
+		cliente.setName("Jose Luis");
+		cliente.setNIF("54789663T");
+		cliente.setTlf("657412397");
+		
+		cliente = clienteService.save(cliente);
+		
+		
+		Dependiente dependiente = new Dependiente();
+		dependiente.setDireccion("C/ ejemplo");
+		dependiente.setEmail("patata@gmail.com");
+		dependiente.setImage("/resourdes/foto.png");
+		dependiente.setName("Antonio Jose Ruiz Ruiz");
+		dependiente.setNIF("12345678L");
+		dependiente.setNSS("123456789012");
+		dependiente.setTlf("123456789");
+		
+		dependiente = dependienteService.save(dependiente);
+		
+		List<LineaFactura> lf = new ArrayList<LineaFactura>();
+		
+		FacturaEmitida facturaEmitida = new FacturaEmitida();
+		facturaEmitida.setCliente(cliente);
+		facturaEmitida.setDependiente(dependiente);
+		facturaEmitida.setEstaPagada(true);
+		facturaEmitida.setImporte(320.15);
+		facturaEmitida.setLineasFacturas(lf);
+		
+		facturaEmitida = facturaEmitidaService.save(facturaEmitida);
+		
+		
+		Pedido pedido = new Pedido();
+		pedido.setDireccionEnvio("C/ Enviamelo Aqui");
+		pedido.setEstado(EstadoPedido.EN_ESPERA);
+		pedido.setFacturaEmitida(facturaEmitida);
+		pedido.setFechaEnvio(LocalDate.now());		
+		pedido = pedidoService.save(pedido);
+				
+		pedido.setTransportista(transportistaUsandoVehiculo);
+		pedido.setEstado(EstadoPedido.PREPARADO);
+		pedido = pedidoService.save(pedido);
+								
+		pedido.setEstado(EstadoPedido.EN_REPARTO);
+		pedido.setVehiculo(vehiculo);
+		pedido = pedidoService.save(pedido);
+
+		assertThat(vehiculoService.getDisponibilidad(vehiculo.getMatricula(), otroTransportista)).isFalse();
 	}
 }

@@ -100,7 +100,7 @@ public class PedidoService {
 			Double MMA = vehiculo.getMMA();
 			if(pedido.getTransportista() == null) {
 				throw new PedidoConVehiculoSinTransportistaException();
-			} if(!vehiculoService.getDisponibilidad(vehiculo.getMatricula())) {
+			} if(!vehiculoService.getDisponibilidad(vehiculo.getMatricula(), pedido.getTransportista())) {
 				throw new VehiculoNotAvailableException();
 			} if(pedido.getEstado().equals(EstadoPedido.EN_REPARTO) || pedido.getEstado().equals(EstadoPedido.ENTREGADO)) {
 				
@@ -158,6 +158,11 @@ public class PedidoService {
 	@Transactional(readOnly = true)
 	public List<Pedido> findPedidosEnRepartoByFecha(LocalDate fecha){
 		return pedidoRepo.findByFechaEnvioAndEstadoIn(fecha, Arrays.asList(EstadoPedido.EN_REPARTO));
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Pedido> findPedidosEnRepartoByMatricula(String matricula){
+		return pedidoRepo.findDistinctByVehiculoMatriculaAndEstadoIn(matricula, Arrays.asList(EstadoPedido.EN_REPARTO));
 	}
 	
 	@Transactional
