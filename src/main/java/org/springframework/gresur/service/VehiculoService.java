@@ -34,9 +34,7 @@ public class VehiculoService {
 
 	@PersistenceContext
 	private EntityManager em;
-	
-	private VehiculoRepository vehiculoRepository;
-	
+		
 	@Autowired
 	private NotificacionService notificacionService;
 	
@@ -55,12 +53,15 @@ public class VehiculoService {
 	@Autowired
 	private PedidoService pedidoService;
 	
-
+	private VehiculoRepository vehiculoRepository;
+	
 	@Autowired
 	public VehiculoService(VehiculoRepository vehiculoRepository) {
-		this.vehiculoRepository = vehiculoRepository;
-		
+		this.vehiculoRepository = vehiculoRepository;	
 	}
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	
 	@Transactional(readOnly = true)
 	public Iterable<Vehiculo> findAll() throws DataAccessException{

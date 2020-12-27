@@ -24,6 +24,9 @@ public class ClienteService {
 		this.clienteRepo = clienteRepo;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional(readOnly = true)
 	public Iterable<Cliente> findAll() throws DataAccessException{
 		return clienteRepo.findAll();

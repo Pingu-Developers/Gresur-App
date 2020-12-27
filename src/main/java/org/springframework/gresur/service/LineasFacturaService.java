@@ -25,6 +25,9 @@ public class LineasFacturaService {
 		this.lineasRepo = lineasRepo;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional(readOnly = true)
 	public List<LineaFactura> findAll(){
 		return lineasRepo.findAll();

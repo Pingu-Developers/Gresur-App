@@ -22,6 +22,9 @@ public class ConfiguracionService {
 		this.configRepo = configRepo;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional
 	public Configuracion getConfig() {
 		return configRepo.findAll().iterator().next();

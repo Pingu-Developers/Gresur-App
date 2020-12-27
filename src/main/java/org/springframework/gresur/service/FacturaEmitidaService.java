@@ -27,6 +27,9 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 		super.facturaRepo = feRepo;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional
 	public FacturaEmitida save(FacturaEmitida emitida) throws DataAccessException {
 		em.clear();

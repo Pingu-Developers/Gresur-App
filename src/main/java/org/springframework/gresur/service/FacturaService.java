@@ -20,6 +20,9 @@ public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	@Autowired
 	protected LineasFacturaService lfService;
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
+	
 	@Transactional(readOnly = true)
 	public List<T> findAll() throws DataAccessException {
 		return facturaRepo.findAll();

@@ -3,7 +3,6 @@ package org.springframework.gresur.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +20,6 @@ import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.Producto;
 import org.springframework.gresur.model.TipoNotificacion;
-import org.springframework.gresur.repository.PedidoRepository;
 import org.springframework.gresur.repository.ProductoRepository;
 import org.springframework.gresur.service.exceptions.CapacidadProductoExcededException;
 import org.springframework.gresur.service.exceptions.StockWithoutEstanteriaException;
@@ -33,9 +31,9 @@ public class ProductoService {
 
 	@PersistenceContext
 	private EntityManager em;
-	
-	private ProductoRepository productoRepository;
-	private PedidoRepository pedidoRepository;
+		
+	@Autowired
+	private PedidoService pedidoService;
 	
 	@Autowired
 	private NotificacionService notificacionService;
@@ -46,12 +44,15 @@ public class ProductoService {
 	@Autowired
 	private FacturaEmitidaService facturaService;
 	
+	private ProductoRepository productoRepository;
 	
 	@Autowired
-	public ProductoService(ProductoRepository productoRepository, PedidoRepository pedidoRepository) {
-		this.pedidoRepository = pedidoRepository;
+	public ProductoService(ProductoRepository productoRepository) {
 		this.productoRepository = productoRepository;
 	}
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	
 	/* CRUD METHODS */
 	
@@ -140,7 +141,7 @@ public class ProductoService {
 	}
 	
 	public Integer stockRequerido(Producto p) {
-		List<LineaFactura> lf = this.pedidoRepository.findByProductoAndEstadoIn(Arrays.asList(EstadoPedido.EN_ESPERA), p);
+		List<LineaFactura> lf = this.pedidoService.findByProductoAndEstadoIn(EstadoPedido.EN_ESPERA, p);
 		Integer stockDemandado = lf.stream().mapToInt(x->x.getCantidad()).sum();
 		return p.getStock() - stockDemandado;
 	}

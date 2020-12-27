@@ -23,6 +23,8 @@ public class AlmacenService {
 		this.almacenRepository = almacenRepository;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	
 	@Transactional(readOnly = true)
 	public Iterable<Almacen> findAll() throws DataAccessException{
 		return almacenRepository.findAll();

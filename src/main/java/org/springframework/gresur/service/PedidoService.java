@@ -14,6 +14,7 @@ import org.springframework.gresur.model.EstadoPedido;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.model.Pedido;
+import org.springframework.gresur.model.Producto;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.PedidoRepository;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
@@ -46,6 +47,9 @@ public class PedidoService {
 	public PedidoService(PedidoRepository pedidoRepo) {
 		this.pedidoRepo = pedidoRepo;
 	}
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 
 	@Transactional(readOnly = true)
 	public Iterable<Pedido> findAll() throws DataAccessException {
@@ -163,6 +167,11 @@ public class PedidoService {
 	@Transactional(readOnly = true)
 	public List<Pedido> findPedidosEnRepartoByMatricula(String matricula){
 		return pedidoRepo.findDistinctByVehiculoMatriculaAndEstadoIn(matricula, Arrays.asList(EstadoPedido.EN_REPARTO));
+	}
+	
+	@Transactional(readOnly = true)
+	public List<LineaFactura> findByProductoAndEstadoIn(EstadoPedido estado, Producto producto){
+		return pedidoRepo.findByProductoAndEstadoIn(Arrays.asList(estado), producto);
 	}
 	
 	@Transactional

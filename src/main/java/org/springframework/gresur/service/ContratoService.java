@@ -31,6 +31,9 @@ public class ContratoService {
 		this.contratoRepository = contratoRepository;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional(readOnly = true)
 	public List<Contrato> findAll() throws DataAccessException{
 		return contratoRepository.findAll();
@@ -67,6 +70,11 @@ public class ContratoService {
 	@Transactional
 	public void deleteAll() {
 		contratoRepository.deleteAll();
+	}
+	
+	@Transactional
+	public void deleteByPersonalNIF(String NIF) {
+		contratoRepository.deleteByPersonalNIF(NIF);
 	}
 
 	@Transactional

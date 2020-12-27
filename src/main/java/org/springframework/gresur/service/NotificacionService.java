@@ -25,19 +25,21 @@ public class NotificacionService {
 	@PersistenceContext
 	private EntityManager em;
 	
-	private NotificacionRepository notificacionRepo;
-	
 	@Autowired
 	private ConfiguracionService configuracionService;
 	
 	@Autowired
 	private LineasEnviadoService lineaEnviadoService;
 
-	
+	private NotificacionRepository notificacionRepo;
+
 	@Autowired
 	public NotificacionService(NotificacionRepository notificacionRepo) {
 		this.notificacionRepo = notificacionRepo;
 	}
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	
 	@Transactional(readOnly = true)
 	public Notificacion findById(Long id){

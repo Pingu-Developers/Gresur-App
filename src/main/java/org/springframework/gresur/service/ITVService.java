@@ -28,6 +28,9 @@ public class ITVService {
 		this.itvRepository = itvRepository;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional(readOnly = true)
 	public List<ITV> findAll() throws DataAccessException{
 		return itvRepository.findAll();

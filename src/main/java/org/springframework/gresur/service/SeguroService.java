@@ -27,6 +27,9 @@ public class SeguroService {
 		this.seguroRepo = seguroRepo;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional(readOnly = true)
 	public List<Seguro> findAll() throws DataAccessException{
 		return seguroRepo.findAll();
