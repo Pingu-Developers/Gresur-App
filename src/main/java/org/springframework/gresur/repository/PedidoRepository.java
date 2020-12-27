@@ -24,6 +24,8 @@ public interface PedidoRepository extends CrudRepository<Pedido, Long>{
 	
 	List<Pedido> findByFechaEnvioAndEstadoIn(LocalDate fecha,Collection<EstadoPedido> lEsta);
 	
+	List<Pedido> findDistinctByVehiculoMatriculaAndEstadoIn(String matricula, Collection<EstadoPedido> lEsta);
+	
 	@Query(value = "SELECT * FROM PEDIDO P WHERE P.ESTADO IN :estadoPedido INNER JOIN P.FACTURAEMITIDA F INNER JOIN F.LINEASFACTURAS LF WHERE LF.PRODUCTO = :producto", nativeQuery = true)
 	List<LineaFactura> findByProductoAndEstadoIn( @Param("estadoPedido") Collection<EstadoPedido> estadoPedido, @Param("producto") Producto producto);
 }
