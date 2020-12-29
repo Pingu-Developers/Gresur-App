@@ -238,13 +238,33 @@ INSERT INTO TRANSPORTISTAS(ID, NIF, name, email, tlf, direccion, NSS, image)
 INSERT INTO TRANSPORTISTAS(ID, NIF, name, email, tlf, direccion, NSS, image) 
 	VALUES (6, '73929968X', 'Agustin Pineda Rey', 'f8s9khjgx@btinternet.com', '672910341', 'Carrera De España, 74, 28661, Valdemanco(madrid)', 'ES8320853328983168372320', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
 
+
+INSERT INTO USERS(username, password, personal_id)
+	VALUES ('rubgalvic', '$2a$10$wKg0DhJ335mLkcnJTA7Hw.6G01FkapxuH4fdahPgQSt2rqFaz8nGS', 1);	
+
+INSERT INTO USERS(username, password, personal_id)
+	VALUES ('jossorgal', '$2a$10$wKg0DhJ335mLkcnJTA7Hw.6G01FkapxuH4fdahPgQSt2rqFaz8nGS', 2);
 	
 INSERT INTO USERS(username, password, personal_id)
-	VALUES ('josmunjim', '$2a$10$o/vUHNeCeqzrflufkReHVeYhB.leXs9Os/kv3Q.U/GMaQ97kMX.Te', 4);
+	VALUES ('iririolin', '$2a$10$wKg0DhJ335mLkcnJTA7Hw.6G01FkapxuH4fdahPgQSt2rqFaz8nGS', 3);	
+	
+INSERT INTO USERS(username, password, personal_id)
+	VALUES ('josmunjim', '$2a$10$wKg0DhJ335mLkcnJTA7Hw.6G01FkapxuH4fdahPgQSt2rqFaz8nGS', 4);
+
+INSERT INTO USERS(username, password, personal_id)
+	VALUES ('eduvelriv', '$2a$10$wKg0DhJ335mLkcnJTA7Hw.6G01FkapxuH4fdahPgQSt2rqFaz8nGS', 5);
+	
+INSERT INTO USERS(username, password, personal_id)
+	VALUES ('agupinrey', '$2a$10$wKg0DhJ335mLkcnJTA7Hw.6G01FkapxuH4fdahPgQSt2rqFaz8nGS', 6);
 	
 
-INSERT INTO USER_ROLES(user_id, role_id) VALUES (1,2);
-	
+INSERT INTO USER_ROLES(user_id, role_id) VALUES (1,1);
+INSERT INTO USER_ROLES(user_id, role_id) VALUES (2,3);
+INSERT INTO USER_ROLES(user_id, role_id) VALUES (3,3);
+INSERT INTO USER_ROLES(user_id, role_id) VALUES (4,2);
+INSERT INTO USER_ROLES(user_id, role_id) VALUES (5,4);
+INSERT INTO USER_ROLES(user_id, role_id) VALUES (6,4);
+
 
 INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
 	VALUES (2000.00, 'SANTADER', TO_DATE('2015/04/04','YYYY/MM/DD'), TO_DATE('2999/01/02','YYYY/MM/DD'), 'COMPLETA', 1);
