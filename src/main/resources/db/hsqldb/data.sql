@@ -4,6 +4,7 @@ INSERT INTO ROLES(name) VALUES('ROLE_ADMIN');
 INSERT INTO ROLES(name) VALUES('ROLE_DEPENDIENTE');
 INSERT INTO ROLES(name) VALUES('ROLE_ENCARGADO');
 
+
 INSERT INTO ALMACENES(direccion, capacidad) VALUES ('Calle Ligastorro nº 9', 6000.00);
 INSERT INTO ALMACENES(direccion, capacidad) VALUES ('Avenida Gresur edificio AG', 5000.00);
 
@@ -237,6 +238,10 @@ INSERT INTO TRANSPORTISTAS(ID, NIF, name, email, tlf, direccion, NSS, image)
 	VALUES (6, '73929968X', 'Agustin Pineda Rey', 'f8s9khjgx@btinternet.com', '672910341', 'Carrera De España, 74, 28661, Valdemanco(madrid)', 'ES8320853328983168372320', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
 
 	
+INSERT INTO USERS(username, password, personal_id)
+	VALUES ('josmunjim', '$2a$10$o/vUHNeCeqzrflufkReHVeYhB.leXs9Os/kv3Q.U/GMaQ97kMX.Te', 4);
+	
+
 INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
 	VALUES (2000.00, 'SANTADER', TO_DATE('2015/04/04','YYYY/MM/DD'), TO_DATE('2999/01/02','YYYY/MM/DD'), 'COMPLETA', 1);
 		
