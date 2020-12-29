@@ -11,6 +11,7 @@ import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import gresur from '../images/Gresur_transparente.png'
 
 //Redux stuff
 import { connect } from 'react-redux';
@@ -92,7 +93,7 @@ class login extends Component {
                         <div className={classes.paperItems}>
                         <Grid container spacing={3} className={classes.grid}>
                             <Grid item xs>
-                            <Avatar src="Gresur_transparente.png" variant='square' className={classes.large}/>
+                            <Avatar src={gresur} variant='square' className={classes.large}/>
                             </Grid>
                             <Grid item xs={6}>
                                 <Typography variant='h3'>

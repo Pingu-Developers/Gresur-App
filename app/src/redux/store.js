@@ -15,13 +15,16 @@ const reducers = combineReducers({
     UI:uiReducer
 });
 
-const store = createStore(
-    reducers,
-    initialState,
-    compose(
+let store;
+if (process.env.NODE_ENV === "development" && window.__REDUX_DEVTOOLS_EXTENSION__) {
+
+    // Enable Redux Devtools
+    store = createStore(reducers, initialState, compose(
         applyMiddleware(...middleware),
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-    )
-);
+        window.__REDUX_DEVTOOLS_EXTENSION__())
+    );
+} else {
+    store = createStore(reducers, initialState);
+}
 
 export default store;
