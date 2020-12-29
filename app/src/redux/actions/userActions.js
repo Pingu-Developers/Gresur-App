@@ -10,7 +10,28 @@ export const loginUser = (userData,history) => (dispatch) =>{
             dispatch(getUserData());
             dispatch({ type: CLEAR_ERRORS });
             //TODO PUSH TO USER PAGE
-            history.push('/');
+
+            switch (res.data.roles[0]) {
+                case "ROLE_DEPENDIENTE":
+                    history.push('/nuevoPedido');
+                    break;
+                 
+                case "ROLE_TRANSPORTISTA":
+                    history.push('/pedidos');
+                    break;
+
+                case "ROLE_ENCARGADO":
+                    history.push('/catalogo');
+                    break;
+
+                case "ROLE_ADMIN":
+                    history.push('/pedidos');
+                    break;
+
+                default:
+                    history.push('/');
+                    break;
+            } 
         })
         .catch((err) => {
             dispatch({
@@ -21,7 +42,7 @@ export const loginUser = (userData,history) => (dispatch) =>{
 }
 
 export const logoutUser = () => (dispatch) =>{
-    localStorage.removeItem('GresuridToken');
+    localStorage.removeItem('GresurIdToken');
     delete axios.defaults.headers.common['Authorization'];
     dispatch({ type:SET_UNAUTHENTICATED });
 };

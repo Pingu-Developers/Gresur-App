@@ -13,10 +13,13 @@ import {SET_AUTHENTICATED} from './redux/types';
 import { logoutUser, getUserData } from './redux/actions/userActions'
 
 //Components
-import Topbar from './components/Topbar';
 import AuthRoute from './util/AuthRoute';
 
 //Pages
+import administradorPersonal from './pages/administradorPersonal'
+import encargadoCatalogo from './pages/encargadoCatalogo'
+import tranportistaPedidos from './pages/transportistaPedido'
+import dependienteNuevoPedido from './pages/dependienteNuevoPedido'
 import login from './pages/login';
 
 axios.defaults.baseURL = "http://localhost:8080/api";
@@ -50,7 +53,10 @@ if(token){
     axios.defaults.headers.common['Authorization'] = token;
     store.dispatch(getUserData());
   }
-}
+}else if(window.location.href !== 'http://localhost:3000/login'){
+    window.location.href = '/login';
+  }
+
 
 function App() {
   return (
@@ -58,9 +64,12 @@ function App() {
       <Provider store = {store}>
       <div>
         <Router>
-        <Topbar/>
               <Switch>
-                <AuthRoute exact path="/login" component={login} />
+                <Route exact path = "/personal" component={administradorPersonal}/> 
+                <Route exact path = "/catalogo" component={encargadoCatalogo}/> 
+                <Route exact path = "/pedidos" component={tranportistaPedidos}/> 
+                <Route exact path = "/nuevoPedido" component={dependienteNuevoPedido}/>
+                <AuthRoute exact path="/login" component={login}/>
               </Switch>
         </Router>
       </div>
