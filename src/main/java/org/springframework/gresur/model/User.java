@@ -31,10 +31,9 @@ public class User extends BaseEntity {
 
 	@NotBlank
 	@Size(max = 120)
-	@Column(unique = true)
 	private String password;
 	
-	@NotNull
+	
 	@OneToOne(orphanRemoval = true, optional = false)
 	private Personal personal;
 
