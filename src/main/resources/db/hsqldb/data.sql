@@ -3,6 +3,7 @@ INSERT INTO CONFIG(salario_minimo, num_max_notificaciones, factura_emitida_seq, 
 INSERT INTO ROLES(name) VALUES('ROLE_ADMIN');
 INSERT INTO ROLES(name) VALUES('ROLE_DEPENDIENTE');
 INSERT INTO ROLES(name) VALUES('ROLE_ENCARGADO');
+INSERT INTO ROLES(name) VALUES('ROLE_TRANSPORTISTA')
 
 
 INSERT INTO ALMACENES(direccion, capacidad) VALUES ('Calle Ligastorro nº 9', 6000.00);
@@ -240,6 +241,9 @@ INSERT INTO TRANSPORTISTAS(ID, NIF, name, email, tlf, direccion, NSS, image)
 	
 INSERT INTO USERS(username, password, personal_id)
 	VALUES ('josmunjim', '$2a$10$o/vUHNeCeqzrflufkReHVeYhB.leXs9Os/kv3Q.U/GMaQ97kMX.Te', 4);
+	
+
+INSERT INTO USER_ROLES(user_id, role_id) VALUES (1,2);
 	
 
 INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
