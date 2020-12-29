@@ -2,6 +2,7 @@ import React,{Component} from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import GresurImage from '../images/Gresur_login.png';
 import PropTypes from 'prop-types';
+import Topbar from '../components/Topbar';
 
 //MUI Stuff
 import Paper from '@material-ui/core/Paper';
@@ -85,7 +86,10 @@ class login extends Component {
         const {classes, UI:{loading}} = this.props;
         const {errors} = this.state;
         return (
-            <div className={classes.root}>
+            
+            <div>
+
+                <div className={classes.root}>
                 <Grid container spacing={0} className={classes.grid}>
                     <Grid item xs/>
                     <Grid item xs={6}>
@@ -120,6 +124,7 @@ class login extends Component {
                     </Grid>
                     <Grid item xs/>
                 </Grid>  
+                </div>
             </div>
         )
     }
