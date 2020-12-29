@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import com.sun.istack.NotNull;
+
 import lombok.Data;
 
 @Data
@@ -32,7 +34,8 @@ public class User extends BaseEntity {
 	@Column(unique = true)
 	private String password;
 	
-	@OneToOne(orphanRemoval = true)
+	@NotNull
+	@OneToOne(orphanRemoval = true, optional = false)
 	private Personal personal;
 
 	@ManyToMany(fetch = FetchType.LAZY)
