@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import Topbar from '../components/Topbar'
+
+
 export class tranportistaPedidos extends Component {
     static propTypes = {
         prop: PropTypes

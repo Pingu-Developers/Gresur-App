@@ -25,7 +25,7 @@ export const loginUser = (userData,history) => (dispatch) =>{
                     break;
 
                 case "ROLE_ADMIN":
-                    history.push('/pedidos');
+                    history.push('/personal');
                     break;
 
                 default:

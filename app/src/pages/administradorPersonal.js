@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+import Topbar from '../components/Topbar'
+
+
 export class administradorPersonal extends Component {
     static propTypes = {
         prop: PropTypes
@@ -10,7 +13,7 @@ export class administradorPersonal extends Component {
     render() {
         return (
             <div>
-                
+               <Topbar/>
             </div>
         )
     }
