@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === "development" && window.__REDUX_DEVTOOLS_EXTENSION_
         window.__REDUX_DEVTOOLS_EXTENSION__())
     );
 } else {
-    store = createStore(reducers, initialState);
+    store = createStore(reducers, initialState,applyMiddleware(...middleware));
 }
 
 export default store;
