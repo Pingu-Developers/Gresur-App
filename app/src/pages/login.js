@@ -2,7 +2,6 @@ import React,{Component} from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import GresurImage from '../images/Gresur_login.png';
 import PropTypes from 'prop-types';
-import Topbar from '../components/Topbar';
 
 //MUI Stuff
 import Paper from '@material-ui/core/Paper';
@@ -53,7 +52,7 @@ class login extends Component {
         this.state = {
             username:'',
             password:'',
-            errors: {}
+            errors: null
         }
     }
 
@@ -64,13 +63,9 @@ class login extends Component {
              password: this.state.password
          };
          this.props.loginUser(userData,this.props.history);
+         this.errors = this.props.UI.errors;
      }
 
-    componentWillReceiveProps(nextProps){
-        if(nextProps.UI.errors){
-            this.setState({errors: nextProps.UI.errors});
-        }
-    }
 
     handleChange = (event) =>  {
         this.setState({
@@ -83,8 +78,7 @@ class login extends Component {
         document.body.style.background = `url(${GresurImage}) no-repeat center center fixed`;
         document.body.style.backgroundSize = "cover";
 
-        const {classes, UI:{loading}} = this.props;
-        const {errors} = this.state;
+        const {classes, UI} = this.props;
         return (
             
             <div>
@@ -105,13 +99,13 @@ class login extends Component {
                                 </Typography>
                                 <form  noValidate onSubmit={this.handleSubmit}>
                                     <TextField fullWidth id="username" name="username" label="Username" onChange={this.handleChange} className={classes.textField} 
-                                        helperText={errors.username} error={errors.username?true:false} value={this.state.username}/>
+                                         error={this.errors?true:false} value={this.state.username}/>
                                     <TextField fullWidth id="password" name="password" label="Password" type="password" onChange={this.handleChange} className={classes.textField} 
-                                         helperText={errors.password} error={errors.password?true:false} value={this.state.password}/>
+                                         helperText={this.errors} error={this.errors?true:false} value={this.state.password}/>
 
-                                    <Button type="submit" variant="contained" color="primary" className={classes.button} disabled={loading}>
+                                    <Button type="submit" variant="contained" color="primary" className={classes.button} disabled={UI.loading}>
                                     Login
-                                        {loading && (
+                                        {UI.loading && (
                                             <CircularProgress size={20} className={classes.progress}/>
                                         )}
                                     </Button>

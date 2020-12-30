@@ -44,8 +44,8 @@ class Topbar extends Component {
     
 
     render() {
-        const { classes , user:{username}} = this.props
-
+        const { classes , user} = this.props
+        document.body.style.background = ``;
         return (
         <div className={classes.root}>
         <AppBar position="static">
@@ -56,7 +56,7 @@ class Topbar extends Component {
             </div>
                 <div className={classes.button}>
                 <Typography variant='h5' align='center' display='inline'>
-                    {username}
+                    {user.personal?user.personal.name:''}
                 </Typography>
                 
                 <IconButton
