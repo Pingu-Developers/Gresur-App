@@ -6,6 +6,7 @@ import createMuiTheme from '@material-ui/core/styles/createMuiTheme'
 import jwtDecode from 'jwt-decode'
 import axios from 'axios';
 
+
 //Redux
 import {Provider} from 'react-redux';
 import store from './redux/store';
@@ -59,6 +60,7 @@ if(token){
 
 
 function App() {
+
   return (
     <ThemeProvider theme = {theme}>
       <Provider store = {store}>
