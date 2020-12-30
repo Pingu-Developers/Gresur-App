@@ -23,8 +23,8 @@ const mapStateToProps = (state) => ({
     
 })
 
-const mapDispatchToProps = {
+const mapActionsToProps = {
     
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(tranportistaPedidos)
+export default connect(mapStateToProps, mapActionsToProps)(tranportistaPedidos)

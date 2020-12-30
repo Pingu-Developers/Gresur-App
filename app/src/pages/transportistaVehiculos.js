@@ -32,8 +32,8 @@ const mapStateToProps = (state) => ({
     
 })
 
-const mapDispatchToProps = {
+const mapActionsToProps = {
     
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(style)(transportistaVehiculos))
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(transportistaVehiculos))
