@@ -19,13 +19,12 @@ class dependienteHistorialPedido extends Component {
     constructor(props){
         super(props);
         this.state = {
-            data: null            
+            data: []            
         }
     }
 
     componentDidMount(){
         this.props.loadPedidos();
-        this.data = this.props.data.pedidos;
     }
 
     render() {
@@ -34,14 +33,23 @@ class dependienteHistorialPedido extends Component {
             <div>
                 <Topbar/>
                 <div className={classes.main}>
-                    <TablaPedidosDesplegable datos = {this.data} />
+                    {data.length === 0?null:data.pedidos.map((row) => 
+                        <TablaPedidosDesplegable datos = {row} />
+                    ) }
                 </div>
-
             </div>
         )
     }
 }
-
+/*
+<TablaPedidosDesplegable datos = {[data]} />
+{
+      props.datos[0].pedidos.map((row) => {
+        {console.log(row)}
+        <p>hola</p>
+      })
+      }
+    */
 dependienteHistorialPedido.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,

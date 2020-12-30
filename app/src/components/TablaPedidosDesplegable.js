@@ -17,7 +17,15 @@ const useStyles = makeStyles((theme) => ({
   },
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.text.secondary,
+    flexBasis: '33.33%',
+    fontWeight:"bold",
+    
+  },
+  thirdHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    flexBasis: '33.33%',
+    fontWeight:"bold",
+    
   },
 }));
 
@@ -25,17 +33,49 @@ export default function ControlledAccordions(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
-  let datos = props.datos;
-
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
   return (
     <div className={classes.root}>
-      {
-        datos.map((row) => {
+        <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+            <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1bh-content"
+            id="panel1bh-header"
+            >
+            <Typography className={classes.heading}>{props.datos.id}</Typography>
+            <Typography className={classes.secondaryHeading}>{props.datos.estado}</Typography>
+            <Typography className={classes.thirdHeading} align= 'right'>PDF</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div>
+                <Typography className={classes.thirdHeading}>
+                  Fecha:     
+                </Typography>
 
+                <Typography>
+                  {props.datos.fechaEnvio}
+                </Typography>
+                  <br/>
+                <Typography className={classes.thirdHeading}>
+                    Direccion:     
+                </Typography>
+
+                <Typography>
+                  {props.datos.direccionEnvio}
+                </Typography>
+              </div>
+            </AccordionDetails>
+        </Accordion>
+    </div>
+  );
+}
+
+/*
+props.datos? null :  props.datos.map((row) => {
+        
         <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
             <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -52,10 +92,13 @@ export default function ControlledAccordions(props) {
             </Typography>
             </AccordionDetails>
         </Accordion>
+})
+*/ 
 
-        })
+/*{
+      props.datos[0].pedidos.map((row) => {
+        {console.log(row)}
+        <p>hola</p>
+      })
       }
-    </div>
-  );
-}
-
+    */
