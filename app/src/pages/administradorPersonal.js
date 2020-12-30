@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-import Topbar from '../components/Topbar'
+import Topbar from '../components/Topbar';
 
 
 export class administradorPersonal extends Component {
