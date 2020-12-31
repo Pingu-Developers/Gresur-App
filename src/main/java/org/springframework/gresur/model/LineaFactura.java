@@ -32,7 +32,6 @@ public class LineaFactura extends BaseEntity {
 	@JoinColumn(name = "factura_id")
 	private Factura factura;
 	
-	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "producto_id")

@@ -49,7 +49,6 @@ public class Factura{
 	@Column(name = "esta_pagada")
 	protected Boolean estaPagada;
 	
-	@JsonIgnore
 	@OneToMany(mappedBy = "factura", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
 	protected List<LineaFactura> lineasFacturas;
 	
@@ -75,6 +74,7 @@ public class Factura{
 		return rectificativa == null;
 	}
 	
+	@JsonIgnore
 	public Factura getDefinitiva() {
 		if(esDefinitiva()) {
 			return this;
@@ -82,6 +82,7 @@ public class Factura{
 		return rectificativa.getDefinitiva();
 	}
 	
+	@JsonIgnore
 	public Factura getPrimeraOriginal() {
 		if(!esRectificativa()) {
 			return this;

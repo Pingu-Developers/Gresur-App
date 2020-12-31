@@ -37,7 +37,7 @@ public class Pedido extends BaseEntity{
 	@Column(name = "fecha_envio")
 	private LocalDate fechaEnvio;
 	
-	@JsonIgnore
+	
 	@NotNull
 	@OneToOne(optional = false)
 	@JoinColumn(name = "factura_emitida_id")

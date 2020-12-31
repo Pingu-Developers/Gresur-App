@@ -22,15 +22,15 @@ const style = {
     root: {
         flexGrow: 1, 
       },
-      grid:{
-          marginTop:'5%',
-      },
-      paper: {
+    grid:{
+        marginTop:'5%',
+    },
+    paper: {
         padding: 0,
         textAlign: 'center',
         opacity:0.8
-      },
-      textField:{
+    },
+    textField:{
         margin:'15px auto 15px auto'
     },
     button:{

@@ -21,7 +21,6 @@ public class FacturaEmitida extends Factura{
 	@ManyToOne(optional = false)
 	private Dependiente dependiente;
 	
-	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
 	private Cliente cliente;
