@@ -79,6 +79,7 @@ _site/
 
 # testing
 /app/coverage
+debug.log
 
 # production
 /app/build
