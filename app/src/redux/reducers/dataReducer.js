@@ -1,7 +1,9 @@
-import { SET_PEDIDOS, CLEAR_PEDIDOS } from '../types';
+import { SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS } from '../types';
 
 const initialState = {
-    pedidos: []
+    pedidos: [],
+    productos:[],
+    categorias:[]
 }
 
 export default function(state = initialState,action){
@@ -13,6 +15,20 @@ export default function(state = initialState,action){
             };
         case CLEAR_PEDIDOS:
             return initialState;
+        case SET_PRODUCTOS:
+            return {
+                ...state,
+                productos: action.payload
+            }
+        case CLEAR_PRODUCTOS:
+            return initialState;
+        case SET_CATEGORIAS:
+            return {
+                ...state,
+                categorias: action.payload
+            }
+        case CLEAR_CATEGORIAS:
+                return initialState;
         default:
             return state;
     }

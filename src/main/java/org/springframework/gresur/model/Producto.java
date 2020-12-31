@@ -69,7 +69,6 @@ public class Producto extends BaseEntity{
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Double pesoUnitario;
 	
-	@JsonIgnore
 	@ManyToOne
 	@ToString.Exclude
 	private Estanteria estanteria;
