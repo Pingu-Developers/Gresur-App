@@ -2,24 +2,45 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 
+//MUI stuff
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Typography from '@material-ui/core/Typography';
+import FormControl from '@material-ui/core/FormControl';
+
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadPedidos } from '../redux/actions/dataActions'
+import { loadPedidos,loadPedidosByEstado } from '../redux/actions/dataActions';
 
 //Components
 import Topbar from '../components/Topbar';
 import TablaPedidosDesplegable from '../components/TablaPedidosDesplegable';
 
-const style = {
 
+const style = {
+    root:{
+        flexGrow: 1, 
+    },
+    cuerpo:{
+        margin: "2%",
+    },
+    form:{
+        display: "inline-block",
+    },
+    Select:{
+        marginRight:30,
+        minWidth: 120,
+        display: "inline-block",
+    }
 }
 
 class dependienteHistorialPedido extends Component {
 
-    constructor(props){
-        super(props);
+    constructor(){
+        super();
         this.state = {
-            data: []            
+            selected: "TODO",
+            ordered: "MAS_NUEVO"            
         }
     }
 
@@ -27,29 +48,84 @@ class dependienteHistorialPedido extends Component {
         this.props.loadPedidos();
     }
 
+    handleChange = (event) =>  {
+        this.setState({
+            [event.target.name]:event.target.value
+        });
+    }
+
+    handleChangeSelected = (event) => {
+
+        event.target.value ==="TODO"?this.props.loadPedidos():this.props.loadPedidosByEstado(event.target.value);
+
+        this.setState((state, props) =>({
+            [event.target.name]:event.target.value
+        }))
+    }
+
+    delete(element){
+        console.log(element)
+    }
+
     render() {
         const {classes, data} = this.props;
         return (
-            <div>
+            <div className = {classes.root}>
                 <Topbar/>
-                <div className={classes.main}>
-                    {data.length === 0?null:data.pedidos.map((row) => 
-                        <TablaPedidosDesplegable datos = {row} />
-                    ) }
+                <div className = {classes.cuerpo}>
+                    <Typography variant='h3'>HISTORIAL DE PEDIDOS</Typography>
+                    <form>
+                    <Typography 
+                        className={classes.form}
+                        variant='body1'>
+                        Mostrando:
+                    </Typography>
+                    <Select
+                        className={classes.Select}
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        name = "selected" 
+                        value={this.state.selected?this.state.selected:"TODO"}
+                        onChange={this.handleChangeSelected}
+                        >
+                        <MenuItem value="TODO">Todo</MenuItem>
+                        <MenuItem value="EN_ESPERA">En Espera</MenuItem>
+                        <MenuItem value="EN_TIENDA">En Tienda</MenuItem>
+                        <MenuItem value="PREPARADO">Preparado</MenuItem>
+                        <MenuItem value="EN_REPARTO">En Reparto</MenuItem>
+                        <MenuItem value="ENTREGADO">Entregado</MenuItem>
+                        <MenuItem value="CANCELADO">Cancelado</MenuItem>
+                    </Select>
+
+                    <Typography 
+                        className={classes.form}
+                        variant='body1'>
+                        Ordenar:
+                    </Typography>
+                    <Select
+                        className={classes.Select}
+                        labelId="demo-simple-select-outlined-label"
+                        id="demo-simple-select-outlined"
+                        name = "ordered" 
+                        value={this.state.ordered?this.state.ordered:"MAS_NUEVO"}
+                        onChange={this.handleChange}
+                        >
+                        <MenuItem value="MAS_NUEVO">Mas nuevo</MenuItem>
+                        <MenuItem value="MAS_ANTIGUO">Mas antiguo</MenuItem>
+                    </Select>
+                    </form>
+                    <div className={classes.main}>
+                        
+                        {data.pedidos === undefined?null:data.pedidos.map((row) =>
+                            <TablaPedidosDesplegable key = {row.id} deletePedidos={this.delete} datos={row}/>
+                        ) }
+                    </div>
                 </div>
             </div>
         )
     }
 }
-/*
-<TablaPedidosDesplegable datos = {[data]} />
-{
-      props.datos[0].pedidos.map((row) => {
-        {console.log(row)}
-        <p>hola</p>
-      })
-      }
-    */
+
 dependienteHistorialPedido.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
@@ -61,7 +137,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    loadPedidos
+    loadPedidos,
+    loadPedidosByEstado
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(dependienteHistorialPedido))

@@ -18,6 +18,8 @@ public interface PedidoRepository extends CrudRepository<Pedido, Long>{
 	
 	List<Pedido> findByVehiculoId(Long id); 
 	
+	List<Pedido> findByEstado(EstadoPedido estado); 
+	
 	List<Pedido> findDistinctByVehiculoIdAndFechaEnvioAndEstadoIn(Long id,LocalDate fecha,Collection<EstadoPedido> lEsta); 
 	
 	List<Pedido> findByFechaEnvio(LocalDate fecha);

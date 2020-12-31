@@ -61,6 +61,12 @@ public class PedidoService {
 		return pedidoRepo.findById(id).get();
 	}
 	
+	//TODO test
+	@Transactional(readOnly = true)
+	public List<Pedido> findByEstado(EstadoPedido estado) throws DataAccessException {
+		return pedidoRepo.findByEstado(estado);
+	}
+	
 	@Transactional(readOnly = true)
 	public List<Pedido> findAllByVehiculo(Long id) throws DataAccessException {
 		return pedidoRepo.findByVehiculoId(id);
