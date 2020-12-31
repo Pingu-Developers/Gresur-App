@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Notifications from '@material-ui/icons/Notifications';
 
 import ProfileMenu from './ProfileMenu';
+
 //redux stuff
 import { connect } from 'react-redux';
 
@@ -20,18 +21,28 @@ const styles = {
     root: {
         flexGrow: 1,
       },
-      large: {
+    large: {
         width: 60,
         height: 60,
       },
-      menuButton: {
+    menuButton: {
         marginRight: 20,
       },
-      title: {
+    title: {
         flexGrow: 1,
       },
     button: {
-        display: "inline-block"
+        display: "inline-block",
+        paddingTop: 7,
+        color: "white",
+    },
+    nombreUser: {
+        marginRight: 20,
+        fontSize: 22,
+        fontWeight: 600,
+    },
+    profileIcons:{
+        marginTop: -5,
     }
 }
 
@@ -51,11 +62,11 @@ class Topbar extends Component {
         <AppBar position="static">
             <Toolbar>
             <Avatar src={GresurImg} className={classes.large}/>
-            <div className={classes.title}>
 
-            </div>
+            <div className={classes.title}></div>
+
                 <div className={classes.button}>
-                <Typography variant='h5' align='center' display='inline'>
+                <Typography variant='h5' align='center' display='inline' className={classes.nombreUser}>
                     {user.personal?user.personal.name:''}
                 </Typography>
                 
@@ -64,13 +75,15 @@ class Topbar extends Component {
                     aria-controls="menu-appbar"
                     aria-haspopup="true"
                     color="inherit"
+                    className = {classes.profileIcons}
                 >
-                    <Notifications />
+                <Notifications/>
                 </IconButton>
     
                 <ProfileMenu/>
                 </div>
             </Toolbar>
+            
         </AppBar>
         
         </div>
