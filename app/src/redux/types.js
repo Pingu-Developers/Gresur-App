@@ -10,3 +10,7 @@ export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 //dataReducer types
 export const SET_PEDIDOS = 'SET_PEDIDOS';
 export const CLEAR_PEDIDOS = 'CLEAR_PEDIDOS';
+export const SET_PRODUCTOS = 'SET_PRODUCTOS';
+export const CLEAR_PRODUCTOS = 'CLEAR_PRODUCTOS';
+export const SET_CATEGORIAS = 'SET_CATEGORIAS';
+export const CLEAR_CATEGORIAS = 'CLEAR_CATEGORIAS';
