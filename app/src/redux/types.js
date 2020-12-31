@@ -7,3 +7,6 @@ export const LOADING_USER = 'LOADING_USER';
 export const SET_ERRORS = 'SET_ERRORS';
 export const LOADING_UI = 'LOADING_UI';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+//dataReducer types
+export const SET_PEDIDOS = 'SET_PEDIDOS';
+export const CLEAR_PEDIDOS = 'CLEAR_PEDIDOS';

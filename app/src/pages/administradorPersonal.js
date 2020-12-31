@@ -23,8 +23,8 @@ const mapStateToProps = (state) => ({
     
 })
 
-const mapDispatchToProps = {
+const mapActionsToProps = {
     
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(administradorPersonal)
+export default connect(mapStateToProps, mapActionsToProps)(administradorPersonal)

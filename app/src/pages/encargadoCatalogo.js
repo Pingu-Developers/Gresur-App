@@ -22,8 +22,8 @@ const mapStateToProps = (state) => ({
     
 })
 
-const mapDispatchToProps = {
+const mapActionsToProps = {
     
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(encargadoCatalogo)
+export default connect(mapStateToProps, mapActionsToProps)(encargadoCatalogo)

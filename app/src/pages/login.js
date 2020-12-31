@@ -12,6 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import gresur from '../images/Gresur_transparente.png'
+import Snackbar from '../components/SnackBar'
 
 //Redux stuff
 import { connect } from 'react-redux';
@@ -42,6 +43,14 @@ const style = {
       },
     progress:{
         position: 'absolute'
+    },
+    InicioSesion:{
+        color: '#ffa200',
+        marginTop: 20,
+        fontFamily: 'Courier',
+        fontWeight: 800,
+        fontSize: 40,
+        width: "100%"
     }
   }
 
@@ -84,6 +93,11 @@ class login extends Component {
             <div>
 
                 <div className={classes.root}>
+
+                <Snackbar type = "error" open = {this.errors?true:false} message = {this.errors}></Snackbar>
+                {this.errors ? document.getElementById("botonSnack").click():null}
+
+
                 <Grid container spacing={0} className={classes.grid}>
                     <Grid item xs/>
                     <Grid item xs={6}>
@@ -94,14 +108,14 @@ class login extends Component {
                             <Avatar src={gresur} variant='square' className={classes.large}/>
                             </Grid>
                             <Grid item xs={6}>
-                                <Typography variant='h3'>
+                                <Typography variant='h4' className = {classes.InicioSesion}>
                                    <u>Inicio de sesión</u> 
                                 </Typography>
                                 <form  noValidate onSubmit={this.handleSubmit}>
                                     <TextField fullWidth id="username" name="username" label="Username" onChange={this.handleChange} className={classes.textField} 
                                          error={this.errors?true:false} value={this.state.username}/>
                                     <TextField fullWidth id="password" name="password" label="Password" type="password" onChange={this.handleChange} className={classes.textField} 
-                                         helperText={this.errors} error={this.errors?true:false} value={this.state.password}/>
+                                        error={this.errors?true:false} value={this.state.password}/>
 
                                     <Button type="submit" variant="contained" color="primary" className={classes.button} disabled={UI.loading}>
                                     Login

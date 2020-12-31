@@ -472,35 +472,35 @@ INSERT INTO REPARACIONES(fecha_entrada_taller, fecha_salida_taller, factura_reci
 
 	
 INSERT INTO SEGUROS(compania, tipo_seguro, fecha_contrato, fecha_expiracion, factura_recibida_id, vehiculo_id)
-	VALUES ('MAPFRE', 'TODORRIESGO', TO_DATE('2020/08/12','YYYY/MM/DD'), TO_DATE('2020/12/01','YYYY/MM/DD'), 12, 1);
+	VALUES ('MAPFRE', 'TODORRIESGO', TO_DATE('2020/08/12','YYYY/MM/DD'), TO_DATE('2022/12/01','YYYY/MM/DD'), 12, 1);
 	
 INSERT INTO SEGUROS(compania, tipo_seguro, fecha_contrato, fecha_expiracion, factura_recibida_id, vehiculo_id)
-	VALUES ('LIBERTY', 'TERCEROS', TO_DATE('2020/07/12','YYYY/MM/DD'), TO_DATE('2020/12/01','YYYY/MM/DD'), 13, 2);
+	VALUES ('LIBERTY', 'TERCEROS', TO_DATE('2020/07/12','YYYY/MM/DD'), TO_DATE('2022/12/01','YYYY/MM/DD'), 13, 2);
 
 INSERT INTO SEGUROS(compania, tipo_seguro, fecha_contrato, fecha_expiracion, factura_recibida_id, vehiculo_id)
-	VALUES ('MUTUA', 'TERCEROS_AMPLIADO', TO_DATE('2020/09/12','YYYY/MM/DD'), TO_DATE('2020/12/01','YYYY/MM/DD'), 14, 3);
+	VALUES ('MUTUA', 'TERCEROS_AMPLIADO', TO_DATE('2020/09/12','YYYY/MM/DD'), TO_DATE('2022/12/01','YYYY/MM/DD'), 14, 3);
 
 INSERT INTO SEGUROS(compania, tipo_seguro, fecha_contrato, fecha_expiracion, factura_recibida_id, vehiculo_id)
-	VALUES ('PELAYO', 'TODORRIESGO', TO_DATE('2020/11/12','YYYY/MM/DD'), TO_DATE('2020/12/01','YYYY/MM/DD'), 15, 4);
+	VALUES ('PELAYO', 'TODORRIESGO', TO_DATE('2020/11/12','YYYY/MM/DD'), TO_DATE('2022/12/01','YYYY/MM/DD'), 15, 4);
 
 
 INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
-	VALUES (TO_DATE('2019/12/12','YYYY/MM/DD'), TO_DATE('2020/12/12','YYYY/MM/DD'), 'FAVORABLE', 16, 1);
+	VALUES (TO_DATE('2019/12/12','YYYY/MM/DD'), TO_DATE('2022/12/12','YYYY/MM/DD'), 'FAVORABLE', 16, 1);
 	
 INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
-	VALUES (TO_DATE('2020/01/13','YYYY/MM/DD'), TO_DATE('2020/11/10','YYYY/MM/DD'), 'DESFAVORABLE', 17, 2);
+	VALUES (TO_DATE('2020/01/13','YYYY/MM/DD'), TO_DATE('2022/11/10','YYYY/MM/DD'), 'DESFAVORABLE', 17, 2);
 	
 INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
-	VALUES (TO_DATE('2020/02/17','YYYY/MM/DD'), TO_DATE('2020/10/21','YYYY/MM/DD'), 'FAVORABLE', 18, 3);
+	VALUES (TO_DATE('2020/02/17','YYYY/MM/DD'), TO_DATE('2021/10/21','YYYY/MM/DD'), 'FAVORABLE', 18, 3);
 	
 INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
-	VALUES (TO_DATE('2020/03/01','YYYY/MM/DD'), TO_DATE('2020/09/09','YYYY/MM/DD'), 'FAVORABLE', 19, 4);
+	VALUES (TO_DATE('2020/03/01','YYYY/MM/DD'), TO_DATE('2022/09/09','YYYY/MM/DD'), 'FAVORABLE', 19, 4);
 	
 INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
-	VALUES (TO_DATE('2019/12/20','YYYY/MM/DD'), TO_DATE('2020/12/01','YYYY/MM/DD'), 'DESFAVORABLE', 20, 5);
+	VALUES (TO_DATE('2019/12/20','YYYY/MM/DD'), TO_DATE('2021/12/01','YYYY/MM/DD'), 'DESFAVORABLE', 20, 5);
 	
 INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
-	VALUES (TO_DATE('2020/05/07','YYYY/MM/DD'), TO_DATE('2020/11/11','YYYY/MM/DD'), 'NEGATIVA', 21, 6);
+	VALUES (TO_DATE('2020/05/07','YYYY/MM/DD'), TO_DATE('2022/11/11','YYYY/MM/DD'), 'NEGATIVA', 21, 6);
 	
 
 INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
