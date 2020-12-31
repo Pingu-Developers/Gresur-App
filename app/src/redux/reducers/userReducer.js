@@ -1,8 +1,9 @@
-import { SET_USER, SET_AUTHENTICATED, SET_UNAUTHENTICATED, LOADING_USER } from '../types';
+import { SET_USER, SET_AUTHENTICATED, SET_UNAUTHENTICATED, LOADING_USER, GET_NUMBER_NOT } from '../types';
 
 const initialState = {
     loading:false,
     authenticated: false,
+    nNotification: null,
     credentials: {},
 }
 
@@ -26,6 +27,11 @@ export default function(state = initialState,action){
                 ...state,
                 loading: true
             };
+        case GET_NUMBER_NOT:
+            return{
+                ...state,
+                nNotification: action.payload
+            }
         default:
             return state;
     }

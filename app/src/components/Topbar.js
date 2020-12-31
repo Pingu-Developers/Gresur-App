@@ -9,9 +9,9 @@ import Avatar from '@material-ui/core/Avatar';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Notifications from '@material-ui/icons/Notifications';
 
+
+import NotificationCenter from './NotificationCenter'
 import ProfileMenu from './ProfileMenu';
 
 //redux stuff
@@ -41,9 +41,6 @@ const styles = {
         fontSize: 22,
         fontWeight: 600,
     },
-    profileIcons:{
-        marginTop: -5,
-    }
 }
 
 class Topbar extends Component {
@@ -70,16 +67,8 @@ class Topbar extends Component {
                     {user.personal?user.personal.name:''}
                 </Typography>
                 
-                <IconButton
-                    aria-label="account of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    color="inherit"
-                    className = {classes.profileIcons}
-                >
-                <Notifications/>
-                </IconButton>
-    
+
+                <NotificationCenter />
                 <ProfileMenu/>
                 </div>
             </Toolbar>
