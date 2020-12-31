@@ -13,6 +13,10 @@ const useStyles = makeStyles((theme) => ({
     root: {
         display: 'inline-block',
     },
+    iconCircle: {
+        marginTop: -5,
+        marginRight: -7,
+    }
 }));
 
 function ProfileMenu(props) {
@@ -40,6 +44,7 @@ function ProfileMenu(props) {
                 aria-haspopup="true"
                 color="inherit"
                 onClick={handleClick}
+                className={classes.iconCircle}
             >
                 <AccountCircle />
             </IconButton>
