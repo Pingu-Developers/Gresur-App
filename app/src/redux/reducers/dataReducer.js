@@ -3,7 +3,9 @@ import { SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_CATEGOR
 const initialState = {
     pedidos: [],
     productos:[],
-    categorias:[]
+    categorias:[],
+    vehiculos:[],
+    tiposVehiculos:[]
 }
 
 export default function(state = initialState,action){
@@ -47,7 +49,7 @@ export default function(state = initialState,action){
         case SET_VEHICULOS:
             return {
                 ...state,
-                personal: action.payload
+                vehiculos: action.payload
             };
         case CLEAR_VEHICULOS:
             return initialState;
@@ -55,7 +57,7 @@ export default function(state = initialState,action){
         case SET_TIPOSVEHICULOS:
             return {
                 ...state,
-                personal: action.payload
+                tiposVehiculos: action.payload
             };
         case CLEAR_TIPOSVEHICULOS:
             return initialState;
