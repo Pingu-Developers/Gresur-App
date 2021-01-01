@@ -6,6 +6,7 @@ import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MostradorProductos from './MostradorProductos';
+import { findDOMNode } from 'react-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,23 +20,33 @@ const useStyles = makeStyles((theme) => ({
 
   acordeon: {
     backgroundColor: '#d4e6f1',
+  },
+
+  lineasWrapper: {
+    width: '100%'
+  },
+
+  elementos:{
+    maxHeight: '90vh',
+    overflowY: 'auto'
   }
 
 }));
 
 export default function ControlledAccordions(props) {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(props.num === 0 ? true:false);
 
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+  const handleChange = () => (event, isExpanded) => { 
+    setExpanded(isExpanded ? true : false);
+    console.log(props.children)
   };
 
   const categoria = props.categoria;
 
   return (
     <div className={classes.root}>
-        <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+        <Accordion expanded={expanded} onChange={handleChange()}>
             <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1bh-content"
@@ -44,8 +55,8 @@ export default function ControlledAccordions(props) {
             >
             <Typography className={classes.heading}><b>{categoria}</b></Typography>
             </AccordionSummary>                
-                <AccordionDetails>
-                <div>
+                <AccordionDetails className={classes.elementos}>
+                <div className={classes.lineasWrapper}>
                   {props.productos.map((producto) => 
                       producto.estanteria.categoria===categoria? <MostradorProductos producto={producto}/> : null
                   )}
