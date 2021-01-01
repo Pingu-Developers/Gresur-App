@@ -1,12 +1,11 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import MuiAccordion from '@material-ui/core/Accordion';
+import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MostradorProductos from './MostradorProductos';
-import { findDOMNode } from 'react-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,54 +16,89 @@ const useStyles = makeStyles((theme) => ({
     flexBasis: '33.33%',
     flexShrink: 0,
   },
-
-  acordeon: {
-    backgroundColor: '#d4e6f1',
-  },
-
-  lineasWrapper: {
-    width: '100%'
-  },
-
-  elementos:{
-    maxHeight: '90vh',
-    overflowY: 'auto'
-  }
-
 }));
+
+const Accordion = withStyles({
+  root: {
+    margin: '0 30px',
+    border: '1px solid #a9bfcc',
+    boxShadow: 'none',
+    '&:not(:last-child)': {
+      borderBottom: 0,
+    },
+    '&:before': {
+      display: 'none',
+    },
+    '&$expanded': {
+      margin: '0 30px',
+    },
+  },
+  expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+  root: {
+    backgroundColor: '#d4e6f1',
+    borderBottom: '1px solid #a9bfcc',
+    marginBottom: -1,
+    minHeight: 56,
+    '&$expanded': {
+      minHeight: 56,
+    },
+  },
+  content: {
+    '&$expanded': {
+      margin: '12px 0',
+    },
+  },
+  expanded: {},
+})(MuiAccordionSummary);
+
+const AccordionDetails = withStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+  },
+}))(MuiAccordionDetails);
 
 export default function ControlledAccordions(props) {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(props.num === 0 ? true:false);
+  const categorias = props.data.categorias
+  const productos = props.data.productos
+  const [expanded, setExpanded] = React.useState(0);
 
-  const handleChange = () => (event, isExpanded) => { 
-    setExpanded(isExpanded ? true : false);
-    console.log(props.children)
+  const handleChange = (panel) => (event, isExpanded) => { 
+    setExpanded(isExpanded ? panel : false);
   };
-
-  const categoria = props.categoria;
 
   return (
     <div className={classes.root}>
-        <Accordion expanded={expanded} onChange={handleChange()}>
-            <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1bh-content"
-            id="panel1bh-header"
-            className= {classes.acordeon}
-            >
-            <Typography className={classes.heading}><b>{categoria}</b></Typography>
-            </AccordionSummary>                
-                <AccordionDetails className={classes.elementos}>
-                <div className={classes.lineasWrapper}>
-                  {props.productos.map((producto) => 
-                      producto.estanteria.categoria===categoria? <MostradorProductos producto={producto}/> : null
-                  )}
-                </div>
-              </AccordionDetails>              
-            
+      {
+        categorias.map((row) => 
+          <Accordion 
+              square
+              className = {classes.acordeon}
+              expanded={expanded === categorias.indexOf(row)} 
+              onChange={handleChange(categorias.indexOf(row))}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1d-content"
+                id="panel1d-header"
+                className= {classes.acordeonSum}
+                >
+                <Typography className={classes.heading}><b>{row}</b></Typography>
+              </AccordionSummary>
 
-        </Accordion>
+              <AccordionDetails className = {classes.elementos}>
+                <div>
+                    {productos.map((producto) => 
+                        producto.estanteria.categoria===row? <MostradorProductos producto={producto}/> : null
+                    )}
+                </div>
+              </AccordionDetails>             
+          </Accordion>
+        )
+      }
+        
     </div>
   );
 }

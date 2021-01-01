@@ -43,11 +43,7 @@ class dependienteCatalogo extends Component {
                 <Typography variant='h3' className={classes.tituloCatalogo}>CATÁLOGO DE PRODUCTOS</Typography>
                 
                 <div className={classes.main}>
-                  { 
-                    data.length ===0? null: data.categorias.map((row) => 
-                        <TablaCatalogoProductosDesplegable num={data.categorias.indexOf(row)} categoria={row} productos = {data.productos}/>
-                    )
-                  }
+                    {data.length === 0? null:<TablaCatalogoProductosDesplegable data = {data}/>}
                 </div>
             </div>
         )
