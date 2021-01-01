@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
+import Typography from '@material-ui/core/Typography';
 
 //Redux stuff
 import { connect } from 'react-redux';
@@ -13,6 +14,11 @@ import TablaCatalogoProductosDesplegable from '../components/TablaCatalogoProduc
 
 const style = {
 
+    tituloCatalogo: {
+        margin: '30px 20px',
+        fontSize: 40,
+        fontWeight: 600
+      }
 }
 
 class dependienteCatalogo extends Component {
@@ -34,13 +40,10 @@ class dependienteCatalogo extends Component {
         return (
             <div>
                 <Topbar/>
-
+                <Typography variant='h3' className={classes.tituloCatalogo}>CATÁLOGO DE PRODUCTOS</Typography>
+                
                 <div className={classes.main}>
-                  { 
-                    data.length ===0? null: data.categorias.map((row) => 
-                        <TablaCatalogoProductosDesplegable categoria={row} productos = {data.productos}/>
-                    )
-                  }
+                    {data.length === 0? null:<TablaCatalogoProductosDesplegable data = {data}/>}
                 </div>
             </div>
         )

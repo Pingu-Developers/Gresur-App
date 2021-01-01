@@ -7,23 +7,22 @@ const useStyles = makeStyles((theme) => ({
     }, 
 
     lineaProducto: {
-        display:'inline-block',
+        display:'grid',
+        gridTemplateColumns: '0.25fr 2fr 1fr 0.5fr',
+        columnGap: 10,
         padding: 5,
         borderBottom: '1px solid grey',
         width: '100%',
+        alignItems: 'center'
     },
 
     foto: {
         width: 120,
         height: 120,
-        float: 'left',
         marginTop: 9
     },
 
     nombreDescripcion: {
-        width: 801,
-        height: '100%',
-        float: 'left',
         marginTop: -5,
         marginLeft: 15,
     }, 
@@ -34,19 +33,23 @@ const useStyles = makeStyles((theme) => ({
 
     descripcion: {
         textAlign: 'justify',
-        height: '100%',
     }, 
 
     stockDimensionesUnidad: {
-        float: 'left',
-        width: '30%',
         paddingLeft: 20,
         borderLeft: '1px solid #808080',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center'
     },
 
     precio: {
-        float: 'right',
-        marginRight: 70
+        borderLeft: '1px solid #808080',
+        textAlign: 'center',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     }, 
     
 
@@ -67,15 +70,19 @@ export default function MostradorProductos(props) {
 
 
             <div className={classes.stockDimensionesUnidad}>
-                <p className={classes.stock}><b>Stock:</b> {producto.stock}</p>
-                <p className={classes.dimensiones}><b>Dimensiones(HxWxD):</b> {producto.alto}x{producto.ancho}x{producto.profundo}</p>
-                <p className={classes.unidad}><b>Unidad:</b> {producto.unidad}</p>
+                <div>
+                    <p className={classes.stock}><b>Stock:</b> {producto.stock}</p>
+                    <p className={classes.dimensiones}><b>Dimensiones(HxWxD):</b> {producto.alto}x{producto.ancho}x{producto.profundo}</p>
+                    <p className={classes.unidad}><b>Unidad:</b> {producto.unidad}</p>
+                </div>
             </div>
 
 
             <div className= {classes.precio}>
-                <p className={classes.pvpTexto}><h2>PVP</h2></p>
-                <p className={classes.pvp}><h1><b>{producto.precioVenta}€ </b></h1></p>
+                <div>
+                    <p className={classes.pvpTexto}><h2>PVP</h2></p>
+                    <p className={classes.pvp}><h1><b>{producto.precioVenta}€ </b></h1></p>
+                </div>
             </div>
         </div>
     )
