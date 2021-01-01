@@ -138,6 +138,34 @@ export default function ControlledAccordions(props) {
     setOpen(false);
   };
 
+  let disabled = false;
+
+  switch (props.datos.estado) {
+    case "CANCELADO":
+        disabled=true;
+      break;
+
+    case "PREPARADO":
+        disabled=true;
+      break;
+
+    case "EN_REPARTO":
+        disabled=true;
+      break;
+
+    case "ENTREGADO":
+        disabled=true;
+      break;
+
+    case "EN_TIENDA":
+        disabled=true;
+      break;
+
+    default:
+        disabled = false;
+      break;
+  }
+
   return (
     <div className={classes.root}>
         <Accordion expanded={expanded === 'panel1'} square={true} onChange={handleChange('panel1')}>
@@ -230,7 +258,7 @@ export default function ControlledAccordions(props) {
                       </td>
                       <td>
                       <Typography className={classes.detailsInfo}>
-                        {(linea.precio*linea.cantidad).toFixed(2)}
+                        {(linea.precio).toFixed(2)}
                       </Typography>
                       </td>
                     </tr>
@@ -265,13 +293,14 @@ export default function ControlledAccordions(props) {
               <Button className = {classes.Buttons} variant="contained" color="primary">
                 Modificar Pedido
               </Button>
-              <Button className = {classes.Buttons} variant="contained" color="primary" onClick={handleClickOpen}>
+              <Button className = {classes.Buttons} variant="contained" disabled={disabled} color="primary" onClick={handleClickOpen}>
                 Cancelar Pedido
               </Button>
               <ConfirmDialog open={open} elementID = {props.datos.id} onConfirm={props.onConfirmCancelar} onClose={handleClose} />
               </div>
             </AccordionDetails>
         </Accordion>
+
     </div>
   );
 }

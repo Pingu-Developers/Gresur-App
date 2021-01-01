@@ -14,6 +14,7 @@ import { loadPedidos,loadPedidosByEstado,cancelarPedido } from '../redux/actions
 //Components
 import Topbar from '../components/Topbar';
 import TablaPedidosDesplegable from '../components/TablaPedidosDesplegable';
+import Snackbar from '../components/SnackBar'
 
 
 const style = {
@@ -44,7 +45,7 @@ class dependienteHistorialPedido extends Component {
         super();
         this.state = {
             selected: "TODO",
-            ordered: "MAS_NUEVO"            
+            ordered: "MAS_NUEVO",         
         }
     }
 
@@ -67,15 +68,16 @@ class dependienteHistorialPedido extends Component {
         })
     }
 
-    delete(element){
-        console.log(element)
-    }
-
     render() {
-        const {classes, data} = this.props;
+        const {classes, data ,UI:{errors}} = this.props;
         return (
             <div className = {classes.root}>
                 <Topbar/>
+
+                {console.log(errors?true:false)}
+                <Snackbar type = "error" open = {errors?true:false} message = {errors}></Snackbar>
+                {errors ? document.getElementById("botonSnack").click():null}
+
                 <div className = {classes.cuerpo}>
                     <Typography variant='h3' className={classes.tituloCatalogo}>HISTORIAL DE PEDIDOS</Typography>
                     <form>
@@ -133,12 +135,14 @@ class dependienteHistorialPedido extends Component {
 dependienteHistorialPedido.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
+    UI:PropTypes.object.isRequired,
     loadPedidos: PropTypes.func.isRequired,
     cancelarPedido: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
-    data: state.data
+    data: state.data,
+    UI: state.UI
 })
 
 const mapActionsToProps = {

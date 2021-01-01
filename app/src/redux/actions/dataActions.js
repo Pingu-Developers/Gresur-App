@@ -46,7 +46,14 @@ export const cancelarPedido = (id) => (dispatch) => {
             dispatch(loadPedidos());
         })
         .catch((err) => {
-            console.log(err)
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+               console.log(err)
+            }
         })
 
 }
