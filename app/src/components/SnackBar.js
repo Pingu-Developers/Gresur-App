@@ -14,6 +14,10 @@ const useStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(2),
     },
   },
+  button:{
+    background: 'transparent',
+    border:'none'
+  }
 }));
 
 export default function CustomizedSnackbars(props) {
@@ -33,7 +37,7 @@ export default function CustomizedSnackbars(props) {
 
   return (
     <div className={classes.root}>
-      <button id = "botonSnack" className = "boton" onClick={handleClick}></button>
+      <button id = "botonSnack" className = {classes.button} onClick={handleClick}></button>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={props.type}>
           {props.message}
