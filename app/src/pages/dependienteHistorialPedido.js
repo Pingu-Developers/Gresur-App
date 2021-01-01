@@ -6,11 +6,10 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
-import FormControl from '@material-ui/core/FormControl';
 
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadPedidos,loadPedidosByEstado } from '../redux/actions/dataActions';
+import { loadPedidos,loadPedidosByEstado,cancelarPedido } from '../redux/actions/dataActions';
 
 //Components
 import Topbar from '../components/Topbar';
@@ -26,6 +25,11 @@ const style = {
     },
     form:{
         display: "inline-block",
+    },
+    tituloCatalogo: {
+        margin: '30px 20px',
+        fontSize: 40,
+        fontWeight: 600
     },
     Select:{
         marginRight:30,
@@ -58,9 +62,9 @@ class dependienteHistorialPedido extends Component {
 
         event.target.value ==="TODO"?this.props.loadPedidos():this.props.loadPedidosByEstado(event.target.value);
 
-        this.setState((state, props) =>({
+        this.setState({
             [event.target.name]:event.target.value
-        }))
+        })
     }
 
     delete(element){
@@ -73,7 +77,7 @@ class dependienteHistorialPedido extends Component {
             <div className = {classes.root}>
                 <Topbar/>
                 <div className = {classes.cuerpo}>
-                    <Typography variant='h3'>HISTORIAL DE PEDIDOS</Typography>
+                    <Typography variant='h3' className={classes.tituloCatalogo}>HISTORIAL DE PEDIDOS</Typography>
                     <form>
                     <Typography 
                         className={classes.form}
@@ -117,7 +121,7 @@ class dependienteHistorialPedido extends Component {
                     <div className={classes.main}>
                         
                         {data.pedidos === undefined?null:data.pedidos.map((row) =>
-                            <TablaPedidosDesplegable key = {row.id} deletePedidos={this.delete} datos={row}/>
+                            <TablaPedidosDesplegable onConfirmCancelar = {this.props.cancelarPedido} key = {row.id} deletePedidos={this.delete} datos={row}/>
                         ) }
                     </div>
                 </div>
@@ -129,7 +133,8 @@ class dependienteHistorialPedido extends Component {
 dependienteHistorialPedido.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
-    loadPedidos: PropTypes.func.isRequired
+    loadPedidos: PropTypes.func.isRequired,
+    cancelarPedido: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -138,7 +143,8 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
     loadPedidos,
-    loadPedidosByEstado
+    loadPedidosByEstado,
+    cancelarPedido
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(dependienteHistorialPedido))

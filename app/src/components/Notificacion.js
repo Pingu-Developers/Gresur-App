@@ -34,10 +34,24 @@ const useStyles = makeStyles((theme) => ({
   actions: {
     float:'right'
   },
-  actionsText: {
+  actionsTextRojo: {
     fontSize:13,
-    marginRight:170
+    marginRight:170,
+    color:"#FF6351"
   },
+
+  actionsTextGris: {
+    fontSize:13,
+    marginRight:170,
+    color:"#A2A2A2"
+  },
+
+  actionsTextNaranja: {
+    fontSize:13,
+    marginRight:170,
+    color:"#E7AE68"
+  },
+
   button:{
       '&:hover':{
           color:"#28C8FF"
@@ -54,6 +68,26 @@ export default function Notificacion(props) {
         props.confirmNoti(notificacion.id)
     }
 
+    let color = null;
+    
+    switch (notificacion.tipoNotificacion) {
+      case "URGENTE":
+          color = classes.actionsTextRojo
+        break;
+      case "NORMAL":
+          color = classes.actionsTextGris
+        break;
+
+      case "SISTEMA":
+          color = classes.actionsTextNaranja
+        break;
+
+      default:
+          color = classes.actionsTextGris
+        break;
+    }
+
+    let fecha = notificacion.fechaHora;
     return (
         <Card elevation={0} className={classes.root}>
         <CardHeader
@@ -63,7 +97,7 @@ export default function Notificacion(props) {
             </Avatar>
             }
             title={notificacion.emisor?notificacion.emisor.name:"SISTEMA"}
-            subheader={notificacion.fechaHora}
+            subheader={fecha.slice(0,4)+"/"+ fecha.slice(5,7)+"/"+fecha.slice(8,10)+"  "+fecha.slice(11,16)}
         />
         <CardContent>
             <Typography variant="body2" color="textPrimary" component="p">
@@ -72,7 +106,7 @@ export default function Notificacion(props) {
         </CardContent>
         <CardActions className={classes.actions} disableSpacing>
 
-            <Typography  className={classes.actionsText} variant="caption text" color="textSecondary">
+            <Typography  className={color} variant="caption text">
                 Prioridad: {notificacion.tipoNotificacion.toLowerCase()}
             </Typography>
 
