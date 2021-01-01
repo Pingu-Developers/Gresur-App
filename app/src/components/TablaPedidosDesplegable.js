@@ -16,7 +16,8 @@ import Divider from '@material-ui/core/Divider';
 
 const Accordion = withStyles({
   root: {
-    border: '1px solid rgba(0, 0, 0, .125)',
+    margin: '0 30px',
+    border: '1px solid #a9bfcc',
     boxShadow: 'none',
     '&:not(:last-child)': {
       borderBottom: 0,
@@ -25,7 +26,7 @@ const Accordion = withStyles({
       display: 'none',
     },
     '&$expanded': {
-      margin: 'auto',
+      margin: '0 30px',
     },
   },
   expanded: {},
@@ -33,9 +34,8 @@ const Accordion = withStyles({
 
 const AccordionSummary = withStyles({
   root: {
-    height:56,
-    backgroundColor: 'rgba(197, 236, 255, .3)',
-    borderBottom: '1px solid rgba(0, 0, 0, .125)',
+    backgroundColor: '#d4e6f1',
+    borderBottom: '1px solid #a9bfcc',
     marginBottom: -1,
     minHeight: 56,
     '&$expanded': {
@@ -52,7 +52,6 @@ const AccordionSummary = withStyles({
 
 const AccordionDetails = withStyles((theme) => ({
   root: {
-    backgroundColor: 'rgba(240, 240, 240, .3)',
     padding: theme.spacing(2),
   },
 }))(MuiAccordionDetails);
@@ -269,7 +268,7 @@ export default function ControlledAccordions(props) {
               <Button className = {classes.Buttons} variant="contained" color="primary" onClick={handleClickOpen}>
                 Cancelar Pedido
               </Button>
-              <ConfirmDialog open={open} elementID = {props.datos.id} onConfirm={props.deletePedidos} onClose={handleClose} />
+              <ConfirmDialog open={open} elementID = {props.datos.id} onConfirm={props.onConfirmCancelar} onClose={handleClose} />
               </div>
             </AccordionDetails>
         </Accordion>

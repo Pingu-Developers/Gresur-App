@@ -24,7 +24,7 @@ export const loadPedidosByEstado = (estado) => (dispatch) => {
 
     axios.get(`/pedido/${estado}`)
         .then((res) => {
-            dispatch({type: SET_PEDIDOS, payload: res})
+            dispatch({type: SET_PEDIDOS, payload: res});
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
@@ -37,6 +37,18 @@ export const loadPedidosByEstado = (estado) => (dispatch) => {
 
 export const clearPedidos = () => (dispatch) => {
     dispatch({type: CLEAR_PEDIDOS})
+}
+
+export const cancelarPedido = (id) => (dispatch) => {
+
+    axios.post(`/pedido/${id}`)
+        .then((res) => {
+            dispatch(loadPedidos());
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+
 }
 
 export const loadProductos = () => (dispatch) => {
