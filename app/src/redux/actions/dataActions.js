@@ -1,4 +1,4 @@
-import { SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL } from '../types';
+import { SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS  } from '../types';
 import axios from 'axios';
 
 export const loadPedidos = () => (dispatch) => {
@@ -71,6 +71,7 @@ export const clearProductos = () => (dispatch) => {
 export const clearCategorias = () => (dispatch) => {
     dispatch({type: CLEAR_CATEGORIAS})
 }
+
 export const loadPersonal = () => function (dispatch) {
 
     dispatch({type: LOADING_UI})
@@ -87,6 +88,40 @@ export const loadPersonal = () => function (dispatch) {
             })
         })
 }
+
 export const clearPersonal = () => (dispatch) => {
     dispatch({type: CLEAR_PERSONAL})
+}
+
+export const loadVehiculos = () => function (dispatch) {
+    dispatch({type: LOADING_UI})
+
+    axios.get('/vehiculo')
+        .then((res) => {
+            dispatch({type: SET_VEHICULOS, payload: res.data.first})
+            dispatch({type: SET_TIPOSVEHICULOS, payload: res.data.second})
+            dispatch({type: CLEAR_ERRORS})
+
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
+        })
+}
+
+export const clearVehiculos = () => (dispatch) => {
+    dispatch({type: CLEAR_VEHICULOS})
+}
+
+export const clearTiposVehiculos = () => (dispatch) => {
+    dispatch({type: CLEAR_TIPOSVEHICULOS})
 }
