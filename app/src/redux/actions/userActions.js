@@ -1,4 +1,4 @@
-import { SET_ERRORS, SET_USER, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED ,LOADING_USER} from '../types';
+import { SET_ERRORS, SET_USER, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED ,LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS , CLEAR_NOTIFICACIONES_NO_LEIDAS } from '../types';
 import axios from 'axios';
 
 export const loginUser = (userData,history) => (dispatch) =>{
@@ -65,3 +65,40 @@ const setAuthorizationHeader = (token) => {
     localStorage.setItem('GresurIdToken', GresurIdToken);
     axios.defaults.headers.common['Authorization'] = GresurIdToken;
 };
+
+
+export const getNotificacionesNoLeidas = () => (dispatch) => {
+
+    axios.get('/notificacion')
+        .then((res) => {
+            dispatch(
+                {
+                    type: SET_NOTIFICACIONES_NO_LEIDAS,
+                    payload: res.data
+                }
+            )
+        })
+        .catch(err => console.log(err))
+}
+
+export const clearNotificacionesNoLeidas = () => (dispatch) => {
+
+        dispatch({ type: CLEAR_NOTIFICACIONES_NO_LEIDAS });
+}
+
+
+export const setNotificacionLeida = (id) => (dispatch) => {
+
+
+    axios.post(`/notificacion/setLeida/${id}`)
+        .then((res) => {
+            dispatch(getNotificacionesNoLeidas());
+        })
+        .catch((err) => {
+            console.log(err);
+            dispatch({
+                type:SET_ERRORS,
+                payload: err
+            })
+        })
+}
