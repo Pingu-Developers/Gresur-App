@@ -86,7 +86,10 @@ function TabPanel(props) {
     constructor(props){
         super(props);
         this.anchorEl = null;
-        this.state = {tabValue:props.selectedTab}
+        this.state = {tabValue : null}
+    }
+    componentDidMount(){
+      this.setState({tabValue : this.props.selectedTab})
     }
 
     tabHandleChange = (event, newValue) => {
@@ -95,7 +98,7 @@ function TabPanel(props) {
     
 
     render() {
-        const { classes , user} = this.props
+        const { classes , user, dict} = this.props
         document.body.style.background = ``;
         return (
         <div className={classes.root}>
@@ -104,14 +107,17 @@ function TabPanel(props) {
                 <Avatar src={GresurImg} className={classes.large}/>
 
                 <div className={classes.tabs}>
-                    <Tabs value={this.state.tabValue} onChange={this.tabHandleChange} aria-label="wrapped label tabs example">
-                        <Tab
-                            value="one"
-                            label="New Arrivals in the Longest Text of Nonfiction"
+                    <Tabs value={this.state.tabValue} onChange={this.tabHandleChange} aria-label="topnav tabs">
+                        {
+                        dict ? Object.keys(dict).map((key) =>         
+                          <Tab
+                            value= {key}
+                            label= {key}
                             wrapped
-                            {...a11yProps('one')}
-                        />
-                        <Tab value="two" label="Item Two" {...a11yProps('two')} />
+                            {...a11yProps(key)}
+                          />
+                        ) : null
+                        }
                     </Tabs>
                 </div>
 
@@ -126,14 +132,15 @@ function TabPanel(props) {
                 </div>
             </Toolbar>     
         </AppBar>
-
-        <TabPanel value={this.state.tabValue} index="one">
-           Item one
-        </TabPanel>
-        <TabPanel value={this.state.tabValue} index="two">
-            Item Two
-        </TabPanel>
         
+        {
+          dict ? Object.entries(dict).map((pair) => 
+            <TabPanel value={this.state.tabValue} index={pair[0]}>
+              {pair[1]}
+            </TabPanel>
+          ):null
+        }
+              
         </div>
         )
     }
@@ -141,7 +148,8 @@ function TabPanel(props) {
 
 Topbar.propTypes = {
     classes: PropTypes.object.isRequired,
-    user:PropTypes.object.isRequired
+    user:PropTypes.object.isRequired,
+    selectedTab:PropTypes.object.isRequired
 }
 
 const mapStateToProps = (state) => ({
