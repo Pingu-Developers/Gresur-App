@@ -5,6 +5,7 @@ import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MostradorProductos from './MostradorProductos';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,18 +16,11 @@ const useStyles = makeStyles((theme) => ({
     flexBasis: '33.33%',
     flexShrink: 0,
   },
-  secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    flexBasis: '33.33%',
-    fontWeight:"bold",
-    
-  },
-  thirdHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    flexBasis: '33.33%',
-    fontWeight:"bold",
-    
-  },
+
+  acordeon: {
+    backgroundColor: '#d4e6f1',
+  }
+
 }));
 
 export default function ControlledAccordions(props) {
@@ -46,16 +40,14 @@ export default function ControlledAccordions(props) {
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel1bh-content"
             id="panel1bh-header"
+            className= {classes.acordeon}
             >
-            <Typography className={classes.heading}>{categoria}</Typography>
+            <Typography className={classes.heading}><b>{categoria}</b></Typography>
             </AccordionSummary>                
                 <AccordionDetails>
                 <div>
                   {props.productos.map((producto) => 
-                    <Typography>
-                      {producto.estanteria.categoria===categoria? producto.nombre : null}
-
-                    </Typography>
+                      producto.estanteria.categoria===categoria? <MostradorProductos producto={producto}/> : null
                   )}
                 </div>
               </AccordionDetails>              
@@ -65,11 +57,3 @@ export default function ControlledAccordions(props) {
     </div>
   );
 }
-
-
-
-/*
-<Typography className={classes.thirdHeading}>
-                      {producto.estanteria.categoria}
-                  </Typography>
-                  */
