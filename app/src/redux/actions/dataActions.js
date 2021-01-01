@@ -76,6 +76,31 @@ export const loadProductos = () => (dispatch) => {
         })
 }
 
+export const loadProductosByNombre = (nombre) => (dispatch) => {
+    dispatch({type: LOADING_UI})
+
+    axios.get(`/producto/${nombre}`)
+        .then((res) => {
+            dispatch({type: SET_PRODUCTOS, payload: res.data.first})
+            dispatch({type: SET_CATEGORIAS, payload: res.data.second})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
+}
+
 export const clearProductos = () => (dispatch) => {
     dispatch({type: CLEAR_PRODUCTOS})
 }
