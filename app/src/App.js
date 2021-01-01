@@ -30,6 +30,7 @@ import dependienteNuevoPedido from './pages/dependienteNuevoPedido'
 import dependienteDevoluciones from './pages/dependienteDevoluciones'
 import dependienteCatalogo from './pages/dependienteCatalogo'
 import dependienteHistorialPedido from './pages/dependienteHistorialPedido'
+import main from './pages/main'
 import login from './pages/login';
 
 axios.defaults.baseURL = "http://localhost:8080/api";
@@ -89,6 +90,7 @@ function App() {
                 <Route exact path = "/devolucion" component={dependienteDevoluciones}/>
                 <Route exact path = "/catalogoVenta" component={dependienteCatalogo}/>
                 <Route exact path = "/historial" component={dependienteHistorialPedido}/>
+                <Route exact path = "/" component={main}/>
                 <AuthRoute exact path="/login" component={login}/>
               </Switch>
         </Router>

@@ -9,7 +9,9 @@ import Avatar from '@material-ui/core/Avatar';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-
+import Box from '@material-ui/core/Box';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
 
 import NotificationCenter from './NotificationCenter'
 import ProfileMenu from './ProfileMenu';
@@ -28,7 +30,7 @@ const styles = {
     menuButton: {
         marginRight: 20,
       },
-    title: {
+    tabs: {
         flexGrow: 1,
       },
     button: {
@@ -43,12 +45,53 @@ const styles = {
     },
 }
 
-class Topbar extends Component {
+// TABS COMPONENT
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
+  
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`wrapped-tabpanel-${index}`}
+        aria-labelledby={`wrapped-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box p={3}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
+  
+  TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.any.isRequired,
+    value: PropTypes.any.isRequired,
+  };
+  
+  function a11yProps(index) {
+    return {
+      id: `wrapped-tab-${index}`,
+      'aria-controls': `wrapped-tabpanel-${index}`,
+    };
+  }
+
+
+//TOPBAR COMPONENT
+  class Topbar extends Component {
 
     constructor(props){
         super(props);
         this.anchorEl = null;
+        this.state = {tabValue:props.selectedTab}
     }
+
+    tabHandleChange = (event, newValue) => {
+        this.setState({tabValue : newValue})
+      };
     
 
     render() {
@@ -58,22 +101,38 @@ class Topbar extends Component {
         <div className={classes.root}>
         <AppBar position="static">
             <Toolbar>
-            <Avatar src={GresurImg} className={classes.large}/>
+                <Avatar src={GresurImg} className={classes.large}/>
 
-            <div className={classes.title}></div>
+                <div className={classes.tabs}>
+                    <Tabs value={this.state.tabValue} onChange={this.tabHandleChange} aria-label="wrapped label tabs example">
+                        <Tab
+                            value="one"
+                            label="New Arrivals in the Longest Text of Nonfiction"
+                            wrapped
+                            {...a11yProps('one')}
+                        />
+                        <Tab value="two" label="Item Two" {...a11yProps('two')} />
+                    </Tabs>
+                </div>
 
                 <div className={classes.button}>
-                <Typography variant='h5' align='center' display='inline' className={classes.nombreUser}>
-                    {user.personal?user.personal.name:''}
-                </Typography>
-                
+                    <Typography variant='h5' align='center' display='inline' className={classes.nombreUser}>
+                        {user.personal?user.personal.name:''}
+                    </Typography>
+                    
 
-                <NotificationCenter />
-                <ProfileMenu/>
+                    <NotificationCenter />
+                    <ProfileMenu/>
                 </div>
-            </Toolbar>
-            
+            </Toolbar>     
         </AppBar>
+
+        <TabPanel value={this.state.tabValue} index="one">
+           Item one
+        </TabPanel>
+        <TabPanel value={this.state.tabValue} index="two">
+            Item Two
+        </TabPanel>
         
         </div>
         )
