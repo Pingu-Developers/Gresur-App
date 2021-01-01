@@ -1,4 +1,4 @@
-import { SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS } from '../types';
+import { SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS,SET_PERSONAL,CLEAR_PERSONAL } from '../types';
 
 const initialState = {
     pedidos: [],
@@ -29,6 +29,13 @@ export default function(state = initialState,action){
             }
         case CLEAR_CATEGORIAS:
                 return initialState;
+        case SET_PERSONAL:
+            return {
+                ...state,
+                personal: action.payload.data
+            };
+        case CLEAR_PERSONAL:
+            return initialState;
         default:
             return state;
     }
