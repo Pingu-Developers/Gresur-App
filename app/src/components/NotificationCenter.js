@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux'
-import { getNotificacionesNoLeidas } from '../redux/actions/userActions';
+import { getNotificacionesNoLeidas, clearNotificacionesNoLeidas, setNotificacionLeida } from '../redux/actions/userActions';
+import ListadoNotificacion from './ListadoNotificacion'
 
 import IconButton from '@material-ui/core/IconButton';
 import Notifications from '@material-ui/icons/Notifications';
@@ -14,6 +15,9 @@ import Typography from '@material-ui/core/Typography';
 const style = {
     profileIcons:{
         marginTop: -5,
+    },
+    popover:{
+        maxHeight: 900,
     }
 }
 
@@ -26,6 +30,7 @@ export class NotificationCenter extends Component {
         };
     }
 
+
     componentDidMount() {
         this.props.getNotificacionesNoLeidas()
         this.interval = setInterval(() => this.props.getNotificacionesNoLeidas(), 60000);
@@ -36,14 +41,12 @@ export class NotificationCenter extends Component {
     }
 
     handleClick = (event) => {
-        console.log("IM HERE2")
         this.setState({
             anchorEl:event.currentTarget
         })
     };
     
     handleClose = () => {
-        console.log("IM HERE")
         this.setState({
             anchorEl:null
         })
@@ -51,7 +54,7 @@ export class NotificationCenter extends Component {
 
     render() {
 
-        const {classes,user} = this.props;
+        const { classes,user:{ notificaciones } } = this.props;
         
         const open = Boolean(this.state.anchorEl);
         const id = open ? 'simple-popover' : undefined;
@@ -66,24 +69,25 @@ export class NotificationCenter extends Component {
                     color="inherit"
                     onClick={open?null:this.handleClick}
                 >
-                    <Badge badgeContent={user.nNotification} color="secondary">
+                    <Badge badgeContent={notificaciones?notificaciones.length:null} color="secondary">
                         <Notifications/>    
                     </Badge>
                     <Popover
                         id={id}
                         open={open}
+                        className = {classes.popover}
                         anchorEl={this.state.anchorEl}
                         onClose={this.handleClose}
                         anchorOrigin={{
                             vertical: 'bottom',
-                            horizontal: 'center',
-                        }}
-                        transformOrigin={{
+                            horizontal: 'left',
+                          }}
+                          transformOrigin={{
                             vertical: 'top',
                             horizontal: 'center',
-                        }}
+                          }}
                         >
-                        <Typography className={classes.typography}>The content of the Popover.</Typography>
+                        <ListadoNotificacion confirmNoti={this.props.setNotificacionLeida} notificaciones = {notificaciones?notificaciones:null}/>
                     </Popover>
                 </IconButton>
         )
@@ -93,7 +97,9 @@ export class NotificationCenter extends Component {
 NotificationCenter.propTypes = {
     classes: PropTypes.object.isRequired,
     user : PropTypes.object.isRequired,
-    getNotificacionesNoLeidas: PropTypes.func.isRequired
+    getNotificacionesNoLeidas : PropTypes.func.isRequired,
+    clearNotificacionesNoLeidas: PropTypes.func.isRequired,
+    setNotificacionLeida: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -101,7 +107,9 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    getNotificacionesNoLeidas
+    getNotificacionesNoLeidas,
+    clearNotificacionesNoLeidas,
+    setNotificacionLeida
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(NotificationCenter))

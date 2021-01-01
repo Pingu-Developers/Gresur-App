@@ -305,7 +305,7 @@ INSERT INTO LINEAS_ENVIADO(leido, notificacion_id, personal_id)
 	VALUES (FALSE, 1, 3);
 
 INSERT INTO LINEAS_ENVIADO(leido, notificacion_id, personal_id)
-	VALUES (TRUE, 1, 4);
+	VALUES (FALSE, 1, 4);
 
 INSERT INTO LINEAS_ENVIADO(leido, notificacion_id, personal_id)
 	VALUES (FALSE, 2, 4);
