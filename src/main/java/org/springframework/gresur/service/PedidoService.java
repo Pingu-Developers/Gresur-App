@@ -58,7 +58,7 @@ public class PedidoService {
 
 	@Transactional(readOnly = true)
 	public Pedido findByID(Long id) throws DataAccessException {
-		return pedidoRepo.findById(id).get();
+		return pedidoRepo.findById(id).orElseGet(null);
 	}
 	
 	//TODO test

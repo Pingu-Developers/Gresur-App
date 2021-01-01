@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.model.EstadoPedido;
 import org.springframework.gresur.model.Pedido;
 import org.springframework.gresur.service.PedidoService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +39,27 @@ public class PedidoController {
 	public List<Pedido> findAllByEstado(@PathVariable("estado") String estado) {
 		return pedidoService.findByEstado(EstadoPedido.valueOf(estado));
 	}
+	
+	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('DEPENDIENTE')")
+	public ResponseEntity<?> cancelarPedido(@PathVariable("id") Long id) {
+		
+		Pedido pedido = pedidoService.findByID(id);
+		
+		if(pedido != null) {
+			pedido.setEstado(EstadoPedido.CANCELADO);
+			try {
+				pedidoService.save(pedido);
+				return ResponseEntity.ok(pedido);
+			} catch (Exception e) {
+				return ResponseEntity.badRequest().body(e);
+			}
+		}
+		else {
+			return ResponseEntity.badRequest().body("Error: Pedido not pfound");
+		}
+	}
+	
 	
 
 }

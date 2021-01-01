@@ -1,9 +1,9 @@
-import { SET_USER, SET_AUTHENTICATED, SET_UNAUTHENTICATED, LOADING_USER, GET_NUMBER_NOT } from '../types';
+import { SET_USER, SET_AUTHENTICATED, SET_UNAUTHENTICATED, LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS , CLEAR_NOTIFICACIONES_NO_LEIDAS } from '../types';
 
 const initialState = {
     loading:false,
     authenticated: false,
-    nNotification: null,
+    notificaciones:[],
     credentials: {},
 }
 
@@ -27,11 +27,18 @@ export default function(state = initialState,action){
                 ...state,
                 loading: true
             };
-        case GET_NUMBER_NOT:
+        case SET_NOTIFICACIONES_NO_LEIDAS:
             return{
                 ...state,
-                nNotification: action.payload
+                notificaciones: action.payload
             }
+        
+        case CLEAR_NOTIFICACIONES_NO_LEIDAS:
+            return{
+                ...state,
+                notificaciones:[]
+            }
+
         default:
             return state;
     }
