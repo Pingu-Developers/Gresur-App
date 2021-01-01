@@ -40,7 +40,7 @@ public class PedidoController {
 		return pedidoService.findByEstado(EstadoPedido.valueOf(estado));
 	}
 	
-	@PutMapping("/{id}")
+	@PostMapping("/{id}")
 	@PreAuthorize("hasRole('DEPENDIENTE')")
 	public ResponseEntity<?> cancelarPedido(@PathVariable("id") Long id) {
 		
@@ -56,7 +56,7 @@ public class PedidoController {
 			}
 		}
 		else {
-			return ResponseEntity.badRequest().body("Error: Pedido not pfound");
+			return ResponseEntity.badRequest().body("Error: Pedido not found");
 		}
 	}
 	

@@ -34,10 +34,17 @@ export const loginUser = (userData,history) => (dispatch) =>{
             } 
         })
         .catch((err) => {
-            dispatch({
-                type:SET_ERRORS,
-                payload: err.response.data.message
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
         })
 }
 

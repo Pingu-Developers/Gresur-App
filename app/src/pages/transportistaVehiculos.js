@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { connect } from 'react-redux';
 
+//Redux stuff
+import { connect } from 'react-redux';
+import { loadVehiculos } from '../redux/actions/dataActions'
+
+//Componentes
 import Topbar from '../components/Topbar';
 
 
@@ -11,8 +15,16 @@ const style = {
 }
 
 class transportistaVehiculos extends Component {
-    static propTypes = {
-        prop: PropTypes
+    
+    constructor(props){
+        super(props);
+        this.state ={
+            data: []
+        }
+    }
+
+    componentDidMount(){
+        this.props.loadVehiculos();
     }
 
     render() {
@@ -25,15 +37,17 @@ class transportistaVehiculos extends Component {
 }
 
 transportistaVehiculos.propTypes = {
-    
+    classes: PropTypes.object.isRequired,
+    data: PropTypes.object.isRequired,
+    loadVehiculos: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
-    
+    data: state.data
 })
 
 const mapActionsToProps = {
-    
+    loadVehiculos
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(transportistaVehiculos))
