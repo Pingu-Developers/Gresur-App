@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
     background: 'transparent',
     border:'none',
     position: 'absolute',
+    top: 0,
     zIndex: 0,
   }
 }));
