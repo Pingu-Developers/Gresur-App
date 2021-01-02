@@ -169,3 +169,21 @@ export const clearVehiculos = () => (dispatch) => {
 export const clearTiposVehiculos = () => (dispatch) => {
     dispatch({type: CLEAR_TIPOSVEHICULOS})
 }
+
+export const setProducto = (producto) => (dispatch) => {
+
+    axios.post('/producto/save')
+        .then((res) => {
+            dispatch(loadProductos());
+        })
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+               console.log(err)
+            }
+        })
+}
