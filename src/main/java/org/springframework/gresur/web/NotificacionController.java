@@ -92,6 +92,10 @@ public class NotificacionController {
 	@PostMapping()
 	public ResponseEntity<?> nuevaNotificacion(@Valid @RequestBody Tuple3<List<Long>,String,String> noti) {
 		
+		System.out.println(noti.getE1());
+		System.out.println(noti.getE2());
+		System.out.println(noti.getE3());
+		
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
 		
