@@ -57,18 +57,15 @@ function NuevaNotificacion(props) {
     const handleChangePara = (event , value) =>  {
         let temp = []
 
-        value.map((pair)=>temp.push(pair.Persona))
+        value.map((pair)=>temp.push(pair.Persona.id))
 
         setValuePara(temp);
-        console.log(valuePara);
     }
     
     const handleClick = () => {
         props.handleClose()
 
-        setValue('NORMAL')
-        setValuePara([])
-        setValueBody('')
+        
         
     };
 
@@ -97,7 +94,7 @@ function NuevaNotificacion(props) {
                 default:
                     break;
             }
-            if(valuePara.indexOf(persona) == -1 && persona.id !== counter.user.personal.id){
+            if(valuePara.indexOf(persona.id) == -1 && persona.id !== counter.user.personal.id){
                 datos.push({ 'Tipo': Tipo , 'Persona': persona})
             }
             
@@ -109,13 +106,18 @@ function NuevaNotificacion(props) {
 
     const handleSubmit = (event) =>  {
         event.preventDefault();
+        console.log(valuePara)
         const nuevaNoti = {
             e1:valuePara,
             e2:valueBody,
             e3:value
         }
-        dispatch(postNotificacion(nuevaNoti))  
         console.log(nuevaNoti)
+        dispatch(postNotificacion(nuevaNoti))  
+        
+        setValue('NORMAL')
+        setValuePara([])
+        setValueBody('')
         
      }
 

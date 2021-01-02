@@ -93,7 +93,7 @@ export const postNotificacion = (nuevaNoti) => (dispatch) => {
             console.log("TODO OK BRO")
         })
         .catch((err) => {
-            console.log(err);
+            console.log(err.response);
             dispatch({
                 type:SET_ERRORS,
                 payload: err
