@@ -144,8 +144,9 @@ function ListadoNotificacion(props) {
                 }
             </div>
             <br/>
-            <br/>
-             
+            {!seleccionado?<br/>:null}
+            {!seleccionado?<br/>:null}
+            <Divider />
             {data &&data.length !==0?data.map((notificacion) =>
             <div style={{width:305, margin:20}}>
                 <Notificacion confirmNoti={props.confirmNoti} leida = {seleccionado} notificacion = {notificacion}/>
