@@ -95,6 +95,11 @@ public class NotificacionService {
 		return notificacionRepo.findNoLeidasForPersonal(p.getId());
 	}
 	
+	@Transactional(readOnly = true)
+	public List<Notificacion> findLeidasPersonal(Personal p){
+		return notificacionRepo.findLeidasForPersonal(p.getId());
+	}
+	
 	@Transactional
 	public void deleteAll() throws DataAccessException{
 		notificacionRepo.deleteAll();

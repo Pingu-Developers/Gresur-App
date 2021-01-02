@@ -109,10 +109,12 @@ export default function Notificacion(props) {
             <Typography  className={color} variant="caption text">
                 Prioridad: {notificacion.tipoNotificacion.toLowerCase()}
             </Typography>
-
-            <IconButton id={notificacion.id} onClick={handleClick} className={classes.button} aria-label="Check leido">
-                <DoneAllIcon />
-            </IconButton>
+            {!props.leida?(
+              <IconButton id={notificacion.id} onClick={handleClick} className={classes.button} aria-label="Check leido">
+                  <DoneAllIcon />
+              </IconButton>
+            ):null}
+            
         </CardActions>
         </Card>
     );
