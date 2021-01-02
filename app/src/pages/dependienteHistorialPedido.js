@@ -6,13 +6,16 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
+import FormControl from '@material-ui/core/FormControl';
+import InputBase from '@material-ui/core/InputBase';
+
+
 
 //Redux stuff
 import { connect } from 'react-redux';
 import { loadPedidos,loadPedidosByEstado,cancelarPedido } from '../redux/actions/dataActions';
 
 //Components
-import Topbar from '../components/Topbar';
 import TablaPedidosDesplegable from '../components/TablaPedidosDesplegable';
 import Snackbar from '../components/SnackBar'
 
@@ -21,10 +24,10 @@ const style = {
     root:{
         flexGrow: 1, 
     },
-    cuerpo:{
-        margin: "2%",
-    },
     form:{
+        margin:"0.7%",
+        marginLeft:35,
+        fontSize:15,
         display: "inline-block",
     },
     tituloCatalogo: {
@@ -33,11 +36,34 @@ const style = {
         fontWeight: 600
     },
     Select:{
+        
         marginRight:30,
-        minWidth: 120,
+        minWidth: 100,
+        fontSize:15,
         display: "inline-block",
+
+        '&$outlined':{
+            padding:0
+        },
+
+        '&$input':{
+            padding:0
+        }
+
     }
 }
+
+const BootstrapInput = withStyles((theme) => ({
+    input: {
+      borderRadius: 4,
+      position: 'relative',
+      backgroundColor: theme.palette.background.paper,
+      border: '1px solid #FFBC69',
+      fontSize: 16,
+      padding: '10px 26px 10px 12px',
+      transition: theme.transitions.create(['border-color', 'box-shadow']),
+    },
+  }))(InputBase);
 
 class dependienteHistorialPedido extends Component {
 
@@ -73,7 +99,6 @@ class dependienteHistorialPedido extends Component {
         return (
             <div className = {classes.root}>
 
-                {console.log(errors?true:false)}
                 <Snackbar type = "error" open = {errors?true:false} message = {errors}></Snackbar>
                 {errors ? document.getElementById("botonSnack").click():null}
 
@@ -85,39 +110,47 @@ class dependienteHistorialPedido extends Component {
                         variant='body1'>
                         Mostrando:
                     </Typography>
-                    <Select
-                        className={classes.Select}
-                        labelId="demo-simple-select-outlined-label"
-                        id="demo-simple-select-outlined"
-                        name = "selected" 
-                        value={this.state.selected?this.state.selected:"TODO"}
-                        onChange={this.handleChangeSelected}
-                        >
-                        <MenuItem value="TODO">Todo</MenuItem>
-                        <MenuItem value="EN_ESPERA">En Espera</MenuItem>
-                        <MenuItem value="EN_TIENDA">En Tienda</MenuItem>
-                        <MenuItem value="PREPARADO">Preparado</MenuItem>
-                        <MenuItem value="EN_REPARTO">En Reparto</MenuItem>
-                        <MenuItem value="ENTREGADO">Entregado</MenuItem>
-                        <MenuItem value="CANCELADO">Cancelado</MenuItem>
-                    </Select>
+                    <FormControl variant="outlined" className={classes.Select}>
+                        <Select
+                            //className={classes.Select}
+                            labelId="demo-simple-select-outlined-label"
+                            id="demo-simple-select-outlined"
+                            name = "selected" 
+                            value={this.state.selected?this.state.selected:"TODO"}
+                            onChange={this.handleChangeSelected}
+                            input = {<BootstrapInput/>}
+                            >
+                            <MenuItem value="TODO">Todo</MenuItem>
+                            <MenuItem value="EN_ESPERA">En Espera</MenuItem>
+                            <MenuItem value="EN_TIENDA">En Tienda</MenuItem>
+                            <MenuItem value="PREPARADO">Preparado</MenuItem>
+                            <MenuItem value="EN_REPARTO">En Reparto</MenuItem>
+                            <MenuItem value="ENTREGADO">Entregado</MenuItem>
+                            <MenuItem value="CANCELADO">Cancelado</MenuItem>
+                        </Select>
+                    </FormControl>
+                    
 
                     <Typography 
                         className={classes.form}
                         variant='body1'>
                         Ordenar:
                     </Typography>
-                    <Select
-                        className={classes.Select}
-                        labelId="demo-simple-select-outlined-label"
-                        id="demo-simple-select-outlined"
-                        name = "ordered" 
-                        value={this.state.ordered?this.state.ordered:"MAS_NUEVO"}
-                        onChange={this.handleChange}
-                        >
-                        <MenuItem value="MAS_NUEVO">Mas nuevo</MenuItem>
-                        <MenuItem value="MAS_ANTIGUO">Mas antiguo</MenuItem>
-                    </Select>
+                    <FormControl variant="outlined" className={classes.Select}>
+                        <Select
+                            //className={classes.Select}
+                            labelId="demo-simple-select-outlined-label"
+                            id="demo-simple-select-outlined"
+                            name = "ordered" 
+                            value={this.state.ordered?this.state.ordered:"MAS_NUEVO"}
+                            onChange={this.handleChange}
+                            input = {<BootstrapInput/>}
+                            >
+                            <MenuItem value="MAS_NUEVO">Mas nuevo</MenuItem>
+                            <MenuItem value="MAS_ANTIGUO">Mas antiguo</MenuItem>
+                        </Select>
+                    </FormControl>
+                    
                     </form>
                     <div className={classes.main}>
                         

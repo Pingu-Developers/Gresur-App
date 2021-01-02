@@ -7,9 +7,7 @@ import { connect } from 'react-redux';
 import { loadProductos } from '../redux/actions/dataActions';
 
 //Components
-import Topbar from '../components/Topbar';
 import TablaCatalogoEncargado from '../components/TablaCatalogoEncargado';
-
 const style = {
 
 }
@@ -31,12 +29,8 @@ class encargadoCatalogo extends Component {
 
         return (
             <div>
-                <div className={classes.main}>
-                  { 
-                    data.length ===0? null: data.categorias.map((row) => 
-                        <TablaCatalogoEncargado categoria={row} productos = {data.productos}/>
-                    )
-                  }
+                 <div className={classes.main}>
+                    {data.length === 0? null:<TablaCatalogoEncargado data = {data}/>}
                 </div>
             </div>
         )
