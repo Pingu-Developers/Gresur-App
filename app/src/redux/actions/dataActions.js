@@ -172,7 +172,7 @@ export const clearTiposVehiculos = () => (dispatch) => {
 
 export const setProducto = (producto) => (dispatch) => {
 
-    axios.post('/producto/save')
+    axios.post('/producto/save', producto)
         .then((res) => {
             dispatch(loadProductos());
         })
