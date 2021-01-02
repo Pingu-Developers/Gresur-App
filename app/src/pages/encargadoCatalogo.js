@@ -4,7 +4,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 //Redux Stuff
 import { connect } from 'react-redux';
-import { loadProductos } from '../redux/actions/dataActions';
+import { loadProductos , setProducto} from '../redux/actions/dataActions';
 
 //Components
 import TablaCatalogoEncargado from '../components/TablaCatalogoEncargado';
@@ -40,7 +40,8 @@ class encargadoCatalogo extends Component {
 encargadoCatalogo.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
-    loadProductos: PropTypes.func.isRequired
+    loadProductos: PropTypes.func.isRequired,
+    setProducto: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({

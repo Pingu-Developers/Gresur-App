@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormPropsTextFields(props) {
     const classes = useStyles();
+    const producto = props.prod;
 
     return (
         <form className={classes.root} noValidate autoComplete="off">
@@ -22,59 +23,59 @@ export default function FormPropsTextFields(props) {
                     required
                     id="standard-required"
                     label="Nombre producto"
-                    defaultValue={props.prod.nombre}
+                    defaultValue={producto.nombre}
                 />
                 <TextField
                     required
                     id="standard-required"
                     label="Descripcion"
-                    defaultValue={props.prod.descripcion} />
+                    defaultValue={producto.descripcion} />
                 <TextField
                     id="standard-number"
                     label="Stock"
                     type="number"
-                    defaultValue={props.prod.stock}
+                    defaultValue={producto.stock}
                 />
                 <TextField
                     id="standard-number"
                     label="Stock de Seguridad"
                     type="number"
-                    defaultValue={props.prod.stockSeguridad}
+                    defaultValue={producto.stockSeguridad}
                 />
                 <TextField
                     id="standard-required"
                     label="Ancho (m)"
                     type="number"
-                    defaultValue={props.prod.ancho}
+                    defaultValue={producto.ancho}
                 />
                 <TextField
                     id="standard-required"
                     label="Alto (m)"
                     type="number"
-                    defaultValue={props.prod.alto}
+                    defaultValue={producto.alto}
                 />
                 <TextField
                     id="standard-required"
                     label="Profundo (m)"
                     type="number"
-                    defaultValue={props.prod.profundo}
+                    defaultValue={producto.profundo}
                 />
                 <TextField
                     id="standard-required"
                     label="URL imagen"
-                    defaultValue={props.prod.urlimagen}
+                    defaultValue={producto.urlimagen}
                 />
                 <TextField
                     id="standard-required"
                     label="Precio venta público (€)"
                     type="number"
-                    defaultValue={props.prod.precioVenta}
+                    defaultValue={producto.precioVenta}
                 />
                 <TextField
                     id="standard-required"
                     label="Precio compra (€)"
                     type="number"
-                    defaultValue={props.prod.precioCompra}
+                    defaultValue={producto.precioCompra}
                 />
             </div>
         </form>
