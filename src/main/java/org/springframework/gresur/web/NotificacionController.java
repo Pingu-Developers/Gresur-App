@@ -64,6 +64,18 @@ public class NotificacionController {
 		return list;
 	}
 	
+	@GetMapping("/leidas")
+	public List<Notificacion> notificacionesLeidas() {
+		
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		
+		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+		
+		List<Notificacion> list = notificacionService.findLeidasPersonal(per);
+		return list;
+	}
+	
 	@PostMapping("/setLeida/{id}")
 	public ResponseEntity<?> setLeida(@PathVariable("id") Long id) {
 		
