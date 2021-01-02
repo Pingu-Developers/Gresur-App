@@ -4,14 +4,32 @@ import Notificacion from './Notificacion';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Divider from '@material-ui/core/Divider';
+import NuevaNotificacion from './NuevaNotificacion';
+
+
+//REDUX Stuff
+import { useDispatch } from "react-redux";
+import { loadPersonal } from '../redux/actions/dataActions'
 
 
 const useStyles = makeStyles({
 
 });
 
-export default function ListadoNotificacion(props) {
+function ListadoNotificacion(props) {
     const classes = useStyles();
+
+    const dispatch = useDispatch();
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        dispatch(loadPersonal())
+        setOpen(true);
+    };
+  
+    const handleClose = () => {
+      setOpen(false);
+    };
 
     const { notificaciones } = props;
 
@@ -24,9 +42,15 @@ export default function ListadoNotificacion(props) {
             </div>
             ):null}
 
-            <IconButton color="primary"  aria-label="New notification">
+            <IconButton color="primary" onClick={open?null:handleClickOpen}  aria-label="New notification">
                 <AddCircleIcon fontSize="large" />
+                <NuevaNotificacion open={open} handleClose={open?handleClose:null} />
             </IconButton>
         </div>
     )
 }
+
+
+
+
+export default ListadoNotificacion
