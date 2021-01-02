@@ -21,27 +21,37 @@ import { connect } from 'react-redux';
 
 const styles = {
     root: {
-        flexGrow: 1,
-      },
+      flexGrow: 1,
+    },
     large: {
-        width: 60,
-        height: 60,
-      },
+      width: 60,
+      height: 60,
+    },
     menuButton: {
-        marginRight: 20,
-      },
+      marginRight: 20,
+    },
+    tabsDiv: {
+      flexGrow: 1,
+      paddingLeft: 30
+    },
     tabs: {
-        flexGrow: 1,
-      },
+      minHeight: 64,
+    },
+    tab: {
+      minHeight: 64,
+      color: "white",
+      fontSize: 17,
+      fontWeight: 600
+    },
     button: {
-        display: "inline-block",
-        paddingTop: 7,
-        color: "white",
+      display: "inline-block",
+      paddingTop: 7,
+      color: "white",
     },
     nombreUser: {
-        marginRight: 20,
-        fontSize: 22,
-        fontWeight: 600,
+      marginRight: 20,
+      fontSize: 22,
+      fontWeight: 600,
     },
 }
 
@@ -106,14 +116,20 @@ function TabPanel(props) {
             <Toolbar>
                 <Avatar src={GresurImg} className={classes.large}/>
 
-                <div className={classes.tabs}>
-                    <Tabs value={this.state.tabValue} onChange={this.tabHandleChange} aria-label="topnav tabs">
+                <div className={classes.tabsDiv}>
+                    <Tabs 
+                      value={this.state.tabValue} 
+                      onChange={this.tabHandleChange} 
+                      aria-label="topnav tabs"
+                      className={classes.tabs}
+                      >
                         {
                         dict ? Object.keys(dict).map((key) =>         
                           <Tab
                             value= {key}
                             label= {key}
                             wrapped
+                            className = {classes.tab}
                             {...a11yProps(key)}
                           />
                         ) : null
