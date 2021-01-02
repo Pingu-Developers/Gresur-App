@@ -1,8 +1,7 @@
 package org.springframework.gresur.web;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +14,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,9 +41,7 @@ public class ProductoController {
 		
 		List<Producto> lp = productoService.findAllProductosByName(nombre);
 		
-		List<Categoria> lc = new ArrayList<Categoria>();
-		lp.stream().map(x->x.getEstanteria().getCategoria()).distinct().forEach(x->lc.add(x));
-		Collections.sort(lc);
+		List<Categoria> lc = lp.stream().map(x->x.getEstanteria().getCategoria()).distinct().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
 		
 		return Pair.of(lp, lc);
 	}
