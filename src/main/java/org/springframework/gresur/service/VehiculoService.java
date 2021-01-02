@@ -149,15 +149,11 @@ public class VehiculoService {
 		return disponibilidadVehiculo && (pedidosEnRepartoVehiculo.size() == 0 || pedidosEnRepartoVehiculo.stream().allMatch(x->x.getTransportista().equals(t)));
 	}
 	
-	@Scheduled(cron = "0 7 * * * *")
+	@Scheduled(cron = "0 0 7 * * *")
 	@Transactional
 	public void ITVSeguroReparacionvalidation() throws UnknownException{
 		Iterator<Vehiculo> vehiculos = vehiculoRepository.findAll().iterator();
-		
-		// creacion de notificacion
-		Notificacion warning = new Notificacion();
-		warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
-		
+			
 		// Receptores de la notificacion
 		List<Personal> lPer = new ArrayList<>();
 		for (Personal per : adminService.findAllPersonal()) {
@@ -172,14 +168,23 @@ public class VehiculoService {
 			Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(v.getMatricula());
 			Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo(v.getMatricula());
 			
-			if(ultimaITVFavorable == null) {				
-				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a la invalidez o caducidad de su ITV");
-			} if(ultimoSeguro == null || ultimoSeguro.getFechaExpiracion().isBefore(LocalDate.now())) {				
-				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a la invalidez o caducidad de su Seguro");			
-			} if(ultimaReparacion != null && (ultimaReparacion.getFechaSalidaTaller() == null || ultimaReparacion.getFechaSalidaTaller().isAfter(LocalDate.now()))) {		
-				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a que esta en reparacion");			
-			} try {
-				notificacionService.save(warning,lPer);
+			try {
+				if(ultimaITVFavorable == null) {
+					Notificacion warning = new Notificacion();
+					warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
+					warning.setCuerpo("El vehículo con matrícula:" + v.getMatricula() + " ha dejado de estar disponible debido a la invalidez o caducidad de su ITV");
+					notificacionService.save(warning,lPer);
+				} if(ultimoSeguro == null || ultimoSeguro.getFechaExpiracion().isBefore(LocalDate.now())) {		
+					Notificacion warning = new Notificacion();
+					warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
+					warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + " ha dejado de estar disponible debido a la invalidez o caducidad de su Seguro");		
+					notificacionService.save(warning,lPer);
+				} if(ultimaReparacion != null && (ultimaReparacion.getFechaSalidaTaller() == null || ultimaReparacion.getFechaSalidaTaller().isAfter(LocalDate.now()))) {	
+					Notificacion warning = new Notificacion();
+					warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
+					warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + " ha dejado de estar disponible debido a que esta en reparacion");	
+					notificacionService.save(warning,lPer);
+				}			
 			} catch (Exception e) {
 				throw new UnknownException(e);
 			}
