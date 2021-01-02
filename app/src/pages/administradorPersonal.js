@@ -33,7 +33,6 @@ export class administradorPersonal extends Component {
         const {classes, data} = this.props;
         return (
            <div>
-                <Topbar/>
                 <div>
                     <BotonNuevoEmpleado align="right"></BotonNuevoEmpleado>
                 </div>                  

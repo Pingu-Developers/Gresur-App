@@ -31,8 +31,6 @@ class encargadoCatalogo extends Component {
 
         return (
             <div>
-                <Topbar/>
-
                 <div className={classes.main}>
                   { 
                     data.length ===0? null: data.categorias.map((row) => 

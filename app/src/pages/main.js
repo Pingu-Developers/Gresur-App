@@ -30,31 +30,31 @@ function main(props) {
     if(roles){
         switch(roles[0]){
             case 'ROLE_DEPENDIENTE':
-                selectedTab = 'Catálogo';
+                selectedTab = 'Catalogo';
                 dict = {'Nuevo Pedido' : <DependienteNuevoPedido/>, 
                         'Todos los pedidos' : <DependienteHistorialPedido/>,
-                        'Catálogo' : <DependienteCatalogo/>,
+                        'Catalogo' : <DependienteCatalogo/>,
                         'Devoluciones' : <DependienteDevoluciones/>}
                 break;
             case 'ROLE_TRANSPORTISTA':
                 selectedTab = 'Pedidos';
                 dict = {'Pedidos' : <TranportistaPedidos/>,
-                        'Mis vehículos' : <TransportistaVehiculos/>,
+                        'Mis vehiculos' : <TransportistaVehiculos/>,
                         'Mapa' : <TransportistaMapa/>} 
                 break;
             
             case "ROLE_ENCARGADO":
-                selectedTab = 'Catálogo';
-                dict = {'Catálogo' : <EncargadoCatalogo/>,
-                        'Gestión de almacén' : <EncargadoGestion/>}
+                selectedTab = 'Catalogo';
+                dict = {'Catalogo' : <EncargadoCatalogo/>,
+                        'Gestion de almacen' : <EncargadoGestion/>}
                 break;
 
             case "ROLE_ADMIN":
-                selectedTab = 'Personal'
+                selectedTab = 'Personal';
                 dict = {'Personal' : <AdministradorPersonal/>,
-                        'Gestión de transporte' : <AdministradorTransporte/>,
-                        'Gestión de stock' : <AdministradorStock/>,
-                        'Facturación' : <AdministradorFacturacion/>}
+                        'Gestion de transporte' : <AdministradorTransporte/>,
+                        'Gestion de stock' : <AdministradorStock/>,
+                        'Facturacion' : <AdministradorFacturacion/>}
                 break;
 
             default:

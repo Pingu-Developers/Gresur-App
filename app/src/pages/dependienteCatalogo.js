@@ -39,7 +39,6 @@ class dependienteCatalogo extends Component {
 
         return (
             <div>
-                <Topbar/>
                 <Typography variant='h3' className={classes.tituloCatalogo}>CATÁLOGO DE PRODUCTOS</Typography>
                 
                 <div className={classes.main}>
