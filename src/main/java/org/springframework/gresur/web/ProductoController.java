@@ -32,7 +32,7 @@ public class ProductoController {
 	}
 	
 	@GetMapping
-	@PreAuthorize("hasRole('DEPENDIENTE')")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ENCARGADO')")
 	public Pair<List<Producto>, List<Categoria>> findProductos(){
 		return Pair.of(productoService.findAll(), Arrays.asList(Categoria.values()));
 	}

@@ -57,7 +57,8 @@ export default function ControlledAccordions(props) {
         setExpanded(isExpanded ? panel : false);
     };
 
-    const categoria = props.categoria;
+    const categorias = props.data.categorias
+    const productos = props.data.productos
 
     //Funciones Vista Editar Producto
     const [open, setOpen] = React.useState(false);
@@ -71,87 +72,93 @@ export default function ControlledAccordions(props) {
 
     return (
         <div className={classes.root}>
-            <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1bh-content"
-                    id="panel1bh-header"
-                    className={classes.acordeon}
-                >
-                    <Typography className={classes.heading}>
-                        <b>{categoria}</b> {props.productos.map(producto => producto.estanteria.categoria === categoria && producto.stock < producto.stockSeguridad ? <WarningIcon color="primary" /> : null)}
-                    </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <TableContainer component={Paper}>
-                        <Table className={classes.table} size="small" aria-label="a dense table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell></TableCell>
-                                    <TableCell><b>Producto</b></TableCell>
-                                    <TableCell></TableCell>
-                                    <TableCell><b>Dimensiones (H x W x D)</b></TableCell>
-                                    <TableCell><b>Precio de compra</b></TableCell>
-                                    <TableCell><b>Precio de venta</b></TableCell>
-                                    <TableCell><b>Beneficio por venta</b></TableCell>
-                                    <TableCell><b>Demanda</b></TableCell>
-                                    <TableCell><b>En stock</b></TableCell>
-                                    <TableCell><b>Unidad</b></TableCell>
-                                    <TableCell></TableCell>
-                                </TableRow>
-                            </TableHead>
+            {
+            categorias.map((row) => 
+            <Accordion
+            square
+            className = {classes.acordeon}
+            expanded={expanded === categorias.indexOf(row)} 
+            onChange={handleChange(categorias.indexOf(row))}>
+            <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1bh-content"
+                id="panel1bh-header"
+                className={classes.acordeon}
+            >
+                <Typography className={classes.heading}><b>{row}</b></Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+            <TableContainer component={Paper}>
+                    <Table className={classes.table} size="small" aria-label="a dense table">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell></TableCell>
+                                <TableCell><b>Producto</b></TableCell>
+                                <TableCell></TableCell>
+                                <TableCell><b>Dimensiones (H x W x D)</b></TableCell>
+                                <TableCell><b>Precio de compra</b></TableCell>
+                                <TableCell><b>Precio de venta</b></TableCell>
+                                <TableCell><b>Beneficio por venta</b></TableCell>
+                                <TableCell><b>Demanda</b></TableCell>
+                                <TableCell><b>En stock</b></TableCell>
+                                <TableCell><b>Unidad</b></TableCell>
+                                <TableCell></TableCell>
+                            </TableRow>
+                        </TableHead>
 
-                            <TableBody>
-                                {props.productos.map((producto) =>
-                                    producto.estanteria.categoria === categoria ? (
-                                        <TableRow>
-                                            <TableCell><Button onClick={handleClickOpen}><EditIcon /></Button></TableCell>
-                                            <Dialog
-                                                open={open}
-                                                onClose={handleClose}
-                                                aria-labelledby="alert-dialog-title"
-                                                aria-describedby="alert-dialog-description"
-                                            >
-                                                <DialogTitle id="alert-dialog-title">{"Editar producto"}</DialogTitle>
-                                                <DialogContent>
-                                                    <EdicionProducto prod= {producto}/>
-                                                </DialogContent>
-                                                <DialogActions>
-                                                    <Button onClick={handleClose} color="primary">
-                                                        Guardar Cambios
-                                                    </Button>
-                                                    <Button onClick={handleClose} color="primary" autoFocus>
-                                                        Descartar
-                                                    </Button>
-                                                </DialogActions>
-                                            </Dialog>
-                                            
-                                            <Tooltip title={producto.descripcion}
-                                                placement="right">
-                                            <TableCell>{producto.nombre}</TableCell>
-                                            </Tooltip>
-                                            
-                                            <TableCell>{alertaStockProducto(producto)}</TableCell>
-                                            <TableCell>{producto.alto} x {producto.ancho} x {producto.profundo}</TableCell>
-                                            <TableCell>{producto.precioCompra}€</TableCell>
-                                            <TableCell>{producto.precioVenta}€</TableCell>
-                                            <TableCell>{(parseFloat(producto.precioVenta) - parseFloat(producto.precioCompra)).toFixed(2)}€</TableCell>
-                                            <TableCell>demanda</TableCell>
-                                            <TableCell>{producto.stock}</TableCell>
-                                            <TableCell>{producto.unidad}</TableCell>
-                                            <TableCell></TableCell>
-                                        </TableRow>
-                                    ) : null
-                                )}
+                        <TableBody>
+                            {productos.map((producto) =>
+                                producto.estanteria.categoria === row ? (
+                                    <TableRow>
+                                        <TableCell><Button onClick={handleClickOpen}><EditIcon /></Button></TableCell>
+                                        <Dialog
+                                            open={open}
+                                            onClose={handleClose}
+                                            aria-labelledby="alert-dialog-title"
+                                            aria-describedby="alert-dialog-description"
+                                        >
+                                            <DialogTitle id="alert-dialog-title">{"Editar producto"}</DialogTitle>
+                                            <DialogContent>
+                                                <EdicionProducto prod= {producto}/>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button onClick={handleClose} color="primary">
+                                                    Guardar Cambios
+                                                </Button>
+                                                <Button onClick={handleClose} color="primary" autoFocus>
+                                                    Descartar
+                                                </Button>
+                                            </DialogActions>
+                                        </Dialog>
+                                        
+                                        <Tooltip title={producto.descripcion}
+                                            placement="right">
+                                        <TableCell>{producto.nombre}</TableCell>
+                                        </Tooltip>
+                                        
+                                        <TableCell>{alertaStockProducto(producto)}</TableCell>
+                                        <TableCell>{producto.alto} x {producto.ancho} x {producto.profundo}</TableCell>
+                                        <TableCell>{producto.precioCompra}€</TableCell>
+                                        <TableCell>{producto.precioVenta}€</TableCell>
+                                        <TableCell>{(parseFloat(producto.precioVenta) - parseFloat(producto.precioCompra)).toFixed(2)}€</TableCell>
+                                        <TableCell>demanda</TableCell>
+                                        <TableCell>{producto.stock}</TableCell>
+                                        <TableCell>{producto.unidad}</TableCell>
+                                        <TableCell></TableCell>
+                                    </TableRow>
+                                ) : null
+                            )}
 
-                            </TableBody>
+                        </TableBody>
 
-                        </Table>
-                    </TableContainer>
-                </AccordionDetails>
+                    </Table>
+                </TableContainer>
+            </AccordionDetails>
 
 
-            </Accordion>
+        </Accordion>
+            )}
+            
         </div>
     );
 }
