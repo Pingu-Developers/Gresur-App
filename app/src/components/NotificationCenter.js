@@ -33,7 +33,7 @@ export class NotificationCenter extends Component {
 
     componentDidMount() {
         this.props.getNotificacionesNoLeidas()
-        this.interval = setInterval(() => this.props.getNotificacionesNoLeidas(), 60000);
+        this.interval = setInterval(() => this.props.getNotificacionesNoLeidas(), 15000);
     }
     
     componentWillUnmount() {

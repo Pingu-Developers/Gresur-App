@@ -73,13 +73,27 @@ export const clearNotificacionesNoLeidas = () => (dispatch) => {
 
 export const setNotificacionLeida = (id) => (dispatch) => {
 
-
     axios.post(`/notificacion/setLeida/${id}`)
         .then((res) => {
             dispatch(getNotificacionesNoLeidas());
         })
         .catch((err) => {
             console.log(err);
+            dispatch({
+                type:SET_ERRORS,
+                payload: err
+            })
+        })
+}
+
+export const postNotificacion = (nuevaNoti) => (dispatch) => {
+
+    axios.post('/notificacion',nuevaNoti)
+        .then((res) => {
+            console.log("TODO OK BRO")
+        })
+        .catch((err) => {
+            console.log(err.response);
             dispatch({
                 type:SET_ERRORS,
                 payload: err

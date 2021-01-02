@@ -5,7 +5,8 @@ const initialState = {
     productos:[],
     categorias:[],
     vehiculos:[],
-    tiposVehiculos:[]
+    tiposVehiculos:[],
+    personal:[],
 }
 
 export default function(state = initialState,action){
