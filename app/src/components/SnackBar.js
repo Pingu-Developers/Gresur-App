@@ -16,7 +16,9 @@ const useStyles = makeStyles((theme) => ({
   },
   button:{
     background: 'transparent',
-    border:'none'
+    border:'none',
+    position: 'absolute',
+    zIndex: 0,
   }
 }));
 
