@@ -17,7 +17,7 @@ class administradorStock extends Component {
     render() {
         return (
             <div>
-                <Topbar/>
+                <h1>WIP</h1>
             </div>
         )
     }

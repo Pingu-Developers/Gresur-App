@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {BrowserRouter as Router,Route,Switch,Redirect} from 'react-router-dom';
 import './App.css';
 import {ThemeProvider} from '@material-ui/core/styles'
@@ -17,19 +17,7 @@ import { logoutUser, getUserData } from './redux/actions/userActions'
 import AuthRoute from './util/AuthRoute';
 
 //Pages
-import administradorPersonal from './pages/administradorPersonal'
-import administradorFacturacion from './pages/administradorFacturacion'
-import administradorStock from './pages/administradorStock'
-import administradorTransporte from './pages/administradorTransporte'
-import encargadoCatalogo from './pages/encargadoCatalogo'
-import encargadoGestion from './pages/encargadoGestion'
-import tranportistaPedidos from './pages/transportistaPedido'
-import transportistaVehiculos from './pages/transportistaVehiculos'
-import transportistaMapa from './pages/transportistaMapa'
-import dependienteNuevoPedido from './pages/dependienteNuevoPedido'
-import dependienteDevoluciones from './pages/dependienteDevoluciones'
-import dependienteCatalogo from './pages/dependienteCatalogo'
-import dependienteHistorialPedido from './pages/dependienteHistorialPedido'
+import main from './pages/main'
 import login from './pages/login';
 
 axios.defaults.baseURL = "http://localhost:8080/api";
@@ -76,19 +64,7 @@ function App() {
       <div>
         <Router>
               <Switch>
-                <Route exact path = "/personal" component={administradorPersonal}/>
-                <Route exact path = "/facturas" component={administradorFacturacion}/> 
-                <Route exact path = "/gestionStock" component={administradorStock}/> 
-                <Route exact path = "/gestionVehiculo" component={administradorTransporte}/>  
-                <Route exact path = "/catalogo" component={encargadoCatalogo}/> 
-                <Route exact path = "/almacen" component={encargadoGestion}/> 
-                <Route exact path = "/pedidos" component={tranportistaPedidos}/>
-                <Route exact path = "/vehiculos" component={transportistaVehiculos}/> 
-                <Route exact path = "/mapa" component={transportistaMapa}/>  
-                <Route exact path = "/nuevoPedido" component={dependienteNuevoPedido}/>
-                <Route exact path = "/devolucion" component={dependienteDevoluciones}/>
-                <Route exact path = "/catalogoVenta" component={dependienteCatalogo}/>
-                <Route exact path = "/historial" component={dependienteHistorialPedido}/>
+                <Route exact path = "/" component={main}/>
                 <AuthRoute exact path="/login" component={login}/>
               </Switch>
         </Router>

@@ -9,29 +9,6 @@ export const loginUser = (userData,history) => (dispatch) =>{
             setAuthorizationHeader(res.data.token);
             dispatch(getUserData());
             dispatch({ type: CLEAR_ERRORS });
-            //TODO PUSH TO USER PAGE
-
-            switch (res.data.roles[0]) {
-                case "ROLE_DEPENDIENTE":
-                    history.push('/nuevoPedido');
-                    break;
-                 
-                case "ROLE_TRANSPORTISTA":
-                    history.push('/pedidos');
-                    break;
-
-                case "ROLE_ENCARGADO":
-                    history.push('/catalogo');
-                    break;
-
-                case "ROLE_ADMIN":
-                    history.push('/personal');
-                    break;
-
-                default:
-                    history.push('/');
-                    break;
-            } 
         })
         .catch((err) => {
             if(err.response){

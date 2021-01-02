@@ -72,7 +72,6 @@ class dependienteHistorialPedido extends Component {
         const {classes, data ,UI:{errors}} = this.props;
         return (
             <div className = {classes.root}>
-                <Topbar/>
 
                 {console.log(errors?true:false)}
                 <Snackbar type = "error" open = {errors?true:false} message = {errors}></Snackbar>
