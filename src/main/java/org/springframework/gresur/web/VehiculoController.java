@@ -54,7 +54,7 @@ public class VehiculoController {
 	protected UserRepository userRepository;
 	
 	
-	@GetMapping()
+	@GetMapping
 	@PreAuthorize("hasRole('TRANSPORTISTA')")
 	public List<Tuple4<Vehiculo, String, String, String>> getVehiculosITVSeguroDisponibilidad(){
 		

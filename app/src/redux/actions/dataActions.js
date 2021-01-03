@@ -1,4 +1,4 @@
-import { SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS } from '../types';
+import { SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION } from '../types';
 import axios from 'axios';
 
 export const loadPedidos = () => (dispatch) => {
@@ -181,4 +181,32 @@ export const setProducto = (producto) => (dispatch) => {
                console.log(err)
             }
         })
+}
+
+export const loadOcupacionVehiculosEnReparto = () => function (dispatch) {
+    dispatch({type: LOADING_UI})
+
+    axios.get('/pedido/ocupacion')
+        .then((res) => {
+            dispatch({type: SET_OCUPACION, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
+}
+
+export const clearOcupacion = () => (dispatch) => {
+    dispatch({type: CLEAR_OCUPACION})
 }
