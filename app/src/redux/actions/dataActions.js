@@ -117,10 +117,24 @@ export const clearCategorias = () => (dispatch) => {
 }
 
 export const loadPersonal = () => function (dispatch) {
-
     dispatch({type: LOADING_UI})
+    
+    axios.get('/contrato')
+        .then((res) => {
+            dispatch({type: SET_PERSONAL, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.get.message
+            })
+        })
+}
 
-    axios.get('/adm/personal')
+export const deletePersonal = (nif) => function (dispatch){
+    dispatch({type: LOADING_UI})
+    axios.post(`/delete/${nif}`)
         .then((res) => {
             dispatch({type: SET_PERSONAL, payload: res})
             dispatch({type: CLEAR_ERRORS})
@@ -136,6 +150,27 @@ export const loadPersonal = () => function (dispatch) {
 export const clearPersonal = () => (dispatch) => {
     dispatch({type: CLEAR_PERSONAL})
 }
+
+export const addPersonal = (rolEmpleado,personal) => (dispatch) =>{
+        axios.post(`/adm/add/${rolEmpleado.rol}`,personal)
+        .then((res) => {
+            dispatch(loadPersonal());
+        })
+        .catch((err) => {
+            console.log(err)
+        }) 
+}
+
+export const addContrato = (nif,contrato) => (dispatch) =>{
+    axios.post(`/contrato/add/${nif}`,contrato)
+    .then((res) => {
+        dispatch(loadPersonal());
+    })
+    .catch((err) => {
+        console.log(err)
+    }) 
+}
+
 
 export const loadVehiculosITVSeguroDisponibilidadByTransportista = () => function (dispatch) {
     dispatch({type: LOADING_UI})
