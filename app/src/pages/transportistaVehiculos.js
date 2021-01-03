@@ -26,7 +26,7 @@ class transportistaVehiculos extends Component {
     }
 
     componentDidMount(){
-        this.props.loadVehiculos();
+        this.props.loadVehiculosITVSeguroDisponibilidadByTransportistaNIF();
     }
 
     render() {
