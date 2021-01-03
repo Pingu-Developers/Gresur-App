@@ -1,4 +1,4 @@
-import { SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS  } from '../types';
+import { SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS } from '../types';
 import axios from 'axios';
 
 export const loadPedidos = () => (dispatch) => {
@@ -137,13 +137,12 @@ export const clearPersonal = () => (dispatch) => {
     dispatch({type: CLEAR_PERSONAL})
 }
 
-export const loadVehiculos = () => function (dispatch) {
+export const loadVehiculosITVSeguroDisponibilidadByTransportistaNIF = (transportistaNIF) => function (dispatch) {
     dispatch({type: LOADING_UI})
 
-    axios.get('/vehiculo')
+    axios.get(`/vehiculo/${transportistaNIF}`)
         .then((res) => {
-            dispatch({type: SET_VEHICULOS, payload: res.data.first})
-            dispatch({type: SET_TIPOSVEHICULOS, payload: res.data.second})
+            dispatch({type: SET_VEHICULOS, payload: res})
             dispatch({type: CLEAR_ERRORS})
         })
 
@@ -164,10 +163,6 @@ export const loadVehiculos = () => function (dispatch) {
 
 export const clearVehiculos = () => (dispatch) => {
     dispatch({type: CLEAR_VEHICULOS})
-}
-
-export const clearTiposVehiculos = () => (dispatch) => {
-    dispatch({type: CLEAR_TIPOSVEHICULOS})
 }
 
 export const setProducto = (producto) => (dispatch) => {
