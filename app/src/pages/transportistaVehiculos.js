@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
+import Typography from '@material-ui/core/Typography';
 
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadVehiculos } from '../redux/actions/dataActions'
+import { loadVehiculos } from '../redux/actions/dataActions';
 
 //Componentes
-import Topbar from '../components/Topbar';
-
+import TablaMostradorVehiculos from '../components/TablaMostradorVehiculos';
 
 const style = {
 
+    tituloVehiculos: {
+    }
 }
 
 class transportistaVehiculos extends Component {
@@ -28,9 +30,15 @@ class transportistaVehiculos extends Component {
     }
 
     render() {
+
+        const {classes,data} = this.props;
+
         return (
             <div>
-                <h1>WIP</h1>
+                <Typography variant='h3' className={classes.tituloVehiculos}>VEHICULOS</Typography>
+
+                <TablaMostradorVehiculos data = {data}/>
+
             </div>
         )
     }
