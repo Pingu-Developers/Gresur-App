@@ -1,22 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import withStyles from '@material-ui/core/styles/withStyles';
 
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadPersonal } from '../redux/actions/dataActions'
+import { loadPersonal} from '../redux/actions/dataActions';
+
 
 //Components
 import Topbar from '../components/Topbar';
 import TablaPersonalDesplegable from '../components/TablaPersonalDesplegable';
-import BotonNuevoEmpleado from '../components/BotonNuevoEmpleado'
-
-
-
-const style = {
-
-
-}
+import PopUpNuevoEmpleado from '../components/PopUpNuevoEmpleado'
 
 export class administradorPersonal extends Component {
     constructor(props){
@@ -25,19 +18,22 @@ export class administradorPersonal extends Component {
             data:[]
         }
     }
+
     componentDidMount(){
         this.props.loadPersonal();
     }
-
     render() {
         const {classes, data} = this.props;
         return (
            <div>
                 <div>
-                    <BotonNuevoEmpleado align="right"></BotonNuevoEmpleado>
-                </div>                  
+                    <PopUpNuevoEmpleado/>
+                </div>
+                          
                 <div>
-                    <TablaPersonalDesplegable datos = {data.personal}  />  
+                    {data.personal===undefined?null:
+                    <TablaPersonalDesplegable datos = {data.personal} />  
+                    }
                 </div>
             </div>
         )
@@ -47,12 +43,11 @@ export class administradorPersonal extends Component {
 administradorPersonal.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
-    loadPersonal: PropTypes.func.isRequired
+    loadPersonal: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
-    data: state.data
-    
+    data: state.data,
 })
 
 const mapActionsToProps = {

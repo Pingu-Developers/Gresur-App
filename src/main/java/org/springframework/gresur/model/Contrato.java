@@ -50,7 +50,6 @@ public class Contrato extends BaseEntity{
 	@Lob
 	private String observaciones;
 
-	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
 	private Personal personal;
