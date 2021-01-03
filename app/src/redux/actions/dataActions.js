@@ -145,6 +145,7 @@ export const loadVehiculos = () => function (dispatch) {
             dispatch({type: SET_VEHICULOS, payload: res.data.first})
             dispatch({type: SET_TIPOSVEHICULOS, payload: res.data.second})
             dispatch({type: CLEAR_ERRORS})
+        })
 
         .catch((err) => {
             if(err.response){
@@ -158,7 +159,6 @@ export const loadVehiculos = () => function (dispatch) {
                     payload: err
                 })
             }
-        })
         })
 }
 
