@@ -7,21 +7,25 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.ITV;
+import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.Transportista;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.TransportistaRepository;
+import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.PersonalService;
 import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.util.Tuple4;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -46,16 +50,20 @@ public class VehiculoController {
 	@Autowired
 	protected PersonalService<Transportista, TransportistaRepository> personalService;
 	
+	@Autowired
+	protected UserRepository userRepository;
 	
-	@GetMapping("/{transportistaNIF}")
+	
+	@GetMapping()
 	@PreAuthorize("hasRole('TRANSPORTISTA')")
-	public List<Tuple4<Vehiculo, String, String, String>> getVehiculosITVSeguroDisponibilidad(@PathVariable("transportistaNIF") String NIF){
+	public List<Tuple4<Vehiculo, String, String, String>> getVehiculosITVSeguroDisponibilidad(){
 		
-		Transportista t = personalService.findByNIF(NIF);
-		if(t==null) {
-			//TODO REVISAR
-			throw new IllegalArgumentException("NIF especificado no valido o no perteneciente a ningun transportista");
-		}
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		
+		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+				
+		Transportista t = (Transportista) per;
 		
 		Iterable<Vehiculo> iterableVehiculos = vehiculoService.findAll();
 		List<Vehiculo> listaVehiculos = new ArrayList<Vehiculo>();

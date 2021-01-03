@@ -137,10 +137,10 @@ export const clearPersonal = () => (dispatch) => {
     dispatch({type: CLEAR_PERSONAL})
 }
 
-export const loadVehiculosITVSeguroDisponibilidadByTransportistaNIF = (transportistaNIF) => function (dispatch) {
+export const loadVehiculosITVSeguroDisponibilidadByTransportista = () => function (dispatch) {
     dispatch({type: LOADING_UI})
 
-    axios.get(`/vehiculo/${transportistaNIF}`)
+    axios.get('/vehiculo')
         .then((res) => {
             dispatch({type: SET_VEHICULOS, payload: res})
             dispatch({type: CLEAR_ERRORS})
