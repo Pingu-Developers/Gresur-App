@@ -1,7 +1,5 @@
 package org.springframework.gresur.web;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,9 +46,10 @@ public class VehiculoController {
 	@Autowired
 	protected PersonalService<Transportista, TransportistaRepository> personalService;
 	
+	
 	@GetMapping("/{transportistaNIF}")
 	@PreAuthorize("hasRole('TRANSPORTISTA')")
-	public List<Tuple4<Vehiculo, String, String, String>> getVehiculos(@PathVariable("transportistaNIF") String NIF){
+	public List<Tuple4<Vehiculo, String, String, String>> getVehiculosITVSeguroDisponibilidad(@PathVariable("transportistaNIF") String NIF){
 		
 		Transportista t = personalService.findByNIF(NIF);
 		if(t==null) {

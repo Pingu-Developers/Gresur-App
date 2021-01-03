@@ -5,7 +5,6 @@ const initialState = {
     productos:[],
     categorias:[],
     vehiculos:[],
-    tiposVehiculos:[],
     personal:[],
 }
 
@@ -50,17 +49,9 @@ export default function(state = initialState,action){
         case SET_VEHICULOS:
             return {
                 ...state,
-                vehiculos: action.payload
+                vehiculos: action.payload.data
             };
         case CLEAR_VEHICULOS:
-            return initialState;
-
-        case SET_TIPOSVEHICULOS:
-            return {
-                ...state,
-                tiposVehiculos: action.payload
-            };
-        case CLEAR_TIPOSVEHICULOS:
             return initialState;
         
         default:

@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadVehiculos } from '../redux/actions/dataActions';
+import { loadVehiculosITVSeguroDisponibilidadByTransportistaNIF } from '../redux/actions/dataActions';
 
 //Componentes
 import TablaMostradorVehiculos from '../components/TablaMostradorVehiculos';
@@ -55,7 +55,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    loadVehiculos
+    loadVehiculosITVSeguroDisponibilidadByTransportistaNIF
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(transportistaVehiculos))
