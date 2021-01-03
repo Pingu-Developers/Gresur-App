@@ -34,34 +34,34 @@ const useStyles = makeStyles({
 
 export default function CustomizedTables(props) {
   const classes = useStyles();
-  const vehiculos = props.data.vehiculos;
+  const datos = props.data.vehiculos;
 
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Matricula</StyledTableCell>
-            <StyledTableCell align="center">Capacidad(HxWxD)</StyledTableCell>
+            <StyledTableCell align="center">Matricula</StyledTableCell>
             <StyledTableCell align="center">Tipo de Vehiculo</StyledTableCell>
             <StyledTableCell align="center">Disponibilidad</StyledTableCell>
-            <StyledTableCell align="center">Masa máxima autorizada (MMA)</StyledTableCell>
+            <StyledTableCell align="center">MMA</StyledTableCell>
+            <StyledTableCell align="center">Capacidad(HxWxD)</StyledTableCell>
             <StyledTableCell align="center">ITV</StyledTableCell>
             <StyledTableCell align="center">Seguro</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {vehiculos.map((row) => (
-            <StyledTableRow key={row.matricula}>
-              <StyledTableCell component="th" scope="row">
-                {row.matricula}
+          {datos.map((row) => (
+            <StyledTableRow key={row.vehiculo.matricula}>
+              <StyledTableCell component="th" scope="row" align="center">
+                {row.vehiculo.matricula}
               </StyledTableCell>
-              <StyledTableCell align="center">{row.capacidad}</StyledTableCell>
-              <StyledTableCell align="center">{row.tipoVehiculo}</StyledTableCell>
-              <StyledTableCell align="center">DISPONIBILIDAD</StyledTableCell>
-              <StyledTableCell align="center">{row.mma}</StyledTableCell>
-              <StyledTableCell align="center">ITV</StyledTableCell>
-              <StyledTableCell align="center">SEGURO</StyledTableCell>
+              <StyledTableCell align="center">{row.vehiculo.tipoVehiculo}</StyledTableCell>
+              <StyledTableCell align="center">{row.disponibilidad}</StyledTableCell>
+              <StyledTableCell align="center">{row.vehiculo.mma}</StyledTableCell>
+              <StyledTableCell align="center">{row.vehiculo.capacidad}</StyledTableCell>
+              <StyledTableCell align="center">{row.itv}</StyledTableCell>
+              <StyledTableCell align="center">{row.seguro}</StyledTableCell>
 
             </StyledTableRow>
           ))}

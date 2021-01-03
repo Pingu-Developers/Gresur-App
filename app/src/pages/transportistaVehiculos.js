@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadVehiculosITVSeguroDisponibilidadByTransportistaNIF } from '../redux/actions/dataActions';
+import { loadVehiculosITVSeguroDisponibilidadByTransportista } from '../redux/actions/dataActions';
 
 //Componentes
 import TablaMostradorVehiculos from '../components/TablaMostradorVehiculos';
@@ -21,12 +21,12 @@ class transportistaVehiculos extends Component {
     constructor(props){
         super(props);
         this.state ={
-            data: []
+            data: [],
         }
     }
 
     componentDidMount(){
-        this.props.loadVehiculosITVSeguroDisponibilidadByTransportistaNIF();
+        this.props.loadVehiculosITVSeguroDisponibilidadByTransportista();
     }
 
     render() {
@@ -47,15 +47,15 @@ class transportistaVehiculos extends Component {
 transportistaVehiculos.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
-    loadVehiculos: PropTypes.func.isRequired
+    loadVehiculosITVSeguroDisponibilidadByTransportista: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
-    data: state.data
+    data: state.data,
 })
 
 const mapActionsToProps = {
-    loadVehiculosITVSeguroDisponibilidadByTransportistaNIF
+    loadVehiculosITVSeguroDisponibilidadByTransportista
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(transportistaVehiculos))
