@@ -10,7 +10,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import ReceiptIcon from '@material-ui/icons/Receipt';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import DoneIcon from '@material-ui/icons/Done';
 
@@ -88,14 +88,21 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '100%',
     height: 55,
     width: 50,
-    margin: 0,
+    marginRight: 0,
     marginTop: -30,
+    color: 'white',
+    '&$disabled' : {
+        backgroundColor: '#f2f2f2',
+        color: 'white',
+        border: '1px solid #dbdbdb'
+    }
   },
   buttonDiv: {
       display: 'flex',
       justifyContent: 'space-between',
-      width: '100vw',
-      marginLeft: -24
+      width: '100%',
+      marginLeft: -30,
+      padding: '0 28px'
   },
   botonHacker: {
     position: 'absolute',
@@ -106,6 +113,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+  disabled: {}
 }));
 
 function getSteps(stepTitles, num) {
@@ -224,9 +232,10 @@ export default function HorizontalLinearStepper(props) {
             <div className = {classes.buttonDiv}>
               <Button
                 variant = "contained"
+                color = "primary"
                 disabled={activeStep === 0} 
                 onClick={handleBack} 
-                className={classes.button}
+                classes={{root : classes.button, disabled: classes.disabled}}
                 >
                 <ArrowBackIosIcon/>
               </Button>
@@ -253,9 +262,10 @@ export default function HorizontalLinearStepper(props) {
                 variant="contained"
                 color="primary"
                 onClick={handleNext}
-                className={classes.button}
+                classes={{root : classes.button, disabled: classes.disabled}}
+                disabled={props.errors ? true : false}
               >
-                {activeStep === steps.length - 1 ? <DoneIcon/> : <NavigateNextIcon />}
+                {activeStep === steps.length - 1 ? <DoneIcon/> : <ArrowForwardIosIcon />}
               </Button>
 
               
