@@ -9,20 +9,24 @@ import Accordion from '@material-ui/core/Accordion';
 
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
   heading: {
     fontSize: theme.typography.pxToRem(15),
     flexBasis: '33.33%',
     flexShrink: 0,
     fontWeight:"bold",
+
   },
   details:{
-    display:'inline-block',
-},
+      display:'inline-block',
+      margin: theme.spacing(2),
+     
+  },
   acordeon: {
-    backgroundColor:"#d4e6f1"
+    backgroundColor:"#d4e6f1",
+},
+root: {
+  width: '94%',
+  marginLeft: '3%',
 }
 }));
 
@@ -46,7 +50,7 @@ export default function ControlledAccordions(props) {
             <Typography className={classes.heading}>Administradores</Typography>
           </AccordionSummary>
           <AccordionDetails className={classes.details}>
-            {props.datos.map((desplegable)=>
+            {props.datos===undefined?null:props.datos.map((desplegable)=>
               <EmpleadoDesplegable datos = {desplegable}/>
             )} 
           </AccordionDetails>

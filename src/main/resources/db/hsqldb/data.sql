@@ -224,19 +224,19 @@ INSERT INTO ADMINISTRADORES(ID, NIF, name, email, tlf, direccion, NSS, image)
 	VALUES (1, '06860594Q', 'Ruben Galvez Vicente', 'j6n97y3gc@lycos.it', '726782748', 'Calle Gresur nº1 El Gastor(Cadiz)', '240685809175', 'https://i.imgur.com/ROcpSPY.png');
 		
 INSERT INTO ENCARGADOS_ALMACEN(ID, NIF, name, email, tlf, direccion, NSS, image, almacen_id) 
-	VALUES (2, '54511574X', 'Jose Daniel Soria Gallardo', 'iud4v6mn2@lycos.nl', '631087202', 'Praza De España, 89, 19905, Toba, La(Guadalajara)', 'ES6420381225374096884004', 'https://img.lovepik.com/element/40094/5994.png_860.png',1);
+	VALUES (2, '54511574X', 'Jose Daniel Soria Gallardo', 'iud4v6mn2@lycos.nl', '631087202', 'Praza De España, 89, 19905, Toba, La(Guadalajara)', '010473213263', 'https://img.lovepik.com/element/40094/5994.png_860.png',1);
 		
 INSERT INTO ENCARGADOS_ALMACEN(ID, NIF, name, email, tlf, direccion, NSS, image, almacen_id) 
-	VALUES (3, '14337755S', 'Iria Rios Linares', 'kuftenuidt@scientist.com', '673206955', 'Poblado Nueva, 14, 19652, Atanzón(Guadalajara)', 'ES1620804547325086507513', 'https://img.lovepik.com/element/40094/5994.png_860.png',2);
+	VALUES (3, '14337755S', 'Iria Rios Linares', 'kuftenuidt@scientist.com', '673206955', 'Poblado Nueva, 14, 19652, Atanzón(Guadalajara)', '110473213263', 'https://img.lovepik.com/element/40094/5994.png_860.png',2);
 	
 INSERT INTO DEPENDIENTES(ID, NIF, name, email, tlf, direccion, NSS, image) 
-	VALUES (4, '64145337Q', 'Jose Javier Muñoz Jimenez', 'u0kvftny@talk21.com', '688128113', 'Via Nueva, 65, 21499, Palos De La Frontera(Huelva)', 'ES7620853657763800490457', 'https://toppng.com/uploads/preview/dependiente-1155104897331wmwr4sz0.png');
+	VALUES (4, '64145337Q', 'Jose Javier Muñoz Jimenez', 'u0kvftny@talk21.com', '688128113', 'Via Nueva, 65, 21499, Palos De La Frontera(Huelva)', '210473213263', 'https://toppng.com/uploads/preview/dependiente-1155104897331wmwr4sz0.png');
 	
 INSERT INTO TRANSPORTISTAS(ID, NIF, name, email, tlf, direccion, NSS, image) 
-	VALUES (5, '50921688X', 'Eduardo Velazquez Rivas', 'p6qf4oya1@blu.it', '684036867', 'Avenida Horno, 95, 41904, Gines(Sevilla)', 'ES8701287783165809615502', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
+	VALUES (5, '50921688X', 'Eduardo Velazquez Rivas', 'p6qf4oya1@blu.it', '684036867', 'Avenida Horno, 95, 41904, Gines(Sevilla)', '310473213263', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
 
 INSERT INTO TRANSPORTISTAS(ID, NIF, name, email, tlf, direccion, NSS, image) 
-	VALUES (6, '73929968X', 'Agustin Pineda Rey', 'f8s9khjgx@btinternet.com', '672910341', 'Carrera De España, 74, 28661, Valdemanco(madrid)', 'ES8320853328983168372320', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
+	VALUES (6, '73929968X', 'Agustin Pineda Rey', 'f8s9khjgx@btinternet.com', '672910341', 'Carrera De España, 74, 28661, Valdemanco(madrid)', '410473213263', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
 
 
 INSERT INTO USERS(username, password, personal_id)
@@ -380,20 +380,20 @@ INSERT INTO RECIBIDAS(id, num_factura, esta_pagada, fecha_emision, importe, conc
 
 
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (1, 5, 17.99, 1);
+	VALUES (1, 5, 89.95, 1);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (2, 6, 12.99, 1);
+	VALUES (2, 6, 77.94, 1);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (4, 2, 19.99, 1);
+	VALUES (4, 2, 39.98, 1);
 
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (2, 2, 12.99, 2);
+	VALUES (2, 2, 39.98, 2);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (3, 2, 14.99, 2);
+	VALUES (3, 2, 29.98, 2);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
 	VALUES (5, 1, 36.99, 2);
@@ -410,35 +410,35 @@ INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
 	VALUES (8, 1, 990.00, 4);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (12, 3, 4.49, 4);
+	VALUES (12, 3, 13.47, 4);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (13, 4, 4.49, 4);
+	VALUES (13, 4, 19.96, 4);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (14, 5, 2.99, 4);
+	VALUES (14, 5, 14.95, 4);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (15, 100, 0.75, 4);
+	VALUES (15, 100, 75, 4);
 	
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
 	VALUES (9, 1, 995.00, 5);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (16, 20, 0.72, 5);
+	VALUES (16, 20, 14.4, 5);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (17, 50, 0.87, 5);
+	VALUES (17, 50, 43.5, 5);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (18, 70, 0.39, 5);
+	VALUES (18, 70, 27.3, 5);
 
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (19, 87, 0.39, 5);
+	VALUES (19, 87, 33.93, 5);
 
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
-	VALUES (20, 34, 0.39, 5);
+	VALUES (20, 34, 13.26, 5);
 	
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
 	VALUES (21, 1, 29.99, 5);
