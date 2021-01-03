@@ -1,4 +1,4 @@
-import { SET_ERRORS, SET_USER, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED ,LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS , CLEAR_NOTIFICACIONES_NO_LEIDAS } from '../types';
+import { SET_ERRORS, SET_USER, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED ,LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS , CLEAR_NOTIFICACIONES_NO_LEIDAS,SET_NOTIFICACIONES_LEIDAS } from '../types';
 import axios from 'axios';
 
 export const loginUser = (userData,history) => (dispatch) =>{
@@ -58,6 +58,20 @@ export const getNotificacionesNoLeidas = () => (dispatch) => {
             dispatch(
                 {
                     type: SET_NOTIFICACIONES_NO_LEIDAS,
+                    payload: res.data
+                }
+            )
+        })
+        .catch(err => console.log(err))
+}
+
+export const getNotificacionesLeidas = () => (dispatch) => {
+
+    axios.get('/notificacion/leidas')
+        .then((res) => {
+            dispatch(
+                {
+                    type: SET_NOTIFICACIONES_LEIDAS,
                     payload: res.data
                 }
             )

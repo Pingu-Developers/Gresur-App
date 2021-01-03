@@ -23,6 +23,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
+import SendIcon from '@material-ui/icons/Send';
 
 
 
@@ -199,10 +200,15 @@ function NuevaNotificacion(props) {
             </DialogContent>
 
             <DialogActions>
-            <Button onClick={handleClick} color="primary">
+            <Button onClick={handleClick} variant="contained" color="primary">
                 Cancelar
             </Button>
-            <Button onClick={handleClick} type="submit"  color="primary">
+            <Button 
+                onClick={handleClick} 
+                type="submit"  
+                variant="contained"
+                color="primary"
+                endIcon={<SendIcon/>}>
                 Enviar
             </Button>
             </DialogActions>

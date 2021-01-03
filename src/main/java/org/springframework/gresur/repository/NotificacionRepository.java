@@ -22,4 +22,7 @@ public interface NotificacionRepository extends CrudRepository<Notificacion, Lon
 	
 	@Query("SELECT noti FROM Notificacion noti INNER JOIN noti.lineasEnviado l WHERE l.personal.id = :id and l.leido = false")
 	List<Notificacion> findNoLeidasForPersonal(@Param("id") Long id);
+	
+	@Query("SELECT noti FROM Notificacion noti INNER JOIN noti.lineasEnviado l WHERE l.personal.id = :id and l.leido = true ORDER BY noti.fechaHora DESC")
+	List<Notificacion> findLeidasForPersonal(@Param("id") Long id);
 }
