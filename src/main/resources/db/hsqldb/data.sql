@@ -513,10 +513,10 @@ INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, ve
 	VALUES ('Campo Horno, 51, 18355, Dúdar(Granada)', 'PREPARADO', TO_DATE('2021/01/01','YYYY/MM/DD'), 3, NULL, 6);
 	
 INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
-	VALUES ('Kalea De España, 66, 46107, Sant Joanet(Valencia)', 'EN_REPARTO', TO_DATE('2021/01/01','YYYY/MM/DD'), 4, 1, 5);
+	VALUES ('Kalea De España, 66, 46107, Sant Joanet(Valencia)', 'EN_REPARTO', TO_DATE('2021/01/03','YYYY/MM/DD'), 4, 1, 5);
 	
 INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
-	VALUES ('Praza Catalunya, 2, 20341, Itsasondo(Gipuzkoa)', 'ENTREGADO', TO_DATE('2019/11/01','YYYY/MM/DD'), 5, 4, 6);
+	VALUES ('Praza Catalunya, 2, 20341, Itsasondo(Gipuzkoa)', 'EN_REPARTO', TO_DATE('2021/01/03','YYYY/MM/DD'), 5, 4, 6); --CAMBIADO DE ENTREGADO A EN_REPARTO
 
 
 UPDATE ID_Generator SET sequence = 6 WHERE name = 'personal';
