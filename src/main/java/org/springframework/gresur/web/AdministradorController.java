@@ -9,10 +9,17 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Administrador;
+import org.springframework.gresur.model.Dependiente;
+import org.springframework.gresur.model.EncargadoDeAlmacen;
 import org.springframework.gresur.model.Personal;
+import org.springframework.gresur.model.Transportista;
 import org.springframework.gresur.service.AdministradorService;
+import org.springframework.gresur.service.PersonalService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "*",maxAge = 3600)
+@CrossOrigin( origins = "*",maxAge = 3600 )
 @RequestMapping("api/adm")
 @RestController
 
@@ -33,11 +40,27 @@ public class AdministradorController {
 		this.admService = admService;
 	}
 	
-	@PostMapping
+	@PostMapping("/add/administrador")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Administrador add(@RequestBody @Valid Administrador adm) throws DataAccessException{
-		return admService.save(adm);
+	public Administrador addAdministrador(@RequestBody @Valid Administrador p) throws DataAccessException{
+		return admService.save(p);
 	}
+	@PostMapping("/add/dependiente")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Dependiente addDependiente(@RequestBody @Valid Dependiente p) throws DataAccessException{
+		return admService.saveDependiente(p);
+	}
+	@PostMapping("/add/transportista")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Transportista addTransportista(@RequestBody @Valid Transportista p) throws DataAccessException{
+		return admService.saveTransportista(p);
+	}
+	@PostMapping("/add/encargado")
+	@PreAuthorize("hasRole('ADMIN')")
+	public EncargadoDeAlmacen addEncargadoDeAlmacen(@RequestBody @Valid EncargadoDeAlmacen p) throws DataAccessException{
+		return admService.saveEncargadoDeAlmacen(p);
+	}
+
 	
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
@@ -82,9 +105,22 @@ public class AdministradorController {
 		return dic;
 	}
 	
-	@GetMapping("/personal/{id}")
-	public Personal findPersonal(@PathVariable("id") Long id){
-		System.out.println(id);
-		return admService.findPersonal(id);
+	@GetMapping("/personal/{nif}")
+	public Personal findPersonal(@PathVariable("nif") String nif){
+		return admService.findByNIFPersonal(nif);
 	}
+	
+	@DeleteMapping("/delete/{nif}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> deleteAdministador(@PathVariable("nif") String nif) throws DataAccessException{
+			Personal p = admService.findByNIF(nif);
+		try {
+			 admService.deleteByNIF(nif);
+			 return ResponseEntity.ok(p);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e);
+		}
+	}
+	
+	
 }
