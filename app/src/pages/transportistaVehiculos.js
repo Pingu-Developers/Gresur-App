@@ -5,14 +5,21 @@ import Typography from '@material-ui/core/Typography';
 
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadVehiculosITVSeguroDisponibilidadByTransportista } from '../redux/actions/dataActions';
+import { loadVehiculosITVSeguroDisponibilidadByTransportista, loadOcupacionVehiculosEnReparto } from '../redux/actions/dataActions';
 
 //Componentes
 import TablaMostradorVehiculos from '../components/TablaMostradorVehiculos';
+import BarraOcupacionVehiculo from '../components/BarraOcupacionVehiculo';
+import { FormatUnderlinedTwoTone } from '@material-ui/icons';
+
 
 const style = {
 
     tituloVehiculos: {
+    },
+
+    ocupacion: {
+        marginTop: 70
     }
 }
 
@@ -27,6 +34,7 @@ class transportistaVehiculos extends Component {
 
     componentDidMount(){
         this.props.loadVehiculosITVSeguroDisponibilidadByTransportista();
+        this.props.loadOcupacionVehiculosEnReparto();
     }
 
     render() {
@@ -37,7 +45,22 @@ class transportistaVehiculos extends Component {
             <div>
                 <Typography variant='h3' className={classes.tituloVehiculos}>VEHICULOS</Typography>
 
-                <TablaMostradorVehiculos data = {data}/>
+                <TablaMostradorVehiculos data = {data.vehiculos}/>
+                
+                <div className={classes.ocupacion}>
+
+                    {data.ocupaciones===undefined || data.ocupaciones.length===0? 
+                        <Typography variant='h4'>NO HAY VEHICULOS CON PEDIDOS ASOCIADOS PARA LA FECHA {new Date().toLocaleDateString()}</Typography>
+                        : <Typography variant='h4'>PORCENTAJE DE OCUPACION DE VEHICULOS CON PEDIDOS ASOCIADOS ({new Date().toLocaleDateString()})
+                        
+                            {data.ocupaciones.map((row) => <BarraOcupacionVehiculo datos={row}/> )}
+
+                          </Typography> 
+                    }
+
+                </div>
+
+              
 
             </div>
         )
@@ -47,7 +70,8 @@ class transportistaVehiculos extends Component {
 transportistaVehiculos.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
-    loadVehiculosITVSeguroDisponibilidadByTransportista: PropTypes.func.isRequired
+    loadVehiculosITVSeguroDisponibilidadByTransportista: PropTypes.func.isRequired,
+    loadOcupacionVehiculosEnReparto: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -55,7 +79,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    loadVehiculosITVSeguroDisponibilidadByTransportista
+    loadVehiculosITVSeguroDisponibilidadByTransportista,
+    loadOcupacionVehiculosEnReparto
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(transportistaVehiculos))

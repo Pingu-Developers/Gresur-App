@@ -10,8 +10,9 @@ import Paper from '@material-ui/core/Paper';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
+    backgroundColor: '#d4e6f1',
+    color: theme.palette.common.black,
+    fontWeight: 'bold'
   },
   body: {
     fontSize: 14,
@@ -30,17 +31,18 @@ const useStyles = makeStyles({
   table: {
     minWidth: 700,
   },
+
 });
 
 export default function CustomizedTables(props) {
   const classes = useStyles();
-  const datos = props.data.vehiculos;
+  const datos = props.data;
 
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
-          <TableRow>
+          <TableRow className={classes.columnas}>
             <StyledTableCell align="center">Matricula</StyledTableCell>
             <StyledTableCell align="center">Tipo de Vehiculo</StyledTableCell>
             <StyledTableCell align="center">Disponibilidad</StyledTableCell>
