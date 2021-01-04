@@ -87,7 +87,7 @@ export const loadProductosByNombre = (nombre) => (dispatch) => {
 
     axios.get(`/producto/${nombre}`)
         .then((res) => {
-            dispatch({type: SET_PRODUCTOS, payload: res.data.first})
+            dispatch({type: SET_PRODUCTOS, payload: res})
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {

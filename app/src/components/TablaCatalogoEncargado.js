@@ -73,8 +73,7 @@ export default function ControlledAccordions(props) {
     };
 
 
-    const categorias = props.data.categorias
-    const productos = props.data.productos
+    const datos = props.data.productos
 
     //Funciones Vista Editar Producto
     const [open, setOpen] = React.useState(false);
@@ -90,19 +89,19 @@ export default function ControlledAccordions(props) {
     return (
         <div className={classes.root}>
             {
-                categorias.map((row) =>
+                Object.entries(datos).map((row) =>
                     <Accordion
                         square
                         className={classes.acordeon}
-                        expanded={expanded === categorias.indexOf(row)}
-                        onChange={handleChange(categorias.indexOf(row))}>
+                        expanded={expanded === row[0]}
+                        onChange={handleChange(row[0])}>
                         <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1bh-content"
                             id="panel1bh-header"
                             className={classes.acordeon}
                         >
-                            <Typography className={classes.heading}><b>{row}</b></Typography>
+                            <Typography className={classes.heading}><b>{row[0]}</b></Typography>
                         </AccordionSummary>
                         <AccordionDetails>
                             <TableContainer component={Paper}>
@@ -124,8 +123,7 @@ export default function ControlledAccordions(props) {
                                     </TableHead>
 
                                     <TableBody>
-                                        {productos.map((producto) =>
-                                            producto.estanteria.categoria === row ? (
+                                        {row[1].map((producto) =>
                                                 <TableRow>
 
                                                     <DialogoEditarProductos producto={producto} />
@@ -161,7 +159,6 @@ export default function ControlledAccordions(props) {
                                                     <TableCell>{producto.unidad}</TableCell>
                                                     <TableCell></TableCell>
                                                 </TableRow>
-                                            ) : null
                                         )}
 
                                     </TableBody>
