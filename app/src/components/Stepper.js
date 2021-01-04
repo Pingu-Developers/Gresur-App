@@ -10,9 +10,6 @@ import PersonIcon from '@material-ui/icons/Person';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import LocalShippingIcon from '@material-ui/icons/LocalShipping';
 import ReceiptIcon from '@material-ui/icons/Receipt';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import DoneIcon from '@material-ui/icons/Done';
 
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -83,37 +80,12 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
   },
-  button: {
-    marginRight: theme.spacing(1),
-    borderRadius: '100%',
-    height: 55,
-    width: 50,
-    marginRight: 0,
-    marginTop: -30,
-    color: 'white',
-    '&$disabled' : {
-        backgroundColor: '#f2f2f2',
-        color: 'white',
-        border: '1px solid #dbdbdb'
-    }
-  },
-  buttonDiv: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      width: '100%',
-      marginLeft: -30,
-      padding: '0 28px'
-  },
-  botonHacker: {
-    position: 'absolute',
+  botonInvisible: {
     top: 0,
+    position: 'absolute',
     zIndex: 0,
-  },
-  instructions: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  },
-  disabled: {}
+    display: 'none',
+  }
 }));
 
 function getSteps(stepTitles, num) {
@@ -157,11 +129,12 @@ export default function HorizontalLinearStepper(props) {
 
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
     setSkipped(newSkipped);
-
+    return
   };
 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    return
   };
 
   const handleSkip = () => {
@@ -183,11 +156,6 @@ export default function HorizontalLinearStepper(props) {
     setActiveStep(0);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    props.onSubmit()
-  };
-
   return (
     <div className={classes.root}>
       <Stepper activeStep={activeStep}>
@@ -205,13 +173,9 @@ export default function HorizontalLinearStepper(props) {
         })}
       </Stepper>
       
-      <form id = 'nuevoPedido' 
-            className={classes.instructions}
-            onSubmit = {handleSubmit}>
       <div>
         {activeStep === steps.length ? (
           <div>           
-              {document.getElementById('submit') ? document.getElementById('submit').click() : null }
             <Typography className={classes.instructions}>
               Completado!
             </Typography>
@@ -223,58 +187,19 @@ export default function HorizontalLinearStepper(props) {
             </Button>
           </div>
         ) : (
-          <div> 
 
-
+          <div>
             {getStepContent(activeStep, props.children)}
-            
-
-            <div className = {classes.buttonDiv}>
-              <Button
-                variant = "contained"
-                color = "primary"
-                disabled={activeStep === 0} 
-                onClick={handleBack} 
-                classes={{root : classes.button, disabled: classes.disabled}}
-                >
-                <ArrowBackIosIcon/>
-              </Button>
+   
+              <Button id = 'backButton' onClick = {handleBack} className={classes.botonInvisible}> </Button>
 
               {isStepOptional(activeStep) && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSkip}
-                  className={classes.button}
-                >
-                  Skip
-                </Button>
-              )}
+              <Button id='skipButton' onClick={handleSkip} className={classes.botonInvisible}> </Button>)}
+              <Button id='nextButton' onClick={handleNext} className={classes.botonInvisible}>  </Button>
 
-                {
-                activeStep === steps.length - 1 ?  
-                <div>
-                    <Button className = {classes.botonHacker} type = 'submit' id = 'submit'></Button>
-                </div> : null
-                }
-
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-                classes={{root : classes.button, disabled: classes.disabled}}
-                disabled={props.errors ? true : false}
-              >
-                {activeStep === steps.length - 1 ? <DoneIcon/> : <ArrowForwardIosIcon />}
-              </Button>
-
-              
-
-            </div>
           </div>
         )}
       </div>
-      </form>
     </div>
   );
 }

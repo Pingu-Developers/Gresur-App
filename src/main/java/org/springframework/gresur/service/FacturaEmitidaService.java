@@ -1,6 +1,8 @@
 package org.springframework.gresur.service;
 
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -29,6 +31,10 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+	@Transactional
+	public List<FacturaEmitida> findByClienteIdAndEstaPagadaFalse(Long id){
+		return facturaRepo.findByClienteIdAndEstaPagadaFalse(id);
+	}
 	
 	@Transactional
 	public FacturaEmitida save(FacturaEmitida emitida) throws DataAccessException {

@@ -1,4 +1,4 @@
-import { SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION } from '../types';
+import { CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER } from '../types';
 import axios from 'axios';
 
 export const loadPedidos = () => (dispatch) => {
@@ -244,4 +244,33 @@ export const loadOcupacionVehiculosEnReparto = () => function (dispatch) {
 
 export const clearOcupacion = () => (dispatch) => {
     dispatch({type: CLEAR_OCUPACION})
+}
+
+
+export const loadClienteIsDefaulter = (NIF) => function (dispatch) {
+    dispatch({type: LOADING_UI})
+
+    axios.get(`/cliente/${NIF}/isDefaulter`)
+        .then((res) => {
+            dispatch({type: SET_ISDEFAULTER, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
+}
+
+export const clearClienteIsDefaulter = () => (dispatch) => {
+    dispatch({type: CLEAR_ISDEFAULTER})
 }

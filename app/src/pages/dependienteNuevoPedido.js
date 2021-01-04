@@ -9,8 +9,14 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import DoneIcon from '@material-ui/icons/Done';
+import Button from '@material-ui/core/Button';
 
 import Stepper from '../components/Stepper';
+import { loadClienteIsDefaulter, clearClienteIsDefaulter } from '../redux/actions/dataActions';
+import Snackbar from '../components/SnackBar'
 
 
 const style = {
@@ -21,6 +27,26 @@ const style = {
         float: 'left',
         width: '100%'
     },
+    buttonDiv: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    button: {
+        borderRadius: '100%',
+        height: 55,
+        width: 50,
+        marginRight: 0,
+        marginTop: -30,
+        color: 'white',
+        '&$disabled' : {
+            backgroundColor: '#f2f2f2',
+            color: 'white',
+            border: '1px solid #dbdbdb'
+        }
+    },
+    disabled: {},
+
     container: {
         padding: '0 30px',
     },
@@ -80,15 +106,23 @@ const style = {
 }
 export class dependienteNuevoPedido extends Component {
     
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = {
-            errors : null,
-            valueRadio: null,
+            errors : {...erroresPosibles},
+            valueRadio: '',
+            nombreApellidos: '',
+            NIF: '',
+            direccion: '',
+            provincia: '',
+            municipio: '',
+            CP: '',
+            email: '',
+            telefono: '',
         }
     }
     componentDidMount(){
-        this.setState({valueRadio : 'Pago directo'})
+        this.setState({valueRadio : 'Pago directo'})  
     }
 
     handleChangeRadio = (event) => {
@@ -98,85 +132,192 @@ export class dependienteNuevoPedido extends Component {
     handleSubmit(){
         console.log('aoskljsjlñxc<llxcñ');
     }
+    hayErrores(){
+        let res = false;
+        Object.keys(this.state.errors).map((key) => {res = res || this.state.errors[key].length !== 0})
+        return res;
+    }
+
+    back(event){
+        event.preventDefault()
+        document.getElementById('backButton').click();
+    }
+
+    validatePage(event, step){
+        event.preventDefault()
+        this.props.clearClienteIsDefaulter()
+        let errores = {...this.state.errors} ;
+        switch(step){
+            case 0:{
+                if(this.state.nombreApellidos === '')
+                    errores['nombreApellidos'].push('No puede ser vacio')
+                if(this.state.NIF === '')
+                    errores['NIF'].push('No puede ser vacio')
+                if(this.state.direccion === '')
+                    errores['direccion'].push('No puede ser vacio')
+                if(this.state.provincia === '' || this.state.provincia === 0)
+                    errores['provincia'].push('No puede ser vacio')
+                if(this.state.municipio === '')
+                    errores['municipio'].push('No puede ser vacio')
+                if(this.state.CP === '')
+                    errores['CP'].push('No puede ser vacio')
+                if(this.state.email === '')
+                    errores['email'].push('No puede ser vacio')
+                if(this.state.telefono === '')
+                    errores['telefono'].push('No puede ser vacio')
+                
+
+                console.log('DNI INTRODUCIDO:' + this.state.NIF)
+                this.props.loadClienteIsDefaulter(this.state.NIF)
+                console.log('defaulter? - ' + this.props.data.isDefaulter)
+                //el estado de this.props.data es asincrono y llega tarde
+                //por otro lado el estado de los errores es persistente y los values no persisten
+                
+                if(this.props.data.isDefaulter){
+                    document.getElementById("botonSnack")? document.getElementById("botonSnack")?.click() : 
+                                                           console.log('No se encuentra boton para abrir la snackbar');
+                    errores['NIF'].push('')
+                }
+                break
+            }
+            default:{
+                //Snackbar de sos jaquer
+            }
+            this.setState({errors : errores})
+        }
+        if(!this.hayErrores()){
+            document.getElementById('nextButton').click()
+        }else{
+            this.setState({errors : errores})
+        }
+    }
+
+    onChangeInput(event, name, value){
+        event.preventDefault();
+        if(this.state.errors[name][0] || this.state.errors[name][0] === ''){
+            let errores = {...this.state.errors};
+            errores[name] = []
+            this.setState({errors: errores})
+        }
+        this.setState({[name] : value});
+        console.log(this.state)
+    }
 
     render() {
-        const {classes, valueRadio, errors} = this.props;
+        const { classes, data } = this.props;
+        let changing = '';
+        let inputValue = null;
         return (
             <div>
-                {console.log(valueRadio)}
+                {console.log(this.state)}
+                <Snackbar type = "error" open = {data.isDefaulter} message= 'Este cliente tiene impagos!'/>
+                <Button id = 'onChangeInput' onClick = {(event) => {this.onChangeInput(event, changing, inputValue)}} style={{display : 'none'}}></Button>
                 <Typography variant='h3' className={classes.tituloNuevoPedido}>GENERAR UN NUEVO PEDIDO</Typography><br/>
                 <Stepper 
                     opcionales = {[2]}
                     stepTitles = {['Datos del cliente', 'Selección de productos', 'Datos de envío', 'Resumen del pago']}
-                    onSubmit = {this.handleSubmit}
                 >
-                    <div className = {classes.container}>
+                    <form className = {classes.container}>
                         <fieldset className = {classes.fieldset}>
                             <legend>Introduzca los datos de cliente</legend>
                             <div>
                                 <span className = {classes.spanInputs}>
                                     <TextField
-                                    error = {errors ? true:false}
+                                    value={this.state.nombreApellidos}
+                                    error = {this.state.errors['nombreApellidos'].length !== 0 ? true:false}
                                     required
                                     label="Nombre, Apellidos"
-                                    helperText={errors}
-                                    className = {[classes.input, classes.nombreApellidos].join(" ")}/>
+                                    helperText={this.state.errors['nombreApellidos'][0]}
+                                    className = {[classes.input, classes.nombreApellidos].join(" ")}
+                                    onChange = {(event) => {inputValue = event.target.value; changing = 'nombreApellidos'; 
+                                                document.getElementById('onChangeInput').click()}}/>
                                     
                                     <TextField
-                                    error = {errors ? true:false}
+                                    value={this.state.NIF}
+                                    error = {this.state.errors['NIF'].length !== 0 ? true:false}
                                     required
                                     label="NIF"
-                                    helperText={errors}
-                                    className = {[classes.input, classes.NIF].join(" ")}/>
+                                    helperText={this.state.errors['NIF'][0]}
+                                    className = {[classes.input, classes.NIF].join(" ")}
+                                    onChange = {(event) => {inputValue = event.target.value; changing = 'NIF'; 
+                                                document.getElementById('onChangeInput').click()}}/>
                                 </span>
 
                                 <span className = {classes.spanInputs}>
                                     <TextField
-                                    error = {errors ? true:false}
+                                    value={this.state.direccion}
+                                    error = {this.state.errors['direccion'].length !== 0 ? true:false}
                                     required
                                     label="Dirección"
-                                    helperText={errors}
-                                    className = {[classes.input, classes.direccion].join(" ")}/>
-                                    
+                                    helperText={this.state.errors['direccion'][0]}
+                                    className = {[classes.input, classes.direccion].join(" ")}
+                                    onChange = {(event) => {inputValue = event.target.value; changing = 'direccion'; 
+                                    document.getElementById('onChangeInput').click()}}/>     
+
                                     <Autocomplete
                                     options={provincias}
-                                    getOptionLabel={(option) => option.title}
-                                    renderInput={(params) => <TextField {...params} label="Provincia" required/>}
-                                    className = {[classes.input, classes.provincia].join(" ")}/>
+                                    getOptionLabel={(option) => option}
+                                    value = {this.state.provincia}
+                                    inputValue = {this.state.provincia}
+                                    renderInput={(params) => 
+                                                            <TextField 
+                                                                {...params}
+                                                                label="Provincia"
+                                                                required
+                                                                error = {this.state.errors['provincia'].length !== 0 ? true:false}
+                                                                helperText = {this.state.errors['provincia'][0]}/>}                                
+                                    className = {[classes.input, classes.provincia].join(" ")}
+                                    onChange = {(event, value) => {inputValue = value; changing = 'provincia'; 
+                                                           document.getElementById('onChangeInput').click()}}
+                                    onInputChange = {(event, value) => {inputValue = value; changing = 'provincia'; 
+                                                           document.getElementById('onChangeInput').click()}}/>
+                                                           
 
                                     <TextField
-                                    error = {errors ? true:false}
+                                    value = {this.state.municipio}
+                                    error = {this.state.errors['municipio'].length !== 0 ? true:false}
                                     required
                                     label="Municipio"
-                                    helperText={errors}
-                                    className = {[classes.input, classes.municipio].join(" ")}/>
-           
+                                    helperText={this.state.errors['municipio'][0]}
+                                    className = {[classes.input, classes.municipio].join(" ")}
+                                    onChange = {(event) => {inputValue = event.target.value; changing = 'municipio'; 
+                                                document.getElementById('onChangeInput').click()}}/>  
+
                                     <TextField
-                                    error = {errors ? true:false}
+                                    value = {this.state.CP}
+                                    error = {this.state.errors['CP'].length !== 0 ? true:false}
                                     required
                                     label="CP"
-                                    helperText={errors}
-                                    className = {[classes.input, classes.cp].join(" ")}/>
+                                    helperText={this.state.errors['CP'][0]}
+                                    className = {[classes.input, classes.cp].join(" ")}
+                                    onChange = {(event) => {inputValue = event.target.value; changing = 'CP'; 
+                                                document.getElementById('onChangeInput').click()}}/>
                                 </span>
                                 
                                 <div className={classes.emailTlfRadioContainer}>
                                     <span className={classes.emailTlfContainer}>
                                         <span className = {classes.spanInputs}>
                                             <TextField
-                                            error = {errors ? true:false}
+                                            value = {this.state.email}
+                                            error = {this.state.errors['email'].length !== 0 ? true:false}
                                             required
                                             label="e-mail"
-                                            helperText={errors}
-                                            className = {[classes.input, classes.email].join(" ")}/>
+                                            helperText={this.state.errors['email'][0]}
+                                            className = {[classes.input, classes.email].join(" ")}
+                                            onChange = {(event) => {inputValue = event.target.value; changing = 'email'; 
+                                                        document.getElementById('onChangeInput').click()}}/>
                                         </span>
 
                                         <span className = {classes.spanInputs}>
                                             <TextField
-                                            error = {errors ? true:false}
+                                            value = {this.state.telefono}
+                                            error = {this.state.errors['telefono'].length !== 0 ? true:false}
                                             required
                                             label="telefono"
-                                            helperText={errors}
-                                            className = {[classes.input, classes.telefono].join(" ")}/>
+                                            helperText={this.state.errors['telefono'][0]}
+                                            className = {[classes.input, classes.telefono].join(" ")}
+                                            onChange = {(event) => {inputValue = event.target.value; changing = 'telefono'; 
+                                                        document.getElementById('onChangeInput').click()}}/>
                                         </span>
                                     </span>
 
@@ -186,7 +327,7 @@ export class dependienteNuevoPedido extends Component {
                                         aria-label="position" 
                                         name="position" 
                                         onChange={this.handleChangeRadio} 
-                                        value={valueRadio}
+                                        value={this.state.valueRadio}
                                         >
                                             <FormControlLabel
                                             className = {classes.RadioFormControl}
@@ -207,31 +348,124 @@ export class dependienteNuevoPedido extends Component {
                                 </div>
                             </div><br/>
                         </fieldset>
-                    </div>
 
-                    <div className = {classes.container}>
+                        <div className = {classes.buttonDiv}>
+                            <Button
+                                variant = "contained"
+                                color = "primary"
+                                disabled
+                                onClick={(e) => {this.back(e)}} 
+                                classes={{root : classes.button, disabled: classes.disabled}}
+                                style={{marginLeft: -24}}
+                                >
+                                <ArrowBackIosIcon/>
+                            </Button>
+
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={(e) => {this.validatePage(e,0)}}
+                                classes={{root : classes.button, disabled: classes.disabled}}
+                                disabled={this.hayErrores() ? true : false}
+                                style={{marginRight: -24}}
+                                >
+                                <ArrowForwardIosIcon />
+                            </Button>
+                        </div>
+                    </form>
+
+                    <form className = {classes.container}>
                         <fieldset className = {classes.fieldset}>
                             <legend>Seleccione los productos</legend>
                             <h1>Aqui va otra cosa</h1>
                             <br/>
                         </fieldset>
-                    </div>
 
-                    <div className = {classes.container}>
+                        <div className = {classes.buttonDiv}>
+                            <Button
+                                variant = "contained"
+                                color = "primary"
+                                onClick={(e) => {this.back(e)}} 
+                                classes={{root : classes.button, disabled: classes.disabled}}
+                                style={{marginLeft: -24}}
+                                >
+                                <ArrowBackIosIcon/>
+                            </Button>
+
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={(e) => {this.validatePage(e,1)}}
+                                classes={{root : classes.button, disabled: classes.disabled}}
+                                disabled={this.hayErrores() ? true : false}
+                                style={{marginRight: -24}}
+                                >
+                                <ArrowForwardIosIcon />
+                            </Button>
+                        </div>
+                    </form>
+
+                    <form className = {classes.container}>
                         <fieldset className = {classes.fieldset}>
                             <legend>Introduzca los datos de envío</legend>
                             <h1>Aqui va el form con cosas del envio</h1>
                             <br/>
                         </fieldset>
-                    </div>
 
-                    <div className = {classes.container}>
+                        <div className = {classes.buttonDiv}>
+                            <Button
+                                variant = "contained"
+                                color = "primary"
+                                onClick={(e) => {this.back(e)}} 
+                                classes={{root : classes.button, disabled: classes.disabled}}
+                                style={{marginLeft: -24}}
+                                >
+                                <ArrowBackIosIcon/>
+                            </Button>
+
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={(e) => {this.validatePage(e,2)}}
+                                classes={{root : classes.button, disabled: classes.disabled}}
+                                disabled={this.hayErrores() ? true : false}
+                                style={{marginRight: -24}}
+                                >
+                                <ArrowForwardIosIcon />
+                            </Button>
+                        </div>
+                    </form>
+
+                    <form className = {classes.container}>
                         <fieldset className = {classes.fieldset}>
                             <legend>Resumen del pedido</legend>
                             <h1>Aqui va la factura</h1>
                             <br/>
                         </fieldset>
-                    </div>
+
+                        <div className = {classes.buttonDiv}>
+                            <Button
+                                variant = "contained"
+                                color = "primary"
+                                onClick={(e) => {this.back(e)}} 
+                                classes={{root : classes.button, disabled: classes.disabled}}
+                                style={{marginLeft: -24}}
+                                >
+                                <ArrowBackIosIcon/>
+                            </Button>
+
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={(e) => {this.validatePage(e,3)}}
+                                classes={{root : classes.button, disabled: classes.disabled}}
+                                disabled={this.hayErrores() ? true : false}
+                                style={{marginRight: -24}}
+                                >
+                                <DoneIcon />
+                            </Button>
+                        </div>
+                    </form>
 
                 </Stepper>
             </div>
@@ -243,21 +477,19 @@ dependienteNuevoPedido.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    errors : state.errors,
-    valueRadio: state.valueRadio
+    data:state.data
 })
 
 const mapActionsToProps = {
-    
+    loadClienteIsDefaulter,
+    clearClienteIsDefaulter
 }
-const  provincias = [{title : 'Alava'},{title : 'Albacete'},{title : 'Alicante'},{title : 'Almería'},{title : 'Asturias'},{title : 'Avila'},
-                     {title : 'Badajoz'},{title : 'Barcelona'},{title : 'Burgos'},{title : 'Cáceres'},{title : 'Cádiz'},
-                     {title : 'Cantabria'},{title : 'Castellón'},{title : 'Ciudad Real'},{title : 'Córdoba'},{title : 'La Coruña'},
-                     {title : 'Cuenca'},{title : 'Gerona'},{title : 'Granada'},{title : 'Guadalajara'}, {title : 'Guipúzcoa'},
-                     {title : 'Huelva'},{title : 'Huesca'},{title : 'Islas Baleares'},{title : 'Jaén'},{title : 'León'},{title : 'Lérida'},
-                     {title : 'Lugo'},{title : 'Madrid'},{title : 'Málaga'},{title : 'Murcia'},{title : 'Navarra'}, {title : 'Orense'},
-                     {title : 'Palencia'},{title : 'Las Palmas'},{title : 'Pontevedra'},{title : 'La Rioja'},{title : 'Salamanca'},{title : 'Segovia'},
-                     {title : 'Sevilla'},{title : 'Soria'},{title : 'Tarragona'}, {title : 'Santa Cruz de Tenerife'},{title : 'Teruel'},
-                     {title : 'Toledo'},{title : 'Valencia'},{title : 'Valladolid'},{title : 'Vizcaya'},{title : 'Zamora'},{title : 'Zaragoza'}]
 
+const provincias = ['Alava','Albacete','Alicante','Almería','Asturias','Avila','Badajoz','Barcelona','Burgos','Cáceres',
+             'Cádiz','Cantabria','Castellón','Ciudad Real','Córdoba','La Coruña','Cuenca','Gerona','Granada','Guadalajara',
+             'Guipúzcoa','Huelva','Huesca','Islas Baleares','Jaén','León','Lérida','Lugo','Madrid','Málaga','Murcia','Navarra',
+             'Orense','Palencia','Las Palmas','Pontevedra','La Rioja','Salamanca','Segovia','Sevilla','Soria','Tarragona',
+             'Santa Cruz de Tenerife','Teruel','Toledo','Valencia','Valladolid','Vizcaya','Zamora','Zaragoza']
+
+const erroresPosibles = {'nombreApellidos' : [], 'NIF': [], 'direccion': [], 'provincia': [] , 'municipio': [], 'CP': [], 'email':[], 'telefono':[]}
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(dependienteNuevoPedido))
