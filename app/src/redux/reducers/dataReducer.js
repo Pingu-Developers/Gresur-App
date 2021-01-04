@@ -1,4 +1,4 @@
-import { SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION } from '../types';
+import { CLEAR_ISDEFAULTER ,SET_ISDEFAULTER, SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION } from '../types';
 
 const initialState = {
     pedidos: [],
@@ -6,7 +6,8 @@ const initialState = {
     categorias:[],
     vehiculos:[],
     personal:[],
-    ocupaciones:[]
+    ocupaciones:[],
+    isDefaulter: false,
 }
 
 export default function(state = initialState,action){
@@ -53,6 +54,14 @@ export default function(state = initialState,action){
                 ocupaciones: action.payload.data
             };
         case CLEAR_OCUPACION:
+            return initialState;
+        
+        case SET_ISDEFAULTER:
+            return {
+                ...state,
+                isDefaulter: action.payload.data
+            }
+        case CLEAR_ISDEFAULTER:
             return initialState;
         
         default:

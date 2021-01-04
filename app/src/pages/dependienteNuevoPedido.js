@@ -12,11 +12,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import DoneIcon from '@material-ui/icons/Done';
-
 import Button from '@material-ui/core/Button';
 
-
 import Stepper from '../components/Stepper';
+import { loadClienteIsDefaulter, clearClienteIsDefaulter } from '../redux/actions/dataActions';
+import Snackbar from '../components/SnackBar'
 
 
 const style = {
@@ -122,7 +122,7 @@ export class dependienteNuevoPedido extends Component {
         }
     }
     componentDidMount(){
-        this.setState({valueRadio : 'Pago directo'})
+        this.setState({valueRadio : 'Pago directo'})  
     }
 
     handleChangeRadio = (event) => {
@@ -143,7 +143,9 @@ export class dependienteNuevoPedido extends Component {
         document.getElementById('backButton').click();
     }
 
-    validatePage(step){
+    validatePage(event, step){
+        event.preventDefault()
+        this.props.clearClienteIsDefaulter()
         let errores = {...this.state.errors} ;
         switch(step){
             case 0:{
@@ -163,6 +165,19 @@ export class dependienteNuevoPedido extends Component {
                     errores['email'].push('No puede ser vacio')
                 if(this.state.telefono === '')
                     errores['telefono'].push('No puede ser vacio')
+                
+
+                console.log('DNI INTRODUCIDO:' + this.state.NIF)
+                this.props.loadClienteIsDefaulter(this.state.NIF)
+                console.log('defaulter? - ' + this.props.data.isDefaulter)
+                //el estado de this.props.data es asincrono y llega tarde
+                //por otro lado el estado de los errores es persistente y los values no persisten
+                
+                if(this.props.data.isDefaulter){
+                    document.getElementById("botonSnack")? document.getElementById("botonSnack")?.click() : 
+                                                           console.log('No se encuentra boton para abrir la snackbar');
+                    errores['NIF'].push('')
+                }
                 break
             }
             default:{
@@ -179,7 +194,7 @@ export class dependienteNuevoPedido extends Component {
 
     onChangeInput(event, name, value){
         event.preventDefault();
-        if(this.state.errors[name][0]){
+        if(this.state.errors[name][0] || this.state.errors[name][0] === ''){
             let errores = {...this.state.errors};
             errores[name] = []
             this.setState({errors: errores})
@@ -189,11 +204,13 @@ export class dependienteNuevoPedido extends Component {
     }
 
     render() {
-        const {classes} = this.props;
+        const { classes, data } = this.props;
         let changing = '';
         let inputValue = null;
         return (
             <div>
+                {console.log(this.state)}
+                <Snackbar type = "error" open = {data.isDefaulter} message= 'Este cliente tiene impagos!'/>
                 <Button id = 'onChangeInput' onClick = {(event) => {this.onChangeInput(event, changing, inputValue)}} style={{display : 'none'}}></Button>
                 <Typography variant='h3' className={classes.tituloNuevoPedido}>GENERAR UN NUEVO PEDIDO</Typography><br/>
                 <Stepper 
@@ -347,7 +364,7 @@ export class dependienteNuevoPedido extends Component {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => {this.validatePage(0)}}
+                                onClick={(e) => {this.validatePage(e,0)}}
                                 classes={{root : classes.button, disabled: classes.disabled}}
                                 disabled={this.hayErrores() ? true : false}
                                 style={{marginRight: -24}}
@@ -378,9 +395,9 @@ export class dependienteNuevoPedido extends Component {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => {document.getElementById('nextButton').click()}}
+                                onClick={(e) => {this.validatePage(e,1)}}
                                 classes={{root : classes.button, disabled: classes.disabled}}
-                                disabled={this.state.errors ? true : false}
+                                disabled={this.hayErrores() ? true : false}
                                 style={{marginRight: -24}}
                                 >
                                 <ArrowForwardIosIcon />
@@ -396,7 +413,7 @@ export class dependienteNuevoPedido extends Component {
                         </fieldset>
 
                         <div className = {classes.buttonDiv}>
-                        <Button
+                            <Button
                                 variant = "contained"
                                 color = "primary"
                                 onClick={(e) => {this.back(e)}} 
@@ -409,9 +426,9 @@ export class dependienteNuevoPedido extends Component {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => {document.getElementById('nextButton').click()}}
+                                onClick={(e) => {this.validatePage(e,2)}}
                                 classes={{root : classes.button, disabled: classes.disabled}}
-                                disabled={this.state.errors ? true : false}
+                                disabled={this.hayErrores() ? true : false}
                                 style={{marginRight: -24}}
                                 >
                                 <ArrowForwardIosIcon />
@@ -440,9 +457,9 @@ export class dependienteNuevoPedido extends Component {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => {document.getElementById('nextButton').click()}}
+                                onClick={(e) => {this.validatePage(e,3)}}
                                 classes={{root : classes.button, disabled: classes.disabled}}
-                                disabled={this.state.errors ? true : false}
+                                disabled={this.hayErrores() ? true : false}
                                 style={{marginRight: -24}}
                                 >
                                 <DoneIcon />
@@ -460,13 +477,12 @@ dependienteNuevoPedido.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    errors : state.errors,
-    valueRadio: state.valueRadio,
-    nombreApellidos: state.nombreApellidos,
+    data:state.data
 })
 
 const mapActionsToProps = {
-    
+    loadClienteIsDefaulter,
+    clearClienteIsDefaulter
 }
 
 const provincias = ['Alava','Albacete','Alicante','Almería','Asturias','Avila','Badajoz','Barcelona','Burgos','Cáceres',

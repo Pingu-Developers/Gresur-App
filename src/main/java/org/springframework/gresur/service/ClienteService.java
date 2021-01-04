@@ -20,12 +20,20 @@ public class ClienteService {
 	private ClienteRepository clienteRepo;
 	
 	@Autowired
+	private FacturaEmitidaService facturaEmitidaService;
+	
+	@Autowired
 	public ClienteService(ClienteRepository clienteRepo) {
 		this.clienteRepo = clienteRepo;
 	}
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+	@Transactional(readOnly = true)
+	public Boolean isDefaulter(Cliente c) {
+		return !facturaEmitidaService.findByClienteIdAndEstaPagadaFalse(c.getId()).isEmpty();
+	}
+	
 	
 	@Transactional(readOnly = true)
 	public Iterable<Cliente> findAll() throws DataAccessException{
