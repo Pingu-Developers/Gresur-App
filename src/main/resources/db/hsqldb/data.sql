@@ -174,69 +174,69 @@ INSERT INTO PRODUCTOS(nombre, descripcion, unidad, stock, stock_seguridad, URL_i
 
 
 INSERT INTO CLIENTES(ID, NIF, name, email, tlf, direccion) 
-		VALUES (1,'75648392B', 'Paco Lopez Castro', 'paclopcas@gmail.com', '787983426', 'Calle Der Cadi Depe nº1 Bloque C Piso 3 Puerta 1 (Cadiz)');
+		VALUES (1,'75648392B', 'Paco Lopez Castro', 'paclopcas@gmail.com', '787983426', 'C/ Der Cadi Depe 1 Bloque C Piso 3 Puerta 1, Cadiz, Cadiz, 12345');
 
 INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
-		VALUES (2,'28415689N', 'Juan Martin Santos', 'juamarsan@hotmail.com', '624791246', 'Ronda Iglesia, 44, 49492, Fresno De Sayago(Zamora)');
+		VALUES (2,'28415689N', 'Juan Martin Santos', 'juamarsan@hotmail.com', '624791246', 'C/ Ronda Iglesia 44, Fresno De Sayago, Zamora, 49492');
 		
 INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
-		VALUES (3,'44812413H', 'Luis Olivares Dominguez', 'rnu6e107@journalism.com', '787983426', 'Campo Horno, 51, 18355, Dúdar(Granada)');
+		VALUES (3,'44812413H', 'Luis Olivares Dominguez', 'rnu6e107@journalism.com', '787983426', 'C/ Campo Horno 51, Dúdar, Granada, 18355');
 
 INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
-		VALUES (4,'22727936A', 'Iris Estevez Arjona', 'eucsdu6d7@netscape.net', '619957551', 'Kalea De España, 66, 46107, Sant Joanet(Valencia)');
+		VALUES (4,'22727936A', 'Iris Estevez Arjona', 'eucsdu6d7@netscape.net', '619957551', 'C/ Kalea De España 66, Sant Joanet, Valencia, 46107');
 
 INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
-		VALUES (5,'39979389F', 'Eugenia Valero Borrego', 'g4zoiz6re@scientist.com', '634970870', 'Praza Catalunya, 2, 20341, Itsasondo(Gipuzkoa)');
+		VALUES (5,'39979389F', 'Eugenia Valero Borrego', 'g4zoiz6re@scientist.com', '634970870', 'C/ Praza Catalunya, Itsasondo, Gipuzkoa, 20341');
 		
 INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
-		VALUES (6,'22264890Q', 'Victoriano Garzon Martin', 'fv7hkct7ac@lycos.es', '675958716', 'Sector Catalunya, 56, 08133, Puig-reig(Barcelona)');
+		VALUES (6,'22264890Q', 'Victoriano Garzon Martin', 'fv7hkct7ac@lycos.es', '675958716', 'C/ Sector Catalunya 56, Puig-reig, Barcelona, 08133');
 		
 INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
-		VALUES (7,'26219453M', 'Maria Amparo Ortiz Poveda', 'r7xnew0aup@mail.com', '784043436', 'Placeta Madrid, 36, 37219, Calzada De Valdunciel(Salamanca)');
+		VALUES (7,'26219453M', 'Maria Amparo Ortiz Poveda', 'r7xnew0aup@mail.com', '784043436', 'C/ Placeta Madrid 36, Calzada De Valdunciel, Salamanca, 37219');
 		
 INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
-		VALUES (8,'22898584Z', 'Rocio Barbero Carballo', '1sb7zoxsi1@talk21.com', '650116275', 'Parque Iglesia, 44, 32043, Monterrei(Ourense)');
+		VALUES (8,'22898584Z', 'Rocio Barbero Carballo', '1sb7zoxsi1@talk21.com', '650116275', 'C/ Parque Iglesia 44, Monterrei, Ourense, 32043');
 	
 INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
-		VALUES (9,'17868188V', 'Angeles Mendoza Serrano', 'mmy3xn9w0@unforgettable.com', '638609667', 'Travessera De España, 22, 16390, Fuentelespino De Moya(Cuenca)');
+		VALUES (9,'17868188V', 'Angeles Mendoza Serrano', 'mmy3xn9w0@unforgettable.com', '638609667', 'C/ Travessera De España 22, Fuentelespino De Moya, Cuenca, 16390');
 		
 INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
-		VALUES (10,'87074959H', 'Andreu Vega Gil', '26doupca@yahoo.com', '778946555', 'Jardins Nueva, 41, 14091, Villanueva De Córdoba(Córdoba)');	
+		VALUES (10,'87074959H', 'Andreu Vega Gil', '26doupca@yahoo.com', '778946555', 'C/ Jardins Nueva 41, Villanueva De Córdoba, Cordoba, 14091');	
 		
 		
 INSERT INTO PROVEEDORES(ID, NIF, name, email, tlf, direccion, IBAN) 
-	VALUES (1, '26690085B', 'Borja Hernando Canovas', 'lp0nrqb0zr@teacher.com', '691533234', 'Sector Iglesia, 68, 47134, San Pedro De Latarce(Valladolid)', 'ES1120952845103784661664');	
+	VALUES (1, '26690085B', 'Borja Hernando Canovas', 'lp0nrqb0zr@teacher.com', '691533234', 'C/ Sector Iglesia, 68, 47134, San Pedro De Latarce(Valladolid)', 'ES1120952845103784661664');	
 
 INSERT INTO PROVEEDORES(ID, NIF, name, email, tlf, direccion, IBAN) 
-	VALUES (2, '74668939Z', 'Ariadna Herranz Leal', 'sc8s4nm52@netscape.net', '779832710', 'Jardines Mayor, 56, 08755, Corbera De Llobregat(Barcelona)', 'ES4400812634079548975366');
+	VALUES (2, '74668939Z', 'Ariadna Herranz Leal', 'sc8s4nm52@netscape.net', '779832710', 'C/ Jardines Mayor, 56, 08755, Corbera De Llobregat(Barcelona)', 'ES4400812634079548975366');
 
 INSERT INTO PROVEEDORES(ID, NIF, name, email, tlf, direccion, IBAN) 
-	VALUES (3, '31214241K', 'Juana Maria Esteban Benito', 'brzvaxa9n@caramail.com', '709604603', 'Praza Real, 78, 16665, Monteagudo De Las Salinas(Cuenca)', 'ES5820384225959160407235');
+	VALUES (3, '31214241K', 'Juana Maria Esteban Benito', 'brzvaxa9n@caramail.com', '709604603', 'C/ Praza Real, 78, 16665, Monteagudo De Las Salinas(Cuenca)', 'ES5820384225959160407235');
 
 INSERT INTO PROVEEDORES(ID, NIF, name, email, tlf, direccion, IBAN) 
-	VALUES (4, '81792929F', 'Jose Miguel Bautista Merino', 'wlatjldp1@btinternet.com', '660754784', 'Plazuela Horno, 14, 28059, Robregordo(Madrid)', 'ES2020850354752503007736');
+	VALUES (4, '81792929F', 'Jose Miguel Bautista Merino', 'wlatjldp1@btinternet.com', '660754784', 'C/ Plazuela Horno, 14, 28059, Robregordo(Madrid)', 'ES2020850354752503007736');
 		
 INSERT INTO PROVEEDORES(ID, NIF, name, email, tlf, direccion, IBAN) 
-	VALUES (5, '08129428D', 'Esteban Ponce Benito', 'duc17lxqi@lycos.it', '790098033', 'Parque Mayor, 52, 18391, Alamedilla(Granada)', 'ES2320382563632341001623');
+	VALUES (5, '08129428D', 'Esteban Ponce Benito', 'duc17lxqi@lycos.it', '790098033', 'C/ Parque Mayor, 52, 18391, Alamedilla(Granada)', 'ES2320382563632341001623');
 	
 	
 INSERT INTO ADMINISTRADORES(ID, NIF, name, email, tlf, direccion, NSS, image) 
-	VALUES (1, '06860594Q', 'Ruben Galvez Vicente', 'j6n97y3gc@lycos.it', '726782748', 'Calle Gresur nº1 El Gastor(Cadiz)', '240685809175', 'https://i.imgur.com/ROcpSPY.png');
+	VALUES (1, '06860594Q', 'Ruben Galvez Vicente', 'j6n97y3gc@lycos.it', '726782748', 'C/ Calle Gresur nº1 El Gastor(Cadiz)', '240685809175', 'https://i.imgur.com/ROcpSPY.png');
 		
 INSERT INTO ENCARGADOS_ALMACEN(ID, NIF, name, email, tlf, direccion, NSS, image, almacen_id) 
-	VALUES (2, '54511574X', 'Jose Daniel Soria Gallardo', 'iud4v6mn2@lycos.nl', '631087202', 'Praza De España, 89, 19905, Toba, La(Guadalajara)', '010473213263', 'https://img.lovepik.com/element/40094/5994.png_860.png',1);
+	VALUES (2, '54511574X', 'Jose Daniel Soria Gallardo', 'iud4v6mn2@lycos.nl', '631087202', 'C/ Praza De España, 89, 19905, Toba, La(Guadalajara)', '010473213263', 'https://img.lovepik.com/element/40094/5994.png_860.png',1);
 		
 INSERT INTO ENCARGADOS_ALMACEN(ID, NIF, name, email, tlf, direccion, NSS, image, almacen_id) 
-	VALUES (3, '14337755S', 'Iria Rios Linares', 'kuftenuidt@scientist.com', '673206955', 'Poblado Nueva, 14, 19652, Atanzón(Guadalajara)', '110473213263', 'https://img.lovepik.com/element/40094/5994.png_860.png',2);
+	VALUES (3, '14337755S', 'Iria Rios Linares', 'kuftenuidt@scientist.com', '673206955', 'C/ Poblado Nueva, 14, 19652, Atanzón(Guadalajara)', '110473213263', 'https://img.lovepik.com/element/40094/5994.png_860.png',2);
 	
 INSERT INTO DEPENDIENTES(ID, NIF, name, email, tlf, direccion, NSS, image) 
-	VALUES (4, '64145337Q', 'Jose Javier Muñoz Jimenez', 'u0kvftny@talk21.com', '688128113', 'Via Nueva, 65, 21499, Palos De La Frontera(Huelva)', '210473213263', 'https://toppng.com/uploads/preview/dependiente-1155104897331wmwr4sz0.png');
+	VALUES (4, '64145337Q', 'Jose Javier Muñoz Jimenez', 'u0kvftny@talk21.com', '688128113', 'C/ Via Nueva, 65, 21499, Palos De La Frontera(Huelva)', '210473213263', 'https://toppng.com/uploads/preview/dependiente-1155104897331wmwr4sz0.png');
 	
 INSERT INTO TRANSPORTISTAS(ID, NIF, name, email, tlf, direccion, NSS, image) 
-	VALUES (5, '50921688X', 'Eduardo Velazquez Rivas', 'p6qf4oya1@blu.it', '684036867', 'Avenida Horno, 95, 41904, Gines(Sevilla)', '310473213263', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
+	VALUES (5, '50921688X', 'Eduardo Velazquez Rivas', 'p6qf4oya1@blu.it', '684036867', 'C/ Avenida Horno, 95, 41904, Gines(Sevilla)', '310473213263', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
 
 INSERT INTO TRANSPORTISTAS(ID, NIF, name, email, tlf, direccion, NSS, image) 
-	VALUES (6, '73929968X', 'Agustin Pineda Rey', 'f8s9khjgx@btinternet.com', '672910341', 'Carrera De España, 74, 28661, Valdemanco(madrid)', '410473213263', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
+	VALUES (6, '73929968X', 'Agustin Pineda Rey', 'f8s9khjgx@btinternet.com', '672910341', 'C/ Carrera De España, 74, 28661, Valdemanco(madrid)', '410473213263', 'https://www.conductorserio.com/wp-content/uploads/2015/01/camionero_bolsa_trabajo-1200x1477.png');
 
 
 INSERT INTO USERS(username, password, personal_id)
