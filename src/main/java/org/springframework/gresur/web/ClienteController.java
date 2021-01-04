@@ -40,4 +40,10 @@ public class ClienteController {
 		}
 	}
 	
+	@GetMapping("/{NIF}")
+	@PreAuthorize("hasRole('DEPENDIENTE')")
+	public Cliente findClienteByNIF(@PathVariable("NIF") String NIF) throws DataAccessException{
+		return clienteService.findByNIF(NIF);
+	}
+	
 }
