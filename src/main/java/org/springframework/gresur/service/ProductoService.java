@@ -130,13 +130,16 @@ public class ProductoService {
 		List<LineaFactura> lf = facturaService.findLineasFactura().stream()
 																	 .filter(x->x.getFactura().esDefinitiva() && x.getFactura().getFechaEmision().isAfter(tmp))
 																	 .collect(Collectors.toList());
+		
 		Long totalVentas = lf.stream()
 							 .mapToLong(x->x.getCantidad())
 							 .sum();
+		System.out.println("TOMAAS TOTAL VENTAS" + totalVentas);
 		Double ventasProducto = lf.stream()
 								  .filter(x->x.getProducto().equals(p))
 								  .mapToDouble(x->x.getCantidad())
 								  .sum();
+		System.out.println("TOMAAS VENTAS PRODUCTO" + totalVentas);
 		return ventasProducto/totalVentas;
 	}
 	

@@ -1,5 +1,7 @@
 package org.springframework.gresur.web;
 
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -102,6 +104,14 @@ public class ProductoController {
 		p.setPrecioVenta(newProducto.getPrecioVenta());
 		p.setPrecioCompra(newProducto.getPrecioCompra());
 		return productoService.save(p);
+	}
+	
+	@GetMapping("/demanda")
+	public Double getDemanda() {
+		Producto prod = productoService.findById(1L);
+		Double res = productoService.getDemanda(prod, LocalDate.of(0, 1, 1));
+		System.out.println("TOMAAS" + res);
+		return res;
 		
 	}
 	

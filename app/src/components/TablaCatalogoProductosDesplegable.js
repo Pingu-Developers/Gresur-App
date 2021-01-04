@@ -62,8 +62,7 @@ const AccordionDetails = withStyles((theme) => ({
 
 export default function ControlledAccordions(props) {
   const classes = useStyles();
-  const categorias = props.data.categorias
-  const productos = props.data.productos
+  const datos = props.data.productos;
   const [expanded, setExpanded] = React.useState(0);
 
   const handleChange = (panel) => (event, isExpanded) => { 
@@ -73,26 +72,24 @@ export default function ControlledAccordions(props) {
   return (
     <div className={classes.root}>
       {
-        categorias.map((row) => 
+        Object.entries(datos).map((row) => 
           <Accordion 
               square
               className = {classes.acordeon}
-              expanded={expanded === categorias.indexOf(row)} 
-              onChange={handleChange(categorias.indexOf(row))}>
+              expanded={expanded === row[0]} 
+              onChange={handleChange(row[0])}>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1d-content"
                 id="panel1d-header"
                 className= {classes.acordeonSum}
                 >
-                <Typography className={classes.heading}><b>{row}</b></Typography>
+                <Typography className={classes.heading}><b>{row[0]}</b></Typography>
               </AccordionSummary>
 
               <AccordionDetails className = {classes.elementos}>
                 <div>
-                    {productos.map((producto) => 
-                        producto.estanteria.categoria===row? <MostradorProductos producto={producto}/> : null
-                    )}
+                    {row[1].map((producto) => <MostradorProductos producto={producto}/>)}
                 </div>
               </AccordionDetails>             
           </Accordion>
