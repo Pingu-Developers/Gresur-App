@@ -15,7 +15,10 @@ import DoneIcon from '@material-ui/icons/Done';
 import Button from '@material-ui/core/Button';
 
 import Stepper from '../components/Stepper';
+
 import { loadClienteIsDefaulter, clearClienteIsDefaulter, clear } from '../redux/actions/dataActions';
+import { loadCliente, clearClienteByNIF } from '../redux/actions/dataActions';
+
 import Snackbar from '../components/SnackBar'
 
 
@@ -138,6 +141,17 @@ export class dependienteNuevoPedido extends Component {
             if(!hayMasErrores)
                 document.getElementById('backButton').click();
         }
+        console.log(this.props.data.cliente)
+        if(this.props.data.cliente !== null && this.props.data.cliente !== ''){
+            this.setState({nombreApellidos : this.props.data.cliente.name, 
+                           direccion : this.props.data.cliente.direccion.split(',')[0].trim(),
+                           municipio: this.props.data.cliente.direccion.split(',')[1].trim(),
+                           provincia: this.props.data.cliente.direccion.split(',')[2].trim(),
+                           CP: this.props.data.cliente.direccion.split(',')[3].trim(),
+                           email: this.props.data.cliente.email,
+                           telefono: this.props.data.cliente.tlf})
+            this.props.clearClienteByNIF()
+        }
     }
 
     componentWillUnmount(){
@@ -171,33 +185,35 @@ export class dependienteNuevoPedido extends Component {
         switch(step){
             case 0:{
                 this.props.loadClienteIsDefaulter(this.state.NIF)
-                if(this.state.nombreApellidos === '')
+                if(this.state.nombreApellidos.trim() === '')
                     errores['nombreApellidos'].push('No puede ser vacio')
-                if(this.state.nombreApellidos.length < 3 || this.state.nombreApellidos.length > 50)
+                if(this.state.nombreApellidos.trim().length < 3 || this.state.nombreApellidos.trim().length > 50)
                     errores['nombreApellidos'].push('Debe estar entre 3 y 50 caracteres')
-                if(this.state.NIF === '')
+                if(this.state.NIF.trim() === '')
                     errores['NIF'].push('No puede ser vacio')
-                if(!this.state.NIF.match(/^(\d{8})([A-Z])$/))
+                if(!this.state.NIF.trim().match(/^(\d{8})([A-Z])$/))
                     errores['NIF'].push('Formato invalido')
-                if(this.state.direccion === '')
+                if(this.state.direccion.trim() === '')
                     errores['direccion'].push('No puede ser vacio')
-                if(this.state.direccion.length < 3 || this.state.direccion.length > 100)
+                if(this.state.direccion.trim().length < 3 || this.state.direccion.trim().length > 100)
                     errores['direccion'].push('Debe estar entre 3 y 50 caracteres')
-                if(this.state.provincia === '' || this.state.provincia === 0)
+                if(this.state.provincia.trim() === '' || this.state.provincia === 0)
                     errores['provincia'].push('No puede ser vacio')
-                if(this.state.municipio === '')
+                if(!provincias.includes(this.state.provincia.trim()))
+                    errores['provincia'].push('Provincia inválida')
+                if(this.state.municipio.trim() === '')
                     errores['municipio'].push('No puede ser vacio')
-                if(this.state.CP === '')
+                if(this.state.CP.trim() === '')
                     errores['CP'].push('No puede ser vacio')
-                if(!this.state.CP.match(/^\d{5}$/))
+                if(!this.state.CP.trim().match(/^\d{5}$/))
                     errores['CP'].push('formato invalido')
-                if(this.state.email === '')
+                if(this.state.email.trim() === '')
                     errores['email'].push('No puede ser vacio')
-                if(!this.validateEmail(this.state.email))
+                if(!this.validateEmail(this.state.email.trim()))
                     errores['email'].push('formato invalido')
-                if(this.state.telefono === '')
+                if(this.state.telefono.trim() === '')
                     errores['telefono'].push('No puede ser vacio')
-                if(!this.state.telefono.match(/^\d{9}$/))
+                if(!this.state.telefono.trim().match(/^\d{9}$/))
                     errores['telefono'].push('formato invalido')
                 break
                 }
@@ -213,12 +229,17 @@ export class dependienteNuevoPedido extends Component {
 
     onChangeInput(event, name, value){
         event.preventDefault();
+        
         if(this.state.errors[name][0] || this.state.errors[name][0] === ''){
             let errores = {...this.state.errors};
             errores[name] = []
             this.setState({errors: errores})
-        }
+        }if(name === 'NIF' && value.match(/^(\d{8})([A-Z])$/)){
+            this.props.loadCliente(value);
+        }    
         this.setState({[name] : value});
+        
+        
     }
 
     render() {
@@ -275,7 +296,6 @@ export class dependienteNuevoPedido extends Component {
                                     options={provincias}
                                     getOptionLabel={(option) => option}
                                     value = {this.state.provincia}
-                                    inputValue = {this.state.provincia}
                                     renderInput={(params) => 
                                                             <TextField 
                                                                 {...params}
@@ -285,11 +305,8 @@ export class dependienteNuevoPedido extends Component {
                                                                 helperText = {this.state.errors['provincia'][0]}/>}                                
                                     className = {[classes.input, classes.provincia].join(" ")}
                                     onChange = {(event, value) => {inputValue = value; changing = 'provincia'; 
-                                                           document.getElementById('onChangeInput').click()}}
-                                    onInputChange = {(event, value) => {inputValue = value; changing = 'provincia'; 
                                                            document.getElementById('onChangeInput').click()}}/>
                                                            
-
                                     <TextField
                                     value = {this.state.municipio}
                                     error = {this.state.errors['municipio'].length !== 0 ? true:false}
@@ -500,12 +517,16 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = {
     loadClienteIsDefaulter,
     clearClienteIsDefaulter,
-    clear
+
+    clear,
+    loadCliente,
+    clearClienteByNIF,
+
 }
 
-const provincias = ['Alava','Albacete','Alicante','Almería','Asturias','Avila','Badajoz','Barcelona','Burgos','Cáceres',
-             'Cádiz','Cantabria','Castellón','Ciudad Real','Córdoba','La Coruña','Cuenca','Gerona','Granada','Guadalajara',
-             'Guipúzcoa','Huelva','Huesca','Islas Baleares','Jaén','León','Lérida','Lugo','Madrid','Málaga','Murcia','Navarra',
+const provincias = ['Alava','Albacete','Alicante','Almería','Asturias','Avila','Badajoz','Barcelona','Burgos','Caceres',
+             'Cadiz','Cantabria','Castellon','Ciudad Real','Cordoba','La Coruña','Cuenca','Gerona','Granada','Guadalajara',
+             'Guipuzkoa','Huelva','Huesca','Islas Baleares','Jaen','Leon','Lerida','Lugo','Madrid','Málaga','Murcia','Navarra',
              'Orense','Palencia','Las Palmas','Pontevedra','La Rioja','Salamanca','Segovia','Sevilla','Soria','Tarragona',
              'Santa Cruz de Tenerife','Teruel','Toledo','Valencia','Valladolid','Vizcaya','Zamora','Zaragoza']
 
