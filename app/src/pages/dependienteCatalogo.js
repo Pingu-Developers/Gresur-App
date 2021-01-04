@@ -11,7 +11,7 @@ import SendIcon from '@material-ui/icons/Send';
 //Redux stuff
 import { connect } from 'react-redux';
 import { loadProductos } from '../redux/actions/dataActions';
-import { loadProductosByNombre } from '../redux/actions/dataActions';
+import { loadProductosByNombre , clear } from '../redux/actions/dataActions';
 
 //Componentes
 import TablaCatalogoProductosDesplegable from '../components/TablaCatalogoProductosDesplegable';
@@ -88,6 +88,10 @@ class dependienteCatalogo extends Component {
         this.props.loadProductos();
     }
 
+    componentWillUnmount(){
+        this.props.clear();
+    }
+
     render() {
         const {classes, data} = this.props;
         
@@ -124,7 +128,8 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
     loadProductos,
-    loadProductosByNombre
+    loadProductosByNombre,
+    clear
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(dependienteCatalogo))

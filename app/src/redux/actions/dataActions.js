@@ -1,4 +1,4 @@
-import { CLEAR_CLIENTE, SET_CLIENTE, CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER } from '../types';
+import { CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER } from '../types';
 import axios from 'axios';
 
 export const loadPedidos = () => (dispatch) => {
@@ -296,4 +296,8 @@ export const loadCliente = (NIF) => function (dispatch) {
 
 export const clearClienteByNIF = () => (dispatch) => {
     dispatch({type: CLEAR_CLIENTE})
+}
+
+export const clear = () => (dispatch) => {
+    dispatch({type: CLEAR})
 }

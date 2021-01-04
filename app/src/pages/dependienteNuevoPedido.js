@@ -15,7 +15,8 @@ import DoneIcon from '@material-ui/icons/Done';
 import Button from '@material-ui/core/Button';
 
 import Stepper from '../components/Stepper';
-import { loadClienteIsDefaulter, clearClienteIsDefaulter } from '../redux/actions/dataActions';
+
+import { loadClienteIsDefaulter, clearClienteIsDefaulter, clear } from '../redux/actions/dataActions';
 import { loadCliente, clearClienteByNIF } from '../redux/actions/dataActions';
 
 import Snackbar from '../components/SnackBar'
@@ -151,6 +152,10 @@ export class dependienteNuevoPedido extends Component {
                            telefono: this.props.data.cliente.tlf})
             this.props.clearClienteByNIF()
         }
+    }
+
+    componentWillUnmount(){
+        this.props.clear();
     }
 
     handleChangeRadio = (event) => {
@@ -512,8 +517,11 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = {
     loadClienteIsDefaulter,
     clearClienteIsDefaulter,
+
+    clear,
     loadCliente,
     clearClienteByNIF,
+
 }
 
 const provincias = ['Alava','Albacete','Alicante','Almería','Asturias','Avila','Badajoz','Barcelona','Burgos','Caceres',
