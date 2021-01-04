@@ -1,6 +1,8 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 
+import Snackbar from './SnackBar'
+
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
@@ -11,6 +13,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { loadClienteIsDefaulter, clearClienteIsDefaulter } from "../redux/actions/dataActions"
 import { getFacturasCliente, getFacturasClienteAndFecha,sendDevolucion } from "../redux/actions/clienteActions"
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -43,9 +46,6 @@ const useStyles = makeStyles({
         alignItems:'center',
         display:'flex',
         justifyContent:'center',
-    },
-    arrow:{
-
     },
     tables:{
         minHeight:260
@@ -88,6 +88,7 @@ export default function FormDatosDevolucion() {
         }
         setLineasSelected(temp);
         setValueSelected(temp2);
+        setN(n+1)
     }
 
     const handleChangeValueSelected = (producto,value) => {
@@ -115,6 +116,7 @@ export default function FormDatosDevolucion() {
         }
         setLineasSelected(temp);
         setValueSelected(temp2);
+        setN(n+1)
     }
 
     const handelLoadFacturas= (value,fecha = null) => {
@@ -122,6 +124,13 @@ export default function FormDatosDevolucion() {
             if(value !== null){
                 dispatch(getFacturasCliente(value.id))
             }
+
+            setValueNum(null);
+            setInputValue('');
+            setMotivo('');
+            setFechaInicio(null);
+            setLineasSelected([])
+            setValueSelected([])
         }else{
             if(value !== null){
                 const temp = {
@@ -131,12 +140,7 @@ export default function FormDatosDevolucion() {
                 dispatch(getFacturasClienteAndFecha(temp))
             }
         }   
-        setValueNum(null);
-        setInputValue('');
-        setMotivo('');
-        setFechaInicio(null);
-        setLineasSelected([])
-        setValueSelected([])
+        
     }
 
     const handleSubmit = (event) => {
@@ -146,8 +150,7 @@ export default function FormDatosDevolucion() {
             e2: motivo,
             e3: valueSelected
         }
-        //dispatch(sendDevolucion(formData))
-        //console.log(formData)
+        dispatch(sendDevolucion(formData))
         setValue(null)
         setValueNum(null);
         setInputValue('');
@@ -157,9 +160,25 @@ export default function FormDatosDevolucion() {
         setValueSelected([]);
     }
 
+    React.useEffect(()=> {
+        if(value){
+            dispatch(loadClienteIsDefaulter(value.nif));
+        }else{
+            dispatch(clearClienteIsDefaulter())
+        }
+    },[value])
+
+
+
+    React.useEffect(()=> {
+        if(counter.data.isDefaulter){
+            document.getElementById("botonSnack")? document.getElementById("botonSnack").click() : console.log('No se encuentra boton para abrir la snackbar');
+        }
+    })
 
     return (
         <Paper className={classes.root}>
+            <Snackbar type = "error" open = {counter.data.isDefaulter} message= 'Este cliente tiene impagos!'/>
             <Typography variant='subtitle1' className={classes.subtituloCatalogo}>Datos de la devolucion</Typography>
             <Divider />
             <Grid  container spacing={3}>
@@ -187,7 +206,7 @@ export default function FormDatosDevolucion() {
                 <Grid className={classes.grid } item xs={3}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <KeyboardDatePicker
-                            disabled={value === null || value===''?true:false}
+                            disabled={value === null || value==='' || counter.data.isDefaulter?true:false}
                             className={classes.fechaLeft}
                             disableToolbar
                             autoOk={true}
@@ -208,7 +227,7 @@ export default function FormDatosDevolucion() {
                 </Grid>
                 <Grid className={classes.grid } item xs={3}>
                     <Autocomplete
-                        disabled={value === null || value===''?true:false}
+                        disabled={value === null || value==='' || counter.data.isDefaulter?true:false}
                         size="small"
                         id="numfactura"
                         freeSolo
@@ -253,7 +272,7 @@ export default function FormDatosDevolucion() {
             <Grid className={classes.grid2 } container spacing={2}>
                 <Grid  item xs={5}>
                     <Paper className={classes.tables } variant="outlined" >
-                        <form onSubmit = {(event)=> {event.preventDefault(); setN(n+1)}}>
+                        <form onSubmit = {(event)=> {event.preventDefault(); }}>
                             <br/>
                             <Divider  />
                             {valueNum && valueNum.lineasFacturas?valueNum.lineasFacturas.map((row)=>    
@@ -274,7 +293,7 @@ export default function FormDatosDevolucion() {
                 </Grid>
                 <Grid  item xs={5}>
                     <Paper className={classes.tables } variant="outlined">
-                        <form onSubmit = {(event)=> {event.preventDefault(); setN(n+1)}}>
+                        <form onSubmit = {(event)=> {event.preventDefault(); }}>
                             <br/>
                             <Divider  />
                             {lineasSelected.map((row)=>    
@@ -287,6 +306,7 @@ export default function FormDatosDevolucion() {
                                                 style = {{ height:12 , width:60, display:"inline-block"}}
                                                 id={row.id}
                                                 type="number"
+                                                onKeyPress={(e)=>{e.target.keyCode === 13 && e.preventDefault();}}
                                                 defaultValue = {1}
                                                 value = {valueSelected.filter(obj => {
                                                     return obj.e1 === row.id

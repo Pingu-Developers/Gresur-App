@@ -30,6 +30,7 @@ export const SET_ISDEFAULTER = 'SET_ISDEFAULTER';
 export const CLEAR_ISDEFAULTER = 'CLEAR_ISDEFAULTER';
 export const SET_CLIENTE = 'SET_CLIENTE';
 export const CLEAR_CLIENTE = 'CLEAR_CLIENTE';
+export const CLEAR = 'CLEAR';
 //ClienteReducer types
 export const SET_CLIENTES = 'SET_CLIENTES';
 export const CLEAR_CLIENTES = 'CLEAR_CLIENTES';
