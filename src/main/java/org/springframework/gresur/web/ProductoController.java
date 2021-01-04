@@ -1,15 +1,21 @@
 package org.springframework.gresur.web;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.gresur.model.Categoria;
+import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.Producto;
+import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.service.ProductoService;
+import org.springframework.gresur.util.Tuple2;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,19 +39,54 @@ public class ProductoController {
 	
 	@GetMapping
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ENCARGADO')")
-	public Pair<List<Producto>, List<Categoria>> findProductos(){
-		return Pair.of(productoService.findAll(), Arrays.asList(Categoria.values()));
+	public Map<Categoria,List<Producto>> findProductos(){
+		//return Pair.of(productoService.findAll(), Arrays.asList(Categoria.values()));
+		List<Producto> lp = productoService.findAll();
+		Map<Categoria,List<Producto>> diccVehiculoProductos = new HashMap<Categoria, List<Producto>>();
+		
+		for (int i = 0; i < lp.size(); i++) {
+			Categoria c = lp.get(i).getEstanteria().getCategoria(); //clave
+			Producto p = lp.get(i); //valor
+			
+			if(diccVehiculoProductos.containsKey(c)) {
+				List<Producto> l = diccVehiculoProductos.get(c);
+				l.add(p);
+				diccVehiculoProductos.put(c, l);
+			}
+			else {
+				List<Producto> l = new ArrayList<Producto>();
+				l.add(p);
+				diccVehiculoProductos.put(c, l);
+			}
+		}
+		return diccVehiculoProductos;
 	}
 	
 	@GetMapping("/{nombre}")
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ENCARGADO')")
-	public Pair<List<Producto>, List<Categoria>> findProductosByName(@PathVariable("nombre") String nombre){
-		
+	public Map<Categoria,List<Producto>> findProductosByName(@PathVariable("nombre") String nombre){
+//		List<Categoria> lc = lp.stream().map(x->x.getEstanteria().getCategoria()).distinct().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
+
 		List<Producto> lp = productoService.findAllProductosByName(nombre);
+		Map<Categoria,List<Producto>> diccVehiculoProductos = new HashMap<Categoria, List<Producto>>();
 		
-		List<Categoria> lc = lp.stream().map(x->x.getEstanteria().getCategoria()).distinct().sorted(Comparator.naturalOrder()).collect(Collectors.toList());
+		for (int i = 0; i < lp.size(); i++) {
+			Categoria c = lp.get(i).getEstanteria().getCategoria(); //clave
+			Producto p = lp.get(i); //valor
+			
+			if(diccVehiculoProductos.containsKey(c)) {
+				List<Producto> l = diccVehiculoProductos.get(c);
+				l.add(p);
+				diccVehiculoProductos.put(c, l);
+			}
+			else {
+				List<Producto> l = new ArrayList<Producto>();
+				l.add(p);
+				diccVehiculoProductos.put(c, l);
+			}
+		}
 		
-		return Pair.of(lp, lc);
+		return diccVehiculoProductos;
 	}
 	
 	@PostMapping("/save")
