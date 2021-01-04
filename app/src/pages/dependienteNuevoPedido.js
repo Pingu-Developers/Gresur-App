@@ -109,7 +109,7 @@ export class dependienteNuevoPedido extends Component {
     constructor(props){
         super(props);
         this.state = {
-            errors : {...erroresPosibles},
+            errors : {'nombreApellidos' : [], 'NIF': [], 'direccion': [], 'provincia': [] , 'municipio': [], 'CP': [], 'email':[], 'telefono':[]},
             valueRadio: '',
             nombreApellidos: '',
             NIF: '',
@@ -122,16 +122,28 @@ export class dependienteNuevoPedido extends Component {
         }
     }
     componentDidMount(){
-        this.setState({valueRadio : 'Pago directo'})  
+        this.setState({valueRadio : 'Pago directo'})
+    }
+  
+    componentDidUpdate(){
+        
+        if(this.props.data.isDefaulter){
+            let hayMasErrores = this.hayErrores();
+            let errores = {...this.state.errors} ;
+            errores['NIF'].push('defoulter')
+            this.setState({errors : errores})
+            document.getElementById("botonSnack")? document.getElementById("botonSnack")?.click() : 
+                                                   console.log('No se encuentra boton para abrir la snackbar');
+            this.props.clearClienteIsDefaulter()
+            if(!hayMasErrores)
+                document.getElementById('backButton').click();
+        }
     }
 
     handleChangeRadio = (event) => {
         this.setState({valueRadio : event.target.value});
     };
 
-    handleSubmit(){
-        console.log('aoskljsjlñxc<llxcñ');
-    }
     hayErrores(){
         let res = false;
         Object.keys(this.state.errors).map((key) => {res = res || this.state.errors[key].length !== 0})
@@ -143,52 +155,55 @@ export class dependienteNuevoPedido extends Component {
         document.getElementById('backButton').click();
     }
 
+    validateEmail(email) {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
+
     validatePage(event, step){
         event.preventDefault()
         this.props.clearClienteIsDefaulter()
         let errores = {...this.state.errors} ;
         switch(step){
             case 0:{
+                this.props.loadClienteIsDefaulter(this.state.NIF)
                 if(this.state.nombreApellidos === '')
                     errores['nombreApellidos'].push('No puede ser vacio')
+                if(this.state.nombreApellidos.length < 3 || this.state.nombreApellidos.length > 50)
+                    errores['nombreApellidos'].push('Debe estar entre 3 y 50 caracteres')
                 if(this.state.NIF === '')
                     errores['NIF'].push('No puede ser vacio')
+                if(!this.state.NIF.match(/^(\d{8})([A-Z])$/))
+                    errores['NIF'].push('Formato invalido')
                 if(this.state.direccion === '')
                     errores['direccion'].push('No puede ser vacio')
+                if(this.state.direccion.length < 3 || this.state.direccion.length > 100)
+                    errores['direccion'].push('Debe estar entre 3 y 50 caracteres')
                 if(this.state.provincia === '' || this.state.provincia === 0)
                     errores['provincia'].push('No puede ser vacio')
                 if(this.state.municipio === '')
                     errores['municipio'].push('No puede ser vacio')
                 if(this.state.CP === '')
                     errores['CP'].push('No puede ser vacio')
+                if(!this.state.CP.match(/^\d{5}$/))
+                    errores['CP'].push('formato invalido')
                 if(this.state.email === '')
                     errores['email'].push('No puede ser vacio')
+                if(!this.validateEmail(this.state.email))
+                    errores['email'].push('formato invalido')
                 if(this.state.telefono === '')
                     errores['telefono'].push('No puede ser vacio')
-                
-
-                console.log('DNI INTRODUCIDO:' + this.state.NIF)
-                this.props.loadClienteIsDefaulter(this.state.NIF)
-                console.log('defaulter? - ' + this.props.data.isDefaulter)
-                //el estado de this.props.data es asincrono y llega tarde
-                //por otro lado el estado de los errores es persistente y los values no persisten
-                
-                if(this.props.data.isDefaulter){
-                    document.getElementById("botonSnack")? document.getElementById("botonSnack")?.click() : 
-                                                           console.log('No se encuentra boton para abrir la snackbar');
-                    errores['NIF'].push('')
-                }
+                if(!this.state.telefono.match(/^\d{9}$/))
+                    errores['telefono'].push('formato invalido')
                 break
-            }
+                }
             default:{
-                //Snackbar de sos jaquer
+                console.error('QUE HACES NO INVENTES QUE ESTA YA TODO INVENTAO')
             }
-            this.setState({errors : errores})
         }
+        this.setState({errors : errores})
         if(!this.hayErrores()){
             document.getElementById('nextButton').click()
-        }else{
-            this.setState({errors : errores})
         }
     }
 
@@ -200,7 +215,6 @@ export class dependienteNuevoPedido extends Component {
             this.setState({errors: errores})
         }
         this.setState({[name] : value});
-        console.log(this.state)
     }
 
     render() {
@@ -209,7 +223,6 @@ export class dependienteNuevoPedido extends Component {
         let inputValue = null;
         return (
             <div>
-                {console.log(this.state)}
                 <Snackbar type = "error" open = {data.isDefaulter} message= 'Este cliente tiene impagos!'/>
                 <Button id = 'onChangeInput' onClick = {(event) => {this.onChangeInput(event, changing, inputValue)}} style={{display : 'none'}}></Button>
                 <Typography variant='h3' className={classes.tituloNuevoPedido}>GENERAR UN NUEVO PEDIDO</Typography><br/>
@@ -491,5 +504,4 @@ const provincias = ['Alava','Albacete','Alicante','Almería','Asturias','Avila',
              'Orense','Palencia','Las Palmas','Pontevedra','La Rioja','Salamanca','Segovia','Sevilla','Soria','Tarragona',
              'Santa Cruz de Tenerife','Teruel','Toledo','Valencia','Valladolid','Vizcaya','Zamora','Zaragoza']
 
-const erroresPosibles = {'nombreApellidos' : [], 'NIF': [], 'direccion': [], 'provincia': [] , 'municipio': [], 'CP': [], 'email':[], 'telefono':[]}
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(dependienteNuevoPedido))
