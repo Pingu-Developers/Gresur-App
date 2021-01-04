@@ -1,13 +1,13 @@
-import { CLEAR_ISDEFAULTER ,SET_ISDEFAULTER, SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_CATEGORIAS, CLEAR_CATEGORIAS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION } from '../types';
+import { SET_CLIENTE, CLEAR_CLIENTE, CLEAR_ISDEFAULTER ,SET_ISDEFAULTER, SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION } from '../types';
 
 const initialState = {
     pedidos: [],
     productos:[],
-    categorias:[],
     vehiculos:[],
     personal:[],
     ocupaciones:[],
     isDefaulter: false,
+    cliente: null,
 }
 
 export default function(state = initialState,action){
@@ -22,17 +22,10 @@ export default function(state = initialState,action){
         case SET_PRODUCTOS:
             return {
                 ...state,
-                productos: action.payload
+                productos: action.payload.data
             }
         case CLEAR_PRODUCTOS:
             return initialState;
-        case SET_CATEGORIAS:
-            return {
-                ...state,
-                categorias: action.payload
-            }
-        case CLEAR_CATEGORIAS:
-                return initialState;
         case SET_PERSONAL:
             return {
                 ...state,
@@ -62,6 +55,14 @@ export default function(state = initialState,action){
                 isDefaulter: action.payload.data
             }
         case CLEAR_ISDEFAULTER:
+            return initialState;
+
+        case SET_CLIENTE:
+            return{
+                ...state,
+                cliente: action.payload.data
+            }
+        case CLEAR_CLIENTE:
             return initialState;
         
         default:
