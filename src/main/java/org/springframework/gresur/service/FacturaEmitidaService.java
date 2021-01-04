@@ -1,6 +1,7 @@
 package org.springframework.gresur.service;
 
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -53,4 +54,15 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 		em.flush();
 		return ret;
 	}
+	
+	@Transactional
+	public List<FacturaEmitida> findFacturasByCliente(Long id){
+		return facturaRepo.findByClienteId(id);
+	}
+	
+	@Transactional
+	public List<FacturaEmitida> findFacturasByClienteAndFecha(Long id,LocalDate fecha){
+		return facturaRepo.findByClienteIdAndFechaEmision(id, fecha);
+	}
+	
 }

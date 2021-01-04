@@ -24,6 +24,11 @@ public class ClienteController {
 		this.clienteService = clienteService;
 	}
 	
+	@GetMapping
+	public Iterable<Cliente> getClientes(){
+		return clienteService.findAll();
+	}
+	
 	@PostMapping
 	public Cliente add(Cliente cliente) throws DataAccessException{
 		return clienteService.save(cliente);

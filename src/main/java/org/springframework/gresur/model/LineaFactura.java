@@ -8,6 +8,7 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -19,11 +20,11 @@ import lombok.Data;
 public class LineaFactura extends BaseEntity {
 
 	@NotNull
-	@Min(value = 1)
+	@Min(value = 0)
 	private Integer cantidad;
 	
 	@NotNull
-	@Positive
+	@PositiveOrZero
 	private Double precio;
 	
 	@JsonIgnore
