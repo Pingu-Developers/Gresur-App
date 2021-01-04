@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -13,21 +13,10 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import WarningIcon from '@material-ui/icons/Warning';
-import ErrorIcon from '@material-ui/icons/Error';
-import EditIcon from '@material-ui/icons/Edit';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import EdicionProducto from '../components/EdicionProducto';
-import AmpliarInfoProducto from '../components/AmpliarInfoProducto.js';
 import Tooltip from '@material-ui/core/Tooltip';
-import MostradorProductos from './MostradorProductos';
-import TextField from '@material-ui/core/TextField';
-import setProducto from '../redux/actions/dataActions';
-
+import DialogoEditarProductos from '../components/DialogoEditarProducto';
+//Acordeon
 const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
@@ -50,6 +39,31 @@ function alertaStockProducto(producto) {
     }
 }
 
+//Tooltip
+const HtmlTooltip = withStyles((theme) => ({
+    tooltip: {
+        backgroundColor: '#f5f5f9',
+        color: 'rgba(0, 0, 0, 0.87)',
+        maxWidth: 220,
+        fontSize: theme.typography.pxToRem(12),
+        border: '1px solid #dadde9',
+    },
+}))(Tooltip);
+
+const useStylesBootstrap = makeStyles((theme) => ({
+    arrow: {
+        color: theme.palette.common.black,
+    },
+    tooltip: {
+        backgroundColor: theme.palette.common.black,
+    },
+}));
+function BootstrapTooltip(props) {
+    const classes = useStylesBootstrap();
+
+    return <Tooltip arrow classes={classes} {...props} />;
+}
+
 export default function ControlledAccordions(props) {
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
@@ -57,7 +71,7 @@ export default function ControlledAccordions(props) {
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
-    
+
 
     const categorias = props.data.categorias
     const productos = props.data.productos
@@ -71,7 +85,7 @@ export default function ControlledAccordions(props) {
     const handleClose = () => {
         setOpen(false);
     };
-   
+
 
     return (
         <div className={classes.root}>
@@ -113,94 +127,29 @@ export default function ControlledAccordions(props) {
                                         {productos.map((producto) =>
                                             producto.estanteria.categoria === row ? (
                                                 <TableRow>
-                                                    <TableCell><Button onClick={handleClickOpen}><EditIcon /></Button></TableCell>
-                                                    <Dialog
-                                                        open={open}
-                                                        onClose={handleClose}
-                                                        aria-labelledby="alert-dialog-title"
-                                                        aria-describedby="alert-dialog-description"
-                                                    >
-                                                        <DialogTitle id="alert-dialog-title">{"Editar producto"}</DialogTitle>
-                                                        <DialogContent>
 
-                                                            <form className={classes.root} noValidate autoComplete="off">
-                                                                <div>
-                                                                    <TextField
-                                                                        required
-                                                                        id="standard-required"
-                                                                        label="Nombre producto"
-                                                                        defaultValue={producto.nombre}
-                                                                    />
-                                                                    <TextField
-                                                                        required
-                                                                        id="standard-required"
-                                                                        label="Descripcion"
-                                                                        defaultValue={producto.descripcion} />
-                                                                    <TextField
-                                                                        id="standard-number"
-                                                                        label="Stock"
-                                                                        type="number"
-                                                                        defaultValue={producto.stock}
-                                                                    />
-                                                                    <TextField
-                                                                        id="standard-number"
-                                                                        label="Stock de Seguridad"
-                                                                        type="number"
-                                                                        defaultValue={producto.stockSeguridad}
-                                                                    />
-                                                                    <TextField
-                                                                        id="standard-required"
-                                                                        label="Ancho (m)"
-                                                                        type="number"
-                                                                        defaultValue={producto.ancho}
-                                                                    />
-                                                                    <TextField
-                                                                        id="standard-required"
-                                                                        label="Alto (m)"
-                                                                        type="number"
-                                                                        defaultValue={producto.alto}
-                                                                    />
-                                                                    <TextField
-                                                                        id="standard-required"
-                                                                        label="Profundo (m)"
-                                                                        type="number"
-                                                                        defaultValue={producto.profundo}
-                                                                    />
-                                                                    <TextField
-                                                                        id="standard-required"
-                                                                        label="URL imagen"
-                                                                        defaultValue={producto.urlimagen}
-                                                                    />
-                                                                    <TextField
-                                                                        id="standard-required"
-                                                                        label="Precio venta público (€)"
-                                                                        type="number"
-                                                                        defaultValue={producto.precioVenta}
-                                                                    />
-                                                                    <TextField
-                                                                        id="standard-required"
-                                                                        label="Precio compra (€)"
-                                                                        type="number"
-                                                                        defaultValue={producto.precioCompra}
-                                                                    />
-                                                                </div>
-                                                            </form>
-                                                        </DialogContent>
-                                                        <DialogActions>
-                                                            
-                                                            <Button type="submit" onclick={handleClose} color="primary">
-                                                                Guardar Cambios
-                                                </Button>
-                                                            <Button onClick={handleClose} color="primary" autoFocus>
-                                                                Descartar
-                                                </Button>
-                                                        </DialogActions>
-                                                    </Dialog>
-
-                                                    <Tooltip title={producto.descripcion}
-                                                        placement="right">
-                                                        <TableCell>{producto.nombre}</TableCell>
-                                                    </Tooltip>
+                                                    <DialogoEditarProductos producto={producto} />
+                                                    
+                                                    <HtmlTooltip
+                                                        title={
+                                                            <React.Fragment>
+                                                                <Typography color="inherit">{producto.nombre}</Typography>
+                                                                <table>
+                                                                    <tr>
+                                                                        <th>
+                                                                            <img width="120px" src={producto.urlimagen}></img>
+                                                                        </th>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <th>
+                                                                        {producto.descripcion}
+                                                                        </th>
+                                                                    </tr>
+                                                                </table>
+                                                            </React.Fragment>
+                                                        }>
+                                                        <TableCell> {producto.nombre} </TableCell>
+                                                    </HtmlTooltip>
 
                                                     <TableCell>{alertaStockProducto(producto)}</TableCell>
                                                     <TableCell>{producto.alto} x {producto.ancho} x {producto.profundo}</TableCell>
