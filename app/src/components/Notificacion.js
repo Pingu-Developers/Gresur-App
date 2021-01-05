@@ -106,7 +106,7 @@ export default function Notificacion(props) {
         </CardContent>
         <CardActions className={classes.actions} disableSpacing>
 
-            <Typography  className={color} variant="caption text">
+            <Typography  className={color} variant="body2">
                 Prioridad: {notificacion.tipoNotificacion.toLowerCase()}
             </Typography>
             {!props.leida?(

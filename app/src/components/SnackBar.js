@@ -38,9 +38,10 @@ export default function CustomizedSnackbars(props) {
     setOpen(true);
   };
 
+  
   return (
     <div className={classes.root}>
-      <button id = "botonSnack" className = {classes.button} onClick={handleClick}></button>
+      <button id = {props.id?props.id:"botonSnack"} className = {classes.button} onClick={handleClick}></button>
       <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={props.type}>
           {props.message}
