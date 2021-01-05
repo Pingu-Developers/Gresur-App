@@ -1,16 +1,16 @@
-import { SET_CLIENTE, CLEAR_CLIENTE, CLEAR_ISDEFAULTER ,SET_ISDEFAULTER, SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, CLEAR } from '../types';
+import { CLEAR_ALMACENGESTION, SET_ALMACENGESTION, SET_CLIENTE, CLEAR_CLIENTE, CLEAR_ISDEFAULTER, SET_ISDEFAULTER, SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_PERSONAL, CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, CLEAR } from '../types';
 
 const initialState = {
     pedidos: [],
-    productos:[],
-    vehiculos:[],
-    personal:[],
-    ocupaciones:[],
+    productos: [],
+    vehiculos: [],
+    personal: [],
+    ocupaciones: [],
     isDefaulter: false,
     cliente: null,
 }
 
-export default function(state = initialState,action){
+export default function (state = initialState, action) {
     switch (action.type) {
         case SET_PEDIDOS:
             return {
@@ -32,7 +32,7 @@ export default function(state = initialState,action){
                 personal: action.payload.data
             };
         case CLEAR_PERSONAL:
-            return initialState;  
+            return initialState;
         case SET_VEHICULOS:
             return {
                 ...state,
@@ -48,7 +48,7 @@ export default function(state = initialState,action){
             };
         case CLEAR_OCUPACION:
             return initialState;
-        
+
         case SET_ISDEFAULTER:
             return {
                 ...state,
@@ -58,7 +58,7 @@ export default function(state = initialState,action){
             return initialState;
 
         case SET_CLIENTE:
-            return{
+            return {
                 ...state,
                 cliente: action.payload.data
             }
@@ -67,7 +67,14 @@ export default function(state = initialState,action){
 
         case CLEAR:
             return initialState;
-        
+        case SET_ALMACENGESTION:
+            return {
+                ...state,
+                gestionAlmacen: action.payload.data
+            };
+        case CLEAR_ALMACENGESTION:
+            return initialState;
+
         default:
             return state;
     }

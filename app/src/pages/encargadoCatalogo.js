@@ -29,9 +29,7 @@ class encargadoCatalogo extends Component {
 
         return (
             <div>
-                 <div className={classes.main}>
-                    {data.length === 0? null:<TablaCatalogoEncargado data = {data}/>}
-                </div>
+                 
             </div>
         )
     }

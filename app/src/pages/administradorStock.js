@@ -1,38 +1,51 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
+//Redux stuff
 import { connect } from 'react-redux';
-
-import Topbar from '../components/Topbar';
+import { loadAlmacenGestion } from '../redux/actions/dataActions';
+//Components
+import AccordionGestionStock from '../components/AccordionGestionStock';
 
 const style = {
 
 }
 
 class administradorStock extends Component {
-    static propTypes = {
-        prop: PropTypes
+    constructor(props){
+        super(props);
+        this.state ={
+            data: []
+        }
+    }
+
+    componentDidMount(){
+        this.props.loadAlmacenGestion();
     }
 
     render() {
+        const {classes, data} = this.props;
+        console.log(this.state)
         return (
+            
             <div>
-                <h1>WIP</h1>
             </div>
         )
     }
 }
 
 administradorStock.propTypes = {
-
+    classes: PropTypes.object.isRequired,
+    data: PropTypes.object.isRequired,
+    loadAlmacenGestion: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
-    
+    data: state.data
 })
 
 const mapActionsToProps = {
-    
+    loadAlmacenGestion
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(administradorStock))

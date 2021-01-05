@@ -1,4 +1,4 @@
-import { CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER } from '../types';
+import { CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER } from '../types';
 import axios from 'axios';
 
 export const loadPedidos = () => (dispatch) => {
@@ -300,4 +300,29 @@ export const clearClienteByNIF = () => (dispatch) => {
 
 export const clear = () => (dispatch) => {
     dispatch({type: CLEAR})
+}
+
+export const loadAlmacenGestion = () => (dispatch) => {
+    dispatch({type: LOADING_UI})
+    axios.get(`/almacen/gestion`)
+        .then((res) => {
+            dispatch({type: SET_ALMACENGESTION, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
+}
+export const clearAlmacenGestion = () => (dispatch) => {
+    dispatch({type: CLEAR_ALMACENGESTION})
 }
