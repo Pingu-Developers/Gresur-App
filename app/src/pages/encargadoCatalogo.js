@@ -4,7 +4,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 
 //Redux Stuff
 import { connect } from 'react-redux';
-import { loadProductos , setProducto} from '../redux/actions/dataActions';
+import { loadProductos, setProducto } from '../redux/actions/dataActions';
 
 //Components
 import TablaCatalogoEncargado from '../components/TablaCatalogoEncargado';
@@ -13,23 +13,25 @@ const style = {
 }
 
 class encargadoCatalogo extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state ={
+        this.state = {
             data: []
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.loadProductos();
     }
 
     render() {
-        const {classes, data} = this.props;
+        const { classes, data } = this.props;
 
         return (
             <div>
-                 
+                <div className={classes.main}>
+                    {data.length === 0 ? null : <TablaCatalogoEncargado data={data} />}
+                </div>
             </div>
         )
     }
