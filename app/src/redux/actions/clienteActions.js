@@ -1,4 +1,4 @@
-import { SET_CLIENTES,CLEAR_CLIENTES,SET_FACTURAS,CLEAR_FACTURAS } from '../types';
+import { SET_CLIENTES,CLEAR_CLIENTES,SET_FACTURAS,CLEAR_FACTURAS , SET_ERRORS,CLEAR_ERRORS } from '../types';
 import axios from 'axios';
 
 
@@ -11,7 +11,16 @@ export const getClientes = () => (dispatch) => {
                 payload:res.data
             })
         })
-        .catch((err) => console.log(err))
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+               console.log(err)
+            }
+        })
 }
 
 export const getFacturasCliente = (id) => (dispatch) => {
@@ -22,7 +31,16 @@ export const getFacturasCliente = (id) => (dispatch) => {
                 payload:res.data
             })
         })
-        .catch((err) => console.log(err))
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+               console.log(err)
+            }
+        })
 }
 
 export const getFacturasClienteAndFecha = (datos) => (dispatch) => {
@@ -33,15 +51,33 @@ export const getFacturasClienteAndFecha = (datos) => (dispatch) => {
                 payload:res.data
             })
         })
-        .catch((err) => console.log(err))
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+               console.log(err)
+            }
+        })
 }
 
 
 export const sendDevolucion = (datos) => (dispatch) => {
     axios.post('/facturaEmitida/devolucion',datos)
         .then(() => {
-            console.log("Todo ok bro")
+            dispatch({type: CLEAR_ERRORS})      
         })
-        .catch((err) => console.log(err))
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+               console.log(err)
+            }
+        })
 }
 
