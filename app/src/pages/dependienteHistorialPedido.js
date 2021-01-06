@@ -8,7 +8,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import InputBase from '@material-ui/core/InputBase';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Backdrop from '@material-ui/core/Backdrop';
 
 
 //Redux stuff
@@ -20,7 +21,7 @@ import TablaPedidosDesplegable from '../components/TablaPedidosDesplegable';
 import Snackbar from '../components/SnackBar'
 
 
-const style = {
+const style = theme => ({
     root:{
         flexGrow: 1, 
     },
@@ -50,8 +51,12 @@ const style = {
             padding:0
         }
 
-    }
-}
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+  },
+})
 
 const BootstrapInput = withStyles((theme) => ({
     input: {
@@ -71,7 +76,8 @@ class dependienteHistorialPedido extends Component {
         super();
         this.state = {
             selected: "TODO",
-            ordered: "MAS_NUEVO",         
+            ordered: "MAS_NUEVO",
+            expanded: 1,         
         }
     }
 
@@ -94,14 +100,23 @@ class dependienteHistorialPedido extends Component {
         })
     }
 
+    handleChange = (panel) => (event, isExpanded) => {
+
+        this.setState({
+            expanded: panel
+        })
+      };
+
     render() {
-        const {classes, data ,UI:{errors}} = this.props;
+        const {classes, data ,UI:{errors,loading}} = this.props;
         return (
             <div className = {classes.root}>
 
                 <Snackbar type = "error" open = {errors?true:false} message = {errors}></Snackbar>
                 {errors ? document.getElementById("botonSnack").click():null}
-
+                <Backdrop className={classes.backdrop} open={loading}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
                 <div className = {classes.cuerpo}>
                     <Typography variant='h3' className={classes.tituloCatalogo}>HISTORIAL DE PEDIDOS</Typography>
                     <form>
@@ -155,9 +170,10 @@ class dependienteHistorialPedido extends Component {
                     <div className={classes.main}>
                         
                         {data.pedidos === undefined?null:data.pedidos.map((row) =>
-                            <TablaPedidosDesplegable onConfirmCancelar = {this.props.cancelarPedido} key = {row.id} deletePedidos={this.delete} datos={row}/>
+                            <TablaPedidosDesplegable handleChange={this.handleChange} isExpanded={this.state.expanded === row.id} onConfirmCancelar = {this.props.cancelarPedido} key = {row.id} deletePedidos={this.delete} datos={row}/>
                         ) }
                     </div>
+                    {console.log(this.state.expanded)}
                 </div>
             </div>
         )

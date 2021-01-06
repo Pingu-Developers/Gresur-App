@@ -23,7 +23,12 @@ import { getNotificacionesLeidas } from '../redux/actions/userActions'
 
 
 const useStyles = makeStyles({
-
+    notificaciones:{
+        minHeight:260,
+        maxHeight:800,
+        overflowY:"auto",
+        overflowX:"hidden"        
+    }
 });
 
 
@@ -98,70 +103,76 @@ function ListadoNotificacion(props) {
     return (
         <div>
             <div>
+            <div>
                 {seleccionado?(
-                    <div>
+                        <div>
 
-                    <Button
-                        style={{float:'left',margin:10}}
-                        color="primary"
-                        className={classes.button}
-                        onClick={handleChangeState}
-                        startIcon={<VisibilityOffIcon />}
-                    >
-                        No leidas
-                    </Button>
-                    <Autocomplete
-                    id="combo-box-demo"
-                    options={options}
-                    size="small"
-                    open={openAuto}
-                    onOpen={() => {
-                        setOpenAuto(true);
-                        handleOpenAuto();
-                      }}
-                    onClose={() => {
-                        setOpenAuto(false);
-                    }}
-                    onChange={(event,value) =>{
-                        handleChangeFilter(value);  
-                    }}
-                    getOptionLabel={(option) => option}
-                    style={{ width: 200 , marginTop:10, display:'inline-block' }}
-                    renderInput={(params) => <TextField {...params}  variant="outlined" />}
-                  />
-                    </div>
-                    
+                        <Button
+                            style={{float:'left',margin:10}}
+                            color="primary"
+                            className={classes.button}
+                            onClick={handleChangeState}
+                            startIcon={<VisibilityOffIcon />}
+                        >
+                            No leidas
+                        </Button>
+                        <Autocomplete
+                        id="combo-box-demo"
+                        options={options}
+                        size="small"
+                        open={openAuto}
+                        onOpen={() => {
+                            setOpenAuto(true);
+                            handleOpenAuto();
+                        }}
+                        onClose={() => {
+                            setOpenAuto(false);
+                        }}
+                        onChange={(event,value) =>{
+                            handleChangeFilter(value);  
+                        }}
+                        getOptionLabel={(option) => option}
+                        style={{ width: 200 , marginTop:10, display:'inline-block' }}
+                        renderInput={(params) => <TextField {...params}  variant="outlined" />}
+                    />
+                        </div>
+                        
 
-                ):(<Button
-                        style={{float:'right',margin:10}}
-                        color="primary"
-                        className={classes.button}
-                        onClick={handleChangeState}
-                        endIcon={<VisibilityIcon />}
-                    >
-                        Leidas
-                    </Button>)
-                }
-            </div>
-            <br/>
-            {!seleccionado?<br/>:null}
-            {!seleccionado?<br/>:null}
-            <Divider />
-            {data &&data.length !==0?data.map((notificacion) =>
-            <div style={{width:305, margin:20}}>
-                <Notificacion confirmNoti={props.confirmNoti} leida = {seleccionado} notificacion = {notificacion}/>
+                    ):(<Button
+                            style={{float:'right',margin:10}}
+                            color="primary"
+                            className={classes.button}
+                            onClick={handleChangeState}
+                            endIcon={<VisibilityIcon />}
+                        >
+                            Leidas
+                        </Button>)
+                    }
+                </div>
+                <br/>
+                {!seleccionado?<br/>:null}
+                {!seleccionado?<br/>:null}
                 <Divider />
             </div>
-            ):<div style={{width:305, margin:20}}>
-                <Typography variant="subtitle1" gutterBottom>
-                    ¡Nada que ver, sigue trabajando asi! <EmojiPeopleIcon fontSize="small" />
-                </Typography>
-            </div>}
-
-            <IconButton color="primary" onClick={open?null:handleClickOpen}  aria-label="New notification">
-                <AddCircleIcon fontSize="large" />
-                <NuevaNotificacion open={open} handleClose={open?handleClose:null} />
-            </IconButton>
+            <div className={classes.notificaciones}>
+                {data &&data.length !==0?data.map((notificacion) =>
+                <div style={{width:305, margin:20}}>
+                    <Notificacion confirmNoti={props.confirmNoti} leida = {seleccionado} notificacion = {notificacion}/>
+                    <Divider />
+                </div>
+                ):<div style={{width:305, margin:20}}>
+                    <Typography variant="subtitle1" gutterBottom>
+                        ¡Nada que ver, sigue trabajando asi! <EmojiPeopleIcon fontSize="small" />
+                    </Typography>
+                </div>}
+            </div>
+            <div>
+                <IconButton color="primary" onClick={open?null:handleClickOpen}  aria-label="New notification">
+                    <AddCircleIcon fontSize="large" />
+                    <NuevaNotificacion open={open} handleClose={open?handleClose:null} />
+                </IconButton>
+            </div>
+            
         </div>
     )
 
