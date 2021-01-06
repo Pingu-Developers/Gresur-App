@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import withStyles from '@material-ui/core/styles/withStyles';
 import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Typography from '@material-ui/core/Typography';
 import Radio from '@material-ui/core/Radio';
@@ -25,8 +26,9 @@ import NestedList from '../components/NestedList';
 
 import { loadClienteIsDefaulter, clearClienteIsDefaulter, clear } from '../redux/actions/dataActions';
 import { loadCliente, clearClienteByNIF } from '../redux/actions/dataActions';
-import { loadProductos, clearProductos } from '../redux/actions/dataActions';
-
+import { loadProductos, clearProductos, loadProductosByNombre } from '../redux/actions/dataActions';
+import { IconButton } from '@material-ui/core';
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 
 const style = {
     tituloNuevoPedido: {
@@ -123,6 +125,7 @@ const style = {
         backgroundColor: 'white',
     },
     catalogoDeSeleccion: {
+        backgroundColor: '#eaeaea',
         width: '100%',
         border: '1px solid #BDBDBD',
         borderRadius: 10,
@@ -162,6 +165,12 @@ export class dependienteNuevoPedido extends Component {
             compraProductos: {},
             importeFactura: 0.0,
             recogeEnTienda: false,
+            busquedaProducto: '',
+            direccionEnvio: '',
+            provinciaEnvio: '',
+            municipioEnvio: '',
+            CPEnvio: '',
+            fechaEnvio: null,
             n : true,
         }
     }
@@ -183,20 +192,36 @@ export class dependienteNuevoPedido extends Component {
                 document.getElementById('backButton').click();
         }
         if(this.props.data.cliente !== null && this.props.data.cliente !== ''){
+            let errores = {...this.state.errors}
+            errores['nombreApellidos'] = []
+            errores['NIF'] = []
+            errores['direccion'] = []
+            errores['provincia'] = []
+            errores['municipio'] = []
+            errores['CP'] = []
+            errores['email'] = []
+            errores['telefono'] = []
+            errores['otros'] = []
             this.setState({nombreApellidos : this.props.data.cliente.name, 
                            direccion : this.props.data.cliente.direccion.split(',')[0].trim(),
                            municipio: this.props.data.cliente.direccion.split(',')[1].trim(),
                            provincia: this.props.data.cliente.direccion.split(',')[2].trim(),
                            CP: this.props.data.cliente.direccion.split(',')[3].trim(),
                            email: this.props.data.cliente.email,
-                           telefono: this.props.data.cliente.tlf})
+                           telefono: this.props.data.cliente.tlf,
+                           errors: errores})
             this.props.clearClienteByNIF()
         }
         if(document.getElementById('step2')){
             this.updateCompra();
-        } if(document.getElementById('step2') && this.props.data.productos.length === 0){
+        } if(document.getElementById('step2') 
+                && Object.entries(this.props.data.productos).length === 0 
+                && this.state.busquedaProducto === ''){ 
             this.props.loadProductos();
-        } 
+        }
+        if(document.getElementById('skipButton') && this.state.recogeEnTienda){
+            document.getElementById('skipButton').click()
+        }
     }
 
     componentWillUnmount(){
@@ -215,6 +240,13 @@ export class dependienteNuevoPedido extends Component {
 
     back(event){
         event.preventDefault()
+
+        if(document.getElementById('step4') && this.state.recogeEnTienda){
+            document.getElementById('backButton').click();
+        }
+        let errores = {...this.state.errors}
+        errores['otros'] = []
+        this.setState({errors : errores})
         document.getElementById('updater').click()
         document.getElementById('backButton').click();
     }
@@ -263,6 +295,42 @@ export class dependienteNuevoPedido extends Component {
                     errores['telefono'].push('formato invalido')
                 break
                 }
+            case 1: {
+                let steppers = document.getElementsByName('cantidadProducto')
+                if(this.state.recogeEnTienda){
+                    let tomorrow = new Date();
+                    tomorrow.setDate(tomorrow.getDate() + 1)
+                    this.setState({direccionEnvio:'Avenida Gresur edificio AG', fechaEnvio: tomorrow})
+                } else{
+                    this.setState({direccionEnvio:'', fechaEnvio: null})
+                }
+                if(steppers.length === 0){
+                    let errores = {...this.state.errors};
+                    errores['otros'].push('No hay productos comprados')
+                    document.getElementById('pedidoSinProductos') ? 
+                                                    document.getElementById('pedidoSinProductos').click() : 
+                                                    console.warn('No se encuentra la snackbar')
+                } else {
+                    for(let stepper of steppers){
+                        if(stepper.valueAsNumber > stepper.max || stepper.valueAsNumber < stepper.min){
+                            stepper.style.border = '1px solid red';
+                            if(!errores['otros'].includes('stockProductos')){
+                                errores['otros'].push('stockProductos')
+                                document.getElementById('stockProductos') ?
+                                                        document.getElementById('stockProductos').click() : 
+                                                        console.warn('No se encuentra la snackbar')
+                            }
+                        }
+                    }
+                }
+                break
+            }
+            case 2: {
+                break
+            }
+            case 3: {
+                break
+            }
             default:{
                 console.error('QUE HACES NO INVENTES QUE ESTA YA TODO INVENTAO')
             }
@@ -311,7 +379,7 @@ export class dependienteNuevoPedido extends Component {
         numStepper.name = 'cantidadProducto'
         numStepper.style.display = 'inline-block'
 
-        //desacticamos el boton de añadir si ya se ha añadido
+        //desacticamos el boton de anadir si ya se ha añadido
         var btnAñadir = event.currentTarget;
         btnAñadir.disabled = true;
         btnAñadir.classList.add('Mui-disabled')
@@ -329,6 +397,8 @@ export class dependienteNuevoPedido extends Component {
 
         //añadimos el num stepper al elemento de la cesta
         elemento.style.padding = "10px 0 10px 0";
+        elemento.style['background-color'] = 'white';
+        elemento.style['border-bottom'] = '1px solid #bdbdbd';
         elemento.children[0].children[2].innerHTML = '<p style = "width: 100%"><b>Cantidad:</b></p>'
         elemento.children[0].children[2].style.display = "flex"
         elemento.children[0].children[2].style.padding = "0 20px 0 20px"
@@ -346,15 +416,25 @@ export class dependienteNuevoPedido extends Component {
             this.setState(function (prevState, props) { 
                 if(prevState.importeFactura !== 0.0){
                     let errores = {...this.state.errors}
-                    errores['otros'] = 'No hay productos comprados'
-                    return {importeFactura : 0.0, errors : errores}
+                    let compraProductosUpdater = {}
+                    if(!errores['otros'].includes('No hay productos comprados'))
+                        errores['otros'].push('No hay productos comprados')
+                    return {importeFactura : 0.0, errors : errores, compraProductos : compraProductosUpdater}
                 }
             })
         } else{
             var updater = 0.0;
-            var compraProductosUpdater = {...this.state.compraProductos}
+            var compraProductosUpdater = {}
             var numSteppers = document.getElementsByName('cantidadProducto')
             for(let numStepper of numSteppers){
+                //actualiza los steppers
+                if(!this.state.errors['otros'].includes('stockProductos') && numStepper.style.border === '1px solid red'){
+                    numStepper.style.border = '1px solid rgb(189, 189, 189)'
+                } if(numStepper.valueAsNumber > numStepper.max){
+                    numStepper.value = numStepper.max
+                } if(numStepper.valueAsNumber < numStepper.min){
+                    numStepper.value = numStepper.min
+                }
                 //actualiza el precio total
                 var productoId = numStepper.id.split(',')[0]
                 var precioVenta = parseFloat(numStepper.id.split(',')[1])
@@ -373,6 +453,14 @@ export class dependienteNuevoPedido extends Component {
                 }
             })
         }
+    }
+    handleChangeBuscar(event){
+        event.preventDefault()
+        this.setState({busquedaProducto: event.target.value});
+    }
+    buscarProducto(event){
+        event.preventDefault()
+        this.state.busquedaProducto==='' ? this.props.loadProductos(): this.props.loadProductosByNombre(this.state.busquedaProducto);
     }
 
     render() {
@@ -395,6 +483,18 @@ export class dependienteNuevoPedido extends Component {
                 />
                 <ClearIcon id = 'clearIcon' style = {{display: 'none'}}/>
                 <Snackbar type = "error" open = {data.isDefaulter} message= 'Este cliente tiene impagos!'/>
+                <Snackbar 
+                    type = "error" 
+                    id = "pedidoSinProductos"
+                    open = {this.state.errors['otros'].includes('No hay productos comprados')} 
+                    message= 'No has seleccionado ningun producto!'
+                />
+                <Snackbar 
+                    type = "error" 
+                    id = "stockProductos"
+                    open = {this.state.errors['otros'].includes('stockProductos')} 
+                    message= 'La cantidad de alguno de los productos seleccionados supera el stock disponible o es menor que 1'
+                />
                 <Button id = 'onChangeInput' onClick = {(event) => {this.onChangeInput(event, changing, inputValue)}} style={{display : 'none'}}></Button>
                 <Button id = 'updater' onClick = {(e) => {e.preventDefault(); this.setState({n:!this.state.n})}} style = {{display: 'none'}}/>
                 
@@ -571,22 +671,40 @@ export class dependienteNuevoPedido extends Component {
                                             variant="outlined"
                                             fullWidth
                                             size = "small"
-                                            value={null}
-                                            onChange={null}
-                                            onKeyPress={(event) => event.key==='Enter'? null: null}
+                                            value={this.state.busquedaProducto}
+                                            onChange={(event) => this.handleChangeBuscar(event)}
+                                            onKeyPress={(event) => event.key==='Enter'? this.buscarProducto(event): null}
+                                            InputProps = {{
+                                                style : {padding : 0},
+                                                endAdornment : (
+                                                    <InputAdornment position = 'end'>
+                                                        <IconButton
+                                                            onClick = {(event) => {event.preventDefault();
+                                                                                  this.setState({busquedaProducto : ''});}}
+                                                            onMouseDown = {(event) => event.preventDefault()}>
+                                                            <ClearIcon style = {{color : '#bdbdbd'}}/>
+                                                        </IconButton>
+                                                    </InputAdornment> )}
+                                            }
                                             />
                                         <Button
                                             variant = "contained"
-                                            onClick = {null}   
+                                            onClick = {(event) => this.buscarProducto(event)}   
                                             color = "secondary"
                                             style = {{color: 'white'}}
-                                            >
+                                        >
                                             <SearchIcon/>
                                         </Button>
                                     </span>
 
                                     <div className = {classes.catalogoDeSeleccion}>
+                                        { Object.entries(data.productos).length === 0 && data.productos.constructor === Object ? 
+                                        <div>
+                                            <SentimentVeryDissatisfiedIcon size = 'large' style = {{color : '#bdbdbd', fontSize: 100, width: '100%', marginTop: 30}}/>
+                                            <p style = {{textAlign: 'center', width: '100%', color: '#bdbdbd', fontSize: 30, fontWeight: 'bold'}}>No hay productos</p>
+                                        </div> :
                                         <NestedList content = {data.productos} handleTransfer = {this.handleTransfer}/>
+                                        }
                                     </div>
                                 </div>
 
@@ -638,7 +756,7 @@ export class dependienteNuevoPedido extends Component {
                         </div>
                     </form>
 
-                    <form className = {classes.container}>
+                    <form className = {classes.container} id = 'step3'>
                         <fieldset className = {classes.fieldset}>
                             <legend>Introduzca los datos de envío</legend>
                             <h1>Aqui va el form con cosas del envio</h1>
@@ -669,7 +787,7 @@ export class dependienteNuevoPedido extends Component {
                         </div>
                     </form>
 
-                    <form className = {classes.container}>
+                    <form className = {classes.container} id = 'step4'>
                         <fieldset className = {classes.fieldset}>
                             <legend>Resumen del pedido</legend>
                             <h1>Aqui va la factura</h1>
@@ -723,7 +841,7 @@ const mapActionsToProps = {
 
     loadProductos,
     clearProductos,
-
+    loadProductosByNombre,
 }
 
 const provincias = ['Alava','Albacete','Alicante','Almería','Asturias','Avila','Badajoz','Barcelona','Burgos','Caceres',
