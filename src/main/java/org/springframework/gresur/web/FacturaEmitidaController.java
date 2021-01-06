@@ -24,7 +24,9 @@ import org.springframework.gresur.util.Tuple3;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,10 +71,14 @@ public class FacturaEmitidaController {
 		return values.stream().filter(x -> x.esDefinitiva()).collect(Collectors.toList());
 	}
 	
-	
+	@Transactional
+	@ExceptionHandler({ Exception.class })
 	@PostMapping("/devolucion")
 	public ResponseEntity<?> createDevolucion(@Valid @RequestBody Tuple3<FacturaEmitida,String,List<Tuple2<Long,Integer>>> data){
 		
+		if(data.getE3().size() == 0) {
+			throw new IllegalArgumentException("Factura sin lineas");
+		}
 		
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
@@ -106,7 +112,7 @@ public class FacturaEmitidaController {
 				if(prod2==prod) {
 					diff = linea.getCantidad()-pareja.getE2();
 					if(diff<0) {
-						return ResponseEntity.badRequest().body(new MessageResponse("Error: Has devuelto mas productos de lo que tienes!"));
+						throw new IllegalArgumentException("Cantidad superada");
 					}	
 				}
 			}			

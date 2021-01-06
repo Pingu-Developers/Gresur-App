@@ -1,8 +1,9 @@
-import { SET_CLIENTES,CLEAR_CLIENTES,SET_FACTURAS,CLEAR_FACTURAS } from '../types';
+import { SET_CLIENTES,CLEAR_CLIENTES,SET_FACTURAS,CLEAR_FACTURAS, SET_ERRORS, CLEAR_ERRORS } from '../types';
 
 const initialState = {
     clientes:[],
     facturas:[],
+    errores:null,
 }
 
 
@@ -32,6 +33,17 @@ export default function(state = initialState,action){
             return {
                 ...state,
                 facturas:[]
+            }
+        case SET_ERRORS:
+            return {
+                ...state,
+                errores:action.payload
+            }
+        
+        case CLEAR_ERRORS:
+            return {
+                ...state,
+                errores:null
             }
     
         default: 

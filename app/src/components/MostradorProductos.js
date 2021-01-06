@@ -50,7 +50,10 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
-    }, 
+    },
+    pvp:{
+        fontWeight:'bold'
+    },
     
 
 }));
@@ -80,8 +83,8 @@ export default function MostradorProductos(props) {
 
             <div className= {classes.precio}>
                 <div>
-                    <p className={classes.pvpTexto}><h2>PVP</h2></p>
-                    <p className={classes.pvp}><h1><b>{producto.precioVenta}€ </b></h1></p>
+                    <h2 className={classes.pvpTexto}>PVP</h2>
+                    <h1 className={classes.pvp}>{producto.precioVenta}€ </h1>
                 </div>
             </div>
         </div>

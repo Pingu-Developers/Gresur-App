@@ -24,11 +24,12 @@ class administradorStock extends Component {
     }
 
     render() {
-        const {classes, data} = this.props;
-        console.log(this.state)
+        const almacenes = this.props.data.gestionAlmacen;
         return (
             
+            
             <div>
+                {almacenes === undefined? null:<AccordionGestionStock almacenes = {almacenes}/>}
             </div>
         )
     }

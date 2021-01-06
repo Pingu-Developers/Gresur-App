@@ -334,7 +334,7 @@ INSERT INTO RECIBIDAS(id, num_factura, esta_pagada, fecha_emision, importe, conc
 	VALUES (6, 'R-1', TRUE, TO_DATE('2019/05/09', 'YYYY/MM/DD'), 150.00, 'REPOSICION_STOCK', 'Reposicion de stock de Azulejo Kenia de pasta blanca blanco', 1);
 
 INSERT INTO RECIBIDAS(id, num_factura, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
-	VALUES (7, 'R-2', FALSE, TO_DATE('2020/09/15', 'YYYY/MM/DD'), 123.20, 'GASTOS_VEHICULOS', 'Reparacion pinchazo rueda camion', null);
+	VALUES (7, 'R-2', TRUE, TO_DATE('2019/07/09', 'YYYY/MM/DD'), 123.20, 'GASTOS_VEHICULOS', 'Reparacion pinchazo rueda camion', null);
 	
 INSERT INTO RECIBIDAS(id, num_factura, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (8, 'R-3', TRUE, TO_DATE('2020/11/12', 'YYYY/MM/DD'), 59.15, 'PAGO_IMPUESTOS', 'Pago impuestos del trimestre', null);
@@ -377,6 +377,12 @@ INSERT INTO RECIBIDAS(id, num_factura, esta_pagada, fecha_emision, importe, conc
 
 INSERT INTO RECIBIDAS(id, num_factura, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
 	VALUES (21, 'R-16', TRUE, TO_DATE('2020/05/07', 'YYYY/MM/DD'), 198.30, 'GASTOS_VEHICULOS', 'ITV de vehiculo', null);
+	
+INSERT INTO RECIBIDAS(id, num_factura, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
+	VALUES (22, 'R-17', TRUE, TO_DATE('2020/12/12', 'YYYY/MM/DD'), 143.12, 'GASTOS_VEHICULOS', 'Reparacion faro trasero izquierdo', null);
+	
+INSERT INTO RECIBIDAS(id, num_factura, esta_pagada, fecha_emision, importe, concepto, descripcion, proveedor_id)
+	VALUES (23, 'R-18', FALSE, TO_DATE('2020/12/30', 'YYYY/MM/DD'), 25.12, 'GASTOS_VEHICULOS', 'Reparacion motor', null);
 
 
 INSERT INTO LINEAS_FACTURA(producto_id, cantidad, precio, factura_id)
@@ -466,6 +472,12 @@ INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, tipo_vehiculo, MMA)
 
 INSERT INTO REPARACIONES(fecha_entrada_taller, fecha_salida_taller, factura_recibida_id, vehiculo_id)
 	VALUES (TO_DATE('2019/05/09','YYYY/MM/DD'), TO_DATE('2019/07/09','YYYY/MM/DD'), 7, 1);
+
+INSERT INTO REPARACIONES(fecha_entrada_taller, fecha_salida_taller, factura_recibida_id, vehiculo_id)
+	VALUES (TO_DATE('2020/12/12','YYYY/MM/DD'), TO_DATE('2020/12/12','YYYY/MM/DD'), 22, 1);	
+
+INSERT INTO REPARACIONES(fecha_entrada_taller, fecha_salida_taller, factura_recibida_id, vehiculo_id)
+	VALUES (TO_DATE('2020/12/30','YYYY/MM/DD'), TO_DATE('2020/12/31','YYYY/MM/DD'), 23, 1);
 
 INSERT INTO REPARACIONES(fecha_entrada_taller, fecha_salida_taller, factura_recibida_id, vehiculo_id)
 	VALUES (TO_DATE('2020/12/12','YYYY/MM/DD'), null, 10, 2);

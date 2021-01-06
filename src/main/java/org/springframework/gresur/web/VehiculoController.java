@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Personal;
+import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.Transportista;
@@ -18,6 +19,7 @@ import org.springframework.gresur.repository.TransportistaRepository;
 import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.service.ITVService;
 import org.springframework.gresur.service.PersonalService;
+import org.springframework.gresur.service.ReparacionService;
 import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.util.Tuple4;
@@ -46,6 +48,9 @@ public class VehiculoController {
 	
 	@Autowired
 	protected SeguroService seguroService;
+	
+	@Autowired
+	protected ReparacionService reparacionService;
 	
 	@Autowired
 	protected PersonalService<Transportista, TransportistaRepository> personalService;
@@ -114,4 +119,35 @@ public class VehiculoController {
 		
 		return listaDef;
 	}
+	
+	@GetMapping("/all")
+	@PreAuthorize("hasRole('ADMIN')")
+	public List<Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>>> getAllVehiculos(){
+		
+		Iterable<Vehiculo> iterableVehiculos = vehiculoService.findAll();
+		List<Vehiculo> listaVehiculos = new ArrayList<Vehiculo>();
+		iterableVehiculos.forEach(listaVehiculos::add);
+		
+		List<Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>>> ldef = new ArrayList<Tuple4<Vehiculo,List<Seguro>,List<ITV>,List<Reparacion>>>();
+		
+		for (Vehiculo v: listaVehiculos) {
+			
+			Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>> tp = new Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>>();
+			
+			tp.setE1(v);
+			tp.setE2(seguroService.findByVehiculo(v.getMatricula()));
+			tp.setE3(itvService.findByVehiculo(v.getMatricula()));
+			tp.setE4(reparacionService.findByMatricula(v.getMatricula()));
+			
+			tp.name1="vehiculo";
+			tp.name2="seguros";
+			tp.name3="itvs";
+			tp.name4="reparaciones";
+			
+			ldef.add(tp);
+		}
+		
+		return ldef;
+	}
+	
 }
