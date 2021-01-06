@@ -3,6 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { makeStyles } from '@material-ui/core/styles';
 import ConfirmDialog from './CorfirmDialoge';
 
+import FormModificarPedido from './FormModificarPedido';
 //MUI stuff
 import MuiAccordion from '@material-ui/core/Accordion';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
@@ -124,11 +125,10 @@ export default function ControlledAccordions(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+  const [openDialog, setOpenDialog] = React.useState(false);
 
 
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -136,6 +136,14 @@ export default function ControlledAccordions(props) {
 
   const handleClose = (value) => {
     setOpen(false);
+  };
+
+  const handleClickOpenDialog = (value) => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   let disabled = false;
@@ -168,7 +176,7 @@ export default function ControlledAccordions(props) {
 
   return (
     <div className={classes.root}>
-        <Accordion expanded={expanded === 'panel1'} square={true} onChange={handleChange('panel1')}>
+        <Accordion expanded={props.isExpanded} square={true} onChange={props.handleChange(props.isExpanded?null:props.datos.id)}>
             <AccordionSummary 
             className={classes.summary}
             expandIcon={<ExpandMoreIcon />}
@@ -289,18 +297,18 @@ export default function ControlledAccordions(props) {
                   ...................................................................................................{(props.datos.facturaEmitida.importe).toFixed(2)}
                   </Typography>
               </div>
-              <div className = {classes.divButtons}>
-              <Button className = {classes.Buttons} variant="contained" color="primary">
+              {props.isExpanded?<div className = {classes.divButtons}>
+              <Button className = {classes.Buttons} disabled={disabled} variant="contained" color="primary" onClick={handleClickOpenDialog}>
                 Modificar Pedido
               </Button>
               <Button className = {classes.Buttons} variant="contained" disabled={disabled} color="primary" onClick={handleClickOpen}>
                 Cancelar Pedido
               </Button>
               <ConfirmDialog open={open} elementID = {props.datos.id} onConfirm={props.onConfirmCancelar} onClose={handleClose} />
-              </div>
+              </div>:null}
             </AccordionDetails>
         </Accordion>
-
+        <FormModificarPedido open={openDialog} onClose={handleCloseDialog} pedido={props.datos} />
     </div>
   );
 }
