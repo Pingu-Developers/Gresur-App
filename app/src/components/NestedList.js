@@ -111,11 +111,12 @@ export default function NestedList(props) {
                                             </span>
                                             <span style={{gridColumn: '4', gridRow: '1'}} className={classes.botonContainer}>
                                                 <Button
+                                                    id = {value.id}
                                                     variant="contained"
                                                     color="primary"
                                                     onClick={props.handleTransfer}
                                                     classes={{root : classes.button, disabled: classes.disabled}}
-                                                    disabled={null}                                 
+                                                    disabled={value.stock <= 0}                                 
                                                     >
                                                     <ArrowForwardIosIcon />
                                                 </Button>
