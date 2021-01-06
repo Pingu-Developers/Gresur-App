@@ -11,7 +11,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import SyncAltIcon from '@material-ui/icons/SyncAlt';
 import SearchIcon from '@material-ui/icons/Search';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-
+import ClearIcon from '@material-ui/icons/Clear';
 
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
@@ -26,9 +26,6 @@ import NestedList from '../components/NestedList';
 import { loadClienteIsDefaulter, clearClienteIsDefaulter, clear } from '../redux/actions/dataActions';
 import { loadCliente, clearClienteByNIF } from '../redux/actions/dataActions';
 import { loadProductos, clearProductos } from '../redux/actions/dataActions';
-
-
-
 
 
 const style = {
@@ -152,7 +149,7 @@ export class dependienteNuevoPedido extends Component {
     constructor(props){
         super(props);
         this.state = {
-            errors : {'nombreApellidos' : [], 'NIF': [], 'direccion': [], 'provincia': [] , 'municipio': [], 'CP': [], 'email':[], 'telefono':[]},
+            errors : {'nombreApellidos' : [], 'NIF': [], 'direccion': [], 'provincia': [] , 'municipio': [], 'CP': [], 'email':[], 'telefono':[], 'otros': []},
             valueRadio: '',
             nombreApellidos: '',
             NIF: '',
@@ -164,6 +161,7 @@ export class dependienteNuevoPedido extends Component {
             telefono: '',
             compraProductos: {},
             importeFactura: 0.0,
+            recogeEnTienda: false,
             n : true,
         }
     }
@@ -194,11 +192,11 @@ export class dependienteNuevoPedido extends Component {
                            telefono: this.props.data.cliente.tlf})
             this.props.clearClienteByNIF()
         }
-        if(document.getElementById('step2') && this.props.data.productos.length === 0){
-            this.props.loadProductos();
-        } else if(document.getElementById('step2')){
+        if(document.getElementById('step2')){
             this.updateCompra();
-        }
+        } if(document.getElementById('step2') && this.props.data.productos.length === 0){
+            this.props.loadProductos();
+        } 
     }
 
     componentWillUnmount(){
@@ -217,6 +215,7 @@ export class dependienteNuevoPedido extends Component {
 
     back(event){
         event.preventDefault()
+        document.getElementById('updater').click()
         document.getElementById('backButton').click();
     }
 
@@ -290,6 +289,9 @@ export class dependienteNuevoPedido extends Component {
     handleTransfer(event){
         event.preventDefault();
 
+        //fuerza un update
+        document.getElementById('updater').click()
+
         var elemento = event.currentTarget.parentNode.parentNode;
         var productoId = elemento.id.split(',')[0];
         var productoStock = elemento.id.split(',')[1];
@@ -297,21 +299,33 @@ export class dependienteNuevoPedido extends Component {
         elemento = elemento.parentNode.cloneNode(true)
         var cesta = document.getElementById('cesta');
 
-        if(cesta.children[0].id == 'iconoCarrito'){
-            cesta.innerHTML = '';
+        if(cesta.children.length === 0 || cesta.children[0].style.display !== 'none'){
+            cesta.children[0].style.display = 'none';
             cesta.style.display = "block";
         }
-        // num stepper
+        //creamos el num stepper
         var numStepper = document.getElementById('numStepper').cloneNode(true)
         numStepper.id = productoId.toString() + ',' + precioVenta.toString();
         numStepper.max = productoStock;
-        numStepper.onchange = () => document.getElementById('updater').click()
+        numStepper.onchange = (e) => {document.getElementById('updater').click()}
         numStepper.name = 'cantidadProducto'
         numStepper.style.display = 'inline-block'
 
         //desacticamos el boton de añadir si ya se ha añadido
-        event.currentTarget.disabled = true;
-        event.currentTarget.className += 'Mui-disabled'
+        var btnAñadir = event.currentTarget;
+        btnAñadir.disabled = true;
+        btnAñadir.classList.add('Mui-disabled')
+
+        //cambiamos el boton a un boton de eliminar
+        var boton = elemento.children[0].children[3].children[0]
+        var clearIcon = document.getElementById('clearIcon').cloneNode(true)
+        boton.onclick = () => {elemento.remove(); 
+                              btnAñadir.disabled = false; 
+                              btnAñadir.classList.remove('Mui-disabled')
+                              document.getElementById('updater').click()}
+        boton.innerHTML = '';
+        clearIcon.style.display = 'block'
+        boton.appendChild(clearIcon);
 
         //añadimos el num stepper al elemento de la cesta
         elemento.style.padding = "10px 0 10px 0";
@@ -320,30 +334,42 @@ export class dependienteNuevoPedido extends Component {
         elemento.children[0].children[2].style.padding = "0 20px 0 20px"
         elemento.children[0].children[2].style["align-items"] = "center"
         elemento.children[0].children[2].appendChild(numStepper)
-
         cesta.appendChild(elemento);
     }
     updateCompra(){
         var cesta = document.getElementById('cesta')
-        if(cesta.children[0].id == 'iconoCarrito'){
+        if(cesta.children.length === 1 && cesta.children[0].id === 'iconoCarrito' && cesta.children[0].style.display === 'none'){
+            cesta.style.display = "flex";
+            cesta.children[0].style.display = 'block';
+        }
+        if(cesta.children.length === 0 || cesta.children[0].style.display !== 'none'){
             this.setState(function (prevState, props) { 
-                if(prevState === 0.0){
-                    return {importeFactura : 0.0}
+                if(prevState.importeFactura !== 0.0){
+                    let errores = {...this.state.errors}
+                    errores['otros'] = 'No hay productos comprados'
+                    return {importeFactura : 0.0, errors : errores}
                 }
             })
         } else{
             var updater = 0.0;
+            var compraProductosUpdater = {...this.state.compraProductos}
             var numSteppers = document.getElementsByName('cantidadProducto')
             for(let numStepper of numSteppers){
+                //actualiza el precio total
                 var productoId = numStepper.id.split(',')[0]
                 var precioVenta = parseFloat(numStepper.id.split(',')[1])
                 var cantidad = parseInt(numStepper.value)
                 updater += cantidad * precioVenta;
+
+                //actualiza los productos
+                compraProductosUpdater[productoId] = cantidad;
             }
             updater = updater.toFixed(2)
             this.setState(function (prevState, props) { 
                 if(prevState.importeFactura !== updater){
-                    return {importeFactura : updater}
+                    let errores = {...this.state.errors}
+                    errores['otros'] = []
+                    return {importeFactura : updater, errors : errores, compraProductos : compraProductosUpdater}
                 }
             })
         }
@@ -355,6 +381,9 @@ export class dependienteNuevoPedido extends Component {
         let inputValue = null;
         return (
             <div>
+                {/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+                  * COSAS CON DISPLAY NONE PARA LOS SCRIPTS
+                  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */}
                 <TextField
                     style = {{ height:12 , display:"none"}}
                     id='numStepper'
@@ -364,9 +393,14 @@ export class dependienteNuevoPedido extends Component {
                     inputProps={{ min: 1, style:{padding:5, border: '1px solid #bdbdbd', backgroundColor:'white', borderRadius:10} }}
                     variant="outlined"
                 />
+                <ClearIcon id = 'clearIcon' style = {{display: 'none'}}/>
                 <Snackbar type = "error" open = {data.isDefaulter} message= 'Este cliente tiene impagos!'/>
                 <Button id = 'onChangeInput' onClick = {(event) => {this.onChangeInput(event, changing, inputValue)}} style={{display : 'none'}}></Button>
                 <Button id = 'updater' onClick = {(e) => {e.preventDefault(); this.setState({n:!this.state.n})}} style = {{display: 'none'}}/>
+                
+                {/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+                  * COMIENZO DE LA VISTA 
+                  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */}
                 <Typography variant='h3' className={classes.tituloNuevoPedido}>GENERAR UN NUEVO PEDIDO</Typography><br/>
                 <Stepper 
                     opcionales = {[2]}
@@ -569,7 +603,8 @@ export class dependienteNuevoPedido extends Component {
                                                 <Checkbox
                                                 color="secondary"
                                                 inputProps={{ 'aria-label': 'secondary checkbox' }}
-                                                checked = {null}/>}
+                                                onClick = {(e) => {e.preventDefault(); this.setState({recogeEnTienda : !this.state.recogeEnTienda})}}
+                                                checked = {this.state.recogeEnTienda}/>}
                                                 label = "Recoge en tienda" />
                                         
                                         <h3 style= {{marginRight : 30}}>TOTAL: {this.state.importeFactura} €</h3>
