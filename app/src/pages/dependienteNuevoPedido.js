@@ -8,18 +8,24 @@ import Typography from '@material-ui/core/Typography';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import SyncAltIcon from '@material-ui/icons/SyncAlt';
+import SearchIcon from '@material-ui/icons/Search';
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ClearIcon from '@material-ui/icons/Clear';
 
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import DoneIcon from '@material-ui/icons/Done';
 import Button from '@material-ui/core/Button';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import Stepper from '../components/Stepper';
+import Snackbar from '../components/SnackBar'
+import NestedList from '../components/NestedList';
 
 import { loadClienteIsDefaulter, clearClienteIsDefaulter, clear } from '../redux/actions/dataActions';
 import { loadCliente, clearClienteByNIF } from '../redux/actions/dataActions';
-
-import Snackbar from '../components/SnackBar'
+import { loadProductos, clearProductos } from '../redux/actions/dataActions';
 
 
 const style = {
@@ -104,6 +110,37 @@ const style = {
     telefono: {
         width: '100%'
     },
+    seleccionProductosContainer : {
+        marginTop: 15,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    catalogoBusquedaContainer: {
+        width: '45%',
+    },
+    searchProducto : {
+        backgroundColor: 'white',
+    },
+    catalogoDeSeleccion: {
+        width: '100%',
+        border: '1px solid #BDBDBD',
+        borderRadius: 10,
+        maxHeight: 400,
+        overflowY: 'auto'
+    },
+    cestaDeCompra: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        minHeight: 380,
+        maxHeight: 380,
+        overflowY: 'auto',
+        border: '1px solid #BDBDBD',
+        borderRadius: 5,  
+        backgroundColor: '#eaeaea'
+    }
     
     
 }
@@ -112,7 +149,7 @@ export class dependienteNuevoPedido extends Component {
     constructor(props){
         super(props);
         this.state = {
-            errors : {'nombreApellidos' : [], 'NIF': [], 'direccion': [], 'provincia': [] , 'municipio': [], 'CP': [], 'email':[], 'telefono':[]},
+            errors : {'nombreApellidos' : [], 'NIF': [], 'direccion': [], 'provincia': [] , 'municipio': [], 'CP': [], 'email':[], 'telefono':[], 'otros': []},
             valueRadio: '',
             nombreApellidos: '',
             NIF: '',
@@ -122,6 +159,10 @@ export class dependienteNuevoPedido extends Component {
             CP: '',
             email: '',
             telefono: '',
+            compraProductos: {},
+            importeFactura: 0.0,
+            recogeEnTienda: false,
+            n : true,
         }
     }
     componentDidMount(){
@@ -141,7 +182,6 @@ export class dependienteNuevoPedido extends Component {
             if(!hayMasErrores)
                 document.getElementById('backButton').click();
         }
-        console.log(this.props.data.cliente)
         if(this.props.data.cliente !== null && this.props.data.cliente !== ''){
             this.setState({nombreApellidos : this.props.data.cliente.name, 
                            direccion : this.props.data.cliente.direccion.split(',')[0].trim(),
@@ -152,6 +192,11 @@ export class dependienteNuevoPedido extends Component {
                            telefono: this.props.data.cliente.tlf})
             this.props.clearClienteByNIF()
         }
+        if(document.getElementById('step2')){
+            this.updateCompra();
+        } if(document.getElementById('step2') && this.props.data.productos.length === 0){
+            this.props.loadProductos();
+        } 
     }
 
     componentWillUnmount(){
@@ -170,6 +215,7 @@ export class dependienteNuevoPedido extends Component {
 
     back(event){
         event.preventDefault()
+        document.getElementById('updater').click()
         document.getElementById('backButton').click();
     }
 
@@ -238,8 +284,95 @@ export class dependienteNuevoPedido extends Component {
             this.props.loadCliente(value);
         }    
         this.setState({[name] : value});
-        
-        
+    }
+
+    handleTransfer(event){
+        event.preventDefault();
+
+        //fuerza un update
+        document.getElementById('updater').click()
+
+        var elemento = event.currentTarget.parentNode.parentNode;
+        var productoId = elemento.id.split(',')[0];
+        var productoStock = elemento.id.split(',')[1];
+        var precioVenta = elemento.id.split(',')[2];
+        elemento = elemento.parentNode.cloneNode(true)
+        var cesta = document.getElementById('cesta');
+
+        if(cesta.children.length === 0 || cesta.children[0].style.display !== 'none'){
+            cesta.children[0].style.display = 'none';
+            cesta.style.display = "block";
+        }
+        //creamos el num stepper
+        var numStepper = document.getElementById('numStepper').cloneNode(true)
+        numStepper.id = productoId.toString() + ',' + precioVenta.toString();
+        numStepper.max = productoStock;
+        numStepper.onchange = (e) => {document.getElementById('updater').click()}
+        numStepper.name = 'cantidadProducto'
+        numStepper.style.display = 'inline-block'
+
+        //desacticamos el boton de añadir si ya se ha añadido
+        var btnAñadir = event.currentTarget;
+        btnAñadir.disabled = true;
+        btnAñadir.classList.add('Mui-disabled')
+
+        //cambiamos el boton a un boton de eliminar
+        var boton = elemento.children[0].children[3].children[0]
+        var clearIcon = document.getElementById('clearIcon').cloneNode(true)
+        boton.onclick = () => {elemento.remove(); 
+                              btnAñadir.disabled = false; 
+                              btnAñadir.classList.remove('Mui-disabled')
+                              document.getElementById('updater').click()}
+        boton.innerHTML = '';
+        clearIcon.style.display = 'block'
+        boton.appendChild(clearIcon);
+
+        //añadimos el num stepper al elemento de la cesta
+        elemento.style.padding = "10px 0 10px 0";
+        elemento.children[0].children[2].innerHTML = '<p style = "width: 100%"><b>Cantidad:</b></p>'
+        elemento.children[0].children[2].style.display = "flex"
+        elemento.children[0].children[2].style.padding = "0 20px 0 20px"
+        elemento.children[0].children[2].style["align-items"] = "center"
+        elemento.children[0].children[2].appendChild(numStepper)
+        cesta.appendChild(elemento);
+    }
+    updateCompra(){
+        var cesta = document.getElementById('cesta')
+        if(cesta.children.length === 1 && cesta.children[0].id === 'iconoCarrito' && cesta.children[0].style.display === 'none'){
+            cesta.style.display = "flex";
+            cesta.children[0].style.display = 'block';
+        }
+        if(cesta.children.length === 0 || cesta.children[0].style.display !== 'none'){
+            this.setState(function (prevState, props) { 
+                if(prevState.importeFactura !== 0.0){
+                    let errores = {...this.state.errors}
+                    errores['otros'] = 'No hay productos comprados'
+                    return {importeFactura : 0.0, errors : errores}
+                }
+            })
+        } else{
+            var updater = 0.0;
+            var compraProductosUpdater = {...this.state.compraProductos}
+            var numSteppers = document.getElementsByName('cantidadProducto')
+            for(let numStepper of numSteppers){
+                //actualiza el precio total
+                var productoId = numStepper.id.split(',')[0]
+                var precioVenta = parseFloat(numStepper.id.split(',')[1])
+                var cantidad = parseInt(numStepper.value)
+                updater += cantidad * precioVenta;
+
+                //actualiza los productos
+                compraProductosUpdater[productoId] = cantidad;
+            }
+            updater = updater.toFixed(2)
+            this.setState(function (prevState, props) { 
+                if(prevState.importeFactura !== updater){
+                    let errores = {...this.state.errors}
+                    errores['otros'] = []
+                    return {importeFactura : updater, errors : errores, compraProductos : compraProductosUpdater}
+                }
+            })
+        }
     }
 
     render() {
@@ -248,12 +381,30 @@ export class dependienteNuevoPedido extends Component {
         let inputValue = null;
         return (
             <div>
+                {/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+                  * COSAS CON DISPLAY NONE PARA LOS SCRIPTS
+                  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */}
+                <TextField
+                    style = {{ height:12 , display:"none"}}
+                    id='numStepper'
+                    type="number"
+                    defaultValue = {1}
+                    value = {1}
+                    inputProps={{ min: 1, style:{padding:5, border: '1px solid #bdbdbd', backgroundColor:'white', borderRadius:10} }}
+                    variant="outlined"
+                />
+                <ClearIcon id = 'clearIcon' style = {{display: 'none'}}/>
                 <Snackbar type = "error" open = {data.isDefaulter} message= 'Este cliente tiene impagos!'/>
                 <Button id = 'onChangeInput' onClick = {(event) => {this.onChangeInput(event, changing, inputValue)}} style={{display : 'none'}}></Button>
+                <Button id = 'updater' onClick = {(e) => {e.preventDefault(); this.setState({n:!this.state.n})}} style = {{display: 'none'}}/>
+                
+                {/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+                  * COMIENZO DE LA VISTA 
+                  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */}
                 <Typography variant='h3' className={classes.tituloNuevoPedido}>GENERAR UN NUEVO PEDIDO</Typography><br/>
                 <Stepper 
                     opcionales = {[2]}
-                    stepTitles = {['Datos del cliente', 'Selección de productos', 'Datos de envío', 'Resumen del pago']}
+                    stepTitles = {['Datos del cliente', 'Selección de productos', 'Datos de envío', 'Resumen del pedido']}
                 >
                     <form className = {classes.container}>
                         <fieldset className = {classes.fieldset}>
@@ -408,11 +559,59 @@ export class dependienteNuevoPedido extends Component {
                         </div>
                     </form>
 
-                    <form className = {classes.container}>
+                    <form className = {classes.container} id = 'step2'>
                         <fieldset className = {classes.fieldset}>
                             <legend>Seleccione los productos</legend>
-                            <h1>Aqui va otra cosa</h1>
-                            <br/>
+                            <div className = {classes.seleccionProductosContainer}>
+                                <div className = {classes.catalogoBusquedaContainer}>
+                                    <span style = {{display:'inline-flex', width: '100%', marginBottom: 10}}>
+                                        <TextField 
+                                            className={classes.searchProducto} 
+                                            label="Buscar productos"
+                                            variant="outlined"
+                                            fullWidth
+                                            size = "small"
+                                            value={null}
+                                            onChange={null}
+                                            onKeyPress={(event) => event.key==='Enter'? null: null}
+                                            />
+                                        <Button
+                                            variant = "contained"
+                                            onClick = {null}   
+                                            color = "secondary"
+                                            style = {{color: 'white'}}
+                                            >
+                                            <SearchIcon/>
+                                        </Button>
+                                    </span>
+
+                                    <div className = {classes.catalogoDeSeleccion}>
+                                        <NestedList content = {data.productos} handleTransfer = {this.handleTransfer}/>
+                                    </div>
+                                </div>
+
+                                <SyncAltIcon size = {'large'} style = {{fontSize : 60}}/>
+
+                                <div style = {{width : "45%"}}>
+                                    <div className = {classes.cestaDeCompra} id = 'cesta'>
+                                        <ShoppingCartIcon id = 'iconoCarrito' style = {{fontSize: 100, color: '#bdbdbd'}}/>
+                                    </div>
+                                
+                                    <span style = {{display: 'inline-flex', justifyContent: 'space-between', width: '100%'}}>
+                                        <FormControlLabel 
+                                            control = {
+                                                <Checkbox
+                                                color="secondary"
+                                                inputProps={{ 'aria-label': 'secondary checkbox' }}
+                                                onClick = {(e) => {e.preventDefault(); this.setState({recogeEnTienda : !this.state.recogeEnTienda})}}
+                                                checked = {this.state.recogeEnTienda}/>}
+                                                label = "Recoge en tienda" />
+                                        
+                                        <h3 style= {{marginRight : 30}}>TOTAL: {this.state.importeFactura} €</h3>
+                                    </span>
+                                </div>
+                                        
+                            </div><br/>
                         </fieldset>
 
                         <div className = {classes.buttonDiv}>
@@ -521,6 +720,9 @@ const mapActionsToProps = {
     clear,
     loadCliente,
     clearClienteByNIF,
+
+    loadProductos,
+    clearProductos,
 
 }
 
