@@ -13,6 +13,8 @@ import SyncAltIcon from '@material-ui/icons/SyncAlt';
 import SearchIcon from '@material-ui/icons/Search';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ClearIcon from '@material-ui/icons/Clear';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
@@ -143,6 +145,12 @@ const style = {
         border: '1px solid #BDBDBD',
         borderRadius: 5,  
         backgroundColor: '#eaeaea'
+    },
+    opcionesEnvio : {
+        marginLeft: 30,
+        width: '30%',
+        padding: '0 20px 0 20px',
+        marginTop: 20,
     }
     
     
@@ -152,7 +160,10 @@ export class dependienteNuevoPedido extends Component {
     constructor(props){
         super(props);
         this.state = {
-            errors : {'nombreApellidos' : [], 'NIF': [], 'direccion': [], 'provincia': [] , 'municipio': [], 'CP': [], 'email':[], 'telefono':[], 'otros': []},
+            errors : {'nombreApellidos' : [], 'NIF': [], 'direccion': [], 'provincia': [] , 'municipio': [], 
+                      'CP': [], 'email':[], 'telefono':[], 'direccionEnvio': [], 'provinciaEnvio': [] , 'municipioEnvio': [], 
+                      'CPEnvio': [],'fechaEnvio':[], 'otros': []},
+            warnings: {'stock' : []},
             valueRadio: '',
             nombreApellidos: '',
             NIF: '',
@@ -179,7 +190,6 @@ export class dependienteNuevoPedido extends Component {
     }
   
     componentDidUpdate(){
-        
         if(this.props.data.isDefaulter){
             let hayMasErrores = this.hayErrores();
             let errores = {...this.state.errors} ;
@@ -241,12 +251,18 @@ export class dependienteNuevoPedido extends Component {
     back(event){
         event.preventDefault()
 
+        let warns = {...this.state.warnings}
+
         if(document.getElementById('step4') && this.state.recogeEnTienda){
             document.getElementById('backButton').click();
+        } else if(!document.getElementById('step4')){
+            warns['stock'] = []
         }
         let errores = {...this.state.errors}
-        errores['otros'] = []
-        this.setState({errors : errores})
+        Object.keys(errores).map((error) => {errores[error] = []})
+
+        this.setState({errors : errores, warnings : warns})
+
         document.getElementById('updater').click()
         document.getElementById('backButton').click();
     }
@@ -260,6 +276,7 @@ export class dependienteNuevoPedido extends Component {
         event.preventDefault()
         this.props.clearClienteIsDefaulter()
         let errores = {...this.state.errors} ;
+        let warns = {...this.state.warnings} ;
         switch(step){
             case 0:{
                 this.props.loadClienteIsDefaulter(this.state.NIF)
@@ -301,18 +318,15 @@ export class dependienteNuevoPedido extends Component {
                     let tomorrow = new Date();
                     tomorrow.setDate(tomorrow.getDate() + 1)
                     this.setState({direccionEnvio:'Avenida Gresur edificio AG', fechaEnvio: tomorrow})
-                } else{
-                    this.setState({direccionEnvio:'', fechaEnvio: null})
                 }
                 if(steppers.length === 0){
-                    let errores = {...this.state.errors};
                     errores['otros'].push('No hay productos comprados')
                     document.getElementById('pedidoSinProductos') ? 
                                                     document.getElementById('pedidoSinProductos').click() : 
                                                     console.warn('No se encuentra la snackbar')
                 } else {
                     for(let stepper of steppers){
-                        if(stepper.valueAsNumber > stepper.max || stepper.valueAsNumber < stepper.min){
+                        if(stepper.valueAsNumber < stepper.min){
                             stepper.style.border = '1px solid red';
                             if(!errores['otros'].includes('stockProductos')){
                                 errores['otros'].push('stockProductos')
@@ -320,12 +334,40 @@ export class dependienteNuevoPedido extends Component {
                                                         document.getElementById('stockProductos').click() : 
                                                         console.warn('No se encuentra la snackbar')
                             }
+                        } else if(stepper.valueAsNumber > parseInt(stepper.id.split(',')[2])){
+                            if(!warns['stock'].includes('sinStockProductos')){
+                                warns['stock'].push('sinStockProductos')
+                                document.getElementById('sinStockProductos') ?
+                                                            document.getElementById('sinStockProductos').click() : 
+                                                            console.warn('No se encuentra la snackbar')
+                            }
                         }
                     }
                 }
                 break
             }
             case 2: {
+                var today = new Date();
+                today.setHours(23,59,59,999)
+                if(this.state.direccionEnvio.trim() === '')
+                    errores['direccionEnvio'].push('No puede ser vacio')
+                if(this.state.direccionEnvio.trim().length < 3 || this.state.direccionEnvio.trim().length > 100)
+                    errores['direccionEnvio'].push('Debe estar entre 3 y 50 caracteres')
+                if(this.state.provinciaEnvio.trim() === '' || this.state.provinciaEnvio === 0)
+                    errores['provinciaEnvio'].push('No puede ser vacio')
+                if(!provincias.includes(this.state.provinciaEnvio.trim()))
+                    errores['provinciaEnvio'].push('Provincia inválida')
+                if(this.state.municipioEnvio.trim() === '')
+                    errores['municipioEnvio'].push('No puede ser vacio')
+                if(this.state.CPEnvio.trim() === '')
+                    errores['CPEnvio'].push('No puede ser vacio')
+                if(!this.state.CPEnvio.trim().match(/^\d{5}$/))
+                    errores['CPEnvio'].push('formato invalido')
+                if(!this.state.fechaEnvio || this.state.fechaEnvio === null)
+                    errores['fechaEnvio'].push('No puede ser vacio')
+                if(!(today < this.state.fechaEnvio)){
+                    errores['fechaEnvio'].push('Debe ser una fecha futura')
+                }
                 break
             }
             case 3: {
@@ -335,7 +377,7 @@ export class dependienteNuevoPedido extends Component {
                 console.error('QUE HACES NO INVENTES QUE ESTA YA TODO INVENTAO')
             }
         }
-        this.setState({errors : errores})
+        this.setState({errors : errores, warnings : warns})
         if(!this.hayErrores()){
             document.getElementById('nextButton').click()
         }
@@ -344,7 +386,7 @@ export class dependienteNuevoPedido extends Component {
     onChangeInput(event, name, value){
         event.preventDefault();
         
-        if(this.state.errors[name][0] || this.state.errors[name][0] === ''){
+        if(this.state.errors[name] && (this.state.errors[name][0] || this.state.errors[name][0] === '')){
             let errores = {...this.state.errors};
             errores[name] = []
             this.setState({errors: errores})
@@ -373,8 +415,7 @@ export class dependienteNuevoPedido extends Component {
         }
         //creamos el num stepper
         var numStepper = document.getElementById('numStepper').cloneNode(true)
-        numStepper.id = productoId.toString() + ',' + precioVenta.toString();
-        numStepper.max = productoStock;
+        numStepper.id = productoId.toString() + ',' + precioVenta.toString() + ',' + productoStock;
         numStepper.onchange = (e) => {document.getElementById('updater').click()}
         numStepper.name = 'cantidadProducto'
         numStepper.style.display = 'inline-block'
@@ -392,6 +433,7 @@ export class dependienteNuevoPedido extends Component {
                               btnAñadir.classList.remove('Mui-disabled')
                               document.getElementById('updater').click()}
         boton.innerHTML = '';
+        boton.id = 'eliminar'
         clearIcon.style.display = 'block'
         boton.appendChild(clearIcon);
 
@@ -408,50 +450,70 @@ export class dependienteNuevoPedido extends Component {
     }
     updateCompra(){
         var cesta = document.getElementById('cesta')
-        if(cesta.children.length === 1 && cesta.children[0].id === 'iconoCarrito' && cesta.children[0].style.display === 'none'){
-            cesta.style.display = "flex";
-            cesta.children[0].style.display = 'block';
-        }
-        if(cesta.children.length === 0 || cesta.children[0].style.display !== 'none'){
-            this.setState(function (prevState, props) { 
-                if(prevState.importeFactura !== 0.0){
-                    let errores = {...this.state.errors}
-                    let compraProductosUpdater = {}
-                    if(!errores['otros'].includes('No hay productos comprados'))
-                        errores['otros'].push('No hay productos comprados')
-                    return {importeFactura : 0.0, errors : errores, compraProductos : compraProductosUpdater}
-                }
-            })
-        } else{
-            var updater = 0.0;
-            var compraProductosUpdater = {}
-            var numSteppers = document.getElementsByName('cantidadProducto')
-            for(let numStepper of numSteppers){
-                //actualiza los steppers
-                if(!this.state.errors['otros'].includes('stockProductos') && numStepper.style.border === '1px solid red'){
-                    numStepper.style.border = '1px solid rgb(189, 189, 189)'
-                } if(numStepper.valueAsNumber > numStepper.max){
-                    numStepper.value = numStepper.max
-                } if(numStepper.valueAsNumber < numStepper.min){
-                    numStepper.value = numStepper.min
-                }
-                //actualiza el precio total
-                var productoId = numStepper.id.split(',')[0]
-                var precioVenta = parseFloat(numStepper.id.split(',')[1])
-                var cantidad = parseInt(numStepper.value)
-                updater += cantidad * precioVenta;
 
-                //actualiza los productos
-                compraProductosUpdater[productoId] = cantidad;
+        if(Object.keys(this.state.compraProductos).length !== 0 && this.state.compraProductos.constructor === Object
+           && (cesta.children.length === 0 || cesta.children.length === 1 && cesta.children[0].id === 'iconoCarrito' && cesta.children[0].style.display !== 'none')){
+            Object.keys(this.state.compraProductos).map(
+                (productoId) => {
+                    if(document.getElementById(productoId) && !document.getElementById(productoId).disabled){
+                        document.getElementById(productoId).click()
+                        
+                        var numSteppers = document.getElementsByName('cantidadProducto')
+
+                        for(let stepper of numSteppers){
+                            if(stepper.id.split(',')[0] === productoId){
+                                stepper.value = this.state.compraProductos[productoId]
+                            }
+                        }
+                }})
+            
+        }else{
+
+            if(cesta.children.length === 1 && cesta.children[0].id === 'iconoCarrito' && cesta.children[0].style.display === 'none'){
+                cesta.style.display = "flex";
+                cesta.children[0].style.display = 'block';
             }
-            updater = updater.toFixed(2)
-            this.setState(function (prevState, props) { 
-                if(prevState.importeFactura !== updater){
-                    let errores = {...this.state.errors}
-                    errores['otros'] = []
-                    return {importeFactura : updater, errors : errores, compraProductos : compraProductosUpdater}
+            if(cesta.children.length === 0 || cesta.children[0].style.display !== 'none'){
+                this.setState(function (prevState, props) { 
+                    if(prevState.importeFactura !== 0.0){
+                        let errores = {...this.state.errors}
+                        let compraProductosUpdater = {}
+                        if(!errores['otros'].includes('No hay productos comprados'))
+                            errores['otros'].push('No hay productos comprados')
+                        return {importeFactura : 0.0, errors : errores, compraProductos : compraProductosUpdater}
+                    }
+                })
+            } else{
+                var updater = 0.0;
+                var compraProductosUpdater = {}
+                var numSteppers = document.getElementsByName('cantidadProducto')
+                for(let numStepper of numSteppers){
+                    //actualiza los steppers
+                    if(numStepper.valueAsNumber < numStepper.min){
+                        numStepper.value = numStepper.min
+                    } else if(numStepper.valueAsNumber > parseInt(numStepper.id.split(',')[2])){
+                        numStepper.style.border = '1px solid orange'
+                    } else {
+                        numStepper.style.border = '1px solid rgb(189, 189, 189)'
+                    }
+                    //actualiza el precio total
+                    var productoId = numStepper.id.split(',')[0]
+                    var precioVenta = parseFloat(numStepper.id.split(',')[1])
+                    var cantidad = parseInt(numStepper.value)
+                    updater += cantidad * precioVenta;
+
+                    //actualiza los productos
+                    compraProductosUpdater[productoId] = cantidad;
                 }
-            })
+                updater = updater.toFixed(2)
+                this.setState(function (prevState, props) { 
+                    if(prevState.importeFactura !== updater){
+                        let errores = {...this.state.errors}
+                        errores['otros'] = []
+                        return {importeFactura : updater, errors : errores, compraProductos : compraProductosUpdater}
+                    }
+                })
+            }
         }
     }
     handleChangeBuscar(event){
@@ -461,6 +523,18 @@ export class dependienteNuevoPedido extends Component {
     buscarProducto(event){
         event.preventDefault()
         this.state.busquedaProducto==='' ? this.props.loadProductos(): this.props.loadProductosByNombre(this.state.busquedaProducto);
+    }
+
+
+
+    handleSubmit(){
+        
+        // ENVIAR NOTIFICACION DE LOS PRODUCTOS PEDIDOS QUE NECESITAN STOCK
+
+        //IMPLEMENTAR LA COLA DE PEDIDOS
+
+        //VALIDAR EN CONTROLADOR QUE LA FECHA SEA FUTURA
+
     }
 
     render() {
@@ -493,7 +567,13 @@ export class dependienteNuevoPedido extends Component {
                     type = "error" 
                     id = "stockProductos"
                     open = {this.state.errors['otros'].includes('stockProductos')} 
-                    message= 'La cantidad de alguno de los productos seleccionados supera el stock disponible o es menor que 1'
+                    message= 'La cantidad de alguno de los productos seleccionados es menor que 1'
+                />
+                <Snackbar 
+                    type = "warning" 
+                    id = "sinStockProductos"
+                    open = {this.state.warnings['stock'].includes('sinStockProductos')} 
+                    message= 'La cantidad de alguno de los productos seleccionados supera el stock disponible'
                 />
                 <Button id = 'onChangeInput' onClick = {(event) => {this.onChangeInput(event, changing, inputValue)}} style={{display : 'none'}}></Button>
                 <Button id = 'updater' onClick = {(e) => {e.preventDefault(); this.setState({n:!this.state.n})}} style = {{display: 'none'}}/>
@@ -504,7 +584,7 @@ export class dependienteNuevoPedido extends Component {
                 <Typography variant='h3' className={classes.tituloNuevoPedido}>GENERAR UN NUEVO PEDIDO</Typography><br/>
                 <Stepper 
                     opcionales = {[2]}
-                    stepTitles = {['Datos del cliente', 'Selección de productos', 'Datos de envío', 'Resumen del pedido']}
+                    stepTitles = {['1. Datos del cliente', '2. Selección de productos', '3. Datos de envío', '4. Resumen del pedido']}
                 >
                     <form className = {classes.container}>
                         <fieldset className = {classes.fieldset}>
@@ -759,8 +839,96 @@ export class dependienteNuevoPedido extends Component {
                     <form className = {classes.container} id = 'step3'>
                         <fieldset className = {classes.fieldset}>
                             <legend>Introduzca los datos de envío</legend>
-                            <h1>Aqui va el form con cosas del envio</h1>
-                            <br/>
+                            <span className = {classes.spanInputs}>
+                                    <TextField
+                                    value={this.state.direccionEnvio}
+                                    error = {this.state.errors['direccionEnvio'].length !== 0 ? true:false}
+                                    required
+                                    label="Dirección de envío"
+                                    helperText={this.state.errors['direccionEnvio'][0]}
+                                    className = {[classes.input, classes.direccion].join(" ")}
+                                    onChange = {(event) => {inputValue = event.target.value; changing = 'direccionEnvio'; 
+                                                            document.getElementById('onChangeInput').click()}}/>     
+
+                                    <Autocomplete
+                                    options={provincias}
+                                    getOptionLabel={(option) => option}
+                                    value = {this.state.provinciaEnvio}
+                                    renderInput={(params) => 
+                                                            <TextField 
+                                                                {...params}
+                                                                label="Provincia"
+                                                                required
+                                                                error = {this.state.errors['provinciaEnvio'].length !== 0 ? true:false}
+                                                                helperText = {this.state.errors['provinciaEnvio'][0]}/>}                                
+                                    className = {[classes.input, classes.provincia].join(" ")}
+                                    onChange = {(event, value) => {inputValue = value; changing = 'provinciaEnvio'; 
+                                                                  document.getElementById('onChangeInput').click()}}/>
+                                                           
+                                    <TextField
+                                    value = {this.state.municipioEnvio}
+                                    error = {this.state.errors['municipioEnvio'].length !== 0 ? true:false}
+                                    required
+                                    label="Municipio"
+                                    helperText={this.state.errors['municipioEnvio'][0]}
+                                    className = {[classes.input, classes.municipio].join(" ")}
+                                    onChange = {(event) => {inputValue = event.target.value; changing = 'municipioEnvio'; 
+                                                            document.getElementById('onChangeInput').click()}}/>  
+
+                                    <TextField
+                                    value = {this.state.CPEnvio}
+                                    error = {this.state.errors['CPEnvio'].length !== 0 ? true:false}
+                                    required
+                                    label="CP"
+                                    helperText={this.state.errors['CPEnvio'][0]}
+                                    className = {[classes.input, classes.cp].join(" ")}
+                                    onChange = {(event) => {inputValue = event.target.value; changing = 'CPEnvio'; 
+                                                            document.getElementById('onChangeInput').click()}}/>
+                                </span>
+                                
+                                <span className = {classes.spanInputs}>
+                                    <fieldset className = {classes.opcionesEnvio}>
+                                        <legend>Opciones de envío</legend>
+                                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                            <KeyboardDatePicker
+                                            error = {this.state.errors['fechaEnvio'].length !== 0}
+                                            helperText = {this.state.errors['fechaEnvio'][0]}
+                                            className={classes.fechaEnvio}
+                                            disableToolbar
+                                            autoOk={true}
+                                            variant="inline"
+                                            format="dd/MM/yyyy"
+                                            margin="normal"
+                                            label="Fecha de envío"
+                                            value = {this.state.fechaEnvio}
+                                            onChange={(date)=>{inputValue = date; changing = 'fechaEnvio'
+                                                                    document.getElementById('onChangeInput').click()}}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}/>       
+                                        </MuiPickersUtilsProvider>
+                                        <p style = {{color : '#bdbdbd', textAlign: 'justify'}}>
+                                            La fecha de envío es la fecha en la que el pedido pasa a disposición para ponerse
+                                            en reparto, en condiciones normales el reparto se efectúa el mismo día que la fecha
+                                            de envío indica, pero pueden producirse retrasos.
+                                        </p>
+                                    </fieldset>
+                                    { this.state.warnings['stock'].includes('sinStockProductos') ?
+                                    <p style = {
+                                        {border : '2px solid orange', 
+                                        borderRadius: 10,
+                                        padding: 10,
+                                        color: 'orange',
+                                        textAlign: 'justify',
+                                        height: 'min-content',
+                                        width: '55%',
+                                        marginTop: 26}}>
+                                        Algunos de los productos selecionados no se encuentran actualmente en stock, 
+                                        por lo que el envío se realizará tan pronto como se tenga stock de todos los productos solicitados
+                                        a partir de la fecha de envío indicada. Recibirá una notificación cuando el pedido esté preparado.
+                                    </p> : null
+                                    }
+                                </span>
                         </fieldset>
 
                         <div className = {classes.buttonDiv}>
