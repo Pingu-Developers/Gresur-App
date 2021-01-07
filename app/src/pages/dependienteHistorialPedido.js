@@ -115,9 +115,9 @@ class dependienteHistorialPedido extends Component {
                 <Snackbar type = "error" open = {errors?true:false} message = {errors}></Snackbar>
                 {errors ? document.getElementById("botonSnack").click():null}
                 <Backdrop className={classes.backdrop} open={loading}>
-                    <CircularProgress color="inherit" />
+                    <CircularProgress color="secondary" />
                 </Backdrop>
-                <div className = {classes.cuerpo}>
+                <div>
                     <Typography variant='h3' className={classes.tituloCatalogo}>HISTORIAL DE PEDIDOS</Typography>
                     <form>
                     <Typography 
@@ -173,7 +173,6 @@ class dependienteHistorialPedido extends Component {
                             <TablaPedidosDesplegable handleChange={this.handleChange} isExpanded={this.state.expanded === row.id} onConfirmCancelar = {this.props.cancelarPedido} key = {row.id} deletePedidos={this.delete} datos={row}/>
                         ) }
                     </div>
-                    {console.log(this.state.expanded)}
                 </div>
             </div>
         )

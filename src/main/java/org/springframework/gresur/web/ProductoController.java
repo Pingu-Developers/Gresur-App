@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.FacturaEmitida;
@@ -114,6 +116,23 @@ public class ProductoController {
 		return res;
 		
 	}
+	
+	
+	@GetMapping("/paged")
+	public Page<Producto> getAllProductosPageable(Pageable pageable) {
+		return productoService.findAllPageable(pageable);		
+	}
+	
+	@GetMapping("/paged/{category}")
+	public Page<Producto> getAllProductosCategoriaPageable(@PathVariable("category") String categoria,Pageable pageable) {
+		return productoService.findByEstanteriaPageable(Categoria.valueOf(categoria), pageable);		
+	}
+	
+	@GetMapping("/pagedName/{string}")
+	public Page<Producto> getAllProductosNombrePageable(@PathVariable("string") String s,Pageable pageable) {
+		return productoService.findByProductosByNamePageable(s, pageable);		
+	}
+	
 	
 
 }

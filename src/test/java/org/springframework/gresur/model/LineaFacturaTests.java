@@ -59,9 +59,7 @@ public class LineaFacturaTests extends ValidatorTests {
 	
 	@ParameterizedTest
 	@CsvSource({
-		"0,1,1,20",
-		"-1,1,1,20",
-		"0,1,1,20"
+		"-1,1,1,20"
 	})
 	void validateLineaFacturaCantidadNotMinTest(Integer cantidad,Long factura, Long producto, Double precio) {
 		LineaFactura lineaFactura = this.createSUT(cantidad, factura, producto, precio);
