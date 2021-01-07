@@ -5,6 +5,7 @@ import userReducer from './reducers/userReducer';
 import uiReducer from './reducers/uiReducer';
 import dataReducer from './reducers/dataReducer';
 import clienteReducer from './reducers/clienteReducer';
+import productosReducer from './reducers/productosReducer';
 
 
 const initialState = {};
@@ -15,7 +16,8 @@ const reducers = combineReducers({
     user:userReducer,
     UI:uiReducer,
     data: dataReducer,
-    cliente:clienteReducer
+    cliente:clienteReducer,
+    productos: productosReducer
 });
 
 let store;

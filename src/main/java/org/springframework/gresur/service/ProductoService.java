@@ -11,6 +11,8 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.EstadoPedido;
@@ -162,6 +164,21 @@ public class ProductoService {
 	@Transactional(readOnly = true)
 	public Long count() {
 		return productoRepository.count();
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<Producto> findAllPageable(Pageable pageable) throws DataAccessException{
+		return productoRepository.findAll(pageable);
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<Producto> findByEstanteriaPageable(Categoria c , Pageable pageable){
+		return productoRepository.findByEstanteriaCategoria(c,pageable);
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<Producto> findByProductosByNamePageable(String s , Pageable pageable){
+		return productoRepository.findByNombreContainingIgnoreCase(s, pageable);
 	}
 
 }

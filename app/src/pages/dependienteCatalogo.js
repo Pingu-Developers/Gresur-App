@@ -1,135 +1,249 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+import Pagination from '@material-ui/lab/Pagination';
 import withStyles from '@material-ui/core/styles/withStyles';
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
-import SendIcon from '@material-ui/icons/Send';
 
-//Redux stuff
+import MostradorProductos from '../components/MostradorProductos';
+
 import { connect } from 'react-redux';
-import { loadProductos } from '../redux/actions/dataActions';
-import { loadProductosByNombre , clear } from '../redux/actions/dataActions';
+import { getProductosPaginados, clearProductosPaginados } from '../redux/actions/productoActions'
 
-//Componentes
-import TablaCatalogoProductosDesplegable from '../components/TablaCatalogoProductosDesplegable';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import SearchIcon from '@material-ui/icons/Search';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Backdrop from '@material-ui/core/Backdrop';
 
+function TabPanel(props) {
+    const { children, value, index, ...other } = props;
 
-const style = {
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`vertical-tabpanel-${index}`}
+            aria-labelledby={`vertical-tab-${index}`}
+            {...other}
+            >
+            {value === index && (
+                <Box p={3}>
+                <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+  
+TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.any.isRequired,
+    value: PropTypes.any.isRequired,
+};
 
-    tituloCatalogo: {
-        margin: '30px 20px',
-        fontSize: 40,
-        fontWeight: 600,
-        float: 'left'
+function a11yProps(index) {
+    return {
+        id: `vertical-tab-${index}`,
+        'aria-controls': `vertical-tabpanel-${index}`,
+    };
+}
+
+const style = theme => ({
+    root: {
+        flexGrow: 1,
+        backgroundColor: theme.palette.background.paper,
+        display: 'flex',
+        height: 384,
       },
-
+    tabs: {
+        borderRight: `1px solid ${theme.palette.divider}`,
+        minWidth:180
+    }, 
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        backgroundColor:"rgba(255,255,255,0.2)"
+    },
     tituloyForm: {
         width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between'
     },
-
-    formulario: {
-        marginRight: 2
-    },
-
     formBoton: {
         display: 'flex',
         alignItems: 'center',
         marginRight: 30,
-    }, 
-    
-    boton: {
-        marginTop: 10,
     },
+    formulario: {
+        marginRight: 2
+    },
+    tituloCatalogo: {
+        margin: '30px 20px',
+        fontSize: 40,
+        fontWeight: 600,
+        float: 'left'
+      }, 
+})
 
-    botonAll: {
-        marginTop: 10,
-        marginLeft: 10
-    }
+class Catalogo extends Component {
 
-  
-}
+  constructor(props) {
+    super(props);
+    this.state = {
+      activePage:1,
+      value:0,
+      busqueda:''
+    };
+    this.handlePageChange = this.handlePageChange.bind(this);
+  }
 
-class dependienteCatalogo extends Component {
-    
-    constructor(props){
-        super(props);
-        this.state ={
-            data: [],
-            value: ''
-        }
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleAll = this.handleAll.bind(this);
-    }
-
-    handleChange(event) {
-        this.setState({value: event.target.value});
-      }
-    
-    handleSubmit(event) {
-        this.state.value===''?this.props.loadProductos(): this.props.loadProductosByNombre(this.state.value);
-    }
-
-    handleAll(event) {
-        this.props.loadProductos();
+  handleChange(newValue) {
         this.setState({
-            value:''
+            activePage:1,
+            busqueda:'',
+            value:newValue
         })
     }
 
-    componentDidMount(){
-        this.props.loadProductos();
+    componentDidUpdate(prevProps,prevState){
+        if(this.state.value !== prevState.value || this.state.activePage !== prevState.activePage){
+            this.props.clearProductosPaginados();
+            if(this.state.value===0){
+                if(this.state.busqueda){
+                    this.props.getProductosPaginados(this.state.activePage, null,this.state.busqueda)
+                }else{
+                    this.props.getProductosPaginados(this.state.activePage)
+                } 
+            }else{
+                switch (this.state.value) {
+                    case 1:
+                        this.props.getProductosPaginados(this.state.activePage,"AZULEJOS")
+                        break;
+                    case 2:
+                        this.props.getProductosPaginados(this.state.activePage,"BAÑOS")
+                        break;
+                    case 3:
+                        this.props.getProductosPaginados(this.state.activePage,"CALEFACCION")
+                        break;
+                    case 4:
+                        this.props.getProductosPaginados(this.state.activePage,"LADRILLOS")
+                        break;
+                    case 5:
+                        this.props.getProductosPaginados(this.state.activePage,"PINTURAS")
+                        break;
+                    case 6:
+                        this.props.getProductosPaginados(this.state.activePage,"REVESTIMIENTOS")
+                        break;
+                    case 7:
+                        this.props.getProductosPaginados(this.state.activePage,"SILICES")
+                        break;                
+                    default:
+                        break;
+                }
+            }
+        }
+        if(this.state.busqueda !== prevState.busqueda){
+            this.props.getProductosPaginados(this.state.activePage, null,this.state.busqueda)
+        }
+    }
+
+
+    componentDidMount () {
+        this.props.getProductosPaginados(this.state.activePage)
+    }
+
+    handlePageChange(pageNumber) {
+        this.setState({activePage: pageNumber})
+
+    }
+    
+
+    handleChangeBusqueda(event) {
+        this.props.clearProductosPaginados();
+        this.setState({
+            activePage:1,
+            value:0,
+            busqueda:event.target.value
+        })
+                 
     }
 
     componentWillUnmount(){
-        this.props.clear();
+        this.props.clearProductosPaginados();
     }
 
-    render() {
-        const {classes, data} = this.props;
-        
-        return (
-            <div>
-                <div className={classes.tituloyForm}>
-                    <Typography variant='h3' className={classes.tituloCatalogo}>CATÁLOGO DE PRODUCTOS</Typography>
+  render(){
+
+    const { classes,UI:{loading},productos:{articlesDetails,totalPages} } = this.props;
+    return (
+    <div>
+        <Backdrop className={classes.backdrop} 
+            open={loading}
+            >
+                <CircularProgress color="secondary" />
+        </Backdrop>
+        <div className={classes.tituloyForm}>
+            <Typography variant='h3' className={classes.tituloCatalogo}>CATÁLOGO DE PRODUCTOS</Typography>
                     
-                    <div className={classes.formBoton}>
-                        <TextField className={classes.formulario} label="Buscar productos" variant="standard" value={this.state.value} onChange={this.handleChange}
-                                onKeyPress={(event) => event.key==='Enter'? this.handleSubmit(event): null} />
-                        <Button className={classes.boton} onClick={this.handleSubmit} variant='contained' color='primary'>Buscar</Button>
-                        <Button className={classes.botonAll} onClick={this.handleAll} variant='contained' color='secondary'>MOSTRAR TODOS</Button>
-                    </div>
-
+                <div className={classes.formBoton}>
+                <TextField className={classes.formulario} label="Buscar productos" variant="standard" value={this.state.busqueda} onChange={(event)=>this.handleChangeBusqueda(event)}
+                                InputProps={{
+                                    startAdornment: (
+                                      <InputAdornment position="start">
+                                        <SearchIcon color='primary'/>
+                                      </InputAdornment>
+                                    ),
+                                  }}/>
                 </div>
-                    <div className={classes.main}>
-                        {data === undefined? null:<TablaCatalogoProductosDesplegable data = {data}/>}
-                    </div>
-            </div>
-        )
-    }
-}
+        </div>
+        
+        <div className={classes.root}>
+            <Tabs
+                orientation="vertical"
+                indicatorColor="secondary"
+                textColor="secondary"
+                value={this.state.value}
+                onChange={(event, newValue)=>{this.handleChange(newValue)}}
+                aria-label="Vertical tabs example"
+                className={classes.tabs}
+            >
+                <Tab label="Todos" {...a11yProps(0)} />
+                <Tab label="AZULEJOS" {...a11yProps(1)} />
+                <Tab label="BAÑOS" {...a11yProps(2)} />
+                <Tab label="CALEFACCION" {...a11yProps(3)} />
+                <Tab label="LADRILLOS" {...a11yProps(4)} />
+                <Tab label="PINTURAS" {...a11yProps(5)} />
+                <Tab label="REVESTIMIENTOS" {...a11yProps(6)} />
+                <Tab label="SILICES" {...a11yProps(7)} />
+            </Tabs>
+            <TabPanel value={this.state.value} index={this.state.value}>
+                {articlesDetails?articlesDetails.map(producto => 
+                    <MostradorProductos producto={producto}/>
+                ):()=>null}
 
-dependienteCatalogo.propTypes = {
-    classes: PropTypes.object.isRequired,
-    data: PropTypes.object.isRequired,
-    loadProductos: PropTypes.func.isRequired
+            <div className="d-flex justify-content-center">
+                {articlesDetails.length===0?null:<Pagination count={totalPages} hidePrevButton={this.state.activePage ===1} hideNextButton={this.state.activePage ===totalPages}  page={this.state.activePage} onChange={(event,newValue) => this.handlePageChange(newValue)} color="secondary" />}
+            </div>
+            </TabPanel>
+        </div>
+    </div>
+      
+    );
+  }
 }
 
 const mapStateToProps = (state) => ({
-    data: state.data
+    productos: state.productos,
+    UI: state.UI
 })
 
 const mapActionsToProps = {
-    loadProductos,
-    loadProductosByNombre,
-    clear
+    getProductosPaginados,
+    clearProductosPaginados
 }
 
-export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(dependienteCatalogo))
+export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(Catalogo));
