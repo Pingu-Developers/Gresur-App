@@ -15,6 +15,7 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ClearIcon from '@material-ui/icons/Clear';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
@@ -66,7 +67,9 @@ const style = {
     fieldset: {
         borderRadius: 10,
         backgroundColor: '#f7f7f7',
-        color: '#3d3d3d'
+        color: '#3d3d3d',
+        maxHeight: 614,
+        overflowY: 'auto'
     },
     input: {
         width: '40%',
@@ -151,7 +154,42 @@ const style = {
         width: '30%',
         padding: '0 20px 0 20px',
         marginTop: 20,
-    }
+    },
+    detailsDiv: {
+        width: 'min-content',
+        height: 'min-content',
+        marginTop: 20,
+        padding: 35,
+        borderRadius: 20,
+        backgroundColor: 'white',
+    },
+    detailsTitle:{
+        fontSize: 15,
+        fontWeight:"bold",
+        display: "inline-block",
+        marginTop:"1%"   
+    },
+    detailsSubTitle:{
+        fontSize: 15,
+        fontWeight:"bold",
+        display: "inline-block",
+        marginLeft:"5%"
+    },
+
+    detailsList:{
+        fontSize: 15,
+        display: "inline-block",
+    },
+    detailsInfo:{
+        fontSize: 15,
+        display: "inline-block",
+        marginRight:"5%"
+    },
+    detailsPrecio:{
+        fontSize: 15,
+        display: "inline-block",
+        textAlign:"right"
+    },
     
     
 }
@@ -159,34 +197,7 @@ export class dependienteNuevoPedido extends Component {
     
     constructor(props){
         super(props);
-        this.state = {
-            errors : {'nombreApellidos' : [], 'NIF': [], 'direccion': [], 'provincia': [] , 'municipio': [], 
-                      'CP': [], 'email':[], 'telefono':[], 'direccionEnvio': [], 'provinciaEnvio': [] , 'municipioEnvio': [], 
-                      'CPEnvio': [],'fechaEnvio':[], 'otros': []},
-            warnings: {'stock' : []},
-            valueRadio: '',
-            nombreApellidos: '',
-            NIF: '',
-            direccion: '',
-            provincia: '',
-            municipio: '',
-            CP: '',
-            email: '',
-            telefono: '',
-            compraProductos: {},
-            importeFactura: 0.0,
-            recogeEnTienda: false,
-            busquedaProducto: '',
-            direccionEnvio: '',
-            provinciaEnvio: '',
-            municipioEnvio: '',
-            CPEnvio: '',
-            fechaEnvio: null,
-            n : true,
-        }
-    }
-    componentDidMount(){
-        this.setState({valueRadio : 'Pago directo'})
+        this.state = initialState()
     }
   
     componentDidUpdate(){
@@ -231,6 +242,14 @@ export class dependienteNuevoPedido extends Component {
         }
         if(document.getElementById('skipButton') && this.state.recogeEnTienda){
             document.getElementById('skipButton').click()
+        }
+
+        if(document.getElementById('step3') && Object.entries(this.props.data.productos).length === 0 && this.state.recogeEnTienda){
+            this.props.loadProductos();
+        }
+
+        if(document.getElementById('step4') && Object.entries(this.props.data.productos).length === 0){
+            this.props.loadProductos();
         }
     }
 
@@ -317,7 +336,9 @@ export class dependienteNuevoPedido extends Component {
                 if(this.state.recogeEnTienda){
                     let tomorrow = new Date();
                     tomorrow.setDate(tomorrow.getDate() + 1)
-                    this.setState({direccionEnvio:'Avenida Gresur edificio AG', fechaEnvio: tomorrow})
+                    this.setState({direccionEnvio:'Avenida Gresur edificio AG', fechaEnvio: tomorrow, provinciaEnvio: '', municipioEnvio: '', CPEnvio: ''})
+                } else if(!this.state.recogeEnTienda && this.state.direccionEnvio === 'Avenida Gresur edificio AG'){
+                    this.setState({direccionEnvio : '', fechaEnvio : null, provinciaEnvio : '', municipioEnvio : '', CPEnvio : ''})
                 }
                 if(steppers.length === 0){
                     errores['otros'].push('No hay productos comprados')
@@ -367,6 +388,13 @@ export class dependienteNuevoPedido extends Component {
                     errores['fechaEnvio'].push('No puede ser vacio')
                 if(!(today < this.state.fechaEnvio)){
                     errores['fechaEnvio'].push('Debe ser una fecha futura')
+                } if(!this.hayErrores()){
+                    let direccionFinal = this.state.direccion + ', ' + this.state.municipio + ', ' + this.state.provincia + ', ' + this.state.CP
+                    let direccionEnvioFinal = this.state.direccionEnvio + ', ' + this.state.municipioEnvio + ', ' + this.state.provinciaEnvio + ', ' + this.state.CPEnvio
+                    if(this.state.recogeEnTienda){
+                        direccionEnvioFinal = 'Recogida en tienda';
+                    }
+                    this.setState({direccionDB : direccionFinal, direccionEnvioDB : direccionEnvioFinal})
                 }
                 break
             }
@@ -525,9 +553,9 @@ export class dependienteNuevoPedido extends Component {
         this.state.busquedaProducto==='' ? this.props.loadProductos(): this.props.loadProductosByNombre(this.state.busquedaProducto);
     }
 
-
-
-    handleSubmit(){
+    handleSubmit(event){
+        event.preventDefault();
+        this.setState(initialState())
         
         // ENVIAR NOTIFICACION DE LOS PRODUCTOS PEDIDOS QUE NECESITAN STOCK
 
@@ -805,8 +833,17 @@ export class dependienteNuevoPedido extends Component {
                                                 checked = {this.state.recogeEnTienda}/>}
                                                 label = "Recoge en tienda" />
                                         
-                                        <h3 style= {{marginRight : 30}}>TOTAL: {this.state.importeFactura} €</h3>
+                                        <h3 style= {{marginRight : 30}}>TOTAL: {this.state.importeFactura} € </h3>
                                     </span>
+                                    <p 
+                                        style = {{
+                                            fontSize : 10, 
+                                            fontWeight : 100,
+                                            margin: '-20px 0 0 0', 
+                                            textAlign : 'right',
+                                            paddingRight: 30}}>
+                                        (IVA incluido)
+                                    </p>
                                 </div>
                                         
                             </div><br/>
@@ -848,7 +885,26 @@ export class dependienteNuevoPedido extends Component {
                                     helperText={this.state.errors['direccionEnvio'][0]}
                                     className = {[classes.input, classes.direccion].join(" ")}
                                     onChange = {(event) => {inputValue = event.target.value; changing = 'direccionEnvio'; 
-                                                            document.getElementById('onChangeInput').click()}}/>     
+                                                            document.getElementById('onChangeInput').click()}}
+                                    InputProps = {{
+                                        style : {padding : 0},
+                                        endAdornment : (
+                                            <InputAdornment position = 'end'>
+                                                <Tooltip title = 'Autocompletar campos con los datos del cliente'>
+                                                    <Button
+                                                        onClick = {(event) => {event.preventDefault();
+                                                                                this.setState({direccionEnvio : this.state.direccion,
+                                                                                              provinciaEnvio: this.state.provincia,
+                                                                                              municipioEnvio : this.state.municipio,
+                                                                                              CPEnvio : this.state.CP});}}
+                                                        onMouseDown = {(event) => event.preventDefault()}
+                                                    >
+                                                        <Typography style = {{color: '#bdbdbd', fontWeight: 'bold'}}>Auto</Typography>
+                                                    </Button>
+                                                </Tooltip>
+                                            </InputAdornment> )}
+                                    }
+                                    />   
 
                                     <Autocomplete
                                     options={provincias}
@@ -956,9 +1012,127 @@ export class dependienteNuevoPedido extends Component {
                     </form>
 
                     <form className = {classes.container} id = 'step4'>
-                        <fieldset className = {classes.fieldset}>
+                        <fieldset className = {classes.fieldset} style = {{display : 'flex', justifyContent: 'center', paddingBottom: 15}}>
                             <legend>Resumen del pedido</legend>
-                            <h1>Aqui va la factura</h1>
+                            {!this.state.fechaEnvio || this.hayErrores() || Object.entries(this.props.data.productos).length === 0 ? 
+                                <Typography 
+                                    variant = 'h5' 
+                                    style = {{color: '#bdbdbd', fontWeight: 'bold', textAlign : 'center'}}>
+                                        No ha sido posible generar el resumen del pedido porque hay errores
+                                    </Typography> :
+                                
+                                <div className = {classes.detailsDiv}>
+                                    <Typography className={classes.detailsTitle}>
+                                        Nombre:     
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                        {this.state.nombreApellidos}
+                                    </Typography>
+                                    <Typography className={classes.detailsTitle}>
+                                        NIF:     
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                        {this.state.NIF}
+                                    </Typography>
+                                    <br/>
+                                    <Typography className={classes.detailsTitle}>
+                                        Direccion:      
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                        {this.state.direccionDB}
+                                    </Typography>
+                                    <br/>
+                                    <br/>
+                                    <Typography className={classes.detailsTitle}>
+                                        Datos de contacto:     
+                                    </Typography>
+                                    <br/>
+                                    <Typography className={classes.detailsSubTitle}>
+                                        email:     
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                        {this.state.email}
+                                    </Typography>
+                                    <br/>
+                                    <Typography className={classes.detailsSubTitle}>
+                                        tlf:     
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                        {this.state.telefono}
+                                    </Typography>
+                                    <br/>
+                                    <br/>
+                                    <Typography className={classes.detailsTitle}>
+                                        Fecha de envío:     
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                        {' ' + this.state.fechaEnvio.toUTCString()}
+                                    </Typography>
+                                    <br/>
+                                    <Typography className={classes.detailsTitle}>
+                                        Dirección de envío:     
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                        {' ' + this.state.direccionEnvioDB}
+                                    </Typography>
+                                    <br/>
+                                    <Typography className={classes.detailsTitle}>
+                                        Productos:     
+                                    </Typography>
+                                    <table id = 'tablaProductos'>
+                                        {Object.entries(this.props.data.productos).map((entry) =>   
+                                                {return entry[1].map( (producto) => { 
+                                                    return(
+                                                        Object.keys(this.state.compraProductos).includes(producto.id.toString()) ? (
+                                                                <tr>
+                                                                    <td>                                             
+                                                                        <Typography className={classes.detailsList}>
+                                                                            ({this.state.compraProductos[producto.id.toString()]}x)
+                                                                        </Typography>
+                                                                    </td>
+                                                                    <td  width="450px" padding="0 0 0 20px">
+                                                                        <Typography className={classes.detailsInfo}>
+                                                                            {producto.nombre}
+                                                                        </Typography>
+                                                                    </td>
+                                                                    <td>
+                                                                        <Typography className={classes.detailsInfo}>
+                                                                            {producto.precioVenta}
+                                                                        </Typography>
+                                                                    </td>
+                                                                </tr>
+                                                        ) : console.log('') 
+                                                    )
+                                                })
+                                            })
+                                        }
+                                    </table>
+                                    <Typography className={classes.detailsList}>
+                                        ==============================================================
+                                    </Typography>
+                                    <br/>
+                                    <Typography className={classes.detailsList}>
+                                        Importe total................................................................................................. 
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                        {(parseFloat(this.state.importeFactura)/121*100).toFixed(2)}
+                                    </Typography>
+                                    <br/>
+                                    <Typography className={classes.detailsList}>
+                                        IVA(21%)...................................................................................................... 
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                        {(parseFloat(this.state.importeFactura)/121*21).toFixed(2)}
+                                    </Typography>
+                                    <br/>
+                                    <Typography className={classes.detailsTitle}>
+                                        TOTAL
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                    ......................................................................................................... 
+                                    {this.state.importeFactura}
+                                    </Typography>                              
+                                </div>}
                             <br/>
                         </fieldset>
 
@@ -968,6 +1142,7 @@ export class dependienteNuevoPedido extends Component {
                                 color = "primary"
                                 onClick={(e) => {this.back(e)}} 
                                 classes={{root : classes.button, disabled: classes.disabled}}
+                                disabled={this.hayErrores() ? true : false}
                                 style={{marginLeft: -24}}
                                 >
                                 <ArrowBackIosIcon/>
@@ -976,7 +1151,7 @@ export class dependienteNuevoPedido extends Component {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={(e) => {this.validatePage(e,3)}}
+                                onClick={(e) => {this.validatePage(e,3); this.handleSubmit(e)}}
                                 classes={{root : classes.button, disabled: classes.disabled}}
                                 disabled={this.hayErrores() ? true : false}
                                 style={{marginRight: -24}}
@@ -1017,5 +1192,34 @@ const provincias = ['Alava','Albacete','Alicante','Almería','Asturias','Avila',
              'Guipuzkoa','Huelva','Huesca','Islas Baleares','Jaen','Leon','Lerida','Lugo','Madrid','Málaga','Murcia','Navarra',
              'Orense','Palencia','Las Palmas','Pontevedra','La Rioja','Salamanca','Segovia','Sevilla','Soria','Tarragona',
              'Santa Cruz de Tenerife','Teruel','Toledo','Valencia','Valladolid','Vizcaya','Zamora','Zaragoza']
+
+function initialState(){
+    return {  
+        errors : {'nombreApellidos' : [], 'NIF': [], 'direccion': [], 'provincia': [] , 'municipio': [], 
+                                'CP': [], 'email':[], 'telefono':[], 'direccionEnvio': [], 'provinciaEnvio': [] , 'municipioEnvio': [], 
+                                'CPEnvio': [],'fechaEnvio':[], 'otros': []},
+        warnings: {'stock' : []},
+        valueRadio : 'Pago directo',
+        nombreApellidos: '',
+        NIF: '',
+        direccion: '',
+        provincia: '',
+        municipio: '',
+        CP: '',
+        email: '',
+        telefono: '',
+        compraProductos: {},
+        importeFactura: 0.0,
+        recogeEnTienda: false,
+        busquedaProducto: '',
+        direccionEnvio: '',
+        provinciaEnvio: '',
+        municipioEnvio: '',
+        CPEnvio: '',
+        fechaEnvio: null,
+        direccionDB: '',
+        direccionEnvioDB: '',
+        n : true,
+    }}
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(dependienteNuevoPedido))
