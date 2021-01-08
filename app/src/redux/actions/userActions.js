@@ -117,7 +117,7 @@ export const postNotificacion = (nuevaNoti) => (dispatch) => {
 
 export const postCliente = (nuevoCliente) => (dispatch) => {
 
-    axios.post('/add/cliente', nuevoCliente)
+    axios.post('cliente/add', nuevoCliente)
         .then((res) => {
             console.log("TODO OK BRO")
         })

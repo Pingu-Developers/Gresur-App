@@ -331,13 +331,16 @@ export class dependienteNuevoPedido extends Component {
                     errores['telefono'].push('No puede ser vacio')
                 if(!this.state.telefono.trim().match(/^\d{9}$/))
                     errores['telefono'].push('formato invalido')
+                if(!this.hayErrores()){
+                    let direccionFinal = this.state.direccion + ', ' + this.state.municipio + ', ' + this.state.provincia + ', ' + this.state.CP
+                    this.setState({direccionDB : direccionFinal})
+                }             
                 break
-                }
+            }
             case 1: {
                 let steppers = document.getElementsByName('cantidadProducto')
                 if(this.state.recogeEnTienda){
-                    let tomorrow = new Date();
-                    tomorrow.setDate(tomorrow.getDate() + 1)
+                    var tomorrow = new Date(new Date().getTime() + 25 * 60 * 60 * 1000);
                     this.setState({direccionEnvioDB:'Avenida Gresur edificio AG', fechaEnvio: tomorrow})
                 } else if(!this.state.recogeEnTienda && this.state.direccionEnvioDB === 'Avenida Gresur edificio AG'){
                     this.setState({direccionEnvio : '', fechaEnvio : null, provinciaEnvio : '', municipioEnvio : '', CPEnvio : ''})
@@ -390,11 +393,9 @@ export class dependienteNuevoPedido extends Component {
                     errores['fechaEnvio'].push('No puede ser vacio')
                 if(!(today < this.state.fechaEnvio)){
                     errores['fechaEnvio'].push('Debe ser una fecha futura')
-                } if(!this.hayErrores() && !this.state.recogeEnTienda){
-                    let direccionFinal = this.state.direccion + ', ' + this.state.municipio + ', ' + this.state.provincia + ', ' + this.state.CP
+                } if(!this.hayErrores()){
                     let direccionEnvioFinal = this.state.direccionEnvio + ', ' + this.state.municipioEnvio + ', ' + this.state.provinciaEnvio + ', ' + this.state.CPEnvio
-
-                    this.setState({direccionDB : direccionFinal, direccionEnvioDB : direccionEnvioFinal})
+                    this.setState({direccionEnvioDB : direccionEnvioFinal})
                 }
                 break
             }
@@ -561,7 +562,7 @@ export class dependienteNuevoPedido extends Component {
         if(this.state.nuevoCliente){
             const cliente = {
                 name : this.state.nombreApellidos,
-                NIF: this.state.NIF,
+                nif: this.state.NIF,
                 email: this.state.email,
                 tlf : this.state.telefono,
                 direccion : this.state.direccionDB,

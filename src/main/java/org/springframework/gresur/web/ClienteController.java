@@ -9,6 +9,7 @@ import org.springframework.gresur.service.ClienteService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +34,8 @@ public class ClienteController {
 		return clienteService.findAll();
 	}
 	
-	@PostMapping("/add/cliente")
+	@ExceptionHandler({Exception.class})
+	@PostMapping("/add")
 	@PreAuthorize("hasRole('DEPENDIENTE')")
 	@Transactional
 	public Cliente add(@RequestBody @Valid Cliente cliente) throws DataAccessException{
