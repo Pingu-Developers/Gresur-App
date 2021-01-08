@@ -40,6 +40,11 @@ public class AdministradorService extends PersonalService<Administrador, Adminis
 		Personal p = personalGRepo.findByNIF(nif);
 		 return p;
 	}
+	@Transactional
+	public void deleteByNIFPersonal(String nif){
+		 personalGRepo.deleteByNIF(nif);
+		 
+	}
 	
 
 

@@ -17,10 +17,9 @@ const useStyles = makeStyles((theme) => ({
 
   },
   details:{
-      display:'inline-block',
-      margin: theme.spacing(2),
-     
-  },
+    display:'inline-block',
+    width:'92%',
+},
   acordeon: {
     backgroundColor:"#d4e6f1",
 },

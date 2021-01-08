@@ -37,7 +37,11 @@ import { connect } from 'react-redux';
     },
     cancel:{
       colorPrimary:"red"
+    },separador:{
+      marginBottom: theme.spacing(2),
+      marginLeft: theme.spacing(7)
     }
+
   });
 
 

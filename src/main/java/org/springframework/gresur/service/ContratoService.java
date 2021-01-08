@@ -43,6 +43,10 @@ public class ContratoService {
 	public Contrato findById(Long id) throws DataAccessException{
 		return contratoRepository.findById(id).orElse(null);
 	}
+	@Transactional(readOnly = true)
+	public Contrato findByPersonalNIF(String nif) throws DataAccessException{
+		return contratoRepository.findByPersonalNIF(nif).orElse(null);
+	}
 	
 	@Transactional
 	public Contrato save(Contrato contrato) throws DataAccessException{

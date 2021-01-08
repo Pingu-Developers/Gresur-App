@@ -43,7 +43,6 @@ public class Pedido extends BaseEntity{
 	@JoinColumn(name = "factura_emitida_id")
 	private FacturaEmitida facturaEmitida;
 	
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "vehiculo_id")
 	private Vehiculo vehiculo;
