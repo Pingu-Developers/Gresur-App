@@ -6,6 +6,7 @@ import uiReducer from './reducers/uiReducer';
 import dataReducer from './reducers/dataReducer';
 import clienteReducer from './reducers/clienteReducer';
 import productosReducer from './reducers/productosReducer';
+import proveedorReducer from './reducers/proveedorReducer';
 
 
 const initialState = {};
@@ -13,11 +14,12 @@ const initialState = {};
 const middleware = [thunk];
 
 const reducers = combineReducers({
-    user:userReducer,
-    UI:uiReducer,
+    user: userReducer,
+    UI: uiReducer,
     data: dataReducer,
-    cliente:clienteReducer,
-    productos: productosReducer
+    cliente: clienteReducer,
+    productos: productosReducer,
+    proveedor: proveedorReducer
 });
 
 let store;

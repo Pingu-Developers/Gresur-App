@@ -133,6 +133,20 @@ public class ProductoController {
 		return productoService.findByProductosByNamePageable(s, pageable);		
 	}
 	
+	@GetMapping("/pagedOrd")
+	public Page<Producto> getAllProductosOrderedPageable(Pageable pageable) {
+		return productoService.findAllOrderedPageable(pageable);		
+	}
 	
+	@GetMapping("/pagedOrd/{category}")
+	public Page<Producto> getAllProductosCategoriaOrderedPageable(@PathVariable("category") String categoria,Pageable pageable) {
+
+		return productoService.findByEstanteriaOrderedPageable(Categoria.valueOf(categoria), pageable);		
+	}
+	
+	@GetMapping("/pagedNameOrd/{string}")
+	public Page<Producto> getAllProductosNombreOrderedPageable(@PathVariable("string") String s,Pageable pageable) {
+		return productoService.findByProductosByNameOrderedPageable(s, pageable);		
+	}
 
 }

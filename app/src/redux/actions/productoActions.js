@@ -1,12 +1,12 @@
 import { CLEAR_PRODUCTOS_PAGINADO , SET_PRODUCTOS_PAGINADO, LOADING_UI, SET_ERRORS, CLEAR_ERRORS } from '../types'
 import axios from 'axios';
 
-export const getProductosPaginados = (page,categoria = null,string =null) => (dispatch) =>{
+export const getProductosPaginados = (page,categoria = null,string =null,size = 5,ord='') => (dispatch) =>{
 
     dispatch({ type:LOADING_UI })
 
     if(categoria){
-        axios.get(`producto/paged/${categoria}?page=${page-1}&size=5`)
+        axios.get(`producto/paged${ord}/${categoria}?page=${page-1}&size=${size}`)
             .then( response => {
                 dispatch({
                     type:SET_PRODUCTOS_PAGINADO,
@@ -29,7 +29,7 @@ export const getProductosPaginados = (page,categoria = null,string =null) => (di
             });
 
     }else if(string){
-        axios.get(`producto/pagedName/${string}?page=${page-1}&size=5`)
+        axios.get(`producto/pagedName${ord}/${string}?page=${page-1}&size=${size}`)
             .then( response => {
                 dispatch({
                     type:SET_PRODUCTOS_PAGINADO,
@@ -51,7 +51,7 @@ export const getProductosPaginados = (page,categoria = null,string =null) => (di
                 }
             });
     }else{
-        axios.get(`producto/paged?page=${page-1}&size=5`)
+        axios.get(`producto/paged${ord}?page=${page-1}&size=${size}`)
             .then( response => {
                 dispatch({
                     type:SET_PRODUCTOS_PAGINADO,

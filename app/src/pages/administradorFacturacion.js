@@ -23,6 +23,9 @@ const style =theme=> ({
     tabs: {
         borderRight: `1px solid ${theme.palette.divider}`,
     },
+    tabspanel: {
+        width:"100%",
+    },
 });
 
 function TabPanel(props) {
@@ -89,13 +92,13 @@ class administradorFacturacion extends Component {
                     <Tab label="Balance" {...a11yProps(1)} />
                     <Tab label="Rectificar factura" {...a11yProps(2)} />
                 </Tabs>
-                <TabPanel value={this.state.value} index={0}>
+                <TabPanel  className={classes.tabspanel} value={this.state.value} index={0}>
                     <Facturas/>
                 </TabPanel>
-                <TabPanel value={this.state.value} index={1}>
+                <TabPanel className={classes.tabspanel} value={this.state.value} index={1}>
                     <Balance/>
                 </TabPanel>
-                <TabPanel value={this.state.value} index={2}>
+                <TabPanel className={classes.tabspanel} value={this.state.value} index={2}>
                     <Rectificar/>
                 </TabPanel>
             </div>
