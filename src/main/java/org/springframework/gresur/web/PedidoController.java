@@ -6,25 +6,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.EstadoPedido;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.model.Pedido;
+import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.TipoVehiculo;
+import org.springframework.gresur.model.Transportista;
 import org.springframework.gresur.model.Vehiculo;
-import org.springframework.gresur.service.LineasFacturaService;
+import org.springframework.gresur.repository.TransportistaRepository;
+import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.service.PedidoService;
+import org.springframework.gresur.service.PersonalService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.util.Tuple3;
+import org.springframework.gresur.util.Tuple5;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,8 +51,15 @@ public class PedidoController {
 	@Autowired
 	public VehiculoService vehiculoService;
 	
+	@Autowired
+	UserRepository userRepository;
+	
+	@Autowired
+	protected PersonalService<Transportista, TransportistaRepository> personalService;
+	
+	
 	@GetMapping
-	@PreAuthorize("hasRole('DEPENDIENTE')")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') ")
 	public Iterable<Pedido> findAll() {
 		return pedidoService.findAll();
 	}
@@ -137,6 +152,153 @@ public class PedidoController {
 		}
 	
 		return listaDef;
+	}
+	
+	@GetMapping("/hoy")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') ")
+	public List<Tuple5<Long, String, EstadoPedido, String, String>> findAllHoy() {
+				
+		List<Tuple5<Long, String, EstadoPedido, String, String>> ls = new ArrayList<Tuple5<Long,String,EstadoPedido,String,String>>();
+		
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+		
+		Iterable<Pedido> pedidosHoy = pedidoService.findAll();
+		List<Pedido> listaPedidosHoy = new ArrayList<>();
+		pedidosHoy.forEach(listaPedidosHoy::add);
+		
+		List<Pedido> pedidosRepartoPreparado = listaPedidosHoy
+				.stream()
+				.filter(x->x.getEstado().equals(EstadoPedido.PREPARADO) 
+								|| x.getEstado().equals(EstadoPedido.EN_REPARTO))
+				.filter(x->x.getTransportista().getNIF().equals(per.getNIF()))
+				.collect(Collectors.toList());
+		
+		
+		String s = "";
+		
+		for(Pedido p: pedidosRepartoPreparado) {
+			
+			String cliente = p.getFacturaEmitida().getCliente().getName();			
+			String tipoVehiculo = p.getVehiculo()!=null?p.getVehiculo().getTipoVehiculo().toString():s;
+			String vehiculoT = (p.getVehiculo()!=null&&tipoVehiculo!=null)?tipoVehiculo+" (" + p.getVehiculo().getMatricula().toString() +")":s;
+			Tuple5<Long, String, EstadoPedido, String, String> t5 = new Tuple5<Long, String, EstadoPedido, String, String>();
+			
+			t5.setE1(p.getId());
+			t5.setE2(p.getDireccionEnvio());
+			t5.setE3(p.getEstado());
+			t5.setE4(cliente);
+			t5.setE5(vehiculoT);
+			ls.add(t5);
+						
+		}
+			
+			
+		
+		return ls;
+	}
+	@GetMapping("/factura/{id}")
+	//hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') 
+	@PreAuthorize("hasRole('ADMIN') or hasRole('TRANSPORTISTA')")
+	public Pedido findFacturaPedido(@PathVariable("id") Long id) {		
+		
+		return pedidoService.findByID(id);
+	}
+	
+	@PutMapping("/reparto/{id}")
+	@PreAuthorize("hasRole('TRANSPORTISTA')")
+	public ResponseEntity<?> setEnReparto(@PathVariable("id") Long id,@RequestBody Vehiculo veh) {
+		
+		Pedido p = pedidoService.findByID(id);
+		
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+		
+		if(p!=null) {
+			p.setTransportista(personalService.findByNIF(per.getNIF()));
+			p.setVehiculo(veh);
+			p.setEstado(EstadoPedido.EN_REPARTO);
+			try {
+				pedidoService.save(p);
+				return ResponseEntity.ok(p);
+			}catch(Exception e) {
+				return ResponseEntity.badRequest().body(e);
+
+			}
+		}else {
+			return ResponseEntity.badRequest().body("Error: Pedido not found");
+		}
+		
+	}
+	
+	@PutMapping("/entregado/{id}")
+	@PreAuthorize("hasRole('TRANSPORTISTA')")
+	public ResponseEntity<?> setEntregado(@PathVariable("id") Long id) {
+		
+		Pedido p = pedidoService.findByID(id);
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+		
+		
+		if(p!=null&&p.getEstado().equals(EstadoPedido.EN_REPARTO)&&p.getTransportista().getNIF().equals((per.getNIF()))) {
+			p.setEstado(EstadoPedido.ENTREGADO);
+			try {
+				pedidoService.save(p);
+				return ResponseEntity.ok(p);
+			}catch(Exception e) {
+				return ResponseEntity.badRequest().body(e);
+
+			}
+		}else {
+			return ResponseEntity.badRequest().body("Error: Pedido not found or Pedido not Preparado");
+		}
+		
+	}
+	
+	@GetMapping("/transportista/{estado}")
+	@PreAuthorize("hasRole('TRANSPORTISTA')")
+	public List<Tuple5<Long, String, EstadoPedido, String, String>> findAllByEstadoTransportista(@PathVariable("estado") String estado) {
+		
+		List<Tuple5<Long, String, EstadoPedido, String, String>> ls = new ArrayList<Tuple5<Long,String,EstadoPedido,String,String>>();
+
+		
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+		
+		Iterable<Pedido> pedidosHoy = pedidoService.findByEstado(EstadoPedido.valueOf(estado));
+		List<Pedido> listaPedidosHoy = new ArrayList<>();
+		pedidosHoy.forEach(listaPedidosHoy::add);
+		
+		List<Pedido> pedidosRepartoPreparado = listaPedidosHoy
+				.stream()
+				.filter(x->x.getTransportista().getNIF().equals(per.getNIF()))
+				.collect(Collectors.toList());
+		
+		
+		String s = "";
+		
+		for(Pedido p: pedidosRepartoPreparado) {
+			
+			String cliente = p.getFacturaEmitida().getCliente().getName();			
+			String tipoVehiculo = p.getVehiculo()!=null?p.getVehiculo().getTipoVehiculo().toString():s;
+			String vehiculoT = (p.getVehiculo()!=null&&tipoVehiculo!=null)?tipoVehiculo+" (" + p.getVehiculo().getMatricula().toString() +")":s;
+			Tuple5<Long, String, EstadoPedido, String, String> t5 = new Tuple5<Long, String, EstadoPedido, String, String>();
+			
+			t5.setE1(p.getId());
+			t5.setE2(p.getDireccionEnvio());
+			t5.setE3(p.getEstado());
+			t5.setE4(cliente);
+			t5.setE5(vehiculoT);
+			ls.add(t5);
+						
+		}
+			
+		
+		return ls;
 	}
 	
 }
