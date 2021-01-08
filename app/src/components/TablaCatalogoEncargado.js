@@ -16,6 +16,8 @@ import WarningIcon from '@material-ui/icons/Warning';
 import Button from '@material-ui/core/Button';
 import Tooltip from '@material-ui/core/Tooltip';
 import DialogoEditarProductos from '../components/DialogoEditarProducto';
+import ErrorIcon from '@material-ui/icons/Error';
+
 //Acordeon
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -31,6 +33,31 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: '#d4e6f1',
     }
 }));
+
+//margen define el margen de capacidad para que salte la alerta [0, 1]
+function getBotonNotificarAlertaStock(row, producto, margen){
+    var sumVolumenes = getVolumenEstanteria(row);
+    var capacidadEst = getCapacidadEstanteria(producto);
+    if(sumVolumenes < (capacidadEst*margen)){
+        return  <Tooltip title="Avisar al administrador para reponer stock" arrow><Button disabled><ErrorIcon/></Button></Tooltip>
+    } else{
+        return <Tooltip title="Avisar al administrador para reponer stock" arrow><Button><ErrorIcon/></Button></Tooltip>
+    }
+
+}
+//obtiene la capacidad de la estanteria
+function getCapacidadEstanteria(producto){
+    return producto.estanteria.capacidad
+}
+
+//suma el volumen de todos los productos de una estanteria
+function getVolumenEstanteria(row){
+    var acum = 0;
+    row.map((producto) => acum = acum + (producto.alto * producto.ancho * producto.profundo * producto.stock));
+    return acum;
+}
+
+//cuando el stock es menor que el de seguridad, aparecerá un icono de warning
 function alertaStockProducto(producto) {
     var stock = parseInt(producto.stock, 10);
     var stockSeguridad = parseInt(producto.stockSeguridad, 10);
@@ -157,7 +184,7 @@ export default function ControlledAccordions(props) {
                                                     <TableCell>demanda</TableCell>
                                                     <TableCell>{producto.stock}</TableCell>
                                                     <TableCell>{producto.unidad}</TableCell>
-                                                    <TableCell></TableCell>
+                                                    <TableCell>{ getBotonNotificarAlertaStock(row[1], producto, 0.85)}</TableCell>
                                                 </TableRow>
                                         )}
 
