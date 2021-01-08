@@ -177,7 +177,7 @@ export default function HorizontalLinearStepper(props) {
         {activeStep === steps.length ? (
           <div>           
             <Typography className={classes.instructions}>
-              Completado!
+              Completado! Descargar PDF
             </Typography>
             <Button 
                 id='aceptar'
