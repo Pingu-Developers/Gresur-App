@@ -1,6 +1,7 @@
 package org.springframework.gresur.web;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,26 +9,41 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
+import org.springframework.gresur.model.Administrador;
+import org.springframework.gresur.model.Cliente;
+import org.springframework.gresur.model.Dependiente;
 import org.springframework.gresur.model.EstadoPedido;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.LineaFactura;
+import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Pedido;
 import org.springframework.gresur.model.Personal;
+import org.springframework.gresur.model.TipoNotificacion;
 import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Transportista;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.TransportistaRepository;
 import org.springframework.gresur.repository.UserRepository;
+import org.springframework.gresur.service.AdministradorService;
+import org.springframework.gresur.service.ClienteService;
+import org.springframework.gresur.service.FacturaEmitidaService;
+import org.springframework.gresur.service.LineasFacturaService;
+import org.springframework.gresur.service.NotificacionService;
 import org.springframework.gresur.service.PedidoService;
 import org.springframework.gresur.service.PersonalService;
+import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.service.VehiculoService;
+import org.springframework.gresur.util.Tuple2;
 import org.springframework.gresur.util.Tuple3;
+import org.springframework.gresur.util.Tuple4;
 import org.springframework.gresur.util.Tuple5;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +68,24 @@ public class PedidoController {
 	public VehiculoService vehiculoService;
 	
 	@Autowired
+	public ClienteService clienteService;
+	
+	@Autowired
+	public ProductoService productoService;
+	
+	@Autowired
+	public FacturaEmitidaService facturaEmitidaService;
+	
+	@Autowired
+	public LineasFacturaService lineaFacturaService;
+	
+	@Autowired
+	public NotificacionService notificacionService;
+	
+	@Autowired
+	public AdministradorService adminService;
+	
+	@Autowired
 	UserRepository userRepository;
 	
 	@Autowired
@@ -68,6 +102,79 @@ public class PedidoController {
 	@PreAuthorize("hasRole('DEPENDIENTE')")
 	public List<Pedido> findAllByEstado(@PathVariable("estado") String estado) {
 		return pedidoService.findByEstado(EstadoPedido.valueOf(estado));
+	}
+	
+	@ExceptionHandler({Exception.class})
+	@PostMapping("/add")
+	@PreAuthorize("hasRole('DEPENDIENTE')")
+	@Transactional
+	public Pedido add(@RequestBody Tuple4<String, String, LocalDate, Tuple4<Double, Boolean, String, List<Tuple2<Long, Integer>>>> pedido) {
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		
+		Dependiente dependiente = (Dependiente) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+		
+		
+		String direccionEnvio = pedido.getE1();
+		EstadoPedido estado = EstadoPedido.valueOf(pedido.getE2());
+		LocalDate fechaEnvio = pedido.getE3();
+		
+		if(!fechaEnvio.isAfter(LocalDate.now())) {
+			throw new IllegalArgumentException("La fecha de envío debe ser futura");
+		}
+		
+		Double importeFactura = pedido.getE4().getE1();
+		Boolean estaPagada = pedido.getE4().getE2();
+		Cliente cliente = clienteService.findByNIF(pedido.getE4().getE3());
+		
+		
+		FacturaEmitida factura = new FacturaEmitida();
+		factura.setCliente(cliente);
+		factura.setDependiente(dependiente);
+		factura.setEstaPagada(true);
+		factura.setImporte(importeFactura);
+		factura = facturaEmitidaService.save(factura);
+		
+		List<LineaFactura> lf = new ArrayList<LineaFactura>();
+		for(Tuple2<Long, Integer> pair : pedido.getE4().getE4()) {
+			LineaFactura linea = new LineaFactura();
+			linea.setCantidad(pair.getE2());
+			linea.setFactura(factura);
+			linea.setProducto(productoService.findById(pair.getE1()));
+			linea.setPrecio(pair.getE2()*productoService.findById(pair.getE1()).getPrecioVenta());
+			linea = lineaFacturaService.save(linea);
+			lf.add(linea);
+		}
+		factura.setLineasFacturas(lf);
+		factura.setEstaPagada(estaPagada);
+		factura = facturaEmitidaService.save(factura);
+		
+		
+		Pedido pedidoRes = new Pedido();
+		pedidoRes.setDireccionEnvio(direccionEnvio);
+		pedidoRes.setEstado(estado);
+		pedidoRes.setFacturaEmitida(factura);
+		pedidoRes.setFechaEnvio(fechaEnvio);
+		pedidoRes = pedidoService.save(pedidoRes);
+		
+		// Receptores de la notificacion
+		List<Personal> lPer = new ArrayList<>();
+		for (Personal per : adminService.findAllPersonal()) {
+			if(per.getClass() == Administrador.class)
+				lPer.add(per);
+		}
+		
+		for(LineaFactura linea : lf) {
+			if(linea.getCantidad() > linea.getProducto().getStock()) {
+				Notificacion aviso = new Notificacion();
+				aviso.setCuerpo("Se necesita reposición del producto: " + linea.getProducto().getNombre() + " para poder completar el pedido con id " + pedidoRes.getId());
+				aviso.setTipoNotificacion(TipoNotificacion.SISTEMA);
+				aviso.setFechaHora(LocalDateTime.now());
+				aviso = notificacionService.save(aviso, lPer);
+			}
+		}
+		
+		return pedidoRes;
 	}
 	
 	@PostMapping("/{id}")

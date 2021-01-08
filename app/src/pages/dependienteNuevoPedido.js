@@ -31,6 +31,7 @@ import { loadClienteIsDefaulter, clearClienteIsDefaulter, clear } from '../redux
 import { loadCliente, clearClienteByNIF } from '../redux/actions/dataActions';
 import { loadProductos, clearProductos, loadProductosByNombre } from '../redux/actions/dataActions';
 import { IconButton } from '@material-ui/core';
+import { postCliente, postPedido } from '../redux/actions/userActions';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 
 const style = {
@@ -230,7 +231,8 @@ export class dependienteNuevoPedido extends Component {
                            CP: this.props.data.cliente.direccion.split(',')[3].trim(),
                            email: this.props.data.cliente.email,
                            telefono: this.props.data.cliente.tlf,
-                           errors: errores})
+                           errors: errores,
+                           nuevoCliente : false})
             this.props.clearClienteByNIF()
         }
         if(document.getElementById('step2')){
@@ -336,8 +338,8 @@ export class dependienteNuevoPedido extends Component {
                 if(this.state.recogeEnTienda){
                     let tomorrow = new Date();
                     tomorrow.setDate(tomorrow.getDate() + 1)
-                    this.setState({direccionEnvio:'Avenida Gresur edificio AG', fechaEnvio: tomorrow, provinciaEnvio: '', municipioEnvio: '', CPEnvio: ''})
-                } else if(!this.state.recogeEnTienda && this.state.direccionEnvio === 'Avenida Gresur edificio AG'){
+                    this.setState({direccionEnvioDB:'Avenida Gresur edificio AG', fechaEnvio: tomorrow})
+                } else if(!this.state.recogeEnTienda && this.state.direccionEnvioDB === 'Avenida Gresur edificio AG'){
                     this.setState({direccionEnvio : '', fechaEnvio : null, provinciaEnvio : '', municipioEnvio : '', CPEnvio : ''})
                 }
                 if(steppers.length === 0){
@@ -388,12 +390,10 @@ export class dependienteNuevoPedido extends Component {
                     errores['fechaEnvio'].push('No puede ser vacio')
                 if(!(today < this.state.fechaEnvio)){
                     errores['fechaEnvio'].push('Debe ser una fecha futura')
-                } if(!this.hayErrores()){
+                } if(!this.hayErrores() && !this.state.recogeEnTienda){
                     let direccionFinal = this.state.direccion + ', ' + this.state.municipio + ', ' + this.state.provincia + ', ' + this.state.CP
                     let direccionEnvioFinal = this.state.direccionEnvio + ', ' + this.state.municipioEnvio + ', ' + this.state.provinciaEnvio + ', ' + this.state.CPEnvio
-                    if(this.state.recogeEnTienda){
-                        direccionEnvioFinal = 'Recogida en tienda';
-                    }
+
                     this.setState({direccionDB : direccionFinal, direccionEnvioDB : direccionEnvioFinal})
                 }
                 break
@@ -557,12 +557,40 @@ export class dependienteNuevoPedido extends Component {
         event.preventDefault();
         this.setState(initialState())
         
-        // ENVIAR NOTIFICACION DE LOS PRODUCTOS PEDIDOS QUE NECESITAN STOCK
+        //creacion de cliente si es nuevo
+        if(this.state.nuevoCliente){
+            const cliente = {
+                name : this.state.nombreApellidos,
+                NIF: this.state.NIF,
+                email: this.state.email,
+                tlf : this.state.telefono,
+                direccion : this.state.direccionDB,
+            }
+            this.props.postCliente(cliente);
+        }
+        //creacion de la tupla
+        var lineasFactura = []
+        Object.entries(this.state.compraProductos).map((entry) => {
+            lineasFactura.push({e1: entry[0], e2 : entry[1]})
+        })
 
-        //IMPLEMENTAR LA COLA DE PEDIDOS
+        //creacion de la factura emitida
+        const factura = {
+            e1: this.state.importeFactura,
+            e2: this.state.valueRadio === 'Pago directo',
+            e3: this.state.NIF, //añadir en el controller
+            e4: lineasFactura
+        };
 
-        //VALIDAR EN CONTROLADOR QUE LA FECHA SEA FUTURA
-
+        //Creacion del pedido
+        const pedido = {
+            e1: this.state.direccionEnvioDB,
+            e2: 'EN_ESPERA',
+            e3: this.state.fechaEnvio,
+            e4: factura
+        };
+        this.props.postPedido(pedido);
+        
     }
 
     render() {
@@ -1073,7 +1101,7 @@ export class dependienteNuevoPedido extends Component {
                                         Dirección de envío:     
                                     </Typography>
                                     <Typography className={classes.detailsInfo}>
-                                        {' ' + this.state.direccionEnvioDB}
+                                        {this.state.recogeEnTienda ? 'Recogida en tienda' : this.state.direccionEnvioDB}
                                     </Typography>
                                     <br/>
                                     <Typography className={classes.detailsTitle}>
@@ -1097,7 +1125,7 @@ export class dependienteNuevoPedido extends Component {
                                                                     </td>
                                                                     <td>
                                                                         <Typography className={classes.detailsInfo}>
-                                                                            {producto.precioVenta}
+                                                                            {parseInt(this.state.compraProductos[producto.id.toString()]) * parseFloat(producto.precioVenta)}
                                                                         </Typography>
                                                                     </td>
                                                                 </tr>
@@ -1185,6 +1213,9 @@ const mapActionsToProps = {
     loadProductos,
     clearProductos,
     loadProductosByNombre,
+
+    postCliente,
+    postPedido,
 }
 
 const provincias = ['Alava','Albacete','Alicante','Almería','Asturias','Avila','Badajoz','Barcelona','Burgos','Caceres',
@@ -1220,6 +1251,7 @@ function initialState(){
         direccionDB: '',
         direccionEnvioDB: '',
         n : true,
+        nuevoCliente: true,
     }}
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(dependienteNuevoPedido))
