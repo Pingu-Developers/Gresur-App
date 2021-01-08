@@ -205,7 +205,7 @@ export class dependienteNuevoPedido extends Component {
         if(this.props.data.isDefaulter){
             let hayMasErrores = this.hayErrores();
             let errores = {...this.state.errors} ;
-            errores['NIF'].push('defoulter')
+            errores['NIF'].push('Defaulter')
             this.setState({errors : errores})
             document.getElementById("botonSnack")? document.getElementById("botonSnack")?.click() : 
                                                    console.log('No se encuentra boton para abrir la snackbar');
@@ -559,15 +559,15 @@ export class dependienteNuevoPedido extends Component {
         this.setState(initialState())
         
         //creacion de cliente si es nuevo
+        let cliente = null
         if(this.state.nuevoCliente){
-            const cliente = {
+            cliente = {
                 name : this.state.nombreApellidos,
                 nif: this.state.NIF,
                 email: this.state.email,
                 tlf : this.state.telefono,
                 direccion : this.state.direccionDB,
             }
-            this.props.postCliente(cliente);
         }
         //creacion de la tupla
         var lineasFactura = []
@@ -590,8 +590,7 @@ export class dependienteNuevoPedido extends Component {
             e3: this.state.fechaEnvio,
             e4: factura
         };
-        this.props.postPedido(pedido);
-        
+        this.props.postPedido(pedido, cliente);
     }
 
     render() {

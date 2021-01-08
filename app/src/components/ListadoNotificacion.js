@@ -25,7 +25,7 @@ import { getNotificacionesLeidas } from '../redux/actions/userActions'
 const useStyles = makeStyles({
     notificaciones:{
         minHeight:260,
-        maxHeight:800,
+        maxHeight:'70vh',
         overflowY:"auto",
         overflowX:"hidden"        
     }

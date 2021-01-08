@@ -130,11 +130,22 @@ export const postCliente = (nuevoCliente) => (dispatch) => {
         })
 }
 
-export const postPedido = (nuevoPedido) => (dispatch) => {
+export const postPedido = (nuevoPedido, nuevoCliente = null) => (dispatch) => {
 
-    axios.post('pedido/add', nuevoPedido)
+    if(nuevoCliente){
+        axios.post('cliente/add', nuevoCliente)
         .then((res) => {
-            console.log("TODO OK BRO")
+            axios.post('pedido/add', nuevoPedido)
+            .then((res) => {
+                console.log("TODO OK BRO")
+            })
+            .catch((err) => {
+                console.log(err.response);
+                dispatch({
+                    type:SET_ERRORS,
+                    payload: err
+                })
+            })
         })
         .catch((err) => {
             console.log(err.response);
@@ -143,4 +154,18 @@ export const postPedido = (nuevoPedido) => (dispatch) => {
                 payload: err
             })
         })
+    }
+    else{
+        axios.post('pedido/add', nuevoPedido)
+            .then((res) => {
+                console.log("TODO OK BRO")
+            })
+            .catch((err) => {
+                console.log(err.response);
+                dispatch({
+                    type:SET_ERRORS,
+                    payload: err
+                })
+            })
+    }
 }
