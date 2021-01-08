@@ -19,12 +19,12 @@ const useStyles = makeStyles((theme) => ({
   },
   details:{
       display:'inline-block',
-      margin: theme.spacing(2),
-     
+      width:'92%',
   },
   acordeon: {
     backgroundColor:"#d4e6f1",
 },
+
 root: {
   width: '94%',
   marginLeft: '3%',
@@ -50,7 +50,7 @@ export default function ControlledAccordions(props) {
             </AccordionSummary>
             <AccordionDetails className={classes.details}>
              {props.datos===undefined?null:props.datos.map((desplegable)=>
-                <EmpleadoDesplegable datos = {desplegable}/>
+                <EmpleadoDesplegable  datos = {desplegable}/>
             )} 
             </AccordionDetails>
       </Accordion>

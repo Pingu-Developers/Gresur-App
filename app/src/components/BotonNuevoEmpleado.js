@@ -67,8 +67,6 @@ export default function FormNuevoEmpleado() {
      this.props.addPersonal(empleado);
  }
 
-console.log(this===undefined?'holis':this.state.name)
-
 
   const handleChange = (event) => {
     setRol(event.target.value);

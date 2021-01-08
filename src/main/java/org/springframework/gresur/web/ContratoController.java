@@ -11,9 +11,11 @@ import org.springframework.gresur.service.AdministradorService;
 import org.springframework.gresur.service.ContratoService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -79,4 +81,33 @@ public class ContratoController {
 		Contrato contrato = contratoService.save(c);
 		return contrato;
 	}
+	
+	@PutMapping("/update/{nif}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Contrato updateContrato( @RequestBody Contrato c,@PathVariable("nif") String nif) throws DataAccessException{
+		
+		Contrato contratoOld = contratoService.findByPersonalNIF(nif);
+
+		contratoOld.setEntidadBancaria(c.getEntidadBancaria());
+		contratoOld.setFechaFin(c.getFechaFin());
+		contratoOld.setFechaInicio(c.getFechaInicio());
+		contratoOld.setNomina(c.getNomina());
+		contratoOld.setTipoJornada(c.getTipoJornada());
+		contratoOld.setObservaciones(c.getObservaciones());
+		
+
+		return contratoService.save(contratoOld);
+	}
+	
+	
+	@DeleteMapping("/delete/{nif}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Integer deleteContrato(@PathVariable("nif") String nif) throws DataAccessException{
+		contratoService.deleteByPersonalNIF(nif);
+		if(admService.findByNIFPersonal(nif)==null) {
+			return 23;
+		}
+		return 0;
+	}
+
 }

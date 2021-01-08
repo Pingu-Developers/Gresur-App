@@ -1,4 +1,5 @@
 import React from 'react';
+import ConfirmDialog from './CorfirmDialoge';
 
 //MATERIAL UI Stuff
 import { withStyles } from '@material-ui/core/styles';
@@ -10,7 +11,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-
+import DeleteDialogue from './DeleteDialogue';
+import EditDialogue from './EditDialogue';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -27,11 +29,6 @@ const useStyles = makeStyles((theme) => ({
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight:"bold",
-    },
-  root: {
-    width:'150%',
-    marginRight: '3%',
-
     },
   alineacion: {
     display: 'inline-block',
@@ -61,6 +58,8 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: 800,
       margin: `${theme.spacing(1)} auto`,
       padding: theme.spacing(2),
+    },funacion:{
+      margin: `${theme.spacing(1)} auto`,
     }
   }
   
@@ -112,66 +111,89 @@ const AccordionDetails = withStyles((theme) => ({
 export default function CustomizedAccordions(props) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-
+  const handleClose = (value) => {
+    setOpen(false);
+  };
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
   return (
-<div className={classes.root}>
       
       <Accordion square expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
         <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-          <Typography className={classes.heading}>{props.datos.personal.name}</Typography>
+          <Typography className={classes.heading}>{props.datos.personal === undefined?null:props.datos.personal.name}</Typography>
         </AccordionSummary>
         <AccordionDetails>
                 <div className={classes.imagen}>
-                <img src={props.datos.personal.image} width="150" height= "150"/>
+                <img src={props.datos.personal === undefined?null:props.datos.personal.image} width="150" height= "150"/>
                 </div>
                 <div className={classes.atributosLeft}>
                     <Typography className={classes.alineacionAtributos}>
                         Nombre:
                     </Typography>
                     <Typography className={classes.alineacion}>
-                        {props.datos.personal.name}
+                        {props.datos.personal === undefined?null:props.datos.personal.name}
                     </Typography >
                     <br/>
                     <Typography className={classes.alineacionAtributos}>
                         DNI:
                     </Typography>
                     <Typography className={classes.alineacion}>
-                        {props.datos.personal.nif}
+                        {props.datos.personal === undefined?null:props.datos.personal.nif}
                     </Typography>
                     <br/>
                     <Typography className={classes.alineacionAtributos}>
                         Dirección:
                     </Typography>
                     <Typography className={classes.alineacion}>
-                        {props.datos.personal.direccion}
+                        {props.datos.personal === undefined?null:props.datos.personal.direccion}
                     </Typography>
+                    <br/>
+                    {props.datos.personal.almacen === undefined?null:
+                      <React.Fragment>
+                      <Typography className={classes.alineacionAtributos}>
+                        Almacén:
+                      </Typography>
+                      <Typography  className={classes.alineacion}>
+                      {props.datos.personal ===undefined?null:props.datos.personal.almacen.direccion}
+                      </Typography>
+                     
+                      </React.Fragment>
+                    }
                 </div>
                 <div className={classes.atributosRight}>
                     <Typography className={classes.alineacionAtributos}>
                         Email: 
                     </Typography>
                     <Typography className={classes.alineacion}>
-                        {props.datos.personal.email}
+                        {props.datos.personal === undefined?null:props.datos.personal.email}
                     </Typography>
                     <br/>
                     <Typography className={classes.alineacionAtributos}>
                         Teléfono:
                     </Typography>
                     <Typography className={classes.alineacion}>
-                        {props.datos.personal.tlf}
+                        {props.datos.personal === undefined?null:props.datos.personal.tlf}
                     </Typography>
                     <br/>
                     <Typography className={classes.alineacionAtributos}>
                         NSS:
                     </Typography>
                     <Typography className={classes.alineacion}>
-                        {props.datos.personal.nss}
+                        {props.datos.personal === undefined?null:props.datos.personal.nss}
                     </Typography>
+                    <br/>                   
+                    <br/>
+                    <DeleteDialogue className={classes.funacion} eliminacion={props.datos===undefined?'':props.datos.personal}/>
+                    <br/>
+                    <EditDialogue className={classes.funacion} edicion={props.datos===undefined?'':props.datos}/>
+
                 </div>
                 <Divider orientation="vertical" flexItem className={classes.divider}/>
                 <Paper className={classes.paper}>
@@ -182,7 +204,7 @@ export default function CustomizedAccordions(props) {
                         Nomina:
                     </Typography>
                     <Typography className={classes.alineacion} >
-                        {props.datos.nomina}€
+                        {props.datos.personal === undefined?null:props.datos.nomina}€
                     </Typography >
 
                     <br/>
@@ -190,7 +212,7 @@ export default function CustomizedAccordions(props) {
                         Fecha Inicio:
                     </Typography>
                     <Typography className={classes.alineacion}>
-                        {props.datos.fechaInicio}
+                        {props.datos.personal === undefined?null:props.datos.fechaInicio}
                     </Typography>
 
                     <br/>
@@ -199,7 +221,7 @@ export default function CustomizedAccordions(props) {
                         Fecha Fin:
                     </Typography >
                     <Typography className={classes.alineacion}>
-                        {props.datos.fechaFin}
+                        {props.datos.personal === undefined?null:props.datos.fechaFin}
                     </Typography>
 
                     <br/>
@@ -207,15 +229,14 @@ export default function CustomizedAccordions(props) {
                         Jornada: 
                     </Typography>
                     <Typography className={classes.alineacion}>
-                        {props.datos.tipoJornada}
+                        {props.datos.personal === undefined?null:props.datos.tipoJornada}
                     </Typography>
                      </div>  
                      </Grid>
-      
                   </Grid>
                 </Paper>
+            
         </AccordionDetails>
       </Accordion>
-    </div>
   );
 }

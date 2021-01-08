@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "encargados_almacen")
 public class EncargadoDeAlmacen extends Personal{
 	
-	@JsonIgnore
+	
 	@NotNull
 	@OneToOne(optional = false)
 	private Almacen almacen;

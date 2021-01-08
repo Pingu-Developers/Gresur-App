@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadPersonal} from '../redux/actions/dataActions';
+import { loadPersonalContrato} from '../redux/actions/dataActions';
 
 
 //Components
-import Topbar from '../components/Topbar';
 import TablaPersonalDesplegable from '../components/TablaPersonalDesplegable';
 import PopUpNuevoEmpleado from '../components/PopUpNuevoEmpleado'
 
@@ -20,7 +19,7 @@ export class administradorPersonal extends Component {
     }
 
     componentDidMount(){
-        this.props.loadPersonal();
+        this.props.loadPersonalContrato();
     }
     render() {
         const {classes, data} = this.props;
@@ -32,7 +31,7 @@ export class administradorPersonal extends Component {
                           
                 <div>
                     {data.personal===undefined?null:
-                    <TablaPersonalDesplegable datos = {data.personal} />  
+                    <TablaPersonalDesplegable datos = {data.contrato} />  
                     }
                 </div>
             </div>
@@ -43,7 +42,7 @@ export class administradorPersonal extends Component {
 administradorPersonal.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
-    loadPersonal: PropTypes.func.isRequired,
+    loadPersonalContrato: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -51,7 +50,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    loadPersonal
+    loadPersonalContrato
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(administradorPersonal)

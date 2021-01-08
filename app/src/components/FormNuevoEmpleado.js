@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 //MUI stuff
 import Button from '@material-ui/core/Button';
-
 import DialogContent from '@material-ui/core/DialogContent';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -19,7 +18,7 @@ import firebase from "../firebaseConfig/firebase";
 import {storage} from "../firebaseConfig/firebase";
 
 //REDUX stuff
-import { addPersonal } from '../redux/actions/dataActions';
+import { addPersonal,loadAlmacen } from '../redux/actions/dataActions';
 import { connect } from 'react-redux';
 
   const styles = theme => ({
@@ -76,7 +75,6 @@ import { connect } from 'react-redux';
     }
   });
 
-
   const initialState = {
             name:'',
             email:'',
@@ -88,6 +86,8 @@ import { connect } from 'react-redux';
             open:false,
             image:'',
             step:0,
+            almacen:null,
+            id:null,
             errors:null
   }
 
@@ -97,6 +97,9 @@ class FormNuevoEmpleado extends Component{
         super();
         this.state = initialState;
     }
+    componentDidMount(){
+      this.props.loadAlmacen();
+  }
 
     handleClose = () => {
         this.setState({
@@ -106,8 +109,14 @@ class FormNuevoEmpleado extends Component{
 
     handleChange = (event) => {
         this.setState({
-            rol:event.target.value
+            rol:event.target.value,
         })
+      };
+      handleChangeAlmacen = (event) => {
+        this.setState({
+            almacen:event.target.value
+        })
+        console.log(this.state.almacen)
       };
     handleChangeInput = (event) => {
         this.setState({
@@ -119,16 +128,22 @@ class FormNuevoEmpleado extends Component{
     handleSubmit = (event) =>  {
         event.preventDefault();
         //Valores del nuevo empleado rellenado en el formulario
-         const empleado = {
-             name: this.state.name,
-             email: this.state.email,
-             tlf: this.state.tlf,
-             direccion: this.state.direccion,
-             nss: this.state.nss,
-             nif: this.state.nif,
-             image: this.state.picture,
-             step: this.state.step
-         };
+        const almacenEmpleado = {
+            almacen:{id:this.state.almacen}
+        }
+        const empleado = {
+          name: this.state.name,
+          email: this.state.email,
+          tlf: this.state.tlf,
+          direccion: this.state.direccion,
+          nss: this.state.nss,
+          nif: this.state.nif,
+          image: this.state.picture,
+          step: this.state.step,
+          almacen: almacenEmpleado.almacen
+      
+        }
+
         //Rol del nuevo empleado
          const rolEmpleado = {
             rol: this.state.rol
@@ -165,10 +180,10 @@ class FormNuevoEmpleado extends Component{
         console.log(err)
       })
     }
-  
+
+
      render(){
       const { classes,data } = this.props;
-
        return(
            <div>
             <DialogContent>
@@ -184,7 +199,7 @@ class FormNuevoEmpleado extends Component{
                     value={this.state.rol}
                     onChange={this.handleChange}
                     
-                    >
+                    >-
                     <MenuItem value="dependiente">Dependiente</MenuItem>
                     <MenuItem value="encargado">Encargado de almacén</MenuItem>
                     <MenuItem value="transportista">Transportista</MenuItem>
@@ -275,6 +290,25 @@ class FormNuevoEmpleado extends Component{
                         className={classes.formLarge}
 
                 />
+                {this.state.rol!='encargado'?null:
+                
+                <FormControl className={classes.formControl}>
+                <InputLabel id="demo-simple-label">Almacen</InputLabel>
+
+                    <Select
+                    labelId="demo-simple-label"
+                    label="Almacen"
+                    id="demo-simple-select"
+                    value={this.state.almacen}
+                    onChange={this.handleChangeAlmacen}
+                    >
+                   {data.almacen ===undefined?null:data.almacen.map((alm)=>
+                       <MenuItem value={alm.id}>{alm.direccion}</MenuItem>
+                    )}
+
+                    </Select>
+                </FormControl>
+                }
                     <div className={classes.upload}>
                         <input
                             type="file"
@@ -288,8 +322,6 @@ class FormNuevoEmpleado extends Component{
                         </Button>
                         </label>
                     </div>
-
-        
                 </div>
             
             </form>
@@ -307,6 +339,7 @@ class FormNuevoEmpleado extends Component{
 FormNuevoEmpleado.propTypes={
     classes: PropTypes.object.isRequired,
     addPersonal: PropTypes.func.isRequired,
+    loadAlmacen: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -315,6 +348,7 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
     addPersonal,
+    loadAlmacen,
     
 }
 
