@@ -1,4 +1,4 @@
-import { CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION } from '../types';
+import { CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS } from '../types';
 import axios from 'axios';
 
 export const loadPedidos = () => (dispatch) => {
@@ -110,25 +110,26 @@ export const clearProductos = () => (dispatch) => {
     dispatch({type: CLEAR_PRODUCTOS})
 }
 
-export const loadPersonal = () => function (dispatch) {
+export const loadPersonalContrato = () => function (dispatch) {
     dispatch({type: LOADING_UI})
     
     axios.get('/contrato')
         .then((res) => {
-            dispatch({type: SET_PERSONAL, payload: res})
+            dispatch({type: SET_CONTRATO, payload: res})
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
             dispatch({
                 type: SET_ERRORS,
-                payload: err.response.data.get.message
+                payload: err.response.data
             })
         })
 }
 
-export const deletePersonal = (nif) => function (dispatch){
+export const loadPersonal = () => function (dispatch) {
     dispatch({type: LOADING_UI})
-    axios.post(`/delete/${nif}`)
+    
+    axios.get('/adm/personal')
         .then((res) => {
             dispatch({type: SET_PERSONAL, payload: res})
             dispatch({type: CLEAR_ERRORS})
@@ -136,13 +137,50 @@ export const deletePersonal = (nif) => function (dispatch){
         .catch((err) => {
             dispatch({
                 type: SET_ERRORS,
-                payload: err.response.data.get.message
+                payload: err.response
             })
         })
 }
 
+export const deleteContrato = (nif) => function (dispatch){
+    dispatch({type: LOADING_UI})
+    axios.delete(`/contrato/delete/${nif}`)
+        .then((res) => {
+            console.log(res)
+            dispatch(loadPersonalContrato())
+        })
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+               console.log(err)
+            }
+        })
+}
+export const loadAlmacen = () => function (dispatch){
+    dispatch({type: LOADING_UI})
+    
+    axios.get('/almacen')
+        .then((res) => {
+            dispatch({type: SET_ALMACEN, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response
+            })
+        })
+
+
+}
+
 export const clearPersonal = () => (dispatch) => {
     dispatch({type: CLEAR_PERSONAL})
+    
 }
 
 export const addPersonal = (rolEmpleado,personal) => (dispatch) =>{
@@ -158,11 +196,121 @@ export const addPersonal = (rolEmpleado,personal) => (dispatch) =>{
 export const addContrato = (nif,contrato) => (dispatch) =>{
     axios.post(`/contrato/add/${nif}`,contrato)
     .then((res) => {
-        dispatch(loadPersonal());
+        dispatch(loadPersonalContrato());
     })
     .catch((err) => {
         console.log(err)
     }) 
+}
+
+export const editContrato = (nif,contrato) => (dispatch) =>{
+    axios.put(`/contrato/update/${nif}`,contrato)
+    .then((res) => {
+        dispatch(loadPersonalContrato());
+    })
+    .catch((err) => {
+        if(err.response){
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        } else {
+           console.log(err)
+        }
+    })
+}
+
+export const clearContrato = () => (dispatch) => {
+    dispatch({type: CLEAR_CONTRATO})
+}
+
+export const enReparto = (id,vehiculo) => (dispatch) =>{
+    axios.put(`/pedido/reparto/${id}`,vehiculo)
+    .then((res) => {
+        dispatch(loadPedidosHoy());
+    })
+    .catch((err) => {
+        console.log(err)
+    }) 
+}
+
+export const entregado = (id) => (dispatch) =>{
+    axios.put(`/pedido/entregado/${id}`)
+    .then((res) => {
+        dispatch(loadPedidosHoy());
+    })
+    .catch((err) => {
+        console.log(err)
+    }) 
+}
+
+export const loadPedidosHoy = () => (dispatch) => {
+
+    dispatch({type: LOADING_UI})
+
+    axios.get('/pedido/hoy')
+        .then((res) => {
+            dispatch({type: SET_PEDIDOS, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        })
+}
+
+
+export const transportistaEnReparto = () => (dispatch) => {
+
+    dispatch({type: LOADING_UI})
+
+    axios.get('/auth/transportista')
+        .then((res) => {
+            dispatch({type: SET_PERSONAL, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        })
+}
+
+export const loadPedidosByEstadoTransportista = (estado) => (dispatch) => {
+
+    dispatch({type: LOADING_UI})
+
+    axios.get(`/pedido/transportista/${estado}`)
+        .then((res) => {
+            dispatch({type: SET_PEDIDOS, payload: res});
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        })
+}
+
+export const loadFactura = (id) => (dispatch) => {
+
+    dispatch({type: LOADING_UI})
+
+    axios.get(`/pedido/factura/${id}`)
+        .then((res) => {
+            dispatch({type: SET_FACTURAS, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        })
 }
 
 
