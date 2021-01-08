@@ -9,6 +9,7 @@ import TablaFactura from './TablaFactura';
 import Dialog from "@material-ui/core/Dialog";
 import Button from "@material-ui/core/Button";
 import DialogActions from "@material-ui/core/DialogActions";
+import Slide from '@material-ui/core/Slide';
 
 //REDUX stuff
 import { connect } from 'react-redux';
@@ -27,8 +28,12 @@ import { connect } from 'react-redux';
     open:false,
     errors:null
 }
+
 const ref = React.createRef(<TablaFactura></TablaFactura>);
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
  class ButtonPDF extends Component{
 
     constructor(props){
@@ -62,6 +67,7 @@ const ref = React.createRef(<TablaFactura></TablaFactura>);
          <Button variant="contained" color="primary" onClick={this.handleClickOpen}  startIcon={<PictureAsPdfIcon />}>
          </Button>
         <Dialog
+        TransitionComponent={Transition}
         fullScreen
         open={this.state.open}
         onClose={this.handleClose}
