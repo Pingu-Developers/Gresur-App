@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import Pagination from '@material-ui/lab/Pagination';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import MostradorProductos from '../components/MostradorProductos';
@@ -18,6 +17,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import SearchIcon from '@material-ui/icons/Search';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Backdrop from '@material-ui/core/Backdrop';
+import Pagination from '@material-ui/lab/Pagination';
+
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -99,6 +100,8 @@ class Catalogo extends Component {
       busqueda:''
     };
     this.handlePageChange = this.handlePageChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleChangeBusqueda = this.handleChangeBusqueda.bind(this);
   }
 
   handleChange(newValue) {
