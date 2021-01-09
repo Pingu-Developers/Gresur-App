@@ -64,7 +64,7 @@ class TablaFactura extends Component {
       return (
         <React.Fragment>
        
-          <div style={{padding : '20px 50px 20px 50px'}}>
+          <div style={{padding : '20px 50px 20px 50px', marginTop: 50}}>
       {this.props.data.facturas.facturaEmitida===undefined?null:
 
     <React.Fragment >

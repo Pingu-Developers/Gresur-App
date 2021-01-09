@@ -101,6 +101,11 @@ function TabPanel(props) {
     componentDidMount(){
       this.setState({tabValue : this.props.selectedTab})
     }
+    componentDidUpdate(){
+      if(!this.state.tabValue && this.props.selectedTab){
+        this.setState({tabValue : this.props.selectedTab})
+      }
+    }
 
     tabHandleChange = (event, newValue) => {
         this.setState({tabValue : newValue})
@@ -114,7 +119,7 @@ function TabPanel(props) {
         <div className={classes.root}>
         <AppBar position="static">
             <Toolbar>
-                <Avatar src={GresurImg} className={classes.large}/>
+                <Avatar src={GresurImg} style = {{cursor: 'pointer'}} className={classes.large} onClick = {(e) => window.location.reload()}/>
 
                 <div className={classes.tabsDiv}>
                     <Tabs 
