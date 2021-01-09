@@ -15,14 +15,16 @@ import Slide from '@material-ui/core/Slide';
 import { connect } from 'react-redux';
 
  const styles = theme => ({
-    
+
       Buttons: {
           margin: theme.spacing(1),
           display: 'inline-block'
       }, dialog :{
           display : 'flex',
           justifyContent: 'center',
-          backgroundColor: '#efefef',
+          backgroundColor: '#707070',
+      }, container: {
+          height: 'min-content'
       }
   });
 
@@ -74,6 +76,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
           >
             <PictureAsPdfIcon style = {{color : this.props.iconColor}}/>
          </Button>
+
         <Dialog
           id = "facturaDialog"
           className = {classes.dialog}
@@ -82,12 +85,26 @@ const Transition = React.forwardRef(function Transition(props, ref) {
           open={this.state.open}
           onClose={this.handleClose}
           aria-labelledby="responsive-dialog-title"
-      >        <TablaFactura datos={this.props.idPedido} ></TablaFactura>
-        <DialogActions>
-          <Button variant="contained" autoFocus onClick={this.handleClose}color="primary">
-            Salir
-          </Button>
-        </DialogActions>
+          style = {{overflowY: 'auto'}}
+          classes = {{container : classes.container}}
+          BackdropProps = {{ style : {display: 'none'}}}
+          PaperProps = {{
+            style : {overflow : 'hidden'}
+          }}
+      >
+ 
+          <DialogActions  style = {{width: '99vw', 
+                        backgroundColor: '#404040', 
+                        position: 'fixed', 
+                        top: 0, 
+                        left: 0,
+                        padding: 10}}>
+            <Button variant="contained" autoFocus onClick={this.handleClose}color="primary">
+              <b>Salir</b>
+            </Button>
+          </DialogActions>
+
+          <TablaFactura datos={this.props.idPedido}/>
         </Dialog>
     </React.Fragment>    
   );}
