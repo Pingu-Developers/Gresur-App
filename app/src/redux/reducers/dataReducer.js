@@ -1,4 +1,4 @@
-import { CLEAR_ALMACENGESTION, SET_ALMACENGESTION, SET_CLIENTE, CLEAR_CLIENTE, CLEAR_ISDEFAULTER, SET_ISDEFAULTER, SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_PERSONAL, CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, CLEAR, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_ALMACEN,CLEAR_ALMACEN,SET_FACTURAS ,CLEAR_FACTURAS,SET_CONTRATO,CLEAR_CONTRATO } from '../types';
+import { CLEAR_ALMACENGESTION, SET_ALMACENGESTION, SET_CLIENTE, CLEAR_CLIENTE, CLEAR_ISDEFAULTER, SET_ISDEFAULTER, SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_PERSONAL, CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, CLEAR, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_ALMACEN,CLEAR_ALMACEN,SET_FACTURAS ,CLEAR_FACTURAS,SET_CONTRATO,CLEAR_CONTRATO, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS } from '../types';
 
 const initialState = {
     pedidos: [],
@@ -11,7 +11,8 @@ const initialState = {
     vehiculosITVSeguroReparacion: [],
     almacen:[],
     facturas:[],
-    contrato:[]
+    contrato:[],
+    tiposVehiculos:[]
 }
 
 export default function (state = initialState, action) {
@@ -90,7 +91,7 @@ export default function (state = initialState, action) {
         case SET_ALMACEN:
             return{
                 ...state,
-                almacenes: action.payload.data
+                almacen: action.payload.data
             }   
         case CLEAR_ALMACEN:
             return initialState;    
@@ -107,6 +108,13 @@ export default function (state = initialState, action) {
                 contrato: action.payload.data
             } 
         case CLEAR_CONTRATO:
+            return initialState;
+        case SET_TIPOSVEHICULOS:
+            return{
+                ...state,
+                tiposVehiculos: action.payload.data
+            } 
+        case CLEAR_TIPOSVEHICULOS:
             return initialState;
     }
 }

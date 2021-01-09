@@ -1,4 +1,4 @@
-import { CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS } from '../types';
+import { CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS } from '../types';
 import axios from 'axios';
 
 export const loadPedidos = () => (dispatch) => {
@@ -146,7 +146,6 @@ export const deleteContrato = (nif) => function (dispatch){
     dispatch({type: LOADING_UI})
     axios.delete(`/contrato/delete/${nif}`)
         .then((res) => {
-            console.log(res)
             dispatch(loadPersonalContrato())
         })
         .catch((err) => {
@@ -502,4 +501,66 @@ export const loadVehiculosSeguroITVReparacion = () => function (dispatch) {
 export const clearVehiculosSeguroITVReparacion = () => (dispatch) => {
     dispatch({type: CLEAR_VEHICULOSITVSEGUROREPARACION})
     
+}
+
+export const addVehiculo = (vehiculo) => (dispatch) =>{
+    axios.post(`/vehiculo/add/`, vehiculo)
+    .then((res) => {
+        dispatch(loadVehiculosSeguroITVReparacion());
+    })
+    .catch((err) => {
+        console.log(err)
+    }) 
+}
+
+export const loadTiposVehiculos = () => function (dispatch) {
+    dispatch({type: LOADING_UI})
+
+    axios.get('/vehiculo/allTiposVehiculos')
+        .then((res) => {
+            dispatch({type: SET_TIPOSVEHICULOS, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
+}
+
+export const clearTiposVehiculos = () => (dispatch) => {
+    dispatch({type: CLEAR_TIPOSVEHICULOS})
+    
+}
+
+export const deleteVehiculo = (matricula) => function (dispatch) {
+    dispatch({type: LOADING_UI})
+
+    axios.delete(`/vehiculo/delete/${matricula}`)
+        .then((res) => {
+            dispatch(loadVehiculosSeguroITVReparacion())
+        })
+
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
 }

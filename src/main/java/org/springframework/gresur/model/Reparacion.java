@@ -34,7 +34,6 @@ public class Reparacion extends BaseEntity implements Comparable<Reparacion>{
 	@Lob
 	protected String descripcion;
 	
-	@JsonIgnore
 	@NotNull
 	@OneToOne(optional = false)
 	@JoinColumn(name = "factura_recibida_id")
