@@ -11,7 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
-import GresurImg from '../images/Gresur.png';
+import GresurImg from '../images/Gresur_transparente.png';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Button from "@material-ui/core/Button";
@@ -64,69 +64,69 @@ class TablaFactura extends Component {
       return (
         <React.Fragment>
        
-          <div style={{paddingRight:490,paddingLeft:660}}>
+          <div style={{padding : '20px 50px 20px 50px'}}>
       {this.props.data.facturas.facturaEmitida===undefined?null:
 
     <React.Fragment >
       
     <div  ref={ref}>
-      <Grid container spacing={3}>
-          <Grid item xs>
-            <Paper square={true} elevation={0}>
-              <img style={{ marginLeft:10}} src = {GresurImg} width='100'></img>
-              <Typography  style={{fontWeight:'bold',marginLeft:10}}>Azulejos Gresur</Typography>
-            
-          <Grid  style={{display:"inline-block",float:'right'}} >
-              <Grid >
-                <Typography style={{fontWeight:'bold'}} display='inline'> Nº Factura: </Typography> <Typography display='inline'>{this.props.data.facturas.facturaEmitida.numFactura} </Typography>
-              </Grid>
-              <Grid >
-                <Typography style={{fontWeight:'bold'}}display='inline'> Fecha envío: </Typography> <Typography display='inline'>{this.props.data.facturas.fechaEnvio} </Typography>
-              </Grid>
-          </Grid>
-            </Paper>
-          </Grid>
-      </Grid>   
 
-      <Grid container spacing={3} style={{ marginLeft:10}}>
-          <Grid item xs>
-            <Paper  square={true} elevation={0}>
-            <Typography style={{fontWeight:'bold'}} display="inline" > Tienda Exposicion: </Typography><Typography display="inline">Avda. Blas Infante</Typography>
-            <Grid>
-            <Typography style={{fontWeight:'bold'}} display="inline"> Almacén: </Typography><Typography display="inline">Las Columnas, s/n</Typography>
-            </Grid>
-            <Grid>
-            <Typography style={{fontWeight:'bold'}} display="inline"> Telf. Móvil: </Typography><Typography display="inline">627 53 29 29</Typography>
-            </Grid>
-            <Typography display="inline-block"> 11687 EL GASTOR (Cádiz)</Typography>
-            <Typography style={{fontWeight:'bold'}} display="inline"> E-mail: </Typography><Typography display="inline">atyca@hotmail.com  atyca61@gmail.com</Typography>
-          
-          <Grid  style={{display:"inline-block",marginTop:10, marginLeft:10}}>
-           <Divider />
-              <Grid>
-                <Typography  style={{fontWeight:'bold'}} display="inline"> D/Dª: </Typography><Typography display="inline">{this.props.data.facturas.facturaEmitida.cliente.name}</Typography>
-              </Grid>
-              <Grid>
-                <Typography  style={{fontWeight:'bold'}} display="inline"> Telf: </Typography><Typography display="inline" >{this.props.data.facturas.facturaEmitida.cliente.tlf} </Typography>
-              </Grid>
-              <Grid>
-                <Typography  style={{fontWeight:'bold'}} display="inline"> Domicilio: </Typography><Typography display="inline" >{this.props.data.facturas.facturaEmitida.cliente.direccion}</Typography>
-              </Grid>
-            </Grid>
-            </Paper>
+      {/******************* ENCABEZADO *********************/}
+      <div style = {{display : 'inline-flex', justifyContent:'space-between', alignItems: 'center', width:'100%', borderBottom: '1px solid #bdbdbd'}}>
+        <img style={{ marginLeft:10}} src = {GresurImg} width='100'></img>
+        <Typography style={{fontWeight:'bold', fontSize: 30}}>Azulejos Gresur</Typography>
+      
+        <div  style={{display:"inline-block",float:'right'}} >
+            <span>
+              <Typography style={{fontWeight:'bold'}} display='inline'> 
+                Nº Factura: 
+              </Typography> 
+              <Typography display='inline'>
+                {this.props.data.facturas.facturaEmitida.numFactura} 
+              </Typography>
+            </span>
+            <br/>
+            <span>
+              <Typography style={{fontWeight:'bold'}}display='inline'> 
+                Fecha emisión: 
+              </Typography> 
+              <Typography display='inline'>
+                {this.props.data.facturas.fechaEmisión} 
+              </Typography>
+            </span>
+        </div>
+      </div>
+      
+      {/***************** CUERPO ******************/}
+      <div>
+          <div style = {{padding: '30px 0 10px 0'}}>
+              <Typography style = {{padding: '5px 0 5px 0'}}> <b>Tienda Exposicion:</b> Avda. Blas Infante</Typography>
+              <Typography style = {{padding: '5px 0 5px 0'}}> <b>Almacén:</b> Las Columnas, s/n</Typography>
+              <Typography style = {{padding: '5px 0 5px 0'}}> <b>Telf. Móvil:</b> 627 53 29 29</Typography>
+              
+              <Typography style = {{padding: '5px 0 5px 0'}}> 11687 EL GASTOR (Cádiz)</Typography>
+              <Typography style = {{padding: '5px 0 5px 0'}}> <b>E-mail:</b> atyca@hotmail.com    atyca61@gmail.com</Typography>
+          </div>
 
-          </Grid>
-      </Grid>   
+          <Divider />
+
+          <div style = {{paddingTop: 10}}>
+              <Typography style = {{padding: '5px 0 5px 0'}}> <b>D / Dª : </b> {this.props.data.facturas.facturaEmitida.cliente.name} </Typography>
+              <Typography style = {{padding: '5px 0 5px 0'}}> <b>Telf : </b> {this.props.data.facturas.facturaEmitida.cliente.tlf} </Typography>
+              <Typography style = {{padding: '5px 0 5px 0'}}> <b>Domicilio : </b> {this.props.data.facturas.facturaEmitida.cliente.direccion} </Typography>
+          </div>
+
+      </div>   
 
 
       <TableContainer component={Paper} style={{marginTop:20, marginLeft:4}}>
         <Table  aria-label="customized table">
           <TableHead>
             <TableRow>
-              <StyledTableCell  align="center">Cantidad</StyledTableCell>
-              <StyledTableCell align="center">Producto</StyledTableCell>
-              <StyledTableCell align="center">Precio Unitario</StyledTableCell>
-              <StyledTableCell align="center">Precio</StyledTableCell>
+              <StyledTableCell align="center" style = {{padding: '8px 16px 8px 16px'}}>Cantidad</StyledTableCell>
+              <StyledTableCell align="center" style = {{padding: '8px 16px 8px 16px'}}>Producto</StyledTableCell>
+              <StyledTableCell align="center" style = {{padding: '8px 16px 8px 16px'}}>Precio Unitario <p style = {{fontSize: 10, margin: 0}}>(Sin IVA)</p></StyledTableCell>
+              <StyledTableCell align="center" style = {{padding: '8px 16px 8px 16px'}}>Precio <p style = {{fontSize: 10, margin: 0}}>(Sin IVA)</p></StyledTableCell>
             </TableRow>
           </TableHead>
 
@@ -134,19 +134,37 @@ class TablaFactura extends Component {
             {
               this.props.data.facturas.facturaEmitida.lineasFacturas.map((linea)=>
                 <StyledTableRow>
-                <StyledTableCell align="center">{linea.cantidad}</StyledTableCell>
-                <StyledTableCell align="center">{linea.producto.nombre}</StyledTableCell>
-                <StyledTableCell align="center">{linea.producto.precioVenta}€</StyledTableCell>
-                <StyledTableCell align="center">{linea.precio}€</StyledTableCell>
+                  <StyledTableCell align="center">{linea.cantidad}</StyledTableCell>
+                  <StyledTableCell align="center">{linea.producto.nombre}</StyledTableCell>
+                  <StyledTableCell align="center">{(linea.producto.precioVenta*(100/121)).toFixed(2)}€</StyledTableCell>
+                  <StyledTableCell align="center">{(linea.precio*(100/121)).toFixed(2)}€</StyledTableCell>
                 </StyledTableRow>
               )}
           </TableBody>
-
+              <TableRow>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell>
+                  <Typography style = {{float: 'inline-end'}}><b>IMPORTE:   </b></Typography>
+                  <Typography style = {{float: 'inline-end'}}><b>IVA:   </b></Typography>
+                </StyledTableCell>
+                <StyledTableCell style = {{width: 'min-content'}}>
+                    <Typography style = {{float: 'inline-end'}}>  {(this.props.data.facturas.facturaEmitida.importe*(100/121)).toFixed(2)}€</Typography>
+                    <Typography style = {{float: 'inline-end'}}>  {(this.props.data.facturas.facturaEmitida.importe/121*21).toFixed(2)}€</Typography>
+                </StyledTableCell>
+            </TableRow>
+            <TableRow>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell>
+                  <Typography style = {{float: 'inline-end'}}><b>TOTAL:   </b></Typography>
+                </StyledTableCell>
+                <StyledTableCell style = {{width: 'min-content'}}>
+                    <Typography style = {{float: 'inline-end'}}>  {this.props.data.facturas.facturaEmitida.importe}€</Typography>
+                </StyledTableCell>
+            </TableRow>
         </Table>
-        <Grid  style={{display:"inline-block",float:'right',marginTop:10,marginLeft:10,marginRight:20}}  >
-
-<Typography  style={{fontWeight:'bold'}} display="inline"> IMPORTE: </Typography><Typography display="inline" >{this.props.data.facturas.facturaEmitida.importe}€</Typography>
-</Grid>
+          
       </TableContainer >
  
       </div>
@@ -155,7 +173,7 @@ class TablaFactura extends Component {
         <Pdf targetRef={ref} filename="FacturaAzulejosGresur.pdf" scale={0.9}>
     
         {({ toPdf }) => <Button style={{margin:10,float:'left',position:'relative',left:'40%'}}variant="contained" color="primary" onClick={toPdf}  
-        startIcon={<PictureAsPdfIcon />}>Generar PDF  </Button>} 
+        startIcon={<PictureAsPdfIcon />}>Descargar PDF  </Button>} 
         </Pdf>
 
     </div> </React.Fragment>

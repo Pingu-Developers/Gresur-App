@@ -26,6 +26,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Stepper from '../components/Stepper';
 import Snackbar from '../components/SnackBar'
 import NestedList from '../components/NestedList';
+import ButtonPDF from '../components/ButtonPDF';
 
 import { loadClienteIsDefaulter, clearClienteIsDefaulter, clear } from '../redux/actions/dataActions';
 import { loadCliente, clearClienteByNIF } from '../redux/actions/dataActions';
@@ -252,6 +253,9 @@ export class dependienteNuevoPedido extends Component {
 
         if(document.getElementById('step4') && Object.entries(this.props.data.productos).length === 0){
             this.props.loadProductos();
+        }
+        if(document.getElementById('lastStep') && this.props.user.postPedido && !document.getElementById('facturaDialog')){
+            document.getElementById('pedidoCorrecto').click()
         }
     }
 
@@ -594,11 +598,12 @@ export class dependienteNuevoPedido extends Component {
     }
 
     render() {
-        const { classes, data } = this.props;
+        const { classes, data, user } = this.props;
         let changing = '';
         let inputValue = null;
         return (
             <div>
+                {console.log(this.state.pedidoEnviado)}
                 {/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
                   * COSAS CON DISPLAY NONE PARA LOS SCRIPTS
                   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */}
@@ -631,6 +636,12 @@ export class dependienteNuevoPedido extends Component {
                     open = {this.state.warnings['stock'].includes('sinStockProductos')} 
                     message= 'La cantidad de alguno de los productos seleccionados supera el stock disponible'
                 />
+                <Snackbar 
+                    type = "success" 
+                    id = "pedidoCorrecto"
+                    open = {user.postPedido} 
+                    message= 'El pedido se ha realizado correctamente'
+                />
                 <Button id = 'onChangeInput' onClick = {(event) => {this.onChangeInput(event, changing, inputValue)}} style={{display : 'none'}}></Button>
                 <Button id = 'updater' onClick = {(e) => {e.preventDefault(); this.setState({n:!this.state.n})}} style = {{display: 'none'}}/>
                 
@@ -641,6 +652,10 @@ export class dependienteNuevoPedido extends Component {
                 <Stepper 
                     opcionales = {[2]}
                     stepTitles = {['1. Datos del cliente', '2. Selección de productos', '3. Datos de envío', '4. Resumen del pedido']}
+                    botonDescarga = {user.postPedido ? <ButtonPDF 
+                                                            idPedido = {user.postPedido.id}
+                                                            color = "secondary"
+                                                            iconColor = "white"/> : null}
                 >
                     <form className = {classes.container}>
                         <fieldset className = {classes.fieldset}>
@@ -1199,7 +1214,8 @@ dependienteNuevoPedido.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    data:state.data
+    data:state.data,
+    user:state.user,
 })
 
 const mapActionsToProps = {

@@ -1,4 +1,4 @@
-import { SET_USER, SET_AUTHENTICATED, SET_UNAUTHENTICATED, LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS , CLEAR_NOTIFICACIONES_NO_LEIDAS ,SET_NOTIFICACIONES_LEIDAS } from '../types';
+import { SET_USER, SET_AUTHENTICATED, SET_UNAUTHENTICATED, LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS , CLEAR_NOTIFICACIONES_NO_LEIDAS ,SET_NOTIFICACIONES_LEIDAS, SET_POSTPEDIDO } from '../types';
 
 const initialState = {
     loading:false,
@@ -6,6 +6,7 @@ const initialState = {
     notificaciones:[],
     notificacionesLeidas:[],
     credentials: {},
+    postPedido: null,
 }
 
 export default function(state = initialState,action){
@@ -44,6 +45,12 @@ export default function(state = initialState,action){
             return{
                 ...state,
                 notificaciones:[]
+            }
+        
+        case SET_POSTPEDIDO:
+            return {
+                ...state,
+                postPedido: action.payload
             }
 
         default:
