@@ -85,6 +85,21 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     zIndex: 0,
     display: 'none',
+  },
+  fieldset: {    
+    borderRadius: 10,
+    backgroundColor: '#f7f7f7',
+    color: '#3d3d3d',
+    maxHeight: 614,
+    overflowY: 'auto',
+    margin: '0 30px 0 30px',
+  },
+  instructions: {
+    color: '#bdbdbd',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 30,
+    padding: '60px 20px 10px 20px'
   }
 }));
 
@@ -175,16 +190,27 @@ export default function HorizontalLinearStepper(props) {
       
       <div>
         {activeStep === steps.length ? (
-          <div>           
-            <Typography className={classes.instructions}>
-              Completado! Descargar PDF
-            </Typography>
-            <Button 
-                id='aceptar'
-                onClick={handleReset} 
-                className={classes.button}>
-              Aceptar
-            </Button>
+          <div>   
+            <fieldset className = {classes.fieldset} id = 'lastStep'>
+              <Typography className={classes.instructions}>
+                  Completado! Puede descargar el PDF con la factura del pedido aquí. También podrá acceder a la información 
+                  del pedido desde el historial de pedidos.
+              </Typography>
+              <div style = {{display : 'flex', justifyContent : 'center'}}>
+                {props.botonDescarga}
+              </div>
+              <div style = {{display : 'flex', justifyContent : 'flex-end'}}>
+                <Button 
+                    id='aceptar'
+                    onClick={handleReset} 
+                    color = "primary"
+                    variant = "contained"
+                    style = {{color : 'white', fontWeight : 'bold'}}
+                    >
+                  Aceptar
+                </Button>
+              </div>
+            </fieldset>
           </div>
         ) : (
 

@@ -306,8 +306,7 @@ public class PedidoController {
 		return ls;
 	}
 	@GetMapping("/factura/{id}")
-	//hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') 
-	@PreAuthorize("hasRole('ADMIN') or hasRole('TRANSPORTISTA')")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('TRANSPORTISTA') or hasRole('DEPENDIENTE')")
 	public Pedido findFacturaPedido(@PathVariable("id") Long id) {		
 		
 		return pedidoService.findByID(id);

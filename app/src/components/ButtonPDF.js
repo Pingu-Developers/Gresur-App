@@ -19,8 +19,10 @@ import { connect } from 'react-redux';
       Buttons: {
           margin: theme.spacing(1),
           display: 'inline-block'
-      }, wdialogue: {
-        width:230,
+      }, dialog :{
+          display : 'flex',
+          justifyContent: 'center',
+          backgroundColor: '#efefef',
       }
   });
 
@@ -62,16 +64,24 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   };
 
   render(){
+    const { classes } = this.props;
     return (
     <React.Fragment>
-         <Button variant="contained" color="primary" onClick={this.handleClickOpen}  startIcon={<PictureAsPdfIcon />}>
+         <Button 
+            variant="contained" 
+            color={this.props.color ? this.props.color : "primary"} 
+            onClick={this.handleClickOpen}  
+          >
+            <PictureAsPdfIcon style = {{color : this.props.iconColor}}/>
          </Button>
         <Dialog
-        TransitionComponent={Transition}
-        fullScreen
-        open={this.state.open}
-        onClose={this.handleClose}
-        aria-labelledby="responsive-dialog-title"
+          id = "facturaDialog"
+          className = {classes.dialog}
+          TransitionComponent={Transition}
+          fullScreen
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="responsive-dialog-title"
       >        <TablaFactura datos={this.props.idPedido} ></TablaFactura>
         <DialogActions>
           <Button variant="contained" autoFocus onClick={this.handleClose}color="primary">

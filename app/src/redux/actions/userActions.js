@@ -1,4 +1,4 @@
-import { SET_ERRORS, SET_USER, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED ,LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS , CLEAR_NOTIFICACIONES_NO_LEIDAS,SET_NOTIFICACIONES_LEIDAS } from '../types';
+import { SET_ERRORS, SET_USER, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED ,LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS , CLEAR_NOTIFICACIONES_NO_LEIDAS,SET_NOTIFICACIONES_LEIDAS, SET_POSTPEDIDO } from '../types';
 import axios from 'axios';
 
 export const loginUser = (userData,history) => (dispatch) =>{
@@ -137,7 +137,12 @@ export const postPedido = (nuevoPedido, nuevoCliente = null) => (dispatch) => {
         .then((res) => {
             axios.post('pedido/add', nuevoPedido)
             .then((res) => {
-                console.log("TODO OK BRO")
+                dispatch(
+                    {
+                        type: SET_POSTPEDIDO,
+                        payload: res.data
+                    }
+                )
             })
             .catch((err) => {
                 console.log(err.response);
@@ -158,7 +163,12 @@ export const postPedido = (nuevoPedido, nuevoCliente = null) => (dispatch) => {
     else{
         axios.post('pedido/add', nuevoPedido)
             .then((res) => {
-                console.log("TODO OK BRO")
+                dispatch(
+                    {
+                        type: SET_POSTPEDIDO,
+                        payload: res.data
+                    }
+                )
             })
             .catch((err) => {
                 console.log(err.response);
