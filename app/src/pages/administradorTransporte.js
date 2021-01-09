@@ -41,6 +41,10 @@ class administradorTransporte extends Component {
         this.props.loadVehiculosSeguroITVReparacion();
     }
 
+    componentWillUnmount(){
+        this.props.clear();
+    }
+
     render() {
         const {classes, data} = this.props;
 
@@ -71,7 +75,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    loadVehiculosSeguroITVReparacion
+    loadVehiculosSeguroITVReparacion,
+    clear
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(administradorTransporte))

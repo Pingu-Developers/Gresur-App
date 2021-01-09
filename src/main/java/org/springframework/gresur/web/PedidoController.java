@@ -326,6 +326,7 @@ public class PedidoController {
 			p.setTransportista(personalService.findByNIF(per.getNIF()));
 			p.setVehiculo(veh);
 			p.setEstado(EstadoPedido.EN_REPARTO);
+			p.setFechaEnvio(LocalDate.now());
 			try {
 				pedidoService.save(p);
 				return ResponseEntity.ok(p);

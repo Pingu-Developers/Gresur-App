@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadPersonalContrato} from '../redux/actions/dataActions';
+import { loadPersonalContrato, clear} from '../redux/actions/dataActions';
 
 
 //Components
@@ -21,6 +21,11 @@ export class administradorPersonal extends Component {
     componentDidMount(){
         this.props.loadPersonalContrato();
     }
+
+    componentWillUnmount(){
+        this.props.clear();
+    }
+
     render() {
         const {classes, data} = this.props;
         return (
@@ -50,7 +55,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    loadPersonalContrato
+    loadPersonalContrato,
+    clear
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(administradorPersonal)
