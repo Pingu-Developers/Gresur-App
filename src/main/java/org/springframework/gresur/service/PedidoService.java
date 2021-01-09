@@ -100,7 +100,7 @@ public class PedidoService {
 		
 		if(anterior != null && !anterior.getEstado().equals(EstadoPedido.EN_ESPERA) && (!pedido.getFacturaEmitida().equals(anterior.getFacturaEmitida())
 																					|| !pedido.getDireccionEnvio().equals(anterior.getDireccionEnvio())
-																					|| !pedido.getFechaEnvio().equals(anterior.getFechaEnvio()))) {
+																					|| (!anterior.getEstado().equals(EstadoPedido.PREPARADO) && !pedido.getFechaEnvio().equals(anterior.getFechaEnvio())))) {
 			throw new UnmodifablePedidoException("El pedido ya ha sido enviado y no puede modificarse");
 		} else if(anterior != null && !anterior.getEstado().equals(EstadoPedido.EN_ESPERA) && pedido.getEstado().equals(EstadoPedido.CANCELADO)) {
 			throw new UnmodifablePedidoException("El pedido ya ha sido enviado y no puede cancelarse"); 
