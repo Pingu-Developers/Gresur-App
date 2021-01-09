@@ -467,7 +467,7 @@ INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, tipo_vehiculo, MMA)
 	VALUES ('6539LOP', 'https://cdn.pixabay.com/photo/2017/01/23/10/54/van-2002079_960_720.png', 9.00, 'FURGONETA', 2700.00);
 
 INSERT INTO VEHICULOS(matricula, url_imagen, capacidad, tipo_vehiculo, MMA)
-	VALUES ('5319KKF', 'https://e7.pngegg.com/pngimages/967/575/png-clipart-crane-crane.png', 25.00, 'GRUA', 9000.00);
+	VALUES ('5319KKF', 'https://image.flaticon.com/icons/png/512/416/416610.png', 25.00, 'GRUA', 9000.00);
 
 
 INSERT INTO REPARACIONES(fecha_entrada_taller, fecha_salida_taller, factura_recibida_id, vehiculo_id)

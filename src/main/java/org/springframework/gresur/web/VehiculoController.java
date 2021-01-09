@@ -2,17 +2,23 @@ package org.springframework.gresur.web;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Seguro;
+import org.springframework.gresur.model.TipoSeguro;
+import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Transportista;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.TransportistaRepository;
@@ -27,7 +33,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -133,11 +143,20 @@ public class VehiculoController {
 		for (Vehiculo v: listaVehiculos) {
 			
 			Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>> tp = new Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>>();
-			
+					
 			tp.setE1(v);
-			tp.setE2(seguroService.findByVehiculo(v.getMatricula()));
-			tp.setE3(itvService.findByVehiculo(v.getMatricula()));
-			tp.setE4(reparacionService.findByMatricula(v.getMatricula()));
+			
+			List<Seguro> ls = seguroService.findByVehiculo(v.getMatricula());
+			ls.sort(Comparator.comparing(Seguro::getFechaExpiracion).reversed());
+			tp.setE2(ls);
+			
+			List<ITV> li = itvService.findByVehiculo(v.getMatricula());
+			li.sort(Comparator.comparing(ITV::getExpiracion).reversed());
+			tp.setE3(li);
+			
+			List<Reparacion> lr = reparacionService.findByMatricula(v.getMatricula());
+			lr.sort(Comparator.comparing(Reparacion::getFechaEntradaTaller).reversed());
+			tp.setE4(lr);
 			
 			tp.name1="vehiculo";
 			tp.name2="seguros";
@@ -150,4 +169,22 @@ public class VehiculoController {
 		return ldef;
 	}
 	
+	@PostMapping("/add")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Vehiculo addVehiculo(@RequestBody @Valid Vehiculo vehiculo){
+		return vehiculoService.save(vehiculo);
+	}
+	
+	@GetMapping("/allTiposVehiculos")
+	@PreAuthorize("hasRole('ADMIN')")
+	public TipoVehiculo[] getAllTiposVehiculos(){
+		return TipoVehiculo.values();
+	}
+	
+	@DeleteMapping("/delete/{matricula}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public void deleteContrato(@PathVariable("matricula") String matricula) throws DataAccessException{
+		vehiculoService.deleteByMatricula(matricula);
+	}
+
 }

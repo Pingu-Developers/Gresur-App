@@ -10,6 +10,8 @@ import { loadVehiculosSeguroITVReparacion , clear } from '../redux/actions/dataA
 
 //Components
 import TablaMostradorVehiculosSeguroITVReparacion from '../components/TablaMostradorVehiculosSeguroITVReparacion';
+import PopUpNuevoVehiculo from '../components/PopUpNuevoVehiculo';
+
 
 
 const style = {
@@ -20,6 +22,11 @@ const style = {
         fontWeight: 600,
       },
 
+      tituloyForm: {
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+      },
 }
 
 class administradorTransporte extends Component {
@@ -41,6 +48,7 @@ class administradorTransporte extends Component {
             <div>
                 <div className={classes.tituloyForm}>
                     <Typography variant='h3' className={classes.titulo}>VEHICULOS DE LA EMPRESA</Typography>
+                    <PopUpNuevoVehiculo className={classes.boton}/>
                 </div>
 
                 <div className={classes.main}>
