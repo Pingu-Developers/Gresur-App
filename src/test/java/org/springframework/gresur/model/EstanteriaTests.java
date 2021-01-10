@@ -1,8 +1,6 @@
 package org.springframework.gresur.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -13,16 +11,10 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class EstanteriaTests extends ValidatorTests{
 	
-	private Estanteria createSUT(String categoria, Double capacidad, Long almacen, Integer lista) {
-		List<Producto> l = new ArrayList<Producto>();
+	private Estanteria createSUT(String categoria, Double capacidad, Long almacen) {
 		Almacen alm = null;
 		
-		if(lista != null && lista > 0) {
-			Producto p1 = new Producto();
-			Producto p2 = new Producto();
-			l.add(p1);
-			l.add(p2);
-		} if (almacen != null && almacen > 0) {
+		if (almacen != null && almacen > 0) {
 			alm = new Almacen();
 		}
 				
@@ -30,19 +22,18 @@ class EstanteriaTests extends ValidatorTests{
 		estanteria.setCategoria(categoria == null ? null : Categoria.valueOf(categoria));
 		estanteria.setCapacidad(capacidad);	
 		estanteria.setAlmacen(alm);
-		estanteria.setProductos(l);
 		
 		return estanteria;
 	}
 	
 	@ParameterizedTest
 	@CsvSource({
-		"PINTURAS, 10000.00, 1, 0",
-		"CEMENTOS, 1230.19, 2, 1"
+		"PINTURAS, 10000.00, 1",
+		"SILICES, 1230.19, 2"
 	})
 	/* EL ATRIBUTO DE LA LISTA ES 0 SI ESTA VACIA, 1 SI TIENE ELEMENTOS*/
-	void validateEstanteriaNoErrorsTest(String categoria, Double capacidad, Long almacen, Integer lista) {
-		Estanteria estanteria = this.createSUT(categoria, capacidad, almacen, lista);
+	void validateEstanteriaNoErrorsTest(String categoria, Double capacidad, Long almacen) {
+		Estanteria estanteria = this.createSUT(categoria, capacidad, almacen);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Estanteria>> constraintViolations = validator.validate(estanteria);
@@ -51,11 +42,11 @@ class EstanteriaTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		", 10000.00, 1, 0",
-		" , 1230.19, 2, 1"
+		", 10000.00, 1",
+		" , 1230.19, 2"
 	})
-	void validateEstanteriaCategoriaNotNullTest(String categoria, Double capacidad, Long almacen, Integer lista) {
-		Estanteria estanteria = this.createSUT(categoria, capacidad, almacen, lista);
+	void validateEstanteriaCategoriaNotNullTest(String categoria, Double capacidad, Long almacen) {
+		Estanteria estanteria = this.createSUT(categoria, capacidad, almacen);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Estanteria>> constraintViolations = validator.validate(estanteria);
@@ -64,11 +55,11 @@ class EstanteriaTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"CEMENTOS, , 1, 0",
-		"PINTURAS, , 2, 1"
+		"CALEFACCION, , 1",
+		"PINTURAS, , 2"
 	})
-	void validateEstanteriaCapacidadNotNullTest(String categoria, Double capacidad, Long almacen, Integer lista) {
-		Estanteria estanteria = this.createSUT(categoria, capacidad, almacen, lista);
+	void validateEstanteriaCapacidadNotNullTest(String categoria, Double capacidad, Long almacen) {
+		Estanteria estanteria = this.createSUT(categoria, capacidad, almacen);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Estanteria>> constraintViolations = validator.validate(estanteria);
@@ -77,11 +68,11 @@ class EstanteriaTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"CEMENTOS, -1.20, 1, 0",
-		"PINTURAS, -20.1039, 2, 1"
+		"SILICES, -1.20, 1",
+		"CALEFACCION, -20.1039, 2"
 	})
-	void validateEstanteriaCapacidadMinTest(String categoria, Double capacidad, Long almacen, Integer lista) {
-		Estanteria estanteria = this.createSUT(categoria, capacidad, almacen, lista);
+	void validateEstanteriaCapacidadMinTest(String categoria, Double capacidad, Long almacen) {
+		Estanteria estanteria = this.createSUT(categoria, capacidad, almacen);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Estanteria>> constraintViolations = validator.validate(estanteria);
@@ -90,11 +81,11 @@ class EstanteriaTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"CEMENTOS, 101029.2030, , 0",
-		"PINTURAS, 10303.239, , 1"
+		"LADRILLOS, 101029.2030, ",
+		"CALEFACCION, 10303.239, "
 	})
-	void validateEstanteriaAlmacenNotOptional(String categoria, Double capacidad, Long almacen, Integer lista) {
-		Estanteria estanteria = this.createSUT(categoria, capacidad, almacen, lista);
+	void validateEstanteriaAlmacenNotOptional(String categoria, Double capacidad, Long almacen) {
+		Estanteria estanteria = this.createSUT(categoria, capacidad, almacen);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Estanteria>> constraintViolations = validator.validate(estanteria);

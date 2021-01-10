@@ -23,8 +23,8 @@ class ReparacionTests extends ValidatorTests{
 			v = new Vehiculo();
 		}
 		Reparacion rep = new Reparacion();
-		rep.setFechaEntradaTaller(LocalDate.parse(fechaEntrada, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-		rep.setFechaSalidaTaller(LocalDate.parse(fechaSalida, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		rep.setFechaEntradaTaller(fechaEntrada == null ? null : LocalDate.parse(fechaEntrada, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		rep.setFechaSalidaTaller(fechaSalida == null ? null : LocalDate.parse(fechaSalida, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		rep.setRecibidas(fr);
 		rep.setVehiculo(v);
 		
@@ -43,7 +43,20 @@ class ReparacionTests extends ValidatorTests{
 		Set<ConstraintViolation<Reparacion>> constraintViolations = validator.validate(reparacion);
 		assertThat(constraintViolations.size()).isEqualTo(0);
 	}
-		
+	
+	@ParameterizedTest
+	@CsvSource({
+		"12/11/2029, , 1, 1",
+		"12/09/2031, , 1, 1"
+	})
+	void validateReparacionFechaEntradaNotNullTest(String fechaEntrada, String fechaSalida, Integer recibida, Integer vehiculo) {
+		Reparacion reparacion = this.createSUT(fechaEntrada, fechaSalida, recibida, vehiculo);
+	
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Reparacion>> constraintViolations = validator.validate(reparacion);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
 	@ParameterizedTest
 	@CsvSource({
 		"12/11/2029, 11/12/2049, 1, 1",

@@ -1,19 +1,14 @@
 package org.springframework.gresur.model;
 
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,10 +29,7 @@ public class Vehiculo extends BaseEntity {
 	@NotNull
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Double capacidad; 
-	
-	@NotNull
-	private Boolean disponibilidad;
-	
+		
 	@NotNull
 	@Enumerated(value = EnumType.STRING)
 	@Column(name ="tipo_vehiculo")
@@ -45,14 +37,5 @@ public class Vehiculo extends BaseEntity {
 	
 	@NotNull
 	@Min(value = 0, message = "debe ser mayor que cero")
-	private Double MMA;
-	
-	@JsonIgnore
-	@ManyToOne
-	private Transportista transportista;
-	
-	@JsonIgnore
-	@OneToMany(mappedBy = "vehiculo", cascade = CascadeType.REMOVE)
-	private List<Reparacion> reparaciones;
-	
+	private Double MMA;	
 }

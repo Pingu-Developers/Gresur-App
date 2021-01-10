@@ -1,5 +1,9 @@
 package org.springframework.gresur.service;
 
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Cliente;
@@ -9,17 +13,36 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ClienteService {
-
+	
+	@PersistenceContext
+	private EntityManager em;
+	
 	private ClienteRepository clienteRepo;
+	
+	@Autowired
+	private FacturaEmitidaService facturaEmitidaService;
 	
 	@Autowired
 	public ClienteService(ClienteRepository clienteRepo) {
 		this.clienteRepo = clienteRepo;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	@Transactional(readOnly = true)
+	public Boolean isDefaulter(Cliente c) {
+		return !facturaEmitidaService.findByClienteIdAndEstaPagadaFalse(c.getId()).isEmpty();
+	}
+	
+	
 	@Transactional(readOnly = true)
 	public Iterable<Cliente> findAll() throws DataAccessException{
 		return clienteRepo.findAll();
+	}
+	
+	@Transactional
+	public void deleteAll() {
+		this.clienteRepo.deleteAll();
 	}
 	
 	@Transactional(readOnly = true)
@@ -29,11 +52,21 @@ public class ClienteService {
 	
 	@Transactional
 	public Cliente save(Cliente cliente) throws DataAccessException {
-		return clienteRepo.save(cliente);
+		em.clear();
+
+		Cliente ret = clienteRepo.save(cliente);
+		em.flush();
+		return ret;
 	}
 	
 	@Transactional
 	public void deleteByNIF(String NIF) throws DataAccessException{
 		clienteRepo.deleteByNIF(NIF);
+	}
+
+
+	@Transactional
+	public Long count() {
+		return clienteRepo.count();
 	} 
 }

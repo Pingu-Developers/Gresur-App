@@ -7,6 +7,8 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -14,22 +16,26 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "lineas_factura", uniqueConstraints = @UniqueConstraint(columnNames = {"factura", "producto"}))
+@Table(name = "lineas_factura", uniqueConstraints = @UniqueConstraint(columnNames = {"factura_id", "producto_id"}))
 public class LineaFactura extends BaseEntity {
 
-	@Min(value = 1)
+	@NotNull
+	@Min(value = 0)
 	private Integer cantidad;
 	
-	@JsonIgnore
 	@NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "factura")
-	private Factura factura;
+	@PositiveOrZero
+	private Double precio;
 	
 	@JsonIgnore
 	@NotNull
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "producto")
+	@JoinColumn(name = "factura_id")
+	private Factura factura;
+	
+	@NotNull
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "producto_id")
 	private Producto producto;
 
 	@Override
@@ -50,15 +56,15 @@ public class LineaFactura extends BaseEntity {
 		if (getClass() != obj.getClass())
 			return false;
 		LineaFactura other = (LineaFactura) obj;
-		if (factura == null) {
-			if (other.factura != null)
+		if (factura.id == null) {
+			if (other.factura.id != null)
 				return false;
-		} else if (!factura.equals(other.factura))
+		} else if (!factura.id.equals(other.factura.id))
 			return false;
-		if (producto == null) {
-			if (other.producto != null)
+		if (producto.id == null) {
+			if (other.producto.id != null)
 				return false;
-		} else if (!producto.equals(other.producto))
+		} else if (!producto.id.equals(other.producto.id))
 			return false;
 		return true;
 	}

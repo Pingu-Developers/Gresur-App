@@ -2,34 +2,36 @@ package org.springframework.gresur.service;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Seguro;
-import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.SeguroRepository;
-import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
+import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SeguroService {
+
+	@PersistenceContext
+	private EntityManager em;
 	
 	private SeguroRepository seguroRepo;
 
-	@Autowired
-	private ITVService ITVService;
-	
-	@Autowired
-	private VehiculoService vehiculoService;
-	
-	
 	@Autowired
 	public SeguroService(SeguroRepository seguroRepo) {
 		this.seguroRepo = seguroRepo;
 	}
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional(readOnly = true)
-	public Iterable<Seguro> findAll() throws DataAccessException{
+	public List<Seguro> findAll() throws DataAccessException{
 		return seguroRepo.findAll();
 	}
 	
@@ -38,29 +40,61 @@ public class SeguroService {
 		return seguroRepo.findById(id).orElse(null);
 	}
 	@Transactional(readOnly = true)
-	public List<Seguro> findByVehiculo(Long id) throws DataAccessException{
-		return seguroRepo.findByVehiculo(id);
+	public List<Seguro> findByVehiculo(String matricula) throws DataAccessException{
+		return seguroRepo.findByVehiculoMatricula(matricula);
 	}
 	
 	@Transactional
-	public Seguro save(Seguro seguro) throws DataAccessException, FechaFinNotAfterFechaInicioException{
+	public void deleteById(Long id) throws DataAccessException{
+		seguroRepo.deleteById(id);
+	}
+	
+	@Transactional
+	public void deleteByVehiculoId(Long id) throws DataAccessException{
+		seguroRepo.deleteByVehiculoId(id);
+	}
+	
+	@Transactional
+	public void deleteByRecibidasId(Long id) throws DataAccessException{
+		seguroRepo.deleteByRecibidasId(id);
+	}
+	
+	@Transactional
+	public void deleteByVehiculoMatricula(String matricula) throws DataAccessException{
+		seguroRepo.deleteByVehiculoMatricula(matricula);;
+	}
+	
+	@Transactional
+	public void deleteAll() {
+		seguroRepo.deleteAll();
+	}
+	@Transactional
+	public void deleteAll(List<Seguro> ls) {
+		seguroRepo.deleteAll(ls);
+	}
+	
+	@Transactional(readOnly = true)
+	public Seguro findLastSeguroByVehiculo(String matricula) {
+		return seguroRepo.findFirstByVehiculoMatriculaOrderByFechaExpiracionDesc(matricula);
+	}
+	
+	@Transactional
+	public Seguro save(Seguro seguro) throws DataAccessException{
+		em.clear();
 		
 		LocalDate fechaInicio = seguro.getFechaContrato();
 		LocalDate fechaFin = seguro.getFechaExpiracion();
 		
-		if(fechaInicio.isAfter(fechaFin)) {
-			throw new FechaFinNotAfterFechaInicioException("La fecha de inicio no puede ser una fecha posterior a la de finalizacion!");
-		}
+		FechaInicioFinValidation.fechaInicioFinValidation(Seguro.class,fechaInicio, fechaFin);
 		
-		if(seguro.getFechaExpiracion().isAfter(LocalDate.now())) {
-			Vehiculo vehiculo = seguro.getVehiculo();
-
-			if(ITVService.findByVehiculo(vehiculo.getId()).stream().anyMatch(x -> x.getExpiracion().isAfter(LocalDate.now()))) {
-				vehiculo.setDisponibilidad(true);
-				vehiculoService.save(vehiculo); 
-			}
-		}
-		return seguroRepo.save(seguro);
+		Seguro ret = seguroRepo.save(seguro);
+		em.flush();
+		return ret;
+	}
+	
+	@Transactional
+	public Long count() {
+		return seguroRepo.count();
 	}
 
 }

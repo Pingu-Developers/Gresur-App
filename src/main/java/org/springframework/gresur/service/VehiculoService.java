@@ -1,30 +1,40 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.omg.CORBA.portable.UnknownException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Notificacion;
-import org.springframework.gresur.model.ResultadoITV;
+import org.springframework.gresur.model.Pedido;
+import org.springframework.gresur.model.Personal;
+import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.Seguro;
 import org.springframework.gresur.model.TipoNotificacion;
 import org.springframework.gresur.model.TipoVehiculo;
+import org.springframework.gresur.model.Transportista;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.VehiculoRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.gresur.service.exceptions.MatriculaUnsupportedPatternException;
-import org.springframework.gresur.service.exceptions.VehiculoIllegalException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class VehiculoService {
 
-	private VehiculoRepository vehiculoRepository;
-	
+	@PersistenceContext
+	private EntityManager em;
+		
 	@Autowired
 	private NotificacionService notificacionService;
 	
@@ -34,16 +44,32 @@ public class VehiculoService {
 	@Autowired
 	private SeguroService seguroService;
 	
-
+	@Autowired
+	private ReparacionService reparacionService;
+	
+	@Autowired
+	private AdministradorService adminService;
+	
+	@Autowired
+	private PedidoService pedidoService;
+	
+	private VehiculoRepository vehiculoRepository;
+	
 	@Autowired
 	public VehiculoService(VehiculoRepository vehiculoRepository) {
-		this.vehiculoRepository = vehiculoRepository;
-		
+		this.vehiculoRepository = vehiculoRepository;	
 	}
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 	
 	@Transactional(readOnly = true)
 	public Iterable<Vehiculo> findAll() throws DataAccessException{
 		return vehiculoRepository.findAll();
+	}
+	@Transactional(readOnly = true)
+	public Vehiculo findByMatricula(String matricula) throws DataAccessException{
+		return vehiculoRepository.findByMatricula(matricula).orElse(null);
 	}
 	
 	@Transactional(readOnly = true)
@@ -51,93 +77,123 @@ public class VehiculoService {
 		return vehiculoRepository.findById(id).get();
 	}
 
-	
-	
-	@Transactional(rollbackFor = MatriculaUnsupportedPatternException.class)
-	public Vehiculo save(Vehiculo vehiculo) throws DataAccessException, MatriculaUnsupportedPatternException, VehiculoIllegalException{
+		@Transactional
+	public Vehiculo save(Vehiculo vehiculo) throws DataAccessException{
+		em.clear();
+
 		 TipoVehiculo tipo = vehiculo.getTipoVehiculo();
 		 switch(tipo) {
 		case CAMION:
-			if(!vehiculo.getMatricula().equals("^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para camion");
 			break;
 		case CARRETILLA_ELEVADORA:
-			if(!vehiculo.getMatricula().equals("^E[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!Pattern.matches("E[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para carretilla elevadora");
 			break;
 		case FURGONETA:
-			if(!vehiculo.getMatricula().equals("^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para furgoneta");
 			break;
 		case GRUA:
-			if(!vehiculo.getMatricula().equals("^[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$")) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido");
+			if(!Pattern.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}", vehiculo.getMatricula())) throw new MatriculaUnsupportedPatternException("Formato de matricula no valido para grua");
 			break;
 		default:
 			throw new NullPointerException();
 		 }
-		 	 
-		 ITV ultimaITV = getUltimaITV(vehiculo);
-		 if((ultimaITV == null || ultimaITV.getResultado() != ResultadoITV.FAVORABLE) && vehiculo.getDisponibilidad()==true){
-			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin ITV valida");
-		 }
-		 
-		 Seguro ultimoSeguro = getUltimoSeguro(vehiculo);
-		 if(ultimoSeguro == null && vehiculo.getDisponibilidad()==true){
-			 throw new VehiculoIllegalException("No valido el vehiculo disponible sin Seguro");
-		 }
-		 
-		return vehiculoRepository.save(vehiculo);
+		 	 		 
+		Vehiculo ret = vehiculoRepository.save(vehiculo);
+		em.flush();
+		return ret;
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor = DataAccessException.class)
 	public void deleteById(Long id) throws DataAccessException{
+		reparacionService.deleteByVehiculoId(id);
+		ITVService.deleteByVehiculoId(id);
+		seguroService.deleteByVehiculoId(id);
 		vehiculoRepository.deleteById(id);
 	}
 	
-	/* USER STORIES*/
-	@Transactional(readOnly = true)
-	public ITV getUltimaITV(Vehiculo v) throws DataAccessException{
-		return ITVService.findByVehiculo(v.getId()).stream().filter(x -> x.getExpiracion().isAfter(LocalDate.now())).max(Comparator.naturalOrder()).orElse(null);
+	@Transactional
+	public void deleteByMatricula(String matricula) throws DataAccessException{
+		reparacionService.deleteByVehiculoMatricula(matricula);
+		ITVService.deleteByVehiculoMatricula(matricula);
+		seguroService.deleteByVehiculoMatricula(matricula);
+		vehiculoRepository.deleteByMatricula(matricula);
 	}
 	
-	@Transactional(readOnly = true)
-	public Seguro getUltimoSeguro(Vehiculo v) throws DataAccessException{
-		return seguroService.findByVehiculo(v.getId()).stream().filter(x -> x.getFechaExpiracion().isAfter(LocalDate.now())).max(Comparator.naturalOrder()).orElse(null);
+	@Transactional
+	public void deleteAll() throws DataAccessException{
+		reparacionService.deleteAll();
+		seguroService.deleteAll();
+		ITVService.deleteAll();
+		vehiculoRepository.deleteAll();
 	}
 	
-	// Validacion de la ITV y Seguros de los vehículos
-	@Scheduled(cron = "0 7 * * * *")
-	@Transactional(readOnly = true)
-	public void ITVSegurovalidation() throws UnknownException{
-		Iterator<Vehiculo> vehiculos = vehiculoRepository.findAll().iterator();
+	/*	PROPIEDAD DERIVADA - DISPONIBILIDAD	 */
+	public Boolean getDisponibilidad(String matricula) {
+		Vehiculo vehiculo = this.findByMatricula(matricula);
+		if(vehiculo == null) {
+			return false;
+		} else {
+			ITV ultimaITVFavorable = ITVService.findLastITVFavorableByVehiculo(vehiculo.getMatricula());
+			Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula());
+			Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo(vehiculo.getMatricula());
+			
+			return (ultimaITVFavorable != null && ultimoSeguro != null && !ultimoSeguro.getFechaExpiracion().isBefore(LocalDate.now()) &&
+					(ultimaReparacion == null || ultimaReparacion.getFechaSalidaTaller() != null && ultimaReparacion.getFechaSalidaTaller().isBefore(LocalDate.now())));
+		}
+	}
+	public Boolean getDisponibilidad(String matricula, Transportista t) {
+		Boolean disponibilidadVehiculo = this.getDisponibilidad(matricula);
+		List<Pedido> pedidosEnRepartoVehiculo = pedidoService.findPedidosEnRepartoByMatricula(matricula);
 		
+		return disponibilidadVehiculo && (pedidosEnRepartoVehiculo.size() == 0 || pedidosEnRepartoVehiculo.stream().allMatch(x->x.getTransportista().equals(t)));
+	}
+	
+	@Scheduled(cron = "0 0 7 * * *")
+	@Transactional
+	public void ITVSeguroReparacionvalidation() throws UnknownException{
+		Iterator<Vehiculo> vehiculos = vehiculoRepository.findAll().iterator();
+			
+		// Receptores de la notificacion
+		List<Personal> lPer = new ArrayList<>();
+		for (Personal per : adminService.findAllPersonal()) {
+			if(per.getClass() == Administrador.class || per.getClass() == Transportista.class)
+				lPer.add(per);
+		}
+			
 		while (vehiculos.hasNext()) {
 			
 			Vehiculo v = vehiculos.next();
-			ITV ultimaITV = this.getUltimaITV(v);
-			Seguro ultimoSeguro = this.getUltimoSeguro(v);
+			ITV ultimaITVFavorable = ITVService.findLastITVFavorableByVehiculo(v.getMatricula());
+			Seguro ultimoSeguro = seguroService.findLastSeguroByVehiculo(v.getMatricula());
+			Reparacion ultimaReparacion = reparacionService.findLastReparacionByVehiculo(v.getMatricula());
 			
-			if(ultimaITV == null || ultimaITV.getResultado()==ResultadoITV.NEGATIVA || ultimaITV.getResultado()==ResultadoITV.DESFAVORABLE) {
-				v.setDisponibilidad(false);
-				vehiculoRepository.save(v);
-				Notificacion warning = new Notificacion();
-				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a la invalidez de su ITV");
-				warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
-				try {
-					notificacionService.save(warning);
-				} catch (Exception e) {
-					throw new UnknownException(e);
-				}
-			}
-			if(ultimoSeguro == null || ultimoSeguro.getFechaExpiracion().isBefore(LocalDate.now())) {
-				v.setDisponibilidad(false);
-				vehiculoRepository.save(v);
-				Notificacion warning = new Notificacion();
-				warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + "ha dejado de estar disponible debido a la caducidad de su Seguro");
-				warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
-				try {
-					notificacionService.save(warning);
-				} catch (Exception e) {
-					throw new UnknownException(e);
-				}
+			try {
+				if(ultimaITVFavorable == null) {
+					Notificacion warning = new Notificacion();
+					warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
+					warning.setCuerpo("El vehículo con matrícula:" + v.getMatricula() + " ha dejado de estar disponible debido a la invalidez o caducidad de su ITV");
+					notificacionService.save(warning,lPer);
+				} if(ultimoSeguro == null || ultimoSeguro.getFechaExpiracion().isBefore(LocalDate.now())) {		
+					Notificacion warning = new Notificacion();
+					warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
+					warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + " ha dejado de estar disponible debido a la invalidez o caducidad de su Seguro");		
+					notificacionService.save(warning,lPer);
+				} if(ultimaReparacion != null && (ultimaReparacion.getFechaSalidaTaller() == null || ultimaReparacion.getFechaSalidaTaller().isAfter(LocalDate.now()))) {	
+					Notificacion warning = new Notificacion();
+					warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
+					warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + " ha dejado de estar disponible debido a que esta en reparacion");	
+					notificacionService.save(warning,lPer);
+				}			
+			} catch (Exception e) {
+				throw new UnknownException(e);
 			}
 		}
 	}
+	
+	@Transactional
+	public Long count() {
+		return vehiculoRepository.count();
+	}
+	
 }

@@ -9,13 +9,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 public class LineaFacturaTests extends ValidatorTests {
 	
-	private LineaFactura createSUT(Integer cantidad,Long factura, Long producto) {
+	private LineaFactura createSUT(Integer cantidad,Long factura, Long producto, Double precio) {
 		
 		LineaFactura lineaFactura = new LineaFactura();
 		Factura fac = null;
 		Producto prod = null;
 		
 		lineaFactura.setCantidad(cantidad);
+		lineaFactura.setPrecio(precio);
 		
 		if(factura!=null && factura>0) {
 			fac = new Factura();
@@ -32,51 +33,77 @@ public class LineaFacturaTests extends ValidatorTests {
 	/*LOS ATRIBUTOS FACTURA Y PRODUCTO SI NO APARECEN O BIEN VALEN 0, SIGNIFICAN QUE SON NULOS */
 	@ParameterizedTest
 	@CsvSource({
-		"15,1,1",
-		"8,1,1",
-		"1,1,1"
+		"15,1,1,20",
+		"8,1,1,20",
+		"1,1,1,20"
 	})
-	void validateLineaFacturaNoErrorsTest(Integer cantidad,Long factura, Long producto) {
-		LineaFactura lineaFactura = this.createSUT(cantidad, factura, producto);
+	void validateLineaFacturaNoErrorsTest(Integer cantidad,Long factura, Long producto, Double precio) {
+		LineaFactura lineaFactura = this.createSUT(cantidad, factura, producto, precio);
 		Validator validator = createValidator();
 		Set<ConstraintViolation<LineaFactura>> constraintViolations = validator.validate(lineaFactura);
 		assertThat(constraintViolations.size()).isEqualTo(0);
 	}
+	
 	@ParameterizedTest
 	@CsvSource({
-		"0,1,1",
-		"-1,1,1",
-		"0,1,1"
+		",1,1,20",
+		",1,1,20",
+		",2,2,40"
 	})
-	void validateLineaFacturaCantidadNotMinTest(Integer cantidad,Long factura, Long producto) {
-		LineaFactura lineaFactura = this.createSUT(cantidad, factura, producto);
+	void validateLineaFacturaCantidadNotNullTest(Integer cantidad,Long factura, Long producto, Double precio) {
+		LineaFactura lineaFactura = this.createSUT(cantidad, factura, producto, precio);
+		Validator validator = createValidator();
+		Set<ConstraintViolation<LineaFactura>> constraintViolations = validator.validate(lineaFactura);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"-1,1,1,20"
+	})
+	void validateLineaFacturaCantidadNotMinTest(Integer cantidad,Long factura, Long producto, Double precio) {
+		LineaFactura lineaFactura = this.createSUT(cantidad, factura, producto, precio);
 		Validator validator = createValidator();
 		Set<ConstraintViolation<LineaFactura>> constraintViolations = validator.validate(lineaFactura);
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
 	@ParameterizedTest
 	@CsvSource({
-		"15,,1",
-		"8,0,1",
-		"1,,1"
+		"15,,1,20",
+		"8,0,1,20",
+		"1,,1,20"
 	})
-	void validateLineaFacturaFacturaNotNullTest(Integer cantidad,Long factura, Long producto) {
-		LineaFactura lineaFactura = this.createSUT(cantidad, factura, producto);
+	void validateLineaFacturaFacturaNotNullTest(Integer cantidad,Long factura, Long producto, Double precio) {
+		LineaFactura lineaFactura = this.createSUT(cantidad, factura, producto, precio);
 		Validator validator = createValidator();
 		Set<ConstraintViolation<LineaFactura>> constraintViolations = validator.validate(lineaFactura);
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
 	@ParameterizedTest
 	@CsvSource({
-		"15,1,",
-		"8,1,",
-		"1,1,0"
+		"15,1,,20",
+		"8,1,,20",
+		"1,1,0,20"
 	})
-	void validateLineaFacturaProductoNotNullTest(Integer cantidad,Long factura, Long producto) {
-		LineaFactura lineaFactura = this.createSUT(cantidad, factura, producto);
+	void validateLineaFacturaProductoNotNullTest(Integer cantidad,Long factura, Long producto, Double precio) {
+		LineaFactura lineaFactura = this.createSUT(cantidad, factura, producto, precio);
 		Validator validator = createValidator();
 		Set<ConstraintViolation<LineaFactura>> constraintViolations = validator.validate(lineaFactura);
 		assertThat(constraintViolations.size()).isEqualTo(1);
 	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"15,1,1,",
+		"8,1,1,-5",
+		"1,1,1,"
+	})
+	void validateLineaFacturaNotNullPrecioTest(Integer cantidad,Long factura, Long producto, Double precio) {
+		LineaFactura lineaFactura = this.createSUT(cantidad, factura, producto, precio);
+		Validator validator = createValidator();
+		Set<ConstraintViolation<LineaFactura>> constraintViolations = validator.validate(lineaFactura);
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
 
 }

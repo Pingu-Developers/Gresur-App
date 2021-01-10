@@ -21,4 +21,20 @@ public class Configuracion extends BaseEntity{
 	@NotNull
 	@Column(name = "num_max_notificaciones")
 	private Integer numMaxNotificaciones;
+	
+	@NotNull
+	@Column(name = "factura_emitida_seq")
+	private Long facturaEmitidaSeq;
+	
+	@NotNull
+	@Column(name = "factura_recibida_seq")
+	private Long facturaRecibidaSeq;
+	
+	@NotNull
+	@Column(name = "factura_emitida_rect_seq")
+	private Long facturaEmitidaRectSeq;
+	
+	@NotNull
+	@Column(name = "factura_recibida_rect_seq")
+	private Long facturaRecibidaRectSeq;
 }

@@ -1,6 +1,5 @@
 package org.springframework.gresur.model;
 
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -18,7 +17,7 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "recibidas")
 public class FacturaRecibida extends Factura{
-	
+		
 	@Enumerated(value = EnumType.STRING)
 	@NotNull
 	private Concepto concepto;

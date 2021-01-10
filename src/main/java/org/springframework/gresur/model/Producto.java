@@ -2,18 +2,21 @@ package org.springframework.gresur.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -22,12 +25,15 @@ import lombok.EqualsAndHashCode;
 public class Producto extends BaseEntity{
 	
 	@NotBlank
+	@Column(unique = true)
 	private String nombre;
 	
+	@Lob
 	private String descripcion;
 	
-	@NotBlank
-	private String unidad;
+	@NotNull
+	@Enumerated(value = EnumType.STRING)
+	private Unidad unidad;
 	
 	@NotNull
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
@@ -48,14 +54,23 @@ public class Producto extends BaseEntity{
 	@Column(name = "precio_compra")
 	private Double precioCompra;
 	
-	@Pattern(regexp = "^[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*x{1}[0-9]+[,.]?[0-9]*$")
-	private String dimensiones;
+	@NotNull
+	@Positive
+	private Double alto;
+	
+	@NotNull
+	@Positive
+	private Double ancho;
+	
+	@NotNull
+	@Positive
+	private Double profundo;
 	
 	@Min(value = 0, message = "debe ser mayor o igual a cero")
 	private Double pesoUnitario;
 	
-	@JsonIgnore
 	@ManyToOne
+	@ToString.Exclude
 	private Estanteria estanteria;
 	
 }

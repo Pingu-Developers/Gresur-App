@@ -1,5 +1,5 @@
 package org.springframework.gresur.model;
 
 public enum Categoria {
-	PINTURAS, CEMENTOS, LADRILLOS, AZULEJOS, HERRAMIENTAS
+	AZULEJOS, BAÑOS, CALEFACCION, LADRILLOS, PINTURAS, REVESTIMIENTOS, SILICES
 }

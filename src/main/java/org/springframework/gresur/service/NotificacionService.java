@@ -1,11 +1,16 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.gresur.model.LineaEnviado;
 import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.TipoNotificacion;
@@ -17,15 +22,28 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class NotificacionService {
 
-	private NotificacionRepository notificacionRepo;
+	@PersistenceContext
+	private EntityManager em;
 	
 	@Autowired
 	private ConfiguracionService configuracionService;
-
 	
+	@Autowired
+	private LineasEnviadoService lineaEnviadoService;
+
+	private NotificacionRepository notificacionRepo;
+
 	@Autowired
 	public NotificacionService(NotificacionRepository notificacionRepo) {
 		this.notificacionRepo = notificacionRepo;
+	}
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
+	@Transactional(readOnly = true)
+	public Notificacion findById(Long id){
+		return this.notificacionRepo.findById(id).orElse(null);
 	}
 	
 	@Transactional(readOnly = true)
@@ -38,11 +56,13 @@ public class NotificacionService {
 		return notificacionRepo.findByEmisorId(id);
 	}
 	
-	@Transactional(rollbackFor = {NotificacionesLimitException.class, NullPointerException.class})
-	public Notificacion save(Notificacion notificacion) throws DataAccessException,NotificacionesLimitException,NullPointerException{
-		
-		if(notificacion.getLeido() == null)
-			notificacion.setLeido(false);
+	@Transactional(readOnly = true)
+	public List<Notificacion> findAllNotificacionesByEmisorName(String name)throws DataAccessException{
+		return notificacionRepo.findAllNotificacionesByEmisorName(name);
+	}
+
+	@Transactional
+	public Notificacion save(Notificacion notificacion,List<Personal> receptores) throws DataAccessException{
 		
 		if(notificacion.getEmisor()==null && notificacion.getTipoNotificacion()!=TipoNotificacion.SISTEMA)
 			throw new NullPointerException("El emisor no puede ser nulo si la notificación no es del sistema");
@@ -52,22 +72,36 @@ public class NotificacionService {
 		Integer maxNotificaciones = this.configuracionService.getNumMaxNotificaciones(); 
 		
 		if(persona != null) {
-			Long n = findAllNotificacionesByEmisor(persona.getId()).stream().filter(x->x.getFechaHora().isAfter(LocalDateTime.now().minusDays(1)))
-					.filter(x->x.getTipoNotificacion().equals(TipoNotificacion.NORMAL)).count();
 			
-			if(n>maxNotificaciones) {
+			Long n = (long) notificacionRepo.
+					findByEmisorIdAndFechaHoraAfterAndTipoNotificacionIn(persona.getId(), LocalDateTime.now().minusDays(1), Arrays.asList(TipoNotificacion.NORMAL))
+					.size();
+			
+			if(n+1>maxNotificaciones) {
 				throw new NotificacionesLimitException("Ha excedido el limite diario de notificaciones");
 			}
 		}
+		Notificacion result = notificacionRepo.save(notificacion);
 		
-		return notificacionRepo.save(notificacion);
+		List<LineaEnviado> lenviado = receptores.stream().map(x ->new LineaEnviado(result,x)).collect(Collectors.toList());
+		
+		lineaEnviadoService.saveAll(lenviado);
+		em.flush();
+		return result;
 	}
 	
 	@Transactional(readOnly = true)
 	public List<Notificacion> findNoLeidasPersonal(Personal p){
-		
-		List<Notificacion> todas = notificacionRepo.findAll();
-		
-		return todas.stream().filter(x -> x.getReceptores().contains(p)).filter(x -> !x.getLeido()).collect(Collectors.toList());
+		return notificacionRepo.findNoLeidasForPersonal(p.getId());
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Notificacion> findLeidasPersonal(Personal p){
+		return notificacionRepo.findLeidasForPersonal(p.getId());
+	}
+	
+	@Transactional
+	public void deleteAll() throws DataAccessException{
+		notificacionRepo.deleteAll();
 	}
 }

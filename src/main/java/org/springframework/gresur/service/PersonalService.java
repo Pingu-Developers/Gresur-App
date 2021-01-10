@@ -1,5 +1,10 @@
 package org.springframework.gresur.service;
 
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Personal;
@@ -9,14 +14,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PersonalService<T extends Personal, E extends PersonalRepository<T>> {
+
+	@PersistenceContext
+	private EntityManager em;
 	
 	protected E personalRepo;
 	
 	@Autowired
+	protected ContratoService contratoService;
+	
+	@Autowired
 	protected PersonalRepository<Personal> personalGRepo;
 	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+	
 	@Transactional(readOnly = true)
-	public Iterable<T> findAll() throws DataAccessException{
+	public List<T> findAll() throws DataAccessException{
 		return personalRepo.findAll();
 	}
 	
@@ -27,12 +41,23 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	
 	@Transactional
 	public T save(T personal) throws DataAccessException{
-		return personalRepo.save(personal);
+		em.clear();
+
+		T ret = personalRepo.save(personal);
+		em.flush();
+		return ret;
 	}
 	
 	@Transactional
 	public void deleteByNIF(String NIF) throws DataAccessException{
+		contratoService.deleteByPersonalNIF(NIF);
 		personalRepo.deleteByNIF(NIF);
+	}
+	
+	@Transactional
+	public void deleteAll() throws DataAccessException{
+		contratoService.deleteAll();
+		personalRepo.deleteAll();
 	}
 	
 	@Transactional
@@ -42,7 +67,7 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	
 	/* METODOS GENERALES PARA EL PERSONAL AL COMPLETO (superclase)*/
 	@Transactional(readOnly = true)
-	public Iterable<Personal> findAllPersonal() throws DataAccessException{
+	public List<Personal> findAllPersonal() throws DataAccessException{
 		return personalGRepo.findAll();
 	}
 	

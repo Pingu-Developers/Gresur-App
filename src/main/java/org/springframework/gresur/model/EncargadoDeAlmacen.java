@@ -12,10 +12,10 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "encargadosAlmacen")
+@Table(name = "encargados_almacen")
 public class EncargadoDeAlmacen extends Personal{
 	
-	@JsonIgnore
+	
 	@NotNull
 	@OneToOne(optional = false)
 	private Almacen almacen;

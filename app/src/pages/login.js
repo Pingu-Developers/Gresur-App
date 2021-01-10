@@ -11,6 +11,8 @@ import Avatar from '@material-ui/core/Avatar';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import gresur from '../images/Gresur_transparente.png'
+import Snackbar from '../components/SnackBar'
 
 //Redux stuff
 import { connect } from 'react-redux';
@@ -20,15 +22,15 @@ const style = {
     root: {
         flexGrow: 1, 
       },
-      grid:{
-          marginTop:'5%',
-      },
-      paper: {
+    grid:{
+        marginTop:'5%',
+    },
+    paper: {
         padding: 0,
         textAlign: 'center',
         opacity:0.8
-      },
-      textField:{
+    },
+    textField:{
         margin:'15px auto 15px auto'
     },
     button:{
@@ -41,6 +43,14 @@ const style = {
       },
     progress:{
         position: 'absolute'
+    },
+    InicioSesion:{
+        color: '#ffa200',
+        marginTop: 20,
+        fontFamily: 'Courier',
+        fontWeight: 800,
+        fontSize: 40,
+        width: "100%"
     }
   }
 
@@ -51,7 +61,7 @@ class login extends Component {
         this.state = {
             username:'',
             password:'',
-            errors: {}
+            errors: null
         }
     }
 
@@ -62,13 +72,9 @@ class login extends Component {
              password: this.state.password
          };
          this.props.loginUser(userData,this.props.history);
+         this.errors = this.props.UI.errors;
      }
 
-    componentWillReceiveProps(nextProps){
-        if(nextProps.UI.errors){
-            this.setState({errors: nextProps.UI.errors});
-        }
-    }
 
     handleChange = (event) =>  {
         this.setState({
@@ -81,10 +87,17 @@ class login extends Component {
         document.body.style.background = `url(${GresurImage}) no-repeat center center fixed`;
         document.body.style.backgroundSize = "cover";
 
-        const {classes, UI:{loading}} = this.props;
-        const {errors} = this.state;
+        const {classes, UI} = this.props;
         return (
-            <div className={classes.root}>
+            
+            <div>
+
+                <div className={classes.root}>
+
+                <Snackbar type = "error" open = {this.errors?true:false} message = {this.errors}></Snackbar>
+                {this.errors ? document.getElementById("botonSnack").click():null}
+
+
                 <Grid container spacing={0} className={classes.grid}>
                     <Grid item xs/>
                     <Grid item xs={6}>
@@ -92,21 +105,21 @@ class login extends Component {
                         <div className={classes.paperItems}>
                         <Grid container spacing={3} className={classes.grid}>
                             <Grid item xs>
-                            <Avatar src="Gresur_transparente.png" variant='square' className={classes.large}/>
+                            <Avatar src={gresur} variant='square' className={classes.large}/>
                             </Grid>
                             <Grid item xs={6}>
-                                <Typography variant='h3'>
+                                <Typography variant='h4' className = {classes.InicioSesion}>
                                    <u>Inicio de sesión</u> 
                                 </Typography>
                                 <form  noValidate onSubmit={this.handleSubmit}>
                                     <TextField fullWidth id="username" name="username" label="Username" onChange={this.handleChange} className={classes.textField} 
-                                        helperText={errors.username} error={errors.username?true:false} value={this.state.username}/>
+                                        error={this.errors?true:false} value={this.state.username}/>
                                     <TextField fullWidth id="password" name="password" label="Password" type="password" onChange={this.handleChange} className={classes.textField} 
-                                         helperText={errors.password} error={errors.password?true:false} value={this.state.password}/>
+                                        error={this.errors?true:false} value={this.state.password}/>
 
-                                    <Button type="submit" variant="contained" color="primary" className={classes.button} disabled={loading}>
+                                    <Button type="submit" variant="contained" color="primary" className={classes.button} disabled={UI.loading}>
                                     Login
-                                        {loading && (
+                                        {UI.loading && (
                                             <CircularProgress size={20} className={classes.progress}/>
                                         )}
                                     </Button>
@@ -119,6 +132,7 @@ class login extends Component {
                     </Grid>
                     <Grid item xs/>
                 </Grid>  
+                </div>
             </div>
         )
     }
