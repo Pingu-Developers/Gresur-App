@@ -125,7 +125,7 @@ public class ProductoTestService {
 		Estanteria est = new Estanteria();
 		est.setAlmacen(alm);
 		est.setCapacidad(10.0);
-		est.setCategoria(Categoria.BAÑOS);
+		est.setCategoria(Categoria.BANOS);
 		
 		// CREACION DE PRODUCTO
 		List<Producto> ls = new ArrayList<Producto>();

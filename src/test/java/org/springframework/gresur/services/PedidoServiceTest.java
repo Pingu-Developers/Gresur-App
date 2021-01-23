@@ -152,7 +152,7 @@ public class PedidoServiceTest {
 		Estanteria estanteria = new Estanteria();
 		estanteria.setAlmacen(almacen);
 		estanteria.setCapacidad(10000.0);
-		estanteria.setCategoria(Categoria.BAÑOS);
+		estanteria.setCategoria(Categoria.BANOS);
 		estanteria = estanteriaService.save(estanteria);
 		
 		// CREACION DE PRODUCTO

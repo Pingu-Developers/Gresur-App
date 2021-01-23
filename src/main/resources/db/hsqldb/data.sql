@@ -10,7 +10,7 @@ INSERT INTO ALMACENES(direccion, capacidad) VALUES ('Calle Ligastorro nº 9', 60
 INSERT INTO ALMACENES(direccion, capacidad) VALUES ('Avenida Gresur edificio AG', 5000.00);
 
 INSERT INTO ESTANTERIAS(categoria, capacidad, almacen_id) VALUES ('AZULEJOS', 650.00,2);
-INSERT INTO ESTANTERIAS(categoria, capacidad, almacen_id) VALUES ('BAÑOS', 550.00,1);
+INSERT INTO ESTANTERIAS(categoria, capacidad, almacen_id) VALUES ('BANOS', 550.00,1);
 INSERT INTO ESTANTERIAS(categoria, capacidad, almacen_id) VALUES ('CALEFACCION', 600.00,1);
 INSERT INTO ESTANTERIAS(categoria, capacidad, almacen_id) VALUES ('LADRILLOS', 594.00,1);
 INSERT INTO ESTANTERIAS(categoria, capacidad, almacen_id) VALUES ('PINTURAS', 543.00,2);
