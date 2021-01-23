@@ -183,16 +183,16 @@ public class ProductoService {
 
 	@Transactional(readOnly = true)
 	public Page<Producto> findAllOrderedPageable(Pageable pageable) throws DataAccessException{
-		return productoRepository.fingAllOrderStock(pageable);
+		return productoRepository.findAllOrderStock(pageable);
 	}
 	
 	@Transactional(readOnly = true)
 	public Page<Producto> findByEstanteriaOrderedPageable(Categoria c , Pageable pageable){
-		return productoRepository.fingByEstanteriaCategoriaOrderStock(c,pageable);
+		return productoRepository.findByEstanteriaCategoriaOrderStock(c,pageable);
 	}
 	
 	@Transactional(readOnly = true)
 	public Page<Producto> findByProductosByNameOrderedPageable(String s , Pageable pageable){
-		return productoRepository.fingByNombreContainingIgnoreCaseOrderStock(s, pageable);
+		return productoRepository.findByNombreContainingIgnoreCaseOrderStock(s, pageable);
 	}
 }
