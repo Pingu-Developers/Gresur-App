@@ -127,7 +127,7 @@ class Catalogo extends Component {
                         this.props.getProductosPaginados(this.state.activePage,"AZULEJOS")
                         break;
                     case 2:
-                        this.props.getProductosPaginados(this.state.activePage,"BAÑOS")
+                        this.props.getProductosPaginados(this.state.activePage,"BANOS")
                         break;
                     case 3:
                         this.props.getProductosPaginados(this.state.activePage,"CALEFACCION")

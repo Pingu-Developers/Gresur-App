@@ -481,7 +481,7 @@ export class compraMaterial extends Component {
             >
               <MenuItem value={"TODOS"}>Todos</MenuItem>
               <MenuItem value={"AZULEJOS"}>AZULEJOS</MenuItem>
-              <MenuItem value={"BAÑOS"}>BAÑOS</MenuItem>
+              <MenuItem value={"BANOS"}>BAÑOS</MenuItem>
               <MenuItem value={"CALEFACCION"}>CALEFACCION</MenuItem>
               <MenuItem value={"LADRILLOS"}>LADRILLOS</MenuItem>
               <MenuItem value={"PINTURAS"}>PINTURAS</MenuItem>
