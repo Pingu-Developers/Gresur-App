@@ -16,9 +16,7 @@ class transportistaMapa extends Component {
 
     render() {
         return (
-            <div>
-                <h1>WIP</h1>
-            </div>
+                <iframe src="https://zen-shannon-219066.netlify.app/index.html"  frameborder="0" width="100%" height="800px"></iframe>
         )
     }
 }
