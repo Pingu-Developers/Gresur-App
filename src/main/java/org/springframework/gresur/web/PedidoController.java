@@ -155,6 +155,7 @@ public class PedidoController {
 		pedidoRes.setEstado(estado);
 		pedidoRes.setFacturaEmitida(factura);
 		pedidoRes.setFechaEnvio(fechaEnvio);
+		pedidoRes.setFechaRealizacion(LocalDate.now());
 		pedidoRes = pedidoService.save(pedidoRes);
 		
 		// Receptores de la notificacion

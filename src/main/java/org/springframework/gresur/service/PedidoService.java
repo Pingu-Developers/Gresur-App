@@ -17,6 +17,7 @@ import org.springframework.gresur.model.Pedido;
 import org.springframework.gresur.model.Producto;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.PedidoRepository;
+import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
 import org.springframework.gresur.service.exceptions.PedidoConVehiculoSinTransportistaException;
 import org.springframework.gresur.service.exceptions.PedidoLogisticException;
@@ -85,6 +86,10 @@ public class PedidoService {
 		Pedido ret;
 		Vehiculo vehiculo = pedido.getVehiculo();
 		LocalDate fecha = pedido.getFechaEnvio();
+		
+		if(pedido.getFechaRealizacion().isAfter(pedido.getFechaEnvio())) {
+			throw new FechaFinNotAfterFechaInicioException("La fecha de realizacion debe ser anterior o igual a la fecha de envio");
+		}
 		
 		Pedido anterior = pedido.getId() == null ? null : pedidoRepo.findById(pedido.getId()).orElse(null);
 		if(anterior != null && anterior.getEstado().equals(EstadoPedido.EN_ESPERA) && (!pedido.getEstado().equals(EstadoPedido.EN_ESPERA) || !pedido.getEstado().equals(EstadoPedido.CANCELADO))) {

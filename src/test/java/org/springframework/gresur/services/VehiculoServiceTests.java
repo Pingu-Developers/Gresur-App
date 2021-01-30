@@ -479,7 +479,8 @@ class VehiculoServiceTests {
 		pedido.setDireccionEnvio("C/ Enviamelo Aqui");
 		pedido.setEstado(EstadoPedido.EN_ESPERA);
 		pedido.setFacturaEmitida(facturaEmitida);
-		pedido.setFechaEnvio(LocalDate.now());		
+		pedido.setFechaEnvio(LocalDate.now());
+		pedido.setFechaRealizacion(LocalDate.now());
 		pedido = pedidoService.save(pedido);
 				
 		pedido.setTransportista(transportistaUsandoVehiculo);
