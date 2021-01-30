@@ -116,10 +116,16 @@ class TablaFactura extends Component {
               <Typography style = {{padding: '5px 0 5px 0'}}> <b>Domicilio : </b> {this.props.data.facturas.facturaEmitida.cliente.direccion} </Typography>
           </div>
 
+          <Divider />
+
+          <div style = {{paddingTop: 20}}>
+            <Typography style = {{padding: '5px 0 5px 0'}}> <b>Fecha : </b> {new Date().toUTCString()} </Typography>
+          </div>
+
       </div>   
 
 
-      <TableContainer component={Paper} style={{marginTop:20, marginLeft:4}}>
+      <TableContainer component={Paper} style={{marginTop:10, marginLeft:4}}>
         <Table  aria-label="customized table">
           <TableHead>
             <TableRow>
