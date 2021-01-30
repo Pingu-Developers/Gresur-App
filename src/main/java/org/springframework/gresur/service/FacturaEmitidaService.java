@@ -12,6 +12,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Cliente;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.repository.FacturaEmitidaRepository;
+import org.springframework.gresur.repository.FacturaRepository;
 import org.springframework.gresur.service.exceptions.ClienteDefaulterException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +64,11 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 	@Transactional
 	public List<FacturaEmitida> findFacturasByClienteAndFecha(Long id,LocalDate fecha){
 		return facturaRepo.findByClienteIdAndFechaEmision(id, fecha);
+	}
+	
+	@Transactional
+	public List<FacturaEmitida> findByFechaEmisionBeforeAndFechaEmisionAfter(LocalDate dateBefore, LocalDate dateAfter){
+		return facturaRepo.findByFechaEmisionBeforeAndFechaEmisionAfter(dateBefore, dateAfter);
 	}
 	
 }
