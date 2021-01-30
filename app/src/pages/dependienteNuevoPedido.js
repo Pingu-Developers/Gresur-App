@@ -1066,6 +1066,14 @@ export class dependienteNuevoPedido extends Component {
                                 
                                 <div className = {classes.detailsDiv}>
                                     <Typography className={classes.detailsTitle}>
+                                        Fecha:     
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                        {' ' + new Date().toUTCString()}     
+                                    </Typography>
+                                    <br/>
+                                    <br/>
+                                    <Typography className={classes.detailsTitle}>
                                         Nombre:     
                                     </Typography>
                                     <Typography className={classes.detailsInfo}>

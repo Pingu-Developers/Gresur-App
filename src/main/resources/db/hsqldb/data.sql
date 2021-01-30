@@ -515,20 +515,20 @@ INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
 	VALUES (TO_DATE('2020/05/07','YYYY/MM/DD'), TO_DATE('2022/11/11','YYYY/MM/DD'), 'NEGATIVA', 21, 6);
 	
 
-INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
-	VALUES ('Calle Der Cadi Depe nº1 Bloque C Piso 3 Puerta 1 (Cadiz)', 'EN_ESPERA', TO_DATE('2021/01/01','YYYY/MM/DD'), 1, NULL, NULL);
+INSERT INTO PEDIDOS(direccion_envio, estado, fecha_realizacion, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
+	VALUES ('Calle Der Cadi Depe nº1 Bloque C Piso 3 Puerta 1 (Cadiz)', 'EN_ESPERA', TO_DATE('2020/12/31','YYYY/MM/DD') ,TO_DATE('2021/01/01','YYYY/MM/DD'), 1, NULL, NULL);
 
-INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
-	VALUES ('Ronda Iglesia, 44, 49492, Fresno De Sayago(Zamora)', 'PREPARADO', TO_DATE('2020/12/23','YYYY/MM/DD'), 2, NULL, 5);
+INSERT INTO PEDIDOS(direccion_envio, estado, fecha_realizacion, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
+	VALUES ('Ronda Iglesia, 44, 49492, Fresno De Sayago(Zamora)', 'PREPARADO', TO_DATE('2020/12/22','YYYY/MM/DD'), TO_DATE('2020/12/23','YYYY/MM/DD'), 2, NULL, 5);
 	
-INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
-	VALUES ('Campo Horno, 51, 18355, Dúdar(Granada)', 'PREPARADO', TO_DATE('2021/01/01','YYYY/MM/DD'), 3, NULL, 6);
+INSERT INTO PEDIDOS(direccion_envio, estado, fecha_realizacion, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
+	VALUES ('Campo Horno, 51, 18355, Dúdar(Granada)', 'PREPARADO',  TO_DATE('2021/12/31','YYYY/MM/DD'), TO_DATE('2021/01/01','YYYY/MM/DD'), 3, NULL, 6);
 	
-INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
-	VALUES ('Kalea De España, 66, 46107, Sant Joanet(Valencia)', 'EN_REPARTO', TO_DATE('2021/01/04','YYYY/MM/DD'), 4, 1, 5);
+INSERT INTO PEDIDOS(direccion_envio, estado, fecha_realizacion, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
+	VALUES ('Kalea De España, 66, 46107, Sant Joanet(Valencia)', 'EN_REPARTO',  TO_DATE('2021/01/03','YYYY/MM/DD'), TO_DATE('2021/01/04','YYYY/MM/DD'), 4, 1, 5);
 	
-INSERT INTO PEDIDOS(direccion_envio, estado, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
-	VALUES ('Praza Catalunya, 2, 20341, Itsasondo(Gipuzkoa)', 'EN_REPARTO', TO_DATE('2021/01/04','YYYY/MM/DD'), 5, 4, 6); --CAMBIADO DE ENTREGADO A EN_REPARTO
+INSERT INTO PEDIDOS(direccion_envio, estado, fecha_realizacion, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
+	VALUES ('Praza Catalunya, 2, 20341, Itsasondo(Gipuzkoa)', 'EN_REPARTO',  TO_DATE('2021/01/03','YYYY/MM/DD'), TO_DATE('2021/01/04','YYYY/MM/DD'), 5, 4, 6); --CAMBIADO DE ENTREGADO A EN_REPARTO
 
 
 UPDATE ID_Generator SET sequence = 6 WHERE name = 'personal';

@@ -194,6 +194,7 @@ public class FacturaEmitidaServiceTests {
 		pedido.setEstado(EstadoPedido.EN_ESPERA);
 		pedido.setFacturaEmitida(fem);
 		pedido.setFechaEnvio(LocalDate.parse("14/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedido.setFechaRealizacion(LocalDate.parse("13/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		pedidoService.save(pedido);
 		

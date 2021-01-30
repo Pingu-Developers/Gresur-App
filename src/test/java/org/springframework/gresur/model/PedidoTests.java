@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class PedidoTests extends ValidatorTests{
 
-	private Pedido createSUT(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
+	private Pedido createSUT(String direccionEnvio, String estado, String fechaRealizacion, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
 		
 		FacturaEmitida f = null;
 		Vehiculo v = null;
@@ -31,6 +31,7 @@ class PedidoTests extends ValidatorTests{
 		pedido.setDireccionEnvio(direccionEnvio);
 		pedido.setEstado(estado == null ? null : EstadoPedido.valueOf(estado));
 		pedido.setFechaEnvio(fechaEnvio == null ? null : LocalDate.parse(fechaEnvio, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedido.setFechaRealizacion(fechaRealizacion == null ? null : LocalDate.parse(fechaRealizacion, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		pedido.setFacturaEmitida(f);
 		pedido.setVehiculo(v);
 		
@@ -39,12 +40,12 @@ class PedidoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"C/Ligastorro, PREPARADO, 20/02/2020, 3, 5",
-		"C/Diseño y pruebas, ENTREGADO, 20/04/2020, 2, 8",
+		"C/Ligastorro, PREPARADO, 20/01/2020, 20/02/2020, 3, 5",
+		"C/Diseño y pruebas, ENTREGADO, 20/03/2020, 20/04/2020, 2, 8",
 	})
-	void validatePedidoNoErrorsTest(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
+	void validatePedidoNoErrorsTest(String direccionEnvio, String estado, String fechaRealizacion, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
 		
-		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaEnvio, facturaEmitida, vehiculo);
+		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaRealizacion, fechaEnvio, facturaEmitida, vehiculo);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Pedido>> constraintViolations = validator.validate(pedido);
@@ -54,13 +55,13 @@ class PedidoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		", PREPARADO, 20/02/2020, 3, 5",
-		"'', ENTREGADO, 20/04/2020, 2, 8",
-		"'         ', ENTREGADO, 20/04/2020, 2, 8"
+		", PREPARADO, 20/01/2020, 20/02/2020, 3, 5",
+		"'', ENTREGADO, 20/02/2020, 20/04/2020, 2, 8",
+		"'         ', ENTREGADO, 20/02/2020, 20/04/2020, 2, 8"
 	})
-	void validatePedidoDireccionEnvioNotBlankTest(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
+	void validatePedidoDireccionEnvioNotBlankTest(String direccionEnvio, String estado, String fechaRealizacion, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
 		
-		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaEnvio, facturaEmitida, vehiculo);
+		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaRealizacion, fechaEnvio, facturaEmitida, vehiculo);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Pedido>> constraintViolations = validator.validate(pedido);
@@ -70,12 +71,12 @@ class PedidoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"C/Ligastorro, PREPARADO,, 3, 5",
-		"C/Diseño y pruebas, ENTREGADO,, 2, 8",
+		"C/Ligastorro, PREPARADO, 20/02/2020,, 3, 5",
+		"C/Diseño y pruebas, ENTREGADO, 20/02/2020,, 2, 8",
 	})
-	void validatePedidoFechaEnvioNotNullTest(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
+	void validatePedidoFechaEnvioNotNullTest(String direccionEnvio, String estado, String fechaRealizacion, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
 		
-		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaEnvio, facturaEmitida, vehiculo);
+		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaRealizacion, fechaEnvio, facturaEmitida, vehiculo);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Pedido>> constraintViolations = validator.validate(pedido);
@@ -85,12 +86,12 @@ class PedidoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"C/Ligastorro,, 20/02/2020, 3, 5",
-		"C/Diseño y pruebas,, 20/04/2020, 2, 8",
+		"C/Ligastorro, PREPARADO, ,20/02/2020, 3, 5",
+		"C/Diseño y pruebas, ENTREGADO, ,20/02/2020, 2, 8",
 	})
-	void validatePedidoEstadoNotNullTest(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
+	void validatePedidoFechaRealizacionNotNullTest(String direccionEnvio, String estado, String fechaRealizacion, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
 		
-		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaEnvio, facturaEmitida, vehiculo);
+		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaRealizacion, fechaEnvio, facturaEmitida, vehiculo);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Pedido>> constraintViolations = validator.validate(pedido);
@@ -100,12 +101,27 @@ class PedidoTests extends ValidatorTests{
 	
 	@ParameterizedTest
 	@CsvSource({
-		"C/Ligastorro, PREPARADO, 20/02/2020, 0, 5",
-		"C/Diseño y pruebas, ENTREGADO, 20/04/2020, , 8",
+		"C/Ligastorro,, 20/01/2020, 20/02/2020, 3, 5",
+		"C/Diseño y pruebas,, 20/03/2020, 20/04/2020, 2, 8",
 	})
-	void validatePedidoFacturaEmitidaNotNullTest(String direccionEnvio, String estado, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
+	void validatePedidoEstadoNotNullTest(String direccionEnvio, String estado, String fechaRealizacion, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
 		
-		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaEnvio, facturaEmitida, vehiculo);
+		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaRealizacion, fechaEnvio, facturaEmitida, vehiculo);
+		
+		Validator validator = createValidator();
+		Set<ConstraintViolation<Pedido>> constraintViolations = validator.validate(pedido);
+		
+		assertThat(constraintViolations.size()).isEqualTo(1);
+	}
+	
+	@ParameterizedTest
+	@CsvSource({
+		"C/Ligastorro, PREPARADO, 20/01/2020, 20/02/2020, 0, 5",
+		"C/Diseño y pruebas, ENTREGADO, 20/03/2020, 20/04/2020, , 8",
+	})
+	void validatePedidoFacturaEmitidaNotNullTest(String direccionEnvio, String estado, String fechaRealizacion, String fechaEnvio, Integer facturaEmitida, Integer vehiculo) {
+		
+		Pedido pedido = this.createSUT(direccionEnvio, estado, fechaRealizacion, fechaEnvio, facturaEmitida, vehiculo);
 		
 		Validator validator = createValidator();
 		Set<ConstraintViolation<Pedido>> constraintViolations = validator.validate(pedido);
