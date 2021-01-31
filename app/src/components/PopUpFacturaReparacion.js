@@ -9,7 +9,7 @@ import { useTheme } from '@material-ui/core/styles';
 import MostradorAllSeguros from './MostradorAllSeguros';
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
-import MostradorAllITVs from './MostradorAllITVs';
+import MostradorFacturaReparacionInfo from './MostradorFacturaReparacionInfo';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,12 +36,10 @@ export default function ResponsiveDialog(props) {
   };
 
   const data = props.data;
-  const condicion = props.condicion;
-  const resp = condicion===false? 'Ver historial de ITVs' : 'Ver historial de seguros';
 
   return (
     <div>
-      <Button variant='contained' color='primary' onClick={handleClickOpen}>{resp}</Button>
+      <Button variant='contained' color='primary' onClick={handleClickOpen}>Ver factura</Button>
       <Dialog
         fullWidth={true}
         fullScreen={false}
@@ -51,13 +49,13 @@ export default function ResponsiveDialog(props) {
         aria-labelledby="responsive-dialog-title"
       >
         <div className={classes.diaboton}>
-            <DialogTitle id="responsive-dialog-title">{resp}</DialogTitle>
+            <DialogTitle id="responsive-dialog-title">Ver factura</DialogTitle>
             <Button className={classes.boton} onClick={handleClose} color="primary"><CloseIcon/></Button>
         </div>
         <DialogContent>
           <DialogContentText>
            
-           {condicion===false? <MostradorAllITVs data = {data} cerrar={handleClose}/> : <MostradorAllSeguros data = {data} cerrar={handleClose}/> }
+           {<MostradorFacturaReparacionInfo data = {data} cerrar={handleClose}/> }
            
           </DialogContentText>
         </DialogContent>

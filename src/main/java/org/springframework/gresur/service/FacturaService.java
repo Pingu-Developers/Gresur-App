@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class FacturaService<T extends Factura, E extends FacturaRepository<T>> {
 	
 	protected E facturaRepo;
-	
+		
 	@Autowired
 	protected FacturaRepository<Factura> facturaGRepo;
 	

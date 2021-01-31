@@ -15,4 +15,5 @@ public interface FacturaEmitidaRepository extends FacturaRepository<FacturaEmiti
 	
 	List<FacturaEmitida> findByClienteIdAndFechaEmision(Long id,LocalDate fecha);
 	
+	List<FacturaEmitida> findByFechaEmisionBeforeAndFechaEmisionAfter(LocalDate dateBefore, LocalDate dateAfter);
 }
