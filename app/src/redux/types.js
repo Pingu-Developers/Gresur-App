@@ -40,6 +40,8 @@ export const CLEAR_ALMACEN = 'CLEAR_ALMACEN';
 export const SET_POSTPEDIDO = 'SET_POSTPEDIDO';
 export const SET_TIPOSVEHICULOS = 'SET_TIPOSVEHICULOS';
 export const CLEAR_TIPOSVEHICULOS = 'CLEAR_TIPOSVEHICULOS';
+export const SET_BALANCE = 'SET_BALANCE';
+export const CLEAR_BALANCE = 'CLEAR_BALANCE';
 
 //ClienteReducer types
 export const SET_CLIENTES = 'SET_CLIENTES';
