@@ -13,7 +13,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-//import {  } from "../redux/actions/dataActions";
+import { cargaEstanterias, clearEstanterias,nuevoProducto } from "../redux/actions/nuevoProductoActions";
 //import {  } from "../redux/actions/clienteActions";
 
 const useStyles = makeStyles({
@@ -27,26 +27,56 @@ const useStyles = makeStyles({
     }
   });
   
-export default function ConfirmDialog(props) {
+export default function EstanteriaConfirm(props) {
+
+    const counter = useSelector(state => state);
+    const dispatch = useDispatch();
+
     const classes = useStyles();
-    const { onClose, open, onConfirm, product } = props;
+    const { onClose,onCloseConfirm , open, product } = props;
     const [categoria, setCategoria] = React.useState(null);
     const [openAuto,setOpenAuto]  = React.useState(false);
-  
+    
+    const valid = product.nombre && product.nombre.length > 0 && product.unidad.length > 0 && product.stockSeguridad >= 0 && product.precioVenta >= 0 && product.precioCompra >= 0
+        && product.alto > 0 && product.ancho > 0 && product.profundo > 0 && product.pesoUnitario >= 0 && categoria;
+
     const handleClose = () => {
       onClose();
     };
 
     const handleConfirm = () =>{
-        //onConfirm(elementID);
-        onClose();
+        const nuevoprod = {
+            ...product,
+            estanteria:categoria,
+        }
+        const nuevoProd2 = {
+            alto: 2,
+            ancho: 1,
+            descripcion: "eqe",
+            estanteria: {id: 1, categoria: "AZULEJOS", capacidad: 650},
+            nombre: "Papa",
+            pesoUnitario: 1,
+            precioCompra: 2,
+            precioVenta: 1,
+            profundo: 1,
+            stock: 0,
+            stockSeguridad: 1,
+            unidad: "M2",
+            urlimagen: "https://firebasestorage.googleapis.com/v0/b/upload-images-gresur.appspot.com/o/pictures%2Fcamion.jpg?alt=media&token=ad8c3191-844f-43c8-835f-eb5608398ded"
+        }
+        if(valid){
+            console.log(nuevoprod)
+            console.log(nuevoProd2)
+            dispatch(nuevoProducto(nuevoProd2))
+            onCloseConfirm();
+        }   
     };
 
-    const handleCategoria = (event) =>{
-        setCategoria(event.target.value);
+    const handleCategoria = (data) =>{
+        setCategoria(data);
     };
-
-    const loading = openAuto;
+    
+    const loading = openAuto && counter.nuevoProducto.estanterias.size === 0;
     return (
       <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={open}>
         <DialogTitle style={{ position: "relative",alignItems: "center",display: "flex",justifyContent: "center"}} id="simple-dialog-title">
@@ -70,7 +100,7 @@ export default function ConfirmDialog(props) {
             </Grid>
             <Grid  style={{display: "flex",justifyContent: "center"}} item xs={12}>
                 <Autocomplete
-                    id="proveedor"
+                    id="Estanteria"
                     size="small"
                     style={{
                         width: 200,
@@ -80,21 +110,26 @@ export default function ConfirmDialog(props) {
                     }}
                     open={openAuto}
                     value={categoria}
-                    onChange={handleCategoria}
+                    onChange={(event, newValue) => {
+                        handleCategoria(newValue);
+                    }}
                     onOpen={() => {
+                        console.log(product)
+                        dispatch(cargaEstanterias())
                         setOpenAuto(true)
                     }}
                     onClose={() => {
+                        dispatch(clearEstanterias())
                         setOpenAuto(false)
                     }}
-                    getOptionSelected={(option, value) => option.name === value.name}
-                    getOptionLabel={(option) => option.name}
-                    //options={}
+                    getOptionSelected={(option, value) => option.categoria === value.categoria}
+                    getOptionLabel={(option) => option.categoria}
+                    options={counter.nuevoProducto.estanterias}
                     loading={loading}
                     renderInput={(params) => (
                         <TextField
                         {...params}
-                        label="Proveedor"
+                        label="Estanteria"
                         InputProps={{
                             ...params.InputProps,
                             endAdornment: (
@@ -111,7 +146,7 @@ export default function ConfirmDialog(props) {
                 />
             </Grid>
             <Grid item xs={12} style={{ position: "relative",alignItems: "center",display: "flex",justifyContent: "center"}}>
-                <Button className = {classes.Buttons} variant="contained" color="primary" onClick={handleConfirm}>
+                <Button disabled={!valid} className = {classes.Buttons} variant="contained" color="primary" onClick={handleConfirm}>
                     Si
                 </Button>
                 <Button className = {classes.Buttons} variant="contained" color="primary" onClick={handleClose}>

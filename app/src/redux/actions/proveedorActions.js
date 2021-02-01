@@ -31,7 +31,7 @@ export const clearProveedores = () => (dispatch) =>{
 }
 
 export const newProveedores = (data) => (dispatch) =>{
-    axios.get('proveedor',data)
+    axios.post('proveedor',data)
         .then(()=>{
             
         })
