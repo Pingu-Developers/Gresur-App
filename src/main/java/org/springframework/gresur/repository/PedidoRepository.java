@@ -19,7 +19,7 @@ public interface PedidoRepository extends CrudRepository<Pedido, Long>{
 	List<Pedido> findByVehiculoId(Long id); 
 	
 	List<Pedido> findByEstado(EstadoPedido estado); 
-	
+		
 	List<Pedido> findDistinctByVehiculoIdAndFechaEnvioAndEstadoIn(Long id,LocalDate fecha,Collection<EstadoPedido> lEsta); 
 	
 	List<Pedido> findByFechaEnvio(LocalDate fecha);
@@ -30,4 +30,7 @@ public interface PedidoRepository extends CrudRepository<Pedido, Long>{
 	
 	@Query(value = "SELECT * FROM PEDIDO P WHERE P.ESTADO IN :estadoPedido INNER JOIN P.FACTURAEMITIDA F INNER JOIN F.LINEASFACTURAS LF WHERE LF.PRODUCTO = :producto", nativeQuery = true)
 	List<LineaFactura> findByProductoAndEstadoIn( @Param("estadoPedido") Collection<EstadoPedido> estadoPedido, @Param("producto") Producto producto);
+	
+	@Query(value = "SELECT * FROM PEDIDOS P WHERE P.ESTADO = :estadoPedido AND P.FECHA_ENVIO < :fecha ORDER BY P.FECHA_REALIZACION DESC", nativeQuery = true)
+	List<Pedido> findByEstadoAndFechaEnvioBeforeOrdered(@Param("estadoPedido") String estadoPedido, @Param("fecha") LocalDate fecha);
 }

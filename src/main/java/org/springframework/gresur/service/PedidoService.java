@@ -2,9 +2,12 @@ package org.springframework.gresur.service;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -24,9 +27,13 @@ import org.springframework.gresur.service.exceptions.PedidoLogisticException;
 import org.springframework.gresur.service.exceptions.UnmodifablePedidoException;
 import org.springframework.gresur.service.exceptions.VehiculoDimensionesExceededException;
 import org.springframework.gresur.service.exceptions.VehiculoNotAvailableException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class PedidoService {
 	
@@ -34,10 +41,16 @@ public class PedidoService {
 	private VehiculoService vehiculoService;
 	
 	@Autowired
+	private ProductoService productoService;
+	
+	@Autowired
 	private ConfiguracionService configService;
 	
 	@Autowired
 	private FacturaEmitidaService emitidaService;
+	
+	@Autowired
+	private TransportistaService transportistaService;
 
 	@PersistenceContext
 	private EntityManager em;
@@ -161,7 +174,11 @@ public class PedidoService {
 				throw new PedidoLogisticException();
 			}
 		}
-		em.flush();
+		try {
+			em.flush();
+		} catch(Exception e) {
+			log.warn("No se ha podido ejecutar flush");
+		}
 		return ret;
 	}
 	
@@ -188,5 +205,39 @@ public class PedidoService {
 	@Transactional
 	public void deleteById(Long id) throws DataAccessException {
 		pedidoRepo.deleteById(id);
+	}
+	
+	@PostConstruct
+	@Scheduled(cron = "0 0 7 * * *")
+	@Transactional
+	public void actualizaPedidos() {
+		Queue<Pedido> candidatosQ = new LinkedList<Pedido> (pedidoRepo.findByEstadoAndFechaEnvioBeforeOrdered(EstadoPedido.EN_ESPERA.toString(), LocalDate.now()));
+			
+		while(candidatosQ.size() > 0) {
+			Pedido p = candidatosQ.poll();
+			
+			// comprueba si hay stock para poder pasar a preparado
+			if(p.getFacturaEmitida().getLineasFacturas().stream().allMatch(x -> x.getCantidad() <= productoService.findById(x.getProducto().getId()).getStock())) {
+				
+				// actualiza el stock de los producto
+				p.getFacturaEmitida().getLineasFacturas().forEach(lf -> {
+					Producto producto = productoService.findById(lf.getProducto().getId());
+					producto.setStock(producto.getStock()-lf.getCantidad());
+					productoService.save(producto);
+				});
+				
+				// emite la factura
+				FacturaEmitida fem = p.getFacturaEmitida();
+				fem.setFechaEmision(LocalDate.now());
+				fem.setNumFactura(configService.nextValEmitidas());
+				emitidaService.save(fem);
+				
+				// actualiza el pedido
+				p.setEstado(EstadoPedido.PREPARADO);
+				p.setTransportista(transportistaService.findTransportistaConMenosPedidos());
+				this.save(p);
+			}
+		}
+		log.info("Pedidos actualizados.");
 	}
 }

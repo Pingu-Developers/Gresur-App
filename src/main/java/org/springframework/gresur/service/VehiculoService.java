@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -149,6 +150,7 @@ public class VehiculoService {
 		return disponibilidadVehiculo && (pedidosEnRepartoVehiculo.size() == 0 || pedidosEnRepartoVehiculo.stream().allMatch(x->x.getTransportista().equals(t)));
 	}
 	
+	@PostConstruct
 	@Scheduled(cron = "0 0 7 * * *")
 	@Transactional
 	public void ITVSeguroReparacionvalidation() throws UnknownException{
