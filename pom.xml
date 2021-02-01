@@ -92,6 +92,11 @@
 			<artifactId>jgrapht-core</artifactId>
 			<version>1.5.0</version>
 		</dependency>
+		<!-- Webflux -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
         <!-- Spring and Spring Boot dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
