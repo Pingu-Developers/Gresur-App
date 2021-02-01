@@ -36,6 +36,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 //FIREBASE stuff
 import firebase from "../../../firebaseConfig/firebase";
+import  FormNuevoProveedor  from "../../../components/FormNuevoProveedor";
 
 const style = (theme) => ({
   root: {
@@ -137,14 +138,15 @@ export class compraMaterial extends Component {
       valueSelected: [],
       nombreNuevoProd: "",
       descNuevoProd: "",
-      stockSegNuevoProd: 1,
-      precioCompraNuevoProd: 1,
-      precioVentaNuevoProd: 1,
-      dimensionesNuevoProd: { H: 0.1, W: 0.1, D: 0.1 },
-      pesoNuevoProd: 0,
+      stockSegNuevoProd:"0",
+      precioCompraNuevoProd: "0",
+      precioVentaNuevoProd: "0",
+      dimensionesNuevoProd: { H: "0.0", W: "0.0", D: "0.0" },
+      pesoNuevoProd: "0",
       unidadNuevoProd: "",
       urlImageNuevoProd: "",
       opendialoge: false,
+      openProveedor: false,
       newProduct:{},
     };
     this.handleChangeCategoria = this.handleChangeCategoria.bind(this);
@@ -164,6 +166,8 @@ export class compraMaterial extends Component {
     this.handleChangePeso = this.handleChangePeso.bind(this);
     this.handleClickOpen = this.handleClickOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleCloseClear = this.handleCloseClear.bind(this);
+    this.handleCloseProveedor = this.handleCloseProveedor.bind(this);
   }
 
   handleClose(){
@@ -173,26 +177,54 @@ export class compraMaterial extends Component {
     });
   };
 
+  handleCloseProveedor(){
+    this.setState({
+      openProveedor: false, 
+    });
+  };
+
+  handleCloseClear(){
+    this.setState({
+      opendialoge: false,
+      nombreNuevoProd: "",
+      descNuevoProd: "",
+      stockSegNuevoProd:"0",
+      precioCompraNuevoProd: "0",
+      precioVentaNuevoProd: "0",
+      dimensionesNuevoProd: { H: "0.0", W: "0.0", D: "0.0" },
+      pesoNuevoProd: "0",
+      unidadNuevoProd: "",
+      urlImageNuevoProd: "",
+      newProduct : {},
+    });
+    if(this.props.nuevoProducto.nuevoProd){
+      this.handleClickAñadir(this.props.nuevoProducto.nuevoProd);
+    }
+    
+  };
+
   handleClickOpen(){
     const newItem = {
-      alto:this.state.dimensionesNuevoProd.H,
-      ancho: this.state.dimensionesNuevoProd.W,
-      descripcion:this.state.descNuevoProd, 
+      alto:parseFloat(this.state.dimensionesNuevoProd.H),
+      ancho: parseFloat(this.state.dimensionesNuevoProd.W),
+      descripcion: this.state.descNuevoProd, 
       nombre: this.state.nombreNuevoProd,
-      pesoUnitario:this.state.pesoNuevoProd,
-      precioCompra:this.state.precioCompraNuevoProd,
-      precioVenta:this.state.precioVentaNuevoProd,
-      profundo:this.state.dimensionesNuevoProd.D,
+      pesoUnitario:parseFloat(this.state.pesoNuevoProd),
+      precioCompra:parseFloat(this.state.precioCompraNuevoProd),
+      precioVenta:parseFloat(this.state.precioVentaNuevoProd),
+      profundo:parseFloat(this.state.dimensionesNuevoProd.D),
       stock: 0,
-      stockSeguridad:this.state.stockSegNuevoProd,
+      stockSeguridad:parseInt(this.state.stockSegNuevoProd),
       unidad: this.state.unidadNuevoProd,
-      urlimagen: this.state.urlImageNuevoProd,
+      urlimagen: this.state.urlImageNuevoProd.substring(6,this.state.urlImageNuevoProd.length),
     }
-
+    
     this.setState({
       opendialoge: true,
       newProduct : newItem
     });
+
+    
   };
 
   handleChangeUnidad(event) {
@@ -377,7 +409,7 @@ export class compraMaterial extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(this.state);
+    
     if (prevState.open !== this.state.open) {
       if (this.state.open) {
         this.props.getProveedores();
@@ -618,9 +650,12 @@ export class compraMaterial extends Component {
                 />
               )}
             />
-            <IconButton aria-label="delete" className={classes.addButton}>
+            <IconButton aria-label="delete" onClick={() => this.setState({
+              openProveedor:true
+            })} className={classes.addButton}>
               <AddCircleIcon color="secondary" />
             </IconButton>
+            <FormNuevoProveedor handleClose={this.handleCloseProveedor} open={this.state.openProveedor}/>
             <Button
               variant="contained"
               color="primary"
@@ -1004,7 +1039,7 @@ export class compraMaterial extends Component {
                 Añadir producto
         </Button>
         </Grid>
-        <EstanteriaConfirm open={this.state.opendialoge} product={this.state.newProduct} onClose={this.handleClose}/>
+        <EstanteriaConfirm open={this.state.opendialoge} onCloseConfirm ={this.handleCloseClear}  product={this.state.newProduct} onClose={this.handleClose}/>
       </Grid>
     );
   }
@@ -1013,6 +1048,7 @@ export class compraMaterial extends Component {
 const mapStateToProps = (state) => ({
   proveedor: state.proveedor,
   productos: state.productos,
+  nuevoProducto: state.nuevoProducto
 });
 
 const mapDispatchToProps = {

@@ -7,6 +7,7 @@ import dataReducer from './reducers/dataReducer';
 import clienteReducer from './reducers/clienteReducer';
 import productosReducer from './reducers/productosReducer';
 import proveedorReducer from './reducers/proveedorReducer';
+import nuevoProductoReducer from './reducers/nuevoProductoReducer';
 
 
 const initialState = {};
@@ -19,7 +20,8 @@ const reducers = combineReducers({
     data: dataReducer,
     cliente: clienteReducer,
     productos: productosReducer,
-    proveedor: proveedorReducer
+    proveedor: proveedorReducer,
+    nuevoProducto: nuevoProductoReducer
 });
 
 let store;

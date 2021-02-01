@@ -30,9 +30,10 @@ public class ProveedorController {
 	}
 	
 	@PostMapping
-	public void newProveedor(@Valid @RequestBody Proveedor p){
-		System.out.println(p);
-		//return proveedorService.findAll();
+	public Proveedor newProveedor(@Valid @RequestBody Proveedor p){
+
+		return proveedorService.save(p);
 	}
+	
 
 }
