@@ -2,12 +2,12 @@ package org.springframework.gresur.service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.model.Configuracion;
 import org.springframework.gresur.repository.ConfiguracionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ConfiguracionService {
@@ -47,6 +47,7 @@ public class ConfiguracionService {
 		return this.getConfig().getNumMaxNotificaciones();
 	}
 	
+	@Transactional
 	public String nextValEmitidas() {
 		Configuracion config = this.getConfig();
 		config.setFacturaEmitidaSeq(config.getFacturaEmitidaSeq()+1);
@@ -54,6 +55,7 @@ public class ConfiguracionService {
 		return "E-" + config.getFacturaEmitidaSeq();
 	}
 	
+	@Transactional
 	public String nextValRecibidas() {
 		Configuracion config = this.getConfig();
 		config.setFacturaRecibidaSeq(config.getFacturaRecibidaSeq()+1);
@@ -61,6 +63,7 @@ public class ConfiguracionService {
 		return "R-" + config.getFacturaRecibidaSeq();
 	}
 	
+	@Transactional
 	public String nextValEmitidasRectificada() {
 		Configuracion config = this.getConfig();
 		config.setFacturaEmitidaRectSeq(config.getFacturaEmitidaRectSeq()+1);
@@ -68,6 +71,7 @@ public class ConfiguracionService {
 		return "RCTE-" + config.getFacturaEmitidaRectSeq();
 	}
 	
+	@Transactional
 	public String nextValRecibidasRectificada() {
 		Configuracion config = this.getConfig();
 		config.setFacturaRecibidaRectSeq(config.getFacturaRecibidaRectSeq()+1);

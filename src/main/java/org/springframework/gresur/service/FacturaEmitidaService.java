@@ -12,7 +12,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Cliente;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.repository.FacturaEmitidaRepository;
-import org.springframework.gresur.repository.FacturaRepository;
 import org.springframework.gresur.service.exceptions.ClienteDefaulterException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
