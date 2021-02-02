@@ -597,3 +597,26 @@ export const loadBalance = (year) => (dispatch) => {
             })
         })
 }
+
+export const setEstaPagadoFacturaE = (id) => function (dispatch) {
+    dispatch({type: LOADING_UI})
+
+    axios.put(`/pedido/pagado/${id}`)
+        .then((res) => {
+            dispatch(loadPedidos())
+        })
+
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
+}
