@@ -28,6 +28,7 @@ import org.springframework.gresur.service.PersonalService;
 import org.springframework.gresur.service.ReparacionService;
 import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
+import org.springframework.gresur.util.Tuple2;
 import org.springframework.gresur.util.Tuple4;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -167,6 +168,24 @@ public class VehiculoController {
 		}
 		
 		return ldef;
+	}
+	
+	@GetMapping("/allsimple")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Iterable<Vehiculo> getAllVehiculosSimple(){
+		Iterable<Vehiculo> iterableVehiculos = vehiculoService.findAll();
+		return iterableVehiculos;
+	}
+	
+	@PostMapping("/info")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Tuple2<Seguro,ITV> getInfo(@RequestBody @Valid Vehiculo vehiculo){
+		Tuple2<Seguro,ITV> res = new Tuple2<>();
+		res.setE1(seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula()));
+		res.setE2(itvService.findLastITVVehiculo(vehiculo.getMatricula()));
+		res.name1 = "seguro";
+		res.name2 = "itv";
+		return res;
 	}
 	
 	@PostMapping("/add")

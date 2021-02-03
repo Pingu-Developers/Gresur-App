@@ -8,6 +8,7 @@ import clienteReducer from './reducers/clienteReducer';
 import productosReducer from './reducers/productosReducer';
 import proveedorReducer from './reducers/proveedorReducer';
 import nuevoProductoReducer from './reducers/nuevoProductoReducer';
+import vehiculoReducer from './reducers/vehiculoReducer';
 
 
 const initialState = {};
@@ -21,7 +22,8 @@ const reducers = combineReducers({
     cliente: clienteReducer,
     productos: productosReducer,
     proveedor: proveedorReducer,
-    nuevoProducto: nuevoProductoReducer
+    nuevoProducto: nuevoProductoReducer,
+    vehiculo: vehiculoReducer
 });
 
 let store;

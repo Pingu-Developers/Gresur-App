@@ -91,7 +91,7 @@ public class ProductoService {
 			}
 		}
 		
-		if(producto.getStock() <= producto.getStockSeguridad()) {
+		if(producto.getStock() <= producto.getStockSeguridad() && producto.getId() != null) {
 			Notificacion noti = new Notificacion();
 			noti.setTipoNotificacion(TipoNotificacion.SISTEMA);
 			noti.setCuerpo("El producto: '("+producto.getId()+")-"+producto.getNombre()+"' esta a punto de agotarse, considere reponerlo");

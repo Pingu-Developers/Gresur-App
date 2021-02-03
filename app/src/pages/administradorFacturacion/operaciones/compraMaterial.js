@@ -9,6 +9,7 @@ import {
   getProveedores,
   clearProveedores,
   newProveedores,
+  newFacturaRepo
 } from "../../../redux/actions/proveedorActions";
 import {
   getProductosPaginados,
@@ -94,7 +95,7 @@ const style = (theme) => ({
   },
   createButton: {
     position: "relative",
-    marginLeft: 50,
+    float:'right',
     top: 20,
   },
   foto: {
@@ -103,6 +104,10 @@ const style = (theme) => ({
     width: 50,
   },
   fieldset: {
+    backgroundColor:"#fafafa",
+    borderColor:'#C4C4C4',
+    padding:60,
+    paddingBottom:0,
     borderRadius: 10,
     height: "100%",
   },
@@ -125,6 +130,7 @@ const style = (theme) => ({
   },
 });
 
+
 export class compraMaterial extends Component {
   constructor(props) {
     super(props);
@@ -136,6 +142,7 @@ export class compraMaterial extends Component {
       proveedorSel: null,
       selected: [],
       valueSelected: [],
+      enviar:false,
       nombreNuevoProd: "",
       descNuevoProd: "",
       stockSegNuevoProd:"0",
@@ -168,8 +175,14 @@ export class compraMaterial extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleCloseClear = this.handleCloseClear.bind(this);
     this.handleCloseProveedor = this.handleCloseProveedor.bind(this);
+    this.handleEnviar = this.handleEnviar.bind(this);
   }
 
+  handleEnviar(){
+    this.setState({
+      enviar:true
+    })
+  }
   handleClose(){
     this.setState({
       opendialoge: false,
@@ -197,9 +210,6 @@ export class compraMaterial extends Component {
       urlImageNuevoProd: "",
       newProduct : {},
     });
-    if(this.props.nuevoProducto.nuevoProd){
-      this.handleClickAñadir(this.props.nuevoProducto.nuevoProd);
-    }
     
   };
 
@@ -216,7 +226,7 @@ export class compraMaterial extends Component {
       stock: 0,
       stockSeguridad:parseInt(this.state.stockSegNuevoProd),
       unidad: this.state.unidadNuevoProd,
-      urlimagen: this.state.urlImageNuevoProd.substring(6,this.state.urlImageNuevoProd.length),
+      urlimagen: this.state.urlImageNuevoProd,
     }
     
     this.setState({
@@ -409,7 +419,10 @@ export class compraMaterial extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    
+    if(this.props.nuevoProducto.nuevoProd !== prevProps.nuevoProducto.nuevoProd){
+      this.handleClickAñadir(this.props.nuevoProducto.nuevoProd);
+    }
+
     if (prevState.open !== this.state.open) {
       if (this.state.open) {
         this.props.getProveedores();
@@ -460,6 +473,31 @@ export class compraMaterial extends Component {
         "Ord"
       );
     }
+
+    if(this.state.enviar != prevState.enviar && this.state.enviar && this.state.proveedorSel){
+      if(this.state.proveedorSel && this.state.selected.length > 0){
+        const factNueva = {
+          proveedor: this.state.proveedorSel,
+          concepto:'REPOSICION_STOCK',
+          descripcion: 'Reposicion de stock',
+          estaPagada: true,
+          importe: 0
+        }
+        const DataEnv = {
+          e1:factNueva,
+          e2:this.state.valueSelected,
+        }
+        this.setState({
+          proveedorSel: null,
+          selected: [],
+          valueSelected: [],
+        })
+        this.props.newFacturaRepo(DataEnv)
+      }
+      this.setState({
+        enviar:false
+      })  
+    }
   }
 
   render() {
@@ -483,9 +521,8 @@ export class compraMaterial extends Component {
     const loading = this.state.open && proveedores.length === 0;
     return (
       <Grid xs={12} container spacing={0}>
-        <Grid container spacing={3} xs={6}>
-          <Grid item xs={1} />
-          <Grid item xs={11}>
+        <Grid container spacing={3} style={{width:"39.7vw"}}>
+          <Grid item xs={12}>
             <TextField
               className={classes.search}
               id="idBusqueda"
@@ -567,6 +604,7 @@ export class compraMaterial extends Component {
                             variant="contained"
                             size="small"
                             color="primary"
+                            disabled={this.state.selected.filter(obj => {return obj.id === producto.id})[0]?true:false}
                             onClick={() => this.handleClickAñadir(producto)}
                           >
                             Añadir
@@ -601,10 +639,10 @@ export class compraMaterial extends Component {
           />
         </Grid>
 
-        <Grid container spacing={3} xs={5}>
+        <Grid container spacing={3} style={{width:"39.7vw"}}>
           <Grid item xs={12}>
             <Typography className={classes.total} variant="body1">
-              TOTAL: {total}€
+              TOTAL: {total.toFixed(2)}€
             </Typography>
             <Autocomplete
               id="proveedor"
@@ -660,6 +698,7 @@ export class compraMaterial extends Component {
               variant="contained"
               color="primary"
               className={classes.createButton}
+              onClick={this.handleEnviar}
             >
               Crear factura
             </Button>
@@ -782,13 +821,16 @@ export class compraMaterial extends Component {
             </legend>
             <Grid container spacing={1}>
               <Grid style={{ height: 20 }} item xs={12} />
-              <Grid container direction="column" xs={1} />
-              <Grid container direction="column" spacing={5} xs={4}>
+              <Grid container direction="column" spacing={5} xs={5}>
                 <Grid item container>
                   <Grid item xs={10}>
                     <TextField
                       label="Nombre"
+                      variant="outlined"
                       fullWidth
+                      style={{
+                        backgroundColor:'white',
+                      }}
                       value={this.state.nombreNuevoProd}
                       onChange={this.handleChangeNombre}
                     />
@@ -800,6 +842,9 @@ export class compraMaterial extends Component {
                       label="Descripcion"
                       variant="outlined"
                       multiline
+                      style={{
+                        backgroundColor:'white',
+                      }}
                       rows={6}
                       fullWidth
                       value={this.state.descNuevoProd}
@@ -808,28 +853,26 @@ export class compraMaterial extends Component {
                   </Grid>
                 </Grid>
                 <Grid item container>
-                  <Grid item container style={{ marginLeft: "4%" }} xs={12}>
-                    <Grid>
-                      <Typography color="textSecondary" variant="body1">
-                        Stock de Seguridad:
-                      </Typography>
-                    </Grid>
-                    <Grid>
-                      <TextField
-                        style={{
-                          height: 12,
-                          width: 60,
-                          position: "relative",
-                          top: -4,
-                        }}
-                        type="number"
-                        defaultValue={1}
-                        value={this.state.stockSegNuevoProd}
-                        onChange={this.handleChangeStock}
-                        inputProps={{ min: 1, style: { padding: 5 } }}
-                        variant="outlined"
-                      />
-                    </Grid>
+                  <Grid item container xs={12}>
+                  <TextField
+                      id="selectCategoria"
+                      name="valueCategoria"
+                      variant="outlined"
+                      select
+                      style={{
+                        width:200,
+                        backgroundColor:'white',
+                      }}
+                      label="Unidad"
+                      value={this.state.unidadNuevoProd}
+                      onChange={this.handleChangeUnidad}
+                    >
+                      <MenuItem value={"SACOS"}>SACOS</MenuItem>
+                      <MenuItem value={"KG"}>KG</MenuItem>
+                      <MenuItem value={"M2"}>M2</MenuItem>
+                      <MenuItem value={"UNIDADES"}>UNIDADES</MenuItem>
+                      <MenuItem value={"LATAS"}>LATAS</MenuItem>
+                    </TextField>
                   </Grid>
                 </Grid>
               </Grid>
@@ -850,6 +893,7 @@ export class compraMaterial extends Component {
                   <Grid xs={6}>
                     <TextField
                       style={{
+                        backgroundColor:'white',
                         height: 12,
                         width: 60,
                         position: "relative",
@@ -873,6 +917,7 @@ export class compraMaterial extends Component {
                   <Grid xs={6}>
                     <TextField
                       style={{
+                        backgroundColor:'white',
                         height: 12,
                         width: 60,
                         position: "relative",
@@ -896,6 +941,8 @@ export class compraMaterial extends Component {
                   <Grid>
                     <TextField
                       style={{
+                        backgroundColor:'white',
+                        marginRight:5,
                         height: 12,
                         width: 60,
                         position: "relative",
@@ -913,6 +960,9 @@ export class compraMaterial extends Component {
                   <Grid>
                     <TextField
                       style={{
+                        backgroundColor:'white',
+                        marginRight:5,
+                        marginLeft:5,
                         height: 12,
                         width: 60,
                         position: "relative",
@@ -925,11 +975,13 @@ export class compraMaterial extends Component {
                       inputProps={{ min: 1, style: { padding: 5 } }}
                       variant="outlined"
                     />
-                    x
+                      x  
                   </Grid>
                   <Grid>
                     <TextField
                       style={{
+                        backgroundColor:'white',
+                        marginLeft:5,
                         height: 12,
                         width: 60,
                         position: "relative",
@@ -953,6 +1005,7 @@ export class compraMaterial extends Component {
                   <Grid xs={6}>
                     <TextField
                       style={{
+                        backgroundColor:'white',
                         height: 12,
                         width: 60,
                         position: "relative",
@@ -968,25 +1021,29 @@ export class compraMaterial extends Component {
                   </Grid>
                 </Grid>
                 <Grid item container>
-                  <Grid xs={6}>
-                    <TextField
-                      className={classes.categoria}
-                      id="selectCategoria"
-                      name="valueCategoria"
-                      select
-                      fullWidth
-                      label="Unidad"
-                      value={this.state.unidadNuevoProd}
-                      onChange={this.handleChangeUnidad}
-                    >
-                      <MenuItem value={"SACOS"}>SACOS</MenuItem>
-                      <MenuItem value={"KG"}>KG</MenuItem>
-                      <MenuItem value={"M2"}>M2</MenuItem>
-                      <MenuItem value={"UNIDADES"}>UNIDADES</MenuItem>
-                      <MenuItem value={"LATAS"}>LATAS</MenuItem>
-                    </TextField>
+                    <Grid xs={5}>
+                      <Typography color="textSecondary" variant="body1">
+                        Stock de Seguridad:
+                      </Typography>
+                    </Grid>
+                    <Grid xs={6}>
+                      <TextField
+                        style={{
+                          backgroundColor:'white',
+                          height: 12,
+                          width: 60,
+                          position: "relative",
+                          top: -4,
+                        }}
+                        type="number"
+                        defaultValue={1}
+                        value={this.state.stockSegNuevoProd}
+                        onChange={this.handleChangeStock}
+                        inputProps={{ min: 1, style: { padding: 5 } }}
+                        variant="outlined"
+                      />
+                    </Grid>
                   </Grid>
-                </Grid>
               </Grid>
               <Grid
                 style={{ marginTop: 20 }}
@@ -1057,6 +1114,7 @@ const mapDispatchToProps = {
   newProveedores,
   getProductosPaginados,
   clearProductosPaginados,
+  newFacturaRepo
 };
 
 export default connect(
