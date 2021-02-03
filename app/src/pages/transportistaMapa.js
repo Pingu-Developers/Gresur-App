@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
+import Mapa from '../components/GoogleMap'
 
-import Topbar from '../components/Topbar';
 
 const style = {
 
@@ -16,7 +16,7 @@ class transportistaMapa extends Component {
 
     render() {
         return (
-                <iframe src="https://zen-shannon-219066.netlify.app/index.html"  frameborder="0" width="100%" height="800px"></iframe>
+                <Mapa></Mapa>
         )
     }
 }

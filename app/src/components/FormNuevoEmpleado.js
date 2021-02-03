@@ -242,7 +242,7 @@ class FormNuevoEmpleado extends Component{
             this.setState(state=>({
                 errors :{
                     ...state.errors,
-                    nss:[...state.errors.nss,'Formato Iban no valido']
+                    nss:[...state.errors.nss,'Formato NSS no valido']
                 }
             }))
             errores = true
