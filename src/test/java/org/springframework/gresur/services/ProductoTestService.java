@@ -125,7 +125,7 @@ public class ProductoTestService {
 		Estanteria est = new Estanteria();
 		est.setAlmacen(alm);
 		est.setCapacidad(10.0);
-		est.setCategoria(Categoria.BAÑOS);
+		est.setCategoria(Categoria.BANOS);
 		
 		// CREACION DE PRODUCTO
 		List<Producto> ls = new ArrayList<Producto>();
@@ -254,6 +254,7 @@ public class ProductoTestService {
 		pedido.setEstado(EstadoPedido.EN_ESPERA);
 		pedido.setFacturaEmitida(fem);
 		pedido.setFechaEnvio(LocalDate.parse("14/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedido.setFechaRealizacion(LocalDate.parse("13/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		pedidoService.save(pedido);
 		

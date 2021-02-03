@@ -12,7 +12,6 @@ import Paper from '@material-ui/core/Paper';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 import GresurImg from '../images/Gresur_transparente.png';
-import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import Button from "@material-ui/core/Button";
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
@@ -21,7 +20,7 @@ import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 import Pdf from "react-to-pdf";
 
 //REDUX STUFF
-import { loadFactura} from '../redux/actions/dataActions';
+import { loadFactura, loadPedidoById} from '../redux/actions/dataActions';
 import { connect } from 'react-redux';
 
 const StyledTableCell = withStyles((theme) => ({
@@ -57,6 +56,7 @@ class TablaFactura extends Component {
 
     componentDidMount(){
       this.props.loadFactura(this.props.datos);
+      this.props.loadPedidoById(this.props.datos);
   }
 
     render(){
@@ -116,10 +116,16 @@ class TablaFactura extends Component {
               <Typography style = {{padding: '5px 0 5px 0'}}> <b>Domicilio : </b> {this.props.data.facturas.facturaEmitida.cliente.direccion} </Typography>
           </div>
 
+          <Divider />
+
+          <div style = {{paddingTop: 20}}>
+            <Typography style = {{padding: '5px 0 5px 0'}}> <b>Fecha : </b> {this.props.data.pedido ? this.props.data.pedido.fechaRealizacion : ''} </Typography>
+          </div>
+
       </div>   
 
 
-      <TableContainer component={Paper} style={{marginTop:20, marginLeft:4}}>
+      <TableContainer component={Paper} style={{marginTop:10, marginLeft:4}}>
         <Table  aria-label="customized table">
           <TableHead>
             <TableRow>
@@ -194,6 +200,7 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
   loadFactura,
+  loadPedidoById,
 }
 
 export default connect(mapStateToProps, mapActionsToProps)((TablaFactura))

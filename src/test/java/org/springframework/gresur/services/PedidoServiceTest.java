@@ -152,7 +152,7 @@ public class PedidoServiceTest {
 		Estanteria estanteria = new Estanteria();
 		estanteria.setAlmacen(almacen);
 		estanteria.setCapacidad(10000.0);
-		estanteria.setCategoria(Categoria.BAÑOS);
+		estanteria.setCategoria(Categoria.BANOS);
 		estanteria = estanteriaService.save(estanteria);
 		
 		// CREACION DE PRODUCTO
@@ -351,6 +351,7 @@ public class PedidoServiceTest {
 		pedido1.setEstado(EstadoPedido.EN_ESPERA);
 		pedido1.setFacturaEmitida(facturaPedido1);
 		pedido1.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedido1.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 	
 		pedido1 = pedidoService.save(pedido1);
 		
@@ -359,6 +360,7 @@ public class PedidoServiceTest {
 		pedido2.setEstado(EstadoPedido.EN_ESPERA);
 		pedido2.setFacturaEmitida(facturaPedido2);
 		pedido2.setFechaEnvio(LocalDate.parse("22/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedido2.setFechaRealizacion(LocalDate.parse("22/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 	
 		pedido2 = pedidoService.save(pedido2);
 		
@@ -367,6 +369,7 @@ public class PedidoServiceTest {
 		pedido3.setEstado(EstadoPedido.EN_ESPERA);
 		pedido3.setFacturaEmitida(facturaPedido3);
 		pedido3.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedido3.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		pedido3 = pedidoService.save(pedido3);
 		
@@ -530,6 +533,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		pedidoTest = pedidoService.save(pedidoTest);
 		
 		assertThat(pedidoService.findByID(pedidoTest.getId())).isEqualTo(pedidoTest);
@@ -570,6 +574,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		Vehiculo vehiculoDisponible = vehiculoService.findByMatricula("4040GND");
 		pedidoTest.setVehiculo(vehiculoDisponible);
 		
@@ -610,6 +615,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		Pedido pedidoTest2 = pedidoService.save(pedidoTest);
 		
@@ -655,6 +661,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		Vehiculo vehiculoNoDisponible = vehiculoService.findByMatricula("0000BBB");
 		pedidoTest.setVehiculo(vehiculoNoDisponible);
 		pedidoTest.setTransportista(transportistaService.findAll().iterator().next());
@@ -696,6 +703,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
 		Pedido pedidoTest2 = pedidoService.save(pedidoTest);
 		
@@ -741,6 +749,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		Pedido pedidoTestBD = pedidoService.save(pedidoTest);
 
@@ -828,6 +837,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		Pedido pedidoTestBD = pedidoService.save(pedidoTest);
 
@@ -930,6 +940,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		Pedido pedidoTestBD = pedidoService.save(pedidoTest);
 
@@ -1018,6 +1029,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		Pedido pedidoTestBD = pedidoService.save(pedidoTest);
 
@@ -1123,6 +1135,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		Vehiculo vehiculoDisponible = vehiculoService.findByMatricula("4040GND");
 		pedidoTest.setVehiculo(vehiculoDisponible);
 		pedidoTest.setTransportista(transportistaService.findAll().iterator().next());
@@ -1164,6 +1177,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		Pedido pedidoTestBD = pedidoService.save(pedidoTest);
 		Vehiculo vehiculoDisponible = vehiculoService.findByMatricula("4040GND");
@@ -1207,6 +1221,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		pedidoTest.setTransportista(transportistaService.findAll().iterator().next());
 		
 		assertThrows(PedidoLogisticException.class, ()->{pedidoService.save(pedidoTest);});
@@ -1246,6 +1261,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		Pedido pedidoTestBD = pedidoService.save(pedidoTest);
 		pedidoTestBD.setTransportista(transportistaService.findAll().iterator().next());
@@ -1287,6 +1303,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.PREPARADO);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		assertThrows(PedidoLogisticException.class, ()->{pedidoService.save(pedidoTest);});
 	}
@@ -1325,6 +1342,7 @@ public class PedidoServiceTest {
 		pedidoTest.setEstado(EstadoPedido.EN_ESPERA);
 		pedidoTest.setFacturaEmitida(facturaPedidoTest);
 		pedidoTest.setFechaEnvio(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedidoTest.setFechaRealizacion(LocalDate.parse("20/12/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		Pedido pedidoTestBD = pedidoService.save(pedidoTest);
 		pedidoTestBD.setEstado(EstadoPedido.PREPARADO);

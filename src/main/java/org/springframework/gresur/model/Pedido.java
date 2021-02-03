@@ -13,8 +13,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -34,9 +32,12 @@ public class Pedido extends BaseEntity{
 	private EstadoPedido estado;
 	
 	@NotNull
+	@Column(name = "fecha_realizacion")
+	private LocalDate fechaRealizacion;
+	
+	@NotNull
 	@Column(name = "fecha_envio")
 	private LocalDate fechaEnvio;
-	
 	
 	@NotNull
 	@OneToOne(optional = false)

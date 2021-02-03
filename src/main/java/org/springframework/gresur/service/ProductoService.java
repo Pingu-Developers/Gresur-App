@@ -91,7 +91,7 @@ public class ProductoService {
 			}
 		}
 		
-		if(producto.getStock() <= producto.getStockSeguridad()) {
+		if(producto.getStock() <= producto.getStockSeguridad() && producto.getId() != null) {
 			Notificacion noti = new Notificacion();
 			noti.setTipoNotificacion(TipoNotificacion.SISTEMA);
 			noti.setCuerpo("El producto: '("+producto.getId()+")-"+producto.getNombre()+"' esta a punto de agotarse, considere reponerlo");
@@ -183,16 +183,16 @@ public class ProductoService {
 
 	@Transactional(readOnly = true)
 	public Page<Producto> findAllOrderedPageable(Pageable pageable) throws DataAccessException{
-		return productoRepository.fingAllOrderStock(pageable);
+		return productoRepository.findAllOrderStock(pageable);
 	}
 	
 	@Transactional(readOnly = true)
 	public Page<Producto> findByEstanteriaOrderedPageable(Categoria c , Pageable pageable){
-		return productoRepository.fingByEstanteriaCategoriaOrderStock(c,pageable);
+		return productoRepository.findByEstanteriaCategoriaOrderStock(c,pageable);
 	}
 	
 	@Transactional(readOnly = true)
 	public Page<Producto> findByProductosByNameOrderedPageable(String s , Pageable pageable){
-		return productoRepository.fingByNombreContainingIgnoreCaseOrderStock(s, pageable);
+		return productoRepository.findByNombreContainingIgnoreCaseOrderStock(s, pageable);
 	}
 }

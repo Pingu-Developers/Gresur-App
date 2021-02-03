@@ -98,6 +98,12 @@ public class PedidoController {
 		return pedidoService.findAll();
 	}
 	
+	@GetMapping("/id/{id}")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMINISTRADOR')")
+	public Pedido findById(@PathVariable("id") Long id) {
+		return pedidoService.findByID(id);
+	}
+	
 	@GetMapping("/{estado}")
 	@PreAuthorize("hasRole('DEPENDIENTE')")
 	public List<Pedido> findAllByEstado(@PathVariable("estado") String estado) {
@@ -155,6 +161,7 @@ public class PedidoController {
 		pedidoRes.setEstado(estado);
 		pedidoRes.setFacturaEmitida(factura);
 		pedidoRes.setFechaEnvio(fechaEnvio);
+		pedidoRes.setFechaRealizacion(LocalDate.now());
 		pedidoRes = pedidoService.save(pedidoRes);
 		
 		// Receptores de la notificacion

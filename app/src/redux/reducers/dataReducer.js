@@ -1,18 +1,22 @@
-import { CLEAR_ALMACENGESTION, SET_ALMACENGESTION, SET_CLIENTE, CLEAR_CLIENTE, CLEAR_ISDEFAULTER, SET_ISDEFAULTER, SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_PERSONAL, CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, CLEAR, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_ALMACEN,CLEAR_ALMACEN,SET_FACTURAS ,CLEAR_FACTURAS,SET_CONTRATO,CLEAR_CONTRATO, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS } from '../types';
+import { SET_ALMACENGESTIONENCARGADO, CLEAR_ALMACENGESTIONENCARGADO, SET_BALANCE, CLEAR_BALANCE, SET_PEDIDO, CLEAR_PEDIDO, CLEAR_ALMACENGESTION, SET_ALMACENGESTION, SET_CLIENTE, CLEAR_CLIENTE, CLEAR_ISDEFAULTER, SET_ISDEFAULTER, SET_PEDIDOS, CLEAR_PEDIDOS, CLEAR_PRODUCTOS, SET_PRODUCTOS, SET_PERSONAL, CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, CLEAR, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_ALMACEN,CLEAR_ALMACEN,SET_FACTURAS ,CLEAR_FACTURAS,SET_CONTRATO,CLEAR_CONTRATO, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS } from '../types';
 
 const initialState = {
     pedidos: [],
+    pedido: null,
     productos: [],
     vehiculos: [],
     personal: [],
     ocupaciones: [],
     isDefaulter: false,
     cliente: null,
+    gestionAlmacen: [],
+    gestionAlmacenEncargado: [],
     vehiculosITVSeguroReparacion: [],
     almacen:[],
     facturas:[],
     contrato:[],
-    tiposVehiculos:[]
+    tiposVehiculos:[],
+    balance:[]
 }
 
 export default function (state = initialState, action) {
@@ -23,6 +27,13 @@ export default function (state = initialState, action) {
                 pedidos: action.payload.data
             };
         case CLEAR_PEDIDOS:
+            return initialState;
+        case SET_PEDIDO:
+            return {
+                ...state,
+                pedido: action.payload.data
+            };
+        case CLEAR_PEDIDO:
             return initialState;
         case SET_PRODUCTOS:
             return {
@@ -79,6 +90,13 @@ export default function (state = initialState, action) {
             };
         case CLEAR_ALMACENGESTION:
             return initialState;
+        case SET_ALMACENGESTIONENCARGADO:
+            return {
+                ...state,
+                gestionAlmacenEncargado: action.payload.data
+            }
+        case CLEAR_ALMACENGESTIONENCARGADO:
+            return initialState;
         case SET_VEHICULOSITVSEGUROREPARACION:
             return {
                 ...state,
@@ -116,5 +134,13 @@ export default function (state = initialState, action) {
             } 
         case CLEAR_TIPOSVEHICULOS:
             return initialState;
+        case SET_BALANCE:
+            return{
+                ...state,
+                balance: action.payload.data
+            }
+        case CLEAR_BALANCE:
+            return initialState;
     }
+    
 }

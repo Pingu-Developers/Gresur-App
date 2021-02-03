@@ -10,23 +10,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
 import org.springframework.gresur.model.Categoria;
+import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.Producto;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.util.Tuple2;
+import org.springframework.gresur.util.Tuple3;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*",maxAge = 3600)
@@ -106,6 +113,13 @@ public class ProductoController {
 		p.setPrecioVenta(newProducto.getPrecioVenta());
 		p.setPrecioCompra(newProducto.getPrecioCompra());
 		return productoService.save(p);
+	}
+	
+	@ExceptionHandler({ Exception.class })
+	@PostMapping("/add")
+	public Producto saveNuevoProducto( @RequestBody Producto newProducto) {
+	
+		return productoService.save(newProducto);
 	}
 	
 	@GetMapping("/demanda")

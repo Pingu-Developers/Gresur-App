@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,13 +44,13 @@ public class Seguro extends BaseEntity implements Comparable<Seguro>{
 	@Column(name = "fecha_expiracion")
 	private LocalDate fechaExpiracion;
 	
-	@JsonIgnore
+	@JsonView
 	@NotNull
 	@OneToOne(optional = false)
 	@JoinColumn(name = "factura_recibida_id")
 	private FacturaRecibida recibidas;
 	
-	@JsonIgnore
+	@JsonView
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "vehiculo_id")

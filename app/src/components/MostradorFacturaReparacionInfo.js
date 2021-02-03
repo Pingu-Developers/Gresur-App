@@ -7,7 +7,6 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import PopUpFacturaReparacion from './PopUpFacturaReparacion';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -37,33 +36,31 @@ const useStyles = makeStyles({
 
 export default function CustomizedTables(props) {
   const classes = useStyles();
-  const datos = props.data;
+  const facturas = props.data;
 
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
           <TableRow className={classes.columnas}>
-            <StyledTableCell align="center">Fecha de entrada al taller</StyledTableCell>
-            <StyledTableCell align="center">Fecha de salida del taller</StyledTableCell>
-            <StyledTableCell align="center">Descripcion</StyledTableCell>
+            <StyledTableCell align="center">Numero de factura</StyledTableCell>
+            <StyledTableCell align="center">Fecha de emision</StyledTableCell>
             <StyledTableCell align="center">Importe</StyledTableCell>
-            <StyledTableCell align="center">Facturas</StyledTableCell>
+            <StyledTableCell align="center">Pagada(Si/No)</StyledTableCell>
+            <StyledTableCell align="center">Descripcion</StyledTableCell>
+
           </TableRow>
         </TableHead>
         <TableBody>
-          {datos.map((row) => (
-            <StyledTableRow key={row.fechaEntradaTaller}>
+            <StyledTableRow key={facturas.numFactura}>
               <StyledTableCell component="th" scope="row" align="center">
-                {row.fechaEntradaTaller}
+                {facturas.numFactura}
               </StyledTableCell>
-              <StyledTableCell align="center">{row.fechaSalidaTaller===null? 'Fecha de salida desconocida' : row.fechaSalidaTaller}</StyledTableCell>
-              <StyledTableCell align="center">{row.descripcion===null? 'Reparacion sin descripcion' : row.descripcion}</StyledTableCell>
-              <StyledTableCell align="center">{row.recibidas.importe}</StyledTableCell>
-              <StyledTableCell align="center"> <PopUpFacturaReparacion data ={row.recibidas} /> </StyledTableCell>
-
+              <StyledTableCell align="center">{facturas.fechaEmision}</StyledTableCell>
+              <StyledTableCell align="center">{facturas.importe}</StyledTableCell>
+              <StyledTableCell align="center">{facturas.estaPagada? 'SI': 'NO'}</StyledTableCell>
+              <StyledTableCell align="center">{facturas.descripcion}</StyledTableCell>
             </StyledTableRow>
-          ))}
         </TableBody>
       </Table>
     </TableContainer>

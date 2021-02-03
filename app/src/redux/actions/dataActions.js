@@ -1,4 +1,4 @@
-import { CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS } from '../types';
+import { SET_ALMACENGESTIONENCARGADO, CLEAR_ALMACENGESTIONENCARGADO, SET_BALANCE, CLEAR_BALANCE, SET_PEDIDO, CLEAR_PEDIDO, CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS } from '../types';
 import axios from 'axios';
 
 export const loadPedidos = () => (dispatch) => {
@@ -8,6 +8,23 @@ export const loadPedidos = () => (dispatch) => {
     axios.get('/pedido')
         .then((res) => {
             dispatch({type: SET_PEDIDOS, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        })
+}
+
+export const loadPedidoById = (id) => (dispatch) => {
+
+    dispatch({type: LOADING_UI})
+
+    axios.get(`/pedido/id/${id}`)
+        .then((res) => {
+            dispatch({type: SET_PEDIDO, payload: res})
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
@@ -474,6 +491,52 @@ export const clearAlmacenGestion = () => (dispatch) => {
     dispatch({type: CLEAR_ALMACENGESTION})
 }
 
+export const loadAlmacenGestionEncargado = () => (dispatch) => {
+    dispatch({type: LOADING_UI})
+    axios.get(`/almacen/gestionEncargado`)
+        .then((res) => {
+            dispatch({type: SET_ALMACENGESTIONENCARGADO, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
+}
+
+export const updateEstanteriaCapacidad = (categoria, capacidad) => (dispatch) =>{
+    axios.put(`/estanterias/update/${categoria}/${capacidad}`)
+    .then((res) => {
+        dispatch(loadAlmacenGestionEncargado());
+    })
+    .catch((err) => {
+        if(err.response){
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        } else {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err
+            })
+        }
+    })
+}
+
+export const clearAlmacenGestionEncargado = () => (dispatch) => {
+    dispatch({type: CLEAR_ALMACENGESTIONENCARGADO})
+}
+
 export const loadVehiculosSeguroITVReparacion = () => function (dispatch) {
     dispatch({type: LOADING_UI})
 
@@ -548,6 +611,45 @@ export const deleteVehiculo = (matricula) => function (dispatch) {
     axios.delete(`/vehiculo/delete/${matricula}`)
         .then((res) => {
             dispatch(loadVehiculosSeguroITVReparacion())
+        })
+
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
+}
+
+export const loadBalance = (year) => (dispatch) => {
+    
+    dispatch({type: LOADING_UI})
+
+    axios.get(`/balance/${year}`)
+        .then((res) => {
+            dispatch({type: SET_BALANCE, payload: res})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        })
+}
+
+export const setEstaPagadoFacturaE = (id) => function (dispatch) {
+    dispatch({type: LOADING_UI})
+
+    axios.put(`/pedido/pagado/${id}`)
+        .then((res) => {
+            dispatch(loadPedidos())
         })
 
         .catch((err) => {

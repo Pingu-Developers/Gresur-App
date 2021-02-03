@@ -65,4 +65,9 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 		return facturaRepo.findByClienteIdAndFechaEmision(id, fecha);
 	}
 	
+	@Transactional
+	public List<FacturaEmitida> findByFechaEmisionBeforeAndFechaEmisionAfter(LocalDate dateBefore, LocalDate dateAfter){
+		return facturaRepo.findByFechaEmisionBeforeAndFechaEmisionAfter(dateBefore, dateAfter);
+	}
+	
 }
