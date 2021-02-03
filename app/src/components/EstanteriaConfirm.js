@@ -49,25 +49,8 @@ export default function EstanteriaConfirm(props) {
             ...product,
             estanteria:categoria,
         }
-        const nuevoProd2 = {
-            alto: 2,
-            ancho: 1,
-            descripcion: "eqe",
-            estanteria: {id: 1, categoria: "AZULEJOS", capacidad: 650},
-            nombre: "Papa",
-            pesoUnitario: 1,
-            precioCompra: 2,
-            precioVenta: 1,
-            profundo: 1,
-            stock: 0,
-            stockSeguridad: 1,
-            unidad: "M2",
-            urlimagen: "https://firebasestorage.googleapis.com/v0/b/upload-images-gresur.appspot.com/o/pictures%2Fcamion.jpg?alt=media&token=ad8c3191-844f-43c8-835f-eb5608398ded"
-        }
         if(valid){
-            console.log(nuevoprod)
-            console.log(nuevoProd2)
-            dispatch(nuevoProducto(nuevoProd2))
+            dispatch(nuevoProducto(nuevoprod))
             onCloseConfirm();
         }   
     };

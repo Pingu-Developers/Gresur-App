@@ -46,3 +46,55 @@ export const newProveedores = (data) => (dispatch) =>{
             }
         });
 }
+
+export const newFacturaRepo = (data) => (dispatch) =>{
+    axios.post('facturaRecibida/repo',data)
+        .then(()=>{
+            
+        })
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                });
+            } else {
+                console.log(err);
+            }
+        });
+}
+
+
+export const newFacturaVehiculo = (tipo,data) => (dispatch) =>{
+    axios.post(`facturaRecibida/${tipo}`,data)
+        .then(()=>{
+            
+        })
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                });
+            } else {
+                console.log(err);
+            }
+        });
+}
+
+export const newFacturaOtro = (data) => (dispatch) =>{
+    axios.post(`facturaRecibida/otro`,data)
+        .then(()=>{
+            
+        })
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                });
+            } else {
+                console.log(err);
+            }
+        });
+}

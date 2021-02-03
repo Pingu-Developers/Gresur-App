@@ -40,11 +40,10 @@ export const clearEstanterias = () => (dispatch) =>{
 
 }
 
-export const nuevoProducto = () => (dispatch,product) =>{
+export const nuevoProducto = (product) => (dispatch) =>{
 
     dispatch({ type:LOADING_UI })
 
-    axios.defaults.headers.common['Content-Type'] = 'application/json';
     axios.post('producto/add',product)
         .then(res => {
             dispatch({
