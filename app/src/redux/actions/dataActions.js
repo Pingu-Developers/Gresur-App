@@ -194,13 +194,31 @@ export const loadAlmacen = () => function (dispatch){
 
 }
 
+export const loadAlmacenDisponible = () => function (dispatch){
+    dispatch({type: LOADING_UI})
+    
+    axios.get('/encargado/almacen')
+        .then((res) => {
+            dispatch({type: SET_ALMACEN, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response
+            })
+        })
+
+
+}
+
 export const clearPersonal = () => (dispatch) => {
     dispatch({type: CLEAR_PERSONAL})
     
 }
 
 export const addPersonal = (rolEmpleado,personal) => (dispatch) =>{
-        axios.post(`/adm/add/${rolEmpleado.rol}`,personal)
+        axios.post(`/adm/add/${rolEmpleado}`,personal)
         .then((res) => {
             dispatch(loadPersonal());
         })

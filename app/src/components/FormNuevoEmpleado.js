@@ -18,7 +18,7 @@ import firebase from "../firebaseConfig/firebase";
 import {storage} from "../firebaseConfig/firebase";
 
 //REDUX stuff
-import { addPersonal,loadAlmacen } from '../redux/actions/dataActions';
+import { addPersonal,loadAlmacen,clear,loadAlmacenDisponible } from '../redux/actions/dataActions';
 import { connect } from 'react-redux';
 
   const styles = theme => ({
@@ -88,7 +88,11 @@ import { connect } from 'react-redux';
             step:0,
             almacen:null,
             id:null,
-            errors:null
+            enviar:false,
+            errors: {name : [], nif: [], direccion: [], tlf: [] , nss: [], email:[],rol:[],almacen:[]},
+            loadFoto: true,
+            trabajador:{}
+
   }
 
 class FormNuevoEmpleado extends Component{
@@ -96,11 +100,212 @@ class FormNuevoEmpleado extends Component{
     constructor(){
         super();
         this.state = initialState;
+
     }
     componentDidMount(){
-      this.props.loadAlmacen();
+      this.props.loadAlmacenDisponible();
+    }
+     ///VALIDACIONES///
+     validateEmail(email) {
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(String(email).toLowerCase());
   }
 
+  validateNif(nif) {   
+      const re = /^\d{8}[A-Z]$/;
+      return re.test(String(nif));
+  }
+
+  validateTlf(tlf) {   
+      const re = /^\d{9}$/;
+      return re.test(String(tlf).toLowerCase());
+  }
+
+  validateNss(nss) {   
+      const re = /^[0-9]{2}\s?[0-9]{10}$/;
+      return re.test(String(nss).toLowerCase());
+  }
+ ///////////////////////////////////////////
+    componentDidUpdate(prevProps,prevState){
+      console.log(this.state)
+      if(this.state.open != prevState.open && !this.state.open){
+          this.setState({
+              name:'', 
+              email:'',
+              tlf:'',
+              direccion:'',
+              nss:'',
+              nif:'',
+              rol:'',
+              errors: {name : [], nif: [], direccion: [], tlf: [] , nss: [], email:[],rol:[],almacen:[]},
+              enviar:false,
+              trabajador:{}
+          })
+      }
+      if(this.state.enviar != prevState.enviar && this.state.enviar ){
+          let errores = false;
+            if(this.state.rol === '' && this.state.errors.rol.length === 0){
+              this.setState(state=>({
+                  errors :{
+                      ...state.errors,
+                      rol:[...state.errors.rol,'Debe seleccionar una']
+                  }
+              }))
+              errores = true
+          }else if(this.state.rol !== ''){
+              this.setState(state=>({
+                  errors :{
+                      ...state.errors,
+                      rol:[]
+                  }
+              }))
+          }else{
+              errores = true
+          }
+          if((this.state.name.length<3 || this.state.name.length>50) && this.state.errors.name.length === 0){
+              this.setState(state=>({
+                  errors :{
+                      ...state.errors,
+                      name:[...state.errors.name,'Tamaño invalido']
+                  }
+              }))
+              errores = true
+          }else if(this.state.name.length>=3 && this.state.name.length<=50){
+              this.setState(state=>({
+                  errors :{
+                      ...state.errors,
+                      name:[]
+                  }
+              }))
+          }else{
+              errores = true
+          }
+
+          if(!this.validateEmail(this.state.email) && this.state.errors.email.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    email:[...state.errors.email,'Formato Email no valido']
+                }
+            }))
+            errores = true
+        }else if(this.validateEmail(this.state.email)){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    email:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+
+        if(!this.validateTlf(this.state.tlf) && this.state.errors.tlf.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    tlf:[...state.errors.tlf,'Formato Tlf no valido']
+                }
+            }))
+            errores = true
+        }else if(this.validateTlf(this.state.tlf)){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    tlf:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+
+        if((this.state.direccion.length<3 || this.state.direccion.length>100) && this.state.errors.direccion.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    direccion:[...state.errors.direccion,'Esta vacio']
+                }
+            }))
+            errores = true
+        }else if(this.state.direccion.length>1){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    direccion:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+
+        if(!this.validateNss(this.state.nss) && this.state.errors.nss.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    nss:[...state.errors.nss,'Formato Iban no valido']
+                }
+            }))
+            errores = true
+        }else if(this.validateNss(this.state.nss)){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    nss:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+
+        if(!this.validateNif(this.state.nif) && this.state.errors.nif.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    nif:[...state.errors.nif,'Formato Nif no valido']
+                }
+            }))
+            errores = true
+        }else if(this.validateNif(this.state.nif)){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    nif:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+        if((this.state.almacen === null ||this.state.almacen === 'No disponible') && this.state.errors.almacen.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    almacen:[...state.errors.almacen,'Debe seleccionar una']
+                }
+            }))
+            errores = true
+        }else if(this.state.almacen !== ''){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    almacen:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+
+          if(!errores){
+            this.props.onNextStep(this.state.step)
+            this.props.addPersonal(this.state.rol,this.state.trabajador)
+           
+        }
+          this.setState({
+              enviar:false
+          })
+          
+      }
+
+    }
     handleClose = () => {
         this.setState({
             open:false
@@ -116,15 +321,18 @@ class FormNuevoEmpleado extends Component{
         this.setState({
             almacen:event.target.value
         })
-        console.log(this.state.almacen)
       };
     handleChangeInput = (event) => {
-        this.setState({
-            [event.target.name]:event.target.value
-        })
+      this.setState(state =>({
+        [event.target.name]: event.target.value,
+        errors :{
+            ...state.errors,
+            [event.target.name]:[]
+        }
+    }))
 
       };
-
+   
     handleSubmit = (event) =>  {
         event.preventDefault();
         //Valores del nuevo empleado rellenado en el formulario
@@ -138,25 +346,24 @@ class FormNuevoEmpleado extends Component{
           direccion: this.state.direccion,
           nss: this.state.nss,
           nif: this.state.nif,
-          image: this.state.picture,
+          image: this.state.image,
           step: this.state.step,
           almacen: almacenEmpleado.almacen
-      
+          
         }
 
-        //Rol del nuevo empleado
-         const rolEmpleado = {
-            rol: this.state.rol
-         }
          //step + 1
-         this.props.onNextStep(empleado.step)
+     //    this.props.onNextStep(this.state.step)
         //Se realiza el post
-        this.props.addPersonal(rolEmpleado,empleado);
+   //     this.props.addPersonal(rolEmpleado,empleado);
         //Se realiza para pasar el nif de este formulario 
         //al formulario de contrato para que se lo añada al empleado especifico añadido
         this.props.onSubmitNif(empleado.nif);
         //Se limpia el formulario una vez añadido el empleado
-        this.setState(initialState)
+        this.setState({
+          trabajador:empleado,
+          enviar:true,
+        })
      }
 
     handleChangeImg = (event) => {
@@ -172,7 +379,8 @@ class FormNuevoEmpleado extends Component{
       task.on('state_changed',(snapshot) => {
        snapshot.ref.getDownloadURL().then(function(downloadURL) {
           this.setState({
-            picture:downloadURL
+            image:downloadURL,
+            loadFoto:false
           })
        }.bind(this));
         console.log(snapshot)    
@@ -183,11 +391,11 @@ class FormNuevoEmpleado extends Component{
 
 
      render(){
-      const { classes,data } = this.props;
+      const { classes, handleClose , open,data } = this.props;
        return(
            <div>
             <DialogContent>
-            <form  id="nuevoEmpleado"noValidate onSubmit={this.handleSubmit}>
+            <form  id="nuevoEmpleado" novalidate onSubmit={this.handleSubmit}>
                 <div>
                 <FormControl className={classes.formControl}>
                 <InputLabel id="demo-simple-select-label">Rol</InputLabel>
@@ -198,7 +406,8 @@ class FormNuevoEmpleado extends Component{
                     id="demo-simple-select"
                     value={this.state.rol}
                     onChange={this.handleChange}
-                    
+                    error={this.state.errors.rol.length>0}
+                    helperText={this.state.errors.rol[0]}
                     >-
                     <MenuItem value="dependiente">Dependiente</MenuItem>
                     <MenuItem value="encargado">Encargado de almacén</MenuItem>
@@ -222,10 +431,10 @@ class FormNuevoEmpleado extends Component{
                         value={this.state.name}
                         onChange={this.handleChangeInput}
                         className={classes.formSpace}
-                    
+                        error={this.state.errors.name.length>0}
+                        helperText={this.state.errors.name[0]}
                 />
                     <TextField 
-                        id="tlf-number"
                         id="tlf"
                         label="Teléfono"
                         type="text"
@@ -235,7 +444,8 @@ class FormNuevoEmpleado extends Component{
                         required
                         value={this.state.tlf}
                         onChange={this.handleChangeInput}
-
+                        error={this.state.errors.tlf.length>0}
+                        helperText={this.state.errors.tlf[0]}   
                 />
                     <TextField 
                         id="email"
@@ -248,7 +458,8 @@ class FormNuevoEmpleado extends Component{
                         value={this.state.email}
                         onChange={this.handleChangeInput}
                         className={classes.formSpace}
-
+                        error={this.state.errors.email.length>0}
+                        helperText={this.state.errors.email[0]}
                 />
 
                     <TextField 
@@ -261,9 +472,10 @@ class FormNuevoEmpleado extends Component{
                         required
                         value={this.state.direccion}
                         onChange={this.handleChangeInput}
+                        error={this.state.errors.direccion.length>0}
+                        helperText={this.state.errors.direccion[0]}
                 />
                 <TextField
-                        id="standard-number"
                         required
                         id="nif"
                         label="NIF"
@@ -274,10 +486,10 @@ class FormNuevoEmpleado extends Component{
                         value={this.state.nif}
                         onChange={this.handleChangeInput}
                         className={classes.formLarge}
-
+                        error={this.state.errors.nif.length>0}
+                        helperText={this.state.errors.nif[0]}
                 />
                     <TextField
-                        id="standard-number"
                         id="nss"
                         label="NSS"
                         type="text"
@@ -288,7 +500,8 @@ class FormNuevoEmpleado extends Component{
                         value={this.state.nss}
                         onChange={this.handleChangeInput}
                         className={classes.formLarge}
-
+                        error={this.state.errors.nss.length>0}
+                        helperText={this.state.errors.nss[0]}
                 />
                 {this.state.rol!='encargado'?null:
                 
@@ -301,8 +514,10 @@ class FormNuevoEmpleado extends Component{
                     id="demo-simple-select"
                     value={this.state.almacen}
                     onChange={this.handleChangeAlmacen}
+                    error={this.state.errors.almacen.length>0}
+                    helperText={this.state.errors.almacen[0]}
                     >
-                   {data.almacen ===undefined?null:data.almacen.map((alm)=>
+                   {data.almacen ===undefined?null:data.almacen.length===0?<MenuItem style={{color:'red'}}value={null}>No disponible</MenuItem>:data.almacen.map((alm)=>
                        <MenuItem value={alm.id}>{alm.direccion}</MenuItem>
                     )}
 
@@ -317,7 +532,7 @@ class FormNuevoEmpleado extends Component{
                             id="contained-button-file"
                         />
                         <label htmlFor="contained-button-file">
-                        <Button className={classes.uploadBoton} variant="contained" color="primary" component="span"  startIcon={<CloudUploadIcon />} >
+                        <Button className={classes.uploadBoton} variant="contained" color="primary" component="span"  startIcon={<CloudUploadIcon />}  >
                             Subir
                         </Button>
                         </label>
@@ -328,9 +543,12 @@ class FormNuevoEmpleado extends Component{
 
             </DialogContent>
             <div>
-        <Button className={classes.addBoton} size="large"form="nuevoEmpleado" type ="submit" color="primary" variant="contained" startIcon={<AddCircleIcon />}>
+              
+        <Button className={classes.addBoton} size="large"form="nuevoEmpleado" onClick={this.handleSubmit} type="submit" color="primary" variant="contained" startIcon={<AddCircleIcon />}
+         disabled={this.state.loadFoto}>
             Añadir
         </Button>
+        
         </div>
         </div>
         )   
@@ -339,7 +557,8 @@ class FormNuevoEmpleado extends Component{
 FormNuevoEmpleado.propTypes={
     classes: PropTypes.object.isRequired,
     addPersonal: PropTypes.func.isRequired,
-    loadAlmacen: PropTypes.func.isRequired
+    loadAlmacen: PropTypes.func.isRequired,
+    loadAlmacenDisponible: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -349,6 +568,8 @@ const mapStateToProps = (state) => ({
 const mapActionsToProps = {
     addPersonal,
     loadAlmacen,
+    loadAlmacenDisponible,
+    clear
     
 }
 
