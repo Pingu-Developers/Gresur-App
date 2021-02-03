@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import VerticalResizablePBar from '../components/VerticalResizablePBar';
 
 import { loadAlmacenGestionEncargado, clearAlmacenGestionEncargado } from '../redux/actions/dataActions'
+import { Divider } from '@material-ui/core';
 
 
 const style = {
@@ -15,19 +16,33 @@ const style = {
         fontSize: 40,
         fontWeight: 600,
     },
-    wrapper: {
+    histogram: {
         padding: '30px 30px 30px 60px',
+        overflowY: 'hidden',
+        maxHeight: 600,
+        minHeight: 400,
+        width: '80%'
     },
     axis: {
+        position: 'relative',
         borderLeft: '1px solid gray',
         borderBottom: '1px solid gray',
         height: '60vh',
         minHeight: 400,
-        paddingLeft: 50,
         display: 'flex',
         alignItems: 'flex-end',
-        width: '80%',
+        justifyContent: 'space-around',
     },
+    gridWrapper: {
+        position: 'absolute',
+        height: '100%',
+        width: '100%',
+        display: 'grid',
+        alignContent: 'space-between'
+    },
+    gridRow: {
+        userSelect: 'none'
+    }
 }
 
 class encargadoGestion extends Component {
@@ -64,16 +79,31 @@ class encargadoGestion extends Component {
                 <Typography variant = 'h3' className = {classes.titulo}>GESTION DEL ALMACEN</Typography>
 
                 <div className = {classes.wrapper}>
-                    <div className = {classes.axis}>
-                        {gestionAlmacenEncargado ? 
-                            gestionAlmacenEncargado.map((entry) => 
-                                <VerticalResizablePBar 
-                                    categoria = {entry.categoria} 
-                                    ocupacion = {entry.ocupacionEstanteria}
-                                    porcentajeAlmacen = {entry.porcentajeAlmacen}
-                                    totalOcupado = {this.porcentajeDeAlmacenOcupado()}/>
-                            ) : null
-                        }
+                    <div className = {classes.histogram}>
+                        <div className = {classes.axis}>
+                            <div className = {classes.gridWrapper}>
+                                <span className = {classes.gridRow}><span style = {{marginLeft: -50}}>100%</span><Divider style = {{marginTop: -13}}/></span>
+                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}></span><Divider style = {{marginTop: -13}}/></span>
+                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}>80%</span><Divider style = {{marginTop: -13}}/></span>
+                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}></span><Divider style = {{marginTop: -13}}/></span>
+                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}>60%</span><Divider style = {{marginTop: -13}}/></span>
+                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}></span><Divider style = {{marginTop: -13}}/></span>
+                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}>40%</span><Divider style = {{marginTop: -13}}/></span>
+                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}></span><Divider style = {{marginTop: -13}}/></span>
+                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}>20%</span><Divider style = {{marginTop: -13}}/></span>
+                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}></span><Divider style = {{marginTop: -13}}/></span>
+                                <span className = {classes.gridRow}><span style = {{marginLeft: -30}}>0%</span><Divider style = {{marginTop: -13}}/></span>
+                            </div>
+                            {gestionAlmacenEncargado ? 
+                                gestionAlmacenEncargado.map((entry) => 
+                                    <VerticalResizablePBar 
+                                        categoria = {entry.categoria} 
+                                        ocupacion = {entry.ocupacionEstanteria}
+                                        porcentajeAlmacen = {entry.porcentajeAlmacen}
+                                        totalOcupado = {this.porcentajeDeAlmacenOcupado()}/>
+                                ) : null
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

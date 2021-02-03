@@ -2,26 +2,39 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
+import DragHandleIcon from '@material-ui/icons/DragHandle';
 
 import { loadAlmacenGestionEncargado, updateEstanteriaCapacidad } from '../redux/actions/dataActions'
-
 
 
 const style = {
     progressBarDiv: {
         position: 'relative',
         border: '1px solid #bdbdbd',
-        backgroundColor: '#eaeaea',
-        width: 100,
+        backgroundColor: '#d4e6f1',
+        width: '10%',
         display: 'flex',
-        alignItems: 'flex-end'
+        alignItems: 'flex-end',
+        borderRadius: '10px 10px 0px 0px'
     },
     rszBtn: {
         position: 'absolute',
         top: 0,
         width: '100%',
         height: 20,
-        backgroundColor: 'red',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgb(0, 0, 0, 0.10)',
+        borderRadius: '10px 10px 0px 0px',
+        cursor: 'ns-resize',
+        color: 'gray'
+    },
+    ocupado: {
+        width: '100%',
+        textAlign: 'center',
+        userSelect: 'none',
+        borderRadius: '10px 10px 0px 0px',
     }
 }
 
@@ -41,12 +54,31 @@ class encargadoGestion extends Component {
             categoria = this.props.categoria,
             porcentajeAlm = this.props.porcentajeAlmacen,
             totalOcupado = this.props.totalOcupado,
+            ocupacion = this.props.ocupacion,
             updateData = (cat, cap) => this.props.updateEstanteriaCapacidad(cat, cap);
 
         //estado de las barras
+        
+
         var progressBar = document.getElementById(categoria + 'progressBarDiv');
         progressBar.style['height'] = porcentajeAlm + '%';
         progressBar.style['max-height'] = (100 - totalOcupado + porcentajeAlm) + '%';
+        progressBar.style['min-height'] = ocupacion/100 * progressBar.clientHeight + 'px';
+
+        var ocuppied = document.getElementById(categoria + 'ocuppied');
+        ocuppied.style.height = progressBar.style.minHeight;
+     
+        if(ocupacion < 25)
+            ocuppied.style.backgroundColor = 'green';
+        else if(ocupacion <50)
+            ocuppied.style.backgroundColor = 'yellow';
+        else if (ocupacion < 75)
+            ocuppied.style.backgroundColor = 'orange';
+        else if (ocupacion < 90)
+            ocuppied.style.backgroundColor = '#FF5009';
+        else
+            ocuppied.style.backgroundColor = 'red';
+
 
         // variables para las funciones
         var 
@@ -90,8 +122,8 @@ class encargadoGestion extends Component {
         const { classes } = this.props;
         return (
             <div className = {classes.progressBarDiv} id = {this.props.categoria + 'progressBarDiv'}>
-                <div className = {classes.rszBtn} id = {this.props.categoria + 'rszBtn'}></div>
-                <div className = {classes.ocupado} id = {this.props.categoria + 'ocuppied'}>{this.props.ocupacion}%</div>
+                <div className = {classes.rszBtn} id = {this.props.categoria + 'rszBtn'}><DragHandleIcon/></div>
+                <div className = {classes.ocupado} id = {this.props.categoria + 'ocuppied'}>{this.props.ocupacion.toFixed(2)}%</div>
             </div>
         )
     }
