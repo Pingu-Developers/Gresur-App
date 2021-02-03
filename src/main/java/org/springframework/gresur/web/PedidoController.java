@@ -93,19 +93,19 @@ public class PedidoController {
 	
 	
 	@GetMapping
-	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') ")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') or hasRole('ADMIN')")
 	public Iterable<Pedido> findAll() {
 		return pedidoService.findAll();
 	}
 	
 	@GetMapping("/id/{id}")
-	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMINISTRADOR')")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
 	public Pedido findById(@PathVariable("id") Long id) {
 		return pedidoService.findByID(id);
 	}
 	
 	@GetMapping("/{estado}")
-	@PreAuthorize("hasRole('DEPENDIENTE')")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
 	public List<Pedido> findAllByEstado(@PathVariable("estado") String estado) {
 		return pedidoService.findByEstado(EstadoPedido.valueOf(estado));
 	}
@@ -413,6 +413,27 @@ public class PedidoController {
 			
 		
 		return ls;
+	}
+	
+	@PutMapping("/pagado/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> setEstaPagado(@PathVariable("id") Long id) {
+		
+		Pedido p = pedidoService.findByID(id);
+		
+		if(p!=null) {
+			FacturaEmitida f = p.getFacturaEmitida();
+			f.setEstaPagada(f.getEstaPagada()? false : true);
+			f = facturaEmitidaService.save(f);
+			
+			p.setFacturaEmitida(f);
+			pedidoService.save(p);
+			
+			return ResponseEntity.ok(p);
+		}
+		else {
+			return ResponseEntity.badRequest().body("Error al intentar cambiar el estado del pago del pedido");
+		}
 	}
 	
 }
