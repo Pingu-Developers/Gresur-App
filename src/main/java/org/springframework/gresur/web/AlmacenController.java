@@ -1,20 +1,26 @@
 package org.springframework.gresur.web;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.Almacen;
 import org.springframework.gresur.model.Categoria;
+import org.springframework.gresur.model.EncargadoDeAlmacen;
+import org.springframework.gresur.model.Estanteria;
+import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.service.AlmacenService;
 import org.springframework.gresur.service.EstanteriaService;
 import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.util.Tuple2;
 import org.springframework.gresur.util.Tuple3;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,12 +42,16 @@ public class AlmacenController {
 	private EstanteriaService zonaService;
 	
 	@Autowired
+	UserRepository userRepository;
+	
+	@Autowired
 	public AlmacenController(AlmacenService almacenService) {
 		this.almacenService = almacenService;
 	}
 	
 	
 	@GetMapping("/gestion")
+	@PreAuthorize("hasRole('ADMIN')")
 	public List<Tuple3<Almacen, Double, List<Tuple2<Categoria, Double>>>> getOcupacionGestionStock(){
 		List<Tuple3<Almacen, Double, List<Tuple2<Categoria, Double>>>> res = new ArrayList<>();
 		Iterable<Almacen> almacenes = almacenService.findAll();
@@ -60,11 +70,41 @@ public class AlmacenController {
 		}
 		return res;
 	}
+	
+	@GetMapping("/gestionEncargado")
+	@PreAuthorize("hasRole('ENCARGADO')")
+	public List<Tuple3<Categoria, Double, Double>> ocupacionPorEstanteria(){
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		
+		EncargadoDeAlmacen encargado = (EncargadoDeAlmacen) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal(); 
+		
+		List<Tuple2<Categoria, Double>> tupla = this.getCategoriasCapacidad(encargado.getAlmacen());
+		List<Tuple3<Categoria, Double, Double>> res = new ArrayList<Tuple3<Categoria,Double,Double>>();
+		for(Tuple2<Categoria, Double> tp: tupla) {
+			Estanteria est = zonaService.findByCategoria(tp.getE1());
+			
+			if(est != null) {
+				Double porcentajeAlmacen = est.getCapacidad()/encargado.getAlmacen().getCapacidad()*100;
+				Tuple3<Categoria, Double, Double> terna = new Tuple3<Categoria, Double, Double>();
+				
+				terna.name1 = "categoria";
+				terna.name2 = "ocupacionEstanteria";
+				terna.name3 = "porcentajeAlmacen";
+				
+				terna.setE1(tp.getE1());
+				terna.setE2(tp.getE2());
+				terna.setE3(porcentajeAlmacen);
+				res.add(terna);
+			}
+		}
+		return res;
+	}
 
 	
 	private List<Tuple2<Categoria, Double>> getCategoriasCapacidad(Almacen alm) {
 		List<Tuple2<Categoria, Double>> res = new ArrayList<>();
-		List<Categoria> categorias = Arrays.asList(Categoria.values());
+		List<Categoria> categorias =  zonaService.findAllEstanteriaByAlmacen(alm.getId()).stream().map(x -> x.getCategoria()).collect(Collectors.toList());
 		for(Categoria cat: categorias) {
 			Tuple2<Categoria, Double> tupla = new Tuple2<Categoria, Double>();
 			
