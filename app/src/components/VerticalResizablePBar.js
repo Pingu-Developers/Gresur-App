@@ -28,14 +28,14 @@ const style = {
 class encargadoGestion extends Component {
 
     componentDidMount(){
-        this.updateBars();
+        this.updateBars(true);
     }
 
     componentDidUpdate(){
-        this.updateBars();
+        this.updateBars(false);
     }
 
-    updateBars(){
+    updateBars(mount){
         //props a variables para usarla dentro de las funciones js
         var
             categoria = this.props.categoria,
@@ -53,12 +53,12 @@ class encargadoGestion extends Component {
             doc = document,
             main = document.querySelector('#' + categoria + 'progressBarDiv'),
             rsz = document.getElementById(categoria + 'rszBtn'),
-            ht = main.clientHeight,
-            y, dy;
+            ht, y, dy;
 
         // funciones de resize
         var startResize = function(evt) {
             y = evt.screenY;
+            ht = main.clientHeight;
         };
 
         var resize = function(evt){
@@ -69,21 +69,20 @@ class encargadoGestion extends Component {
         };
 
         var updateTotalOcupado = function(evt){
-            //HACER POST
             let porcentajeCapacidad = main.clientHeight/main.parentElement.clientHeight * 100;
             updateData(categoria, porcentajeCapacidad);
-
-            console.log("actualizada la estanteria " + categoria + " con capacidad: " + porcentajeCapacidad)
         }
 
-        rsz.addEventListener("mousedown", function(evt){
-            startResize(evt);
-            doc.body.addEventListener("mousemove", resize);
-            doc.body.addEventListener("mouseup", (ev) => {
-                doc.body.removeEventListener("mousemove", resize);
-                updateTotalOcupado();
-            }, {once : true});
-        });
+        if(mount){
+            rsz.addEventListener("mousedown", function(evt){
+                startResize(evt);
+                doc.body.addEventListener("mousemove", resize);
+                doc.body.addEventListener("mouseup", (ev) => {
+                    doc.body.removeEventListener("mousemove", resize);
+                    updateTotalOcupado();
+                }, {once : true});
+            });
+        }    
     }
 
 

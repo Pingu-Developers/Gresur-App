@@ -1,8 +1,8 @@
 package org.springframework.gresur.web;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -104,7 +104,7 @@ public class AlmacenController {
 	
 	private List<Tuple2<Categoria, Double>> getCategoriasCapacidad(Almacen alm) {
 		List<Tuple2<Categoria, Double>> res = new ArrayList<>();
-		List<Categoria> categorias = Arrays.asList(Categoria.values());
+		List<Categoria> categorias =  zonaService.findAllEstanteriaByAlmacen(alm.getId()).stream().map(x -> x.getCategoria()).collect(Collectors.toList());
 		for(Categoria cat: categorias) {
 			Tuple2<Categoria, Double> tupla = new Tuple2<Categoria, Double>();
 			

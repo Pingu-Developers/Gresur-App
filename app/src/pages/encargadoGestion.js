@@ -54,13 +54,11 @@ class encargadoGestion extends Component {
         if(this.props.data.gestionAlmacenEncargado){
             this.props.data.gestionAlmacenEncargado.map( (entry) => sum = sum+entry.porcentajeAlmacen);
         }
-        console.log(sum)
         return sum;
     }
 
     render() {
         const { classes, data:{gestionAlmacenEncargado} } = this.props;
-        console.log(gestionAlmacenEncargado)
         return (
             <div>
                 <Typography variant = 'h3' className = {classes.titulo}>GESTION DEL ALMACEN</Typography>
