@@ -104,7 +104,7 @@ public class AdministradorController {
 	public Transportista addTransportista(@RequestBody @Valid Transportista p) throws DataAccessException{
 		String [] uvus = p.getName().split(" ");
 
-		String nombre = uvus.length==3?uvus[0].substring(0, 3).toLowerCase()+uvus[1].substring(0,3).toLowerCase()+uvus[2].substring(0,3).toLowerCase()
+		String nombre = uvus.length>=3?uvus[0].substring(0, 3).toLowerCase()+uvus[1].substring(0,3).toLowerCase()+uvus[2].substring(0,3).toLowerCase()
 				:uvus[0].substring(0, 3).toLowerCase()+uvus[1].substring(0,3).toLowerCase();
 
 		Transportista transportista =  admService.saveTransportista(p);
