@@ -242,7 +242,7 @@ class FormNuevoEmpleado extends Component{
             this.setState(state=>({
                 errors :{
                     ...state.errors,
-                    nss:[...state.errors.nss,'Formato NSS no valido']
+                    nss:[...state.errors.nss,'Formato Iban no valido']
                 }
             }))
             errores = true
@@ -295,8 +295,8 @@ class FormNuevoEmpleado extends Component{
         }
 
           if(!errores){
-            this.props.addPersonal(this.state.rol,this.state.trabajador)
             this.props.onNextStep(this.state.step)
+            this.props.addPersonal(this.state.rol,this.state.trabajador)
            
         }
           this.setState({
