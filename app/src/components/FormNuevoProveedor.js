@@ -58,7 +58,7 @@ const styles = theme => ({
     },
     formLarge:{
       marginLeft: theme.spacing(5),
-      minWidth: 436
+      minWidth: 465
     },
     uploadBoton:{
       marginTop: theme.spacing(1),
@@ -300,7 +300,7 @@ export class FormNuevoProveedor extends Component {
                     Nuevo Proveedor
                 </DialogTitle>
                 <DialogContent>
-                    <div style={{marginLeft:20}}>
+                    <div style={{marginLeft:15}}>
                     <TextField 
                         autofocus
                         id="name"

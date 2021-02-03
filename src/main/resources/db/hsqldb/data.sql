@@ -1,4 +1,4 @@
-INSERT INTO CONFIG(salario_minimo, num_max_notificaciones, factura_emitida_seq, factura_recibida_seq, factura_emitida_rect_seq, factura_recibida_rect_seq) VALUES(900.00, 10, 4, 16, 0, 0);
+INSERT INTO CONFIG(salario_minimo, num_max_notificaciones, factura_emitida_seq, factura_recibida_seq, factura_emitida_rect_seq, factura_recibida_rect_seq) VALUES(900.00, 10, 4, 18, 0, 0);
 
 INSERT INTO ROLES(name) VALUES('ROLE_ADMIN');
 INSERT INTO ROLES(name) VALUES('ROLE_DEPENDIENTE');
@@ -537,6 +537,6 @@ UPDATE ID_GENERATOR SET sequence = 10 WHERE name = 'clientes';
 
 UPDATE ID_GENERATOR SET sequence = 5 WHERE name = 'proveedores';
 
-UPDATE ID_GENERATOR SET sequence = 21 WHERE name = 'facturas';
+UPDATE ID_GENERATOR SET sequence = 23 WHERE name = 'facturas';
 
 --FIN DE LA CARGA DE DATOS

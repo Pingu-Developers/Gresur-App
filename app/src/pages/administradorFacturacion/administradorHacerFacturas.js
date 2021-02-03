@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import CompraMaterial from './operaciones/compraMaterial'
+import GastosVehiculos from './operaciones/gastosVehiculos'
+import Otro  from './operaciones/otro';
 
 //Redux stuff
 import { connect } from 'react-redux';
@@ -17,6 +19,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 
 
@@ -40,6 +43,9 @@ const style = theme =>({
         margin: theme.spacing(2),
         minWidth: 220,
       },
+    container: {
+        padding:25,
+    },
 })
 
 class facturas extends Component {
@@ -72,9 +78,8 @@ class facturas extends Component {
                 </Backdrop>
                 <Grid container spacing={1}>
 
-                    <Grid xs={12} container spacing={2}>
-                        <Grid item xs={2}/>
-                        <Grid item xs={4}>
+                    <Grid xs={12} style={{borderBottom:"1px solid #E0E0E0"}} container spacing={2}>
+                        <Grid item xs={2}>
                             <FormControl className={classes.formControl}>
                                 <InputLabel id="lableOperacion">Operación</InputLabel>
                                 <Select
@@ -93,34 +98,13 @@ class facturas extends Component {
                     </Grid>
                     
                    
-                    <Grid xs={12} container spacing={0}>
+                    <Grid xs={12} className={classes.container} container spacing={0}>
                     {this.state.valueOperacion===1?
-                        <CompraMaterial/>:null}
-                        
+                        <CompraMaterial />:null}                        
                     {this.state.valueOperacion===2?
-                        <Grid xs={12} container spacing={3}>
-                            <Grid item xs={4}>
-                                <Paper className={classes.paper}>2</Paper>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Paper className={classes.paper}>item</Paper>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Paper className={classes.paper}>item</Paper>
-                            </Grid>
-                        </Grid>:null}
+                        <GastosVehiculos />:null}
                     {this.state.valueOperacion===3?
-                        <Grid xs={12} container spacing={3}>
-                            <Grid item xs={4}>
-                                <Paper className={classes.paper}>3</Paper>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Paper className={classes.paper}>item</Paper>
-                            </Grid>
-                            <Grid item xs={4}>
-                                <Paper className={classes.paper}>item</Paper>
-                            </Grid>
-                        </Grid>:null}
+                        <Otro />:null}
                     </Grid>
                 </Grid>
             </div>
