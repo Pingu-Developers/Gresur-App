@@ -1,11 +1,11 @@
 import { SET_BALANCE, CLEAR_BALANCE, SET_PEDIDO, CLEAR_PEDIDO, CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS } from '../types';
 import axios from 'axios';
 
-export const loadPedidos = () => (dispatch) => {
+export const loadPedidos = (orden="DEFAULT") => (dispatch) => {
 
     dispatch({type: LOADING_UI})
 
-    axios.get('/pedido')
+    axios.get(`/pedido/${orden}`)
         .then((res) => {
             dispatch({type: SET_PEDIDOS, payload: res})
             dispatch({type: CLEAR_ERRORS})
@@ -35,11 +35,11 @@ export const loadPedidoById = (id) => (dispatch) => {
         })
 }
 
-export const loadPedidosByEstado = (estado) => (dispatch) => {
+export const loadPedidosByEstado = (estado, orden="DEFAULT") => (dispatch) => {
 
     dispatch({type: LOADING_UI})
 
-    axios.get(`/pedido/${estado}`)
+    axios.get(`/pedido/${estado}/${orden}`)
         .then((res) => {
             dispatch({type: SET_PEDIDOS, payload: res});
             dispatch({type: CLEAR_ERRORS})

@@ -3,6 +3,7 @@ package org.springframework.gresur.web;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,10 +93,18 @@ public class PedidoController {
 	protected PersonalService<Transportista, TransportistaRepository> personalService;
 	
 	
-	@GetMapping
+	@GetMapping("/{orden}")
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') or hasRole('ADMIN')")
-	public Iterable<Pedido> findAll() {
-		return pedidoService.findAll();
+	public Iterable<Pedido> findAll(@PathVariable("orden") String orden) {
+		Iterable<Pedido> ip = pedidoService.findAll();
+		
+		List<Pedido> lp = new ArrayList<Pedido>();
+		ip.forEach(x->lp.add(x));
+		
+		if(orden.equals("ASC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion));
+		else if(orden.equals("DESC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion).reversed());
+		
+		return lp;
 	}
 	
 	@GetMapping("/id/{id}")
@@ -104,10 +113,16 @@ public class PedidoController {
 		return pedidoService.findByID(id);
 	}
 	
-	@GetMapping("/{estado}")
+	@GetMapping("/{estado}/{orden}")
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
-	public List<Pedido> findAllByEstado(@PathVariable("estado") String estado) {
-		return pedidoService.findByEstado(EstadoPedido.valueOf(estado));
+	public List<Pedido> findAllByEstadoOrden(@PathVariable("estado") String estado, @PathVariable("orden") String orden) {
+		
+		List<Pedido> lp = pedidoService.findByEstado(EstadoPedido.valueOf(estado));
+		
+		if(orden.equals("ASC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion));
+		else if(orden.equals("DESC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion).reversed());
+		
+		return lp;
 	}
 	
 	@ExceptionHandler({Exception.class})

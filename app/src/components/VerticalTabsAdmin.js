@@ -82,7 +82,7 @@ export default function VerticalTabs(props) {
         <Tab label="Ver pedidos" {...a11yProps(1)} />
 
       </Tabs>
-      <TabPanel value={value} index={0}>
+      <TabPanel style={{width:'100%'}} value={value} index={0}>
         <VehiculosInfoAdmin datos = {vehiculos}/>      
       </TabPanel>
       <TabPanel style={{width:'100%'}} value={value} index={1}>
