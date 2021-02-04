@@ -19,7 +19,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CheckBoxSharpIcon from '@material-ui/icons/CheckBoxSharp';
 import CheckBoxOutlineBlankSharpIcon from '@material-ui/icons/CheckBoxOutlineBlankSharp';
 
-import { setEstaPagadoFacturaE } from '../redux/actions/dataActions';
+import { cancelarPedido, setEstaPagadoFacturaE } from '../redux/actions/dataActions';
+import PopUpModificarPedido from './PopUpModificarPedido';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -99,15 +100,30 @@ const useStyles = makeStyles((theme) => ({
   },
 
   botonPagado: {
-    marginLeft: 20,
+    marginLeft: 10,
     borderRadius: 20,
+    fontWeight: 'bold'
   },
+
+  botones:{
+    display: 'flex',
+    marginLeft: 206,
+    marginTop: -45,
+  },
+
+  botonCancelar: {
+    marginLeft: 5,
+    borderRadius: 20,
+    fontWeight: 'bold'
+  }
 
 }));
 
 export default function HistorialPedidoBox(props) {
   const classes = useStyles();
   const pedido = props.pedido;
+  const estado = props.estado;
+  const orden = props.orden;
 
   const counter = useSelector(state => state);
   const dispatch = useDispatch();
@@ -115,17 +131,29 @@ export default function HistorialPedidoBox(props) {
   
   const handleSubmitPago = (id,event) => {
     event.preventDefault();
-    dispatch(setEstaPagadoFacturaE(id))
+    dispatch(setEstaPagadoFacturaE(id, estado, orden))
+  }
+
+  const handleSubmitCancelacion = (id,event) => {
+    event.preventDefault();
+    dispatch(cancelarPedido(id, estado, orden))
   }
 
   return (
     <div className={classes.main}>
         <fieldset className={classes.borderMain}>
-          <legend className={classes.legend}><b>PEDIDO-{pedido.id}</b></legend>
+          <legend className={classes.legend}><b>PEDIDO-{pedido.id}</b></legend>          
 
           <div className={classes.iconoObjeto}>
+
             <CalendarTodayIcon className={classes.icono}/>
             <p><b>Fecha de realizacion:</b> {pedido.fechaRealizacion}</p>
+
+            <div className={classes.botones}>
+              <PopUpModificarPedido pedido={pedido} estado={estado} orden={orden}/>
+              <Button className={classes.botonCancelar} variant='outlined' color="secondary" size="small" disabled={pedido.estado !== "EN_ESPERA"} onClick={(event) => handleSubmitCancelacion(pedido.id,event)}><b>CANCELAR</b></Button>
+            </div>
+
           </div>
 
           <div className={classes.iconoObjeto}>
@@ -137,7 +165,7 @@ export default function HistorialPedidoBox(props) {
             <MonetizationOnIcon className={classes.icono}/>
             <p><b>Pedido pagado:</b> {pedido.facturaEmitida.estaPagada? 'SI' : 'NO'}</p>
             <Button className={classes.botonPagado} variant='outlined' color="secondary" size="small" onClick={(event) => handleSubmitPago(pedido.id,event)}>
-              {pedido.facturaEmitida.estaPagada? 'PAGADO' : 'NO PAGADO'}
+              {pedido.facturaEmitida.estaPagada? 'NO PAGADO' : 'PAGADO'}
             </Button>          
           </div>
 

@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.Administrador;
@@ -200,7 +203,7 @@ public class PedidoController {
 	}
 	
 	@PostMapping("/{id}")
-	@PreAuthorize("hasRole('DEPENDIENTE')")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
 	public ResponseEntity<?> cancelarPedido(@PathVariable("id") Long id) {
 		
 		Pedido pedido = pedidoService.findByID(id);
@@ -449,6 +452,15 @@ public class PedidoController {
 		else {
 			return ResponseEntity.badRequest().body("Error al intentar cambiar el estado del pago del pedido");
 		}
+	}
+	
+	@PutMapping("/update")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> updatePedido(@Valid @RequestBody Pedido pedido) {
+				
+		Pedido p = pedidoService.save(pedido);
+		
+		return ResponseEntity.ok(p);
 	}
 	
 }

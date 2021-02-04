@@ -56,11 +56,11 @@ export const clearPedidos = () => (dispatch) => {
     dispatch({type: CLEAR_PEDIDOS})
 }
 
-export const cancelarPedido = (id) => (dispatch) => {
+export const cancelarPedido = (id, estado="TODO", orden="DEFAULT") => (dispatch) => {
 
     axios.post(`/pedido/${id}`)
         .then((res) => {
-            dispatch(loadPedidos());
+            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
         })
         .catch((err) => {
             if(err.response){
@@ -662,12 +662,35 @@ export const loadBalance = (year) => (dispatch) => {
         })
 }
 
-export const setEstaPagadoFacturaE = (id) => function (dispatch) {
+export const setEstaPagadoFacturaE = (id,estado="TODO",orden="DEFAULT") => function (dispatch) {
     dispatch({type: LOADING_UI})
 
     axios.put(`/pedido/pagado/${id}`)
         .then((res) => {
-            dispatch(loadPedidos())
+            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
+        })
+
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
+}
+
+export const updatePedido = (estado="TODO",orden="DEFAULT", pedido) => function (dispatch) {
+    dispatch({type: LOADING_UI})
+
+    axios.put(`/update/`, pedido)
+        .then((res) => {
+            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
         })
 
         .catch((err) => {

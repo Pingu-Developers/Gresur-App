@@ -160,7 +160,7 @@ export default function HistorialPedidosAdmin(props) {
                         :
 
                         pedidos.map((row) => (
-                            <HistorialPedidoBox pedido={row}/>
+                            <HistorialPedidoBox pedido={row} estado={estado} orden={orden}/>
                 ))}
             </div>
 
