@@ -108,9 +108,12 @@ import { connect } from 'react-redux';
             fechaInicio: new Date(),
             fechaFin: new Date(),
             tipoJornada:'',
-            observaciones:null,
+            observaciones:'',
             errors:null,
-            step:1
+            step:1,
+            contrato:{},
+            enviar:false,
+            errors:{nomina:[],entidadBancaria:[],fechaInicio:[],fechaFin:[],observaciones:[],tipoJornada:[]}
           }
 
 class FormNuevoContrato extends Component{
@@ -120,10 +123,164 @@ class FormNuevoContrato extends Component{
         this.state = initialState;
 
     }
+
+    componentDidUpdate(prevProps,prevState){
+      console.log(this.state)
+      if(this.state.open != prevState.open && !this.state.open){
+          this.setState({
+            nomina:'', 
+            entidadBancaria:'',
+            fechaInicio:'',
+            fechaFin:'',
+            observaciones:'',
+            tipoJornada:'',
+              errors:{nomina:[],entidadBancaria:[],fechaInicio:[],fechaFin:[],observaciones:[],tipoJornada:[]},
+              enviar:false,
+              trabajador:{}
+          })
+      }
+      if(this.state.enviar != prevState.enviar && this.state.enviar ){
+          let errores = false;
+          
+          if(this.state.tipoJornada === '' && this.state.errors.tipoJornada.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    tipoJornada:[...state.errors.tipoJornada,'Debe seleccionar una']
+                }
+            }))
+            errores = true
+        }else if(this.state.tipoJornada !== ''){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    tipoJornada:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+          
+          
+          if(this.state.nomina === '' && this.state.errors.nomina.length === 0){
+              this.setState(state=>({
+                  errors :{
+                      ...state.errors,
+                      nomina:[...state.errors.nomina,'No vacio']
+                  }
+              }))
+              errores = true
+          }else if(this.state.nomina !==''){
+              this.setState(state=>({
+                  errors :{
+                      ...state.errors,
+                      nomina:[]
+                  }
+              }))
+          }else{
+              errores = true
+          }
+
+          if(this.state.entidadBancaria === '' && this.state.errors.entidadBancaria.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    entidadBancaria:[...state.errors.entidadBancaria,'No vacio']
+                }
+            }))
+            errores = true
+        }else if(this.state.entidadBancaria !== ''){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    entidadBancaria:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+
+        if(this.dateInPast(this.state.fechaInicio) && this.state.errors.fechaInicio.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    fechaInicio:[...state.errors.fechaInicio,'Fecha no valida']
+                }
+            }))
+            errores = true
+        }else if(!this.dateInPast(this.state.fechaInicio)){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    fechaInicio:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+        
+        if(this.dateInFuture(this.state.fechaFin) && this.state.errors.fechaFin.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    fechaFin:[...state.errors.fechaFin,'Fecha no valida']
+                }
+            }))
+            errores = true
+        }else if(!this.dateInFuture(this.state.fechaFin)){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    fechaFin:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+
+        if( this.state.observaciones.length>255 && this.state.errors.observaciones.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    observaciones:[...state.errors.observaciones,'Tamaño invalido']
+                }
+            }))
+            errores = true
+        }else if(this.state.observaciones.length<255){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    observaciones:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+      
+
+          if(!errores){
+            this.props.onNextStep(this.state.step)
+            this.props.addContrato(this.props.dni,this.state.contrato);
+           
+        }
+          this.setState({
+              enviar:false
+          })
+          
+      }
+
+    }
+
+
+
     handleChangeInput = (event) => {
-        this.setState({
-            [event.target.name]:event.target.value
-        })
+      this.setState(state =>({
+        [event.target.name]: event.target.value,
+        errors :{
+            ...state.errors,
+            [event.target.name]:[]
+        }
+    }))
       };
 
     handleSubmit = (event) =>  {
@@ -139,29 +296,60 @@ class FormNuevoContrato extends Component{
             step: this.state.step
 
          };
+         console.log(contrato)
         //step + 1
-        this.props.onNextStep(contrato.step)
-        this.props.addContrato(this.props.dni,contrato);
-        this.setState(initialState)
+      //  this.props.onNextStep(contrato.step)
+      //  this.props.addContrato(this.props.dni,contrato);
+      this.setState({
+        contrato:contrato,
+        enviar:true,
+      })
      }
 
      handleChange = (event) => {
-        this.setState({
-            tipoJornada:event.target.value
-        })
+        this.setState(state =>({
+            tipoJornada:event.target.value,
+            errors :{
+              ...state.errors,
+              [event.target.name]:[]
+          }
+        }))
       };
       handleFechaInicioChange = (date) => {
-           this.setState({
-            fechaInicio:date
-        })
+           this.setState(state =>({
+            fechaInicio:date,
+            errors :{
+              ...state.errors,
+          //    [fechaInicio]:[]
+          }
+        }))
       };
       handleFechaFinChange = (date) => {
-        this.setState({
-         fechaFin:date
-     })
+        this.setState(state =>({
+         fechaFin:date,
+         errors :{
+          ...state.errors,
+       //   [fechaFin]:[]
+      }
+     }))
    };
 
+    dateInPast = function(fecha) {
+      const firstDate = new Date()
+      if (firstDate.setHours(0, 0, 0, 0) < fecha.setHours(0, 0, 0, 0)) {
+        return true;
+      }
 
+      return false;
+  };
+    dateInFuture = function(fecha) {
+      const firstDate = new Date()
+      if (firstDate.setHours(0, 0, 0, 0) > fecha.setHours(0, 0, 0, 0)) {
+        return true;
+      }
+
+      return false;
+    };
   
      render(){
       const { classes,data } = this.props;
@@ -171,15 +359,17 @@ class FormNuevoContrato extends Component{
             <DialogContent>
             <form  id="nuevoContrato"noValidate onSubmit={this.handleSubmit}>
                 <div>
-                <FormControl  className={classes.formControl} >
+                <FormControl  className={classes.formControl}  >
 
-                <InputLabel  id="demo-simple-select-helper-label">Tipo Jornada</InputLabel>
+                <InputLabel   id="demo-simple-select-helper-label">Tipo Jornada</InputLabel >
 
                     <Select
                         label="demo-simple-select-helper-label"                            
                         id="tipoJornada"
                         value={this.state.tipoJornada}
                         onChange={this.handleChange}
+                        error={this.state.errors.tipoJornada.length>0}
+                        helperText={this.state.errors.tipoJornada[0]}
                         >
                         <MenuItem value="COMPLETA">COMPLETA</MenuItem>
                         <MenuItem value="MEDIA_JORNADA">MEDIA_JORNADA</MenuItem>
@@ -199,7 +389,8 @@ class FormNuevoContrato extends Component{
                         value={this.state.nomina}
                         onChange={this.handleChangeInput}
                         className={classes.formSpace}
-                    
+                        error={this.state.errors.nomina.length>0}
+                        helperText={this.state.errors.nomina[0]}
                 />
                     <TextField 
                         id="entidadBancaria"
@@ -211,7 +402,8 @@ class FormNuevoContrato extends Component{
                         required
                         value={this.state.entidadBancaria}
                         onChange={this.handleChangeInput}
-
+                        error={this.state.errors.entidadBancaria.length>0}
+                        helperText={this.state.errors.entidadBancaria[0]}
                 />
                 <div>
                     <span className={classes.fechaInicio}>
@@ -230,6 +422,8 @@ class FormNuevoContrato extends Component{
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
                             }}
+                            error={this.state.errors.fechaInicio.length>0}
+                            helperText={this.state.errors.fechaInicio[0]}
                                 />       
                         </Grid>
                     </MuiPickersUtilsProvider>
@@ -251,6 +445,8 @@ class FormNuevoContrato extends Component{
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
                             }}
+                            error={this.state.errors.fechaFin.length>0}
+                            helperText={this.state.errors.fechaFin[0]}
                             />
                         
                         </Grid>
@@ -269,7 +465,8 @@ class FormNuevoContrato extends Component{
                         value={this.state.observaciones}
                         onChange={this.handleChangeInput}
                         className={classes.formLarge}
-
+                        error={this.state.errors.observaciones.length>0}
+                        helperText={this.state.errors.observaciones[0]}
                 />
 
                 </div>
@@ -278,7 +475,8 @@ class FormNuevoContrato extends Component{
 
             </DialogContent>
             <div>
-        <Button className={classes.addBoton} size="large"form="nuevoContrato" type ="submit" color="primary" variant="contained" startIcon={<AddCircleIcon />}>
+        <Button className={classes.addBoton} size="large"form="nuevoContrato" onClick={this.handleSubmit} 
+                type ="submit" color="primary" variant="contained" startIcon={<AddCircleIcon />}>
             Añadir
         </Button>
         </div>

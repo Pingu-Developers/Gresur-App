@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,12 +35,13 @@ public class Reparacion extends BaseEntity implements Comparable<Reparacion>{
 	@Lob
 	protected String descripcion;
 	
+	@JsonView
 	@NotNull
 	@OneToOne(optional = false)
 	@JoinColumn(name = "factura_recibida_id")
 	private FacturaRecibida recibidas;
 	
-	@JsonIgnore
+	@JsonView
 	@NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name= "vehiculo_id")

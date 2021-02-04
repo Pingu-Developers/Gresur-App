@@ -117,10 +117,9 @@ public class ProductoController {
 	
 	@ExceptionHandler({ Exception.class })
 	@PostMapping("/add")
-	public void saveNuevoProducto( @RequestBody Producto newProducto) {
-
-		System.out.println(newProducto);
-		//return productoService.save(p);
+	public Producto saveNuevoProducto( @RequestBody Producto newProducto) {
+	
+		return productoService.save(newProducto);
 	}
 	
 	@GetMapping("/demanda")

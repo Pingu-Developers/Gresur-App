@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Almacen;
+import org.springframework.gresur.model.Categoria;
 import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.repository.EstanteriaRepository;
 import org.springframework.gresur.service.exceptions.CapacidadEstanteriaExcededException;
@@ -38,6 +39,10 @@ public class EstanteriaService{
 	@Transactional(readOnly = true)
 	public Estanteria findById(Long id) throws DataAccessException{
 		return estanteriaRepository.findById(id).orElse(null);
+	}
+	@Transactional(readOnly = true)
+	public Estanteria findByCategoria(Categoria cat) throws DataAccessException{
+		return estanteriaRepository.findByCategoria(cat).orElse(null);
 	}
 	
 	@Transactional(readOnly = true)
