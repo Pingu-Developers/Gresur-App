@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import { loadAlmacenGestionEncargado, updateEstanteriaCapacidad } from '../redux/actions/dataActions'
 
@@ -35,12 +36,28 @@ const style = {
         textAlign: 'center',
         userSelect: 'none',
         borderRadius: '10px 10px 0px 0px',
+    },
+    categoriaTxt: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        position: 'absolute',
+        bottom: -30,
+        userSelect: 'none'
     }
 }
 
 class encargadoGestion extends Component {
 
+    constructor(props){
+        super(props)
+        this.state = {
+            porcentajeCapacidad : undefined,
+        }
+    }
     componentDidMount(){
+        this.setState({porcentajeCapacidad : this.props.porcentajeAlmacen})
+
         this.updateBars(true);
     }
 
@@ -55,13 +72,12 @@ class encargadoGestion extends Component {
             porcentajeAlm = this.props.porcentajeAlmacen,
             totalOcupado = this.props.totalOcupado,
             ocupacion = this.props.ocupacion,
-            updateData = (cat, cap) => this.props.updateEstanteriaCapacidad(cat, cap);
+            postData = () => this.props.updateEstanteriaCapacidad(categoria, this.state.porcentajeCapacidad);
+
 
         //estado de las barras
-        
-
         var progressBar = document.getElementById(categoria + 'progressBarDiv');
-        progressBar.style['height'] = porcentajeAlm + '%';
+        progressBar.style['height'] = this.state.porcentajeCapacidad + '%';
         progressBar.style['max-height'] = (100 - totalOcupado + porcentajeAlm) + '%';
         progressBar.style['min-height'] = ocupacion/100 * progressBar.clientHeight + 'px';
 
@@ -79,7 +95,6 @@ class encargadoGestion extends Component {
         else
             ocuppied.style.backgroundColor = 'red';
 
-
         // variables para las funciones
         var 
             doc = document,
@@ -87,6 +102,14 @@ class encargadoGestion extends Component {
             rsz = document.getElementById(categoria + 'rszBtn'),
             ht, y, dy;
 
+        // funcion actualiza el porcentaje
+        var updateData = () => {
+            var tmp = main.clientHeight/main.parentElement.clientHeight * 100;
+            if(this.state.porcentajeCapacidad !== tmp){
+                this.setState({porcentajeCapacidad : tmp});
+            }
+        }
+      
         // funciones de resize
         var startResize = function(evt) {
             y = evt.screenY;
@@ -98,12 +121,8 @@ class encargadoGestion extends Component {
             y = evt.screenY;
             ht -= dy;
             main.style.height = ht + "px";
+            updateData();         
         };
-
-        var updateTotalOcupado = function(evt){
-            let porcentajeCapacidad = main.clientHeight/main.parentElement.clientHeight * 100;
-            updateData(categoria, porcentajeCapacidad);
-        }
 
         if(mount){
             rsz.addEventListener("mousedown", function(evt){
@@ -111,7 +130,7 @@ class encargadoGestion extends Component {
                 doc.body.addEventListener("mousemove", resize);
                 doc.body.addEventListener("mouseup", (ev) => {
                     doc.body.removeEventListener("mousemove", resize);
-                    updateTotalOcupado();
+                    postData()
                 }, {once : true});
             });
         }    
@@ -122,8 +141,21 @@ class encargadoGestion extends Component {
         const { classes } = this.props;
         return (
             <div className = {classes.progressBarDiv} id = {this.props.categoria + 'progressBarDiv'}>
-                <div className = {classes.rszBtn} id = {this.props.categoria + 'rszBtn'}><DragHandleIcon/></div>
-                <div className = {classes.ocupado} id = {this.props.categoria + 'ocuppied'}>{this.props.ocupacion.toFixed(2)}%</div>
+                <Tooltip 
+                    title = {this.state.porcentajeCapacidad ? 
+                        <p style = {{fontSize : 15, margin: 5, fontWeight: 'bold'}}>
+                            {this.state.porcentajeCapacidad.toFixed(1)} %
+                        </p> : 'unknown'} 
+                    placement = "top" 
+                    arrow
+                    interactive
+                >
+                    <div className = {classes.rszBtn} id = {this.props.categoria + 'rszBtn'}><DragHandleIcon/></div>
+                </Tooltip>
+                <div className = {classes.ocupado} id = {this.props.categoria + 'ocuppied'}>
+                    <p style = {{position: 'absolute', bottom: 0, margin: 0, width: '100%'}}>{this.props.ocupacion.toFixed(2)}%</p>
+                </div>
+                <div className = {classes.categoriaTxt}>{this.props.categoria}</div>
             </div>
         )
     }
