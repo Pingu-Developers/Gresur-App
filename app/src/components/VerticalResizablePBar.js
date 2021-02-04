@@ -29,7 +29,8 @@ const style = {
         backgroundColor: 'rgb(0, 0, 0, 0.10)',
         borderRadius: '10px 10px 0px 0px',
         cursor: 'ns-resize',
-        color: 'gray'
+        color: 'gray',
+        zIndex: 10000,
     },
     ocupado: {
         width: '100%',
@@ -53,11 +54,17 @@ class encargadoGestion extends Component {
         super(props)
         this.state = {
             porcentajeCapacidad : undefined,
+            minHeight: undefined,
+            porcentajeOcupacionEst: undefined,
         }
     }
     componentDidMount(){
-        this.setState({porcentajeCapacidad : this.props.porcentajeAlmacen})
+        var axis = document.getElementById('axis');
 
+        this.setState({
+            porcentajeCapacidad : this.props.porcentajeAlmacen, 
+            minHeight : this.props.ocupacion / 100 * (this.props.porcentajeAlmacen / 100 * axis.clientHeight),
+            porcentajeOcupacionEst : this.props.ocupacion})
         this.updateBars(true);
     }
 
@@ -71,7 +78,7 @@ class encargadoGestion extends Component {
             categoria = this.props.categoria,
             porcentajeAlm = this.props.porcentajeAlmacen,
             totalOcupado = this.props.totalOcupado,
-            ocupacion = this.props.ocupacion,
+            ocupacion = this.state.porcentajeOcupacionEst,
             postData = () => this.props.updateEstanteriaCapacidad(categoria, this.state.porcentajeCapacidad);
 
 
@@ -79,7 +86,7 @@ class encargadoGestion extends Component {
         var progressBar = document.getElementById(categoria + 'progressBarDiv');
         progressBar.style['height'] = this.state.porcentajeCapacidad + '%';
         progressBar.style['max-height'] = (100 - totalOcupado + porcentajeAlm) + '%';
-        progressBar.style['min-height'] = ocupacion/100 * progressBar.clientHeight + 'px';
+        progressBar.style['min-height'] = this.state.minHeight + 'px';
 
         var ocuppied = document.getElementById(categoria + 'ocuppied');
         ocuppied.style.height = progressBar.style.minHeight;
@@ -106,7 +113,10 @@ class encargadoGestion extends Component {
         var updateData = () => {
             var tmp = main.clientHeight/main.parentElement.clientHeight * 100;
             if(this.state.porcentajeCapacidad !== tmp){
-                this.setState({porcentajeCapacidad : tmp});
+                var ocupadoTmp = parseFloat(progressBar.style.minHeight) / progressBar.clientHeight * 100;
+                this.setState({
+                    porcentajeCapacidad : tmp,
+                    porcentajeOcupacionEst : ocupadoTmp > 100 ? 100 : ocupadoTmp});
             }
         }
       
@@ -153,7 +163,9 @@ class encargadoGestion extends Component {
                     <div className = {classes.rszBtn} id = {this.props.categoria + 'rszBtn'}><DragHandleIcon/></div>
                 </Tooltip>
                 <div className = {classes.ocupado} id = {this.props.categoria + 'ocuppied'}>
-                    <p style = {{position: 'absolute', bottom: 0, margin: 0, width: '100%'}}>{this.props.ocupacion.toFixed(2)}%</p>
+                    <p style = {{position: 'absolute', bottom: 0, margin: 0, width: '100%'}}>
+                        {this.state.porcentajeOcupacionEst ? this.state.porcentajeOcupacionEst.toFixed(2) + '%' : '?? %'}
+                    </p>
                 </div>
                 <div className = {classes.categoriaTxt}>{this.props.categoria}</div>
             </div>
