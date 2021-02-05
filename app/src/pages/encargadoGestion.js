@@ -12,7 +12,7 @@ import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
 
 import { loadAlmacenGestionEncargado, clearAlmacenGestionEncargado } from '../redux/actions/dataActions'
-import { Divider } from '@material-ui/core';
+import EncargadoGestionAxisNums from '../components/EncargadoGestionAxisNums';
 
 
 const style = {
@@ -46,16 +46,6 @@ const style = {
         alignItems: 'flex-end',
         justifyContent: 'space-around',
     },
-    gridWrapper: {
-        position: 'absolute',
-        height: '100%',
-        width: '100%',
-        display: 'grid',
-        alignContent: 'space-between'
-    },
-    gridRow: {
-        userSelect: 'none'
-    },
     zoomControlGrp: {
         gridRow: 5,
         display: 'grid',
@@ -78,9 +68,12 @@ class encargadoGestion extends Component {
         this.state = {
             disableZoomIn : false,
             disableZoomOut : true,
-            disableZoomOutMap: true}
+            disableZoomOutMap: true,
+            zoom: undefined}
     }
     componentDidMount(){
+        var axis = document.getElementById('axis');
+        this.setState({zoom: axis.clientHeight})
         this.props.loadAlmacenGestionEncargado()
     }
 
@@ -120,6 +113,7 @@ class encargadoGestion extends Component {
         if(axis.clientHeight < 5000){
             axis.style.height = axis.clientHeight * 1.2 + 'px';
             hist.scrollTop = hist.scrollHeight;
+            this.setState({zoom: axis.clientHeight})
         } else{
             this.setState({disableZoomIn: true})
         }   
@@ -136,8 +130,9 @@ class encargadoGestion extends Component {
         if(axis.clientHeight > window.innerHeight * 0.60){
             axis.style.height = axis.clientHeight / 1.2 + 'px';
             hist.scrollTop = hist.scrollHeight;
+            this.setState({zoom: axis.clientHeight})
         } else{
-            this.setState({disableZoomOut: true})
+            this.setState({disableZoomOut: true, disableZoomOutMap: true})
         }
     }
 
@@ -145,39 +140,28 @@ class encargadoGestion extends Component {
         event.preventDefault();
         var axis = document.getElementById('axis');
         axis.style.height = '60vh';
-        this.setState({disableZoomIn: false, disableZoomOut: true, disableZoomOutMap: true})
+        this.setState({disableZoomIn: false, disableZoomOut: true, disableZoomOutMap: true, zoom: axis.clientHeight})
     }
 
     render() {
         const { classes, data:{gestionAlmacenEncargado} } = this.props;
         return (
-            <div>
+            <div style = {{userSelect : 'none'}}>
                 <Typography variant = 'h3' className = {classes.titulo}>GESTION DEL ALMACEN</Typography>
 
                 <div className = {classes.wrapper}>
                     {/* HISTOGRAMA */}
                     <div className = {classes.histogram}>
                         <div className = {classes.axis} id = 'axis'>
-                            <div className = {classes.gridWrapper}>
-                                <span className = {classes.gridRow}><span style = {{marginLeft: -50}}>100%</span><Divider style = {{marginTop: -13}}/></span>
-                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}></span><Divider style = {{marginTop: -13}}/></span>
-                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}>80%</span><Divider style = {{marginTop: -13}}/></span>
-                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}></span><Divider style = {{marginTop: -13}}/></span>
-                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}>60%</span><Divider style = {{marginTop: -13}}/></span>
-                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}></span><Divider style = {{marginTop: -13}}/></span>
-                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}>40%</span><Divider style = {{marginTop: -13}}/></span>
-                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}></span><Divider style = {{marginTop: -13}}/></span>
-                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}>20%</span><Divider style = {{marginTop: -13}}/></span>
-                                <span className = {classes.gridRow}><span style = {{marginLeft: -40}}></span><Divider style = {{marginTop: -13}}/></span>
-                                <span className = {classes.gridRow}><span style = {{marginLeft: -30}}>0%</span><Divider style = {{marginTop: -13}}/></span>
-                            </div>
+                            <EncargadoGestionAxisNums zoom = {this.state.zoom}/>
                             {gestionAlmacenEncargado ? 
                                 gestionAlmacenEncargado.map((entry) => 
                                         <VerticalResizablePBar 
                                             categoria = {entry.categoria} 
                                             ocupacion = {entry.ocupacionEstanteria}
                                             porcentajeAlmacen = {entry.porcentajeAlmacen}
-                                            totalOcupado = {this.porcentajeDeAlmacenAsignado()}/>
+                                            totalOcupado = {this.porcentajeDeAlmacenAsignado()}
+                                            axisH = {document.getElementById('axis').clientHeight}/>
                                 ) : null
                             }
                         </div>               

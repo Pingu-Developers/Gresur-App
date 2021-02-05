@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
 import DragHandleIcon from '@material-ui/icons/DragHandle';
@@ -43,8 +42,9 @@ const style = {
         display: 'flex',
         justifyContent: 'center',
         position: 'absolute',
-        bottom: -30,
-        userSelect: 'none'
+        bottom: -37,
+        userSelect: 'none',
+        fontWeight: 'bold'
     }
 }
 
@@ -59,16 +59,20 @@ class encargadoGestion extends Component {
         }
     }
     componentDidMount(){
-        var axis = document.getElementById('axis');
-
         this.setState({
             porcentajeCapacidad : this.props.porcentajeAlmacen, 
-            minHeight : this.props.ocupacion / 100 * (this.props.porcentajeAlmacen / 100 * axis.clientHeight),
+            minHeight : this.props.ocupacion / 100 * (this.props.porcentajeAlmacen / 100 * this.props.axisH),
             porcentajeOcupacionEst : this.props.ocupacion})
         this.updateBars(true);
     }
 
-    componentDidUpdate(){
+    componentDidUpdate(prevprops, prevstate){
+        //actualiza minHeight si se ha hecho zoom
+        if(prevprops.axisH !== this.props.axisH){
+            this.setState({
+                minHeight: this.props.ocupacion / 100 * (this.props.porcentajeAlmacen / 100 * this.props.axisH),
+            })
+        }
         this.updateBars(false);
     }
 
@@ -163,7 +167,7 @@ class encargadoGestion extends Component {
                     <div className = {classes.rszBtn} id = {this.props.categoria + 'rszBtn'}><DragHandleIcon/></div>
                 </Tooltip>
                 <div className = {classes.ocupado} id = {this.props.categoria + 'ocuppied'}>
-                    <p style = {{position: 'absolute', bottom: 0, margin: 0, width: '100%'}}>
+                    <p style = {{position: 'absolute', bottom: 5, margin: 0, width: '100%', fontSize: 18}}>
                         {this.state.porcentajeOcupacionEst ? this.state.porcentajeOcupacionEst.toFixed(2) + '%' : '?? %'}
                     </p>
                 </div>
