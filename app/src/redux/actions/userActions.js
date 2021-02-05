@@ -1,4 +1,4 @@
-import { SET_ERRORS, SET_USER, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED ,LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS , CLEAR_NOTIFICACIONES_NO_LEIDAS,SET_NOTIFICACIONES_LEIDAS, SET_POSTPEDIDO } from '../types';
+import { SET_ERRORS, SET_USER, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED ,LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS,CLEAR_ENVIADO , CLEAR_NOTIFICACIONES_NO_LEIDAS,SET_NOTIFICACIONES_LEIDAS, SET_POSTPEDIDO } from '../types';
 import axios from 'axios';
 
 export const loginUser = (userData,history) => (dispatch) =>{
@@ -185,5 +185,8 @@ export const clear = () => (dispatch) => {
 
         dispatch({
             type:CLEAR_ERRORS,
+        })
+        dispatch({
+            type:CLEAR_ENVIADO,
         })
 }

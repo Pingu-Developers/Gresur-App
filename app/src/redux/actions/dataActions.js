@@ -1,4 +1,4 @@
-import { SET_ALMACENGESTIONENCARGADO, CLEAR_ALMACENGESTIONENCARGADO, SET_BALANCE, CLEAR_BALANCE, SET_PEDIDO, CLEAR_PEDIDO, CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS } from '../types';
+import { SET_ALMACENGESTIONENCARGADO, CLEAR_ALMACENGESTIONENCARGADO, SET_BALANCE,SET_ENVIADO, CLEAR_BALANCE, SET_PEDIDO, CLEAR_PEDIDO, CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS } from '../types';
 import axios from 'axios';
 
 export const loadPedidos = (orden="DEFAULT") => (dispatch) => {
@@ -61,6 +61,9 @@ export const cancelarPedido = (id, estado="TODO", orden="DEFAULT") => (dispatch)
     axios.post(`/pedido/${id}`)
         .then((res) => {
             estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
+            dispatch({
+                type: SET_ENVIADO,
+            });
         })
         .catch((err) => {
             if(err.response){
@@ -164,6 +167,9 @@ export const deleteContrato = (nif) => function (dispatch){
     axios.delete(`/contrato/delete/${nif}`)
         .then((res) => {
             dispatch(loadPersonalContrato())
+            dispatch({
+                type: SET_ENVIADO,
+            });
         })
         .catch((err) => {
             if(err.response){
@@ -231,6 +237,9 @@ export const addContrato = (nif,contrato) => (dispatch) =>{
     axios.post(`/contrato/add/${nif}`,contrato)
     .then((res) => {
         dispatch(loadPersonalContrato());
+        dispatch({
+            type: SET_ENVIADO,
+        });
     })
     .catch((err) => {
         console.log(err)
@@ -241,6 +250,9 @@ export const editContrato = (nif,contrato) => (dispatch) =>{
     axios.put(`/contrato/update/${nif}`,contrato)
     .then((res) => {
         dispatch(loadPersonalContrato());
+        dispatch({
+            type: SET_ENVIADO,
+        });
     })
     .catch((err) => {
         if(err.response){
@@ -262,6 +274,9 @@ export const enReparto = (id,vehiculo) => (dispatch) =>{
     axios.put(`/pedido/reparto/${id}`,vehiculo)
     .then((res) => {
         dispatch(loadPedidosHoy());
+        dispatch({
+            type: SET_ENVIADO,
+        });
     })
     .catch((err) => {
         console.log(err)
@@ -272,6 +287,9 @@ export const entregado = (id) => (dispatch) =>{
     axios.put(`/pedido/entregado/${id}`)
     .then((res) => {
         dispatch(loadPedidosHoy());
+        dispatch({
+            type: SET_ENVIADO,
+        });
     })
     .catch((err) => {
         console.log(err)
@@ -381,6 +399,9 @@ export const setProducto = (producto) => (dispatch) => {
     axios.post('/producto/save', producto)
         .then((res) => {
             dispatch(loadProductos());
+            dispatch({
+                type: SET_ENVIADO,
+            });
         })
         .catch((err) => {
             if(err.response){
@@ -589,6 +610,9 @@ export const addVehiculo = (vehiculo) => (dispatch) =>{
     axios.post(`/vehiculo/add/`, vehiculo)
     .then((res) => {
         dispatch(loadVehiculosSeguroITVReparacion());
+        dispatch({
+            type: SET_ENVIADO,
+        });
     })
     .catch((err) => {
         console.log(err)
@@ -669,6 +693,9 @@ export const setEstaPagadoFacturaE = (id,estado="TODO",orden="DEFAULT") => funct
     axios.put(`/pedido/pagado/${id}`)
         .then((res) => {
             estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
+            dispatch({
+                type: SET_ENVIADO,
+            });
         })
 
         .catch((err) => {
@@ -692,6 +719,9 @@ export const updatePedido = (estado="TODO",orden="DEFAULT", pedido) => function 
     axios.put('/pedido/update/', pedido)
         .then((res) => {
             estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
+            dispatch({
+                type: SET_ENVIADO,
+            });
         })
 
         .catch((err) => {

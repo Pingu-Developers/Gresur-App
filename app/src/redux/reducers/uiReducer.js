@@ -1,4 +1,4 @@
-import { SET_ERRORS, CLEAR_ERRORS, LOADING_UI,SET_ENVIADO} from '../types';
+import { SET_ERRORS, CLEAR_ERRORS,CLEAR_ENVIADO, LOADING_UI,SET_ENVIADO} from '../types';
 
 const initialState = {
     loading:false,
@@ -20,7 +20,6 @@ export default function(state = initialState,action){
                 ...state,
                 loading:false,
                 errors: null,
-                enviado:false
             };
         case LOADING_UI:
             return{
@@ -31,6 +30,11 @@ export default function(state = initialState,action){
             return{
                 ...state,
                 enviado:true
+            }
+        case CLEAR_ENVIADO:
+            return{
+                ...state,
+                enviado:false
             }
         default:
             return state;
