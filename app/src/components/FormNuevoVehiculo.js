@@ -77,10 +77,15 @@ const styles = theme => ({
 const initialState = {
     matricula: '',
     imagen: '',
-    capacidad: '',
-    tipoVehiculo: '',
-    mma: '',
-    loading:true
+    capacidad: 1,
+    tipoVehiculo: 'CAMION',
+    mma: 1,
+    loading:true,
+    enviar: false,
+    error: {matricula: [],
+            capacidad: [],
+            mma: []
+            }
 }
 
 export class FormNuevoVehiculo extends Component {
@@ -92,25 +97,48 @@ export class FormNuevoVehiculo extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+    validateMatricula(matricula) {
+        var re = '';
+        
+        if(this.state.tipoVehiculo === "CARRETILLA_ELEVADORA"){
+            re = /^[E]\d{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$/;
+        }
+
+        else {
+            re = /^\d{4}[BCDFGHJKLMNPRSTVWXYZ]{3}$/;
+        }
+
+        return re.test(String(matricula));
+    }
+
     handleSubmit = (event) => {
         event.preventDefault();
 
-        const vehiculo = {
-            matricula: this.state.matricula,
-            imagen: this.state.imagen,
-            capacidad: this.state.capacidad,
-            tipoVehiculo: this.state.tipoVehiculo,
-            mma: this.state.mma
-        }
-
-        this.props.addVehiculo(vehiculo);
-        this.props.cerrar();
+        this.setState({
+            enviar:true
+        })
+        
     }
 
+    handleOnChangeNumber = (event) => {
+        this.setState(state=>({
+            error:{
+                ...state.error,
+                [event.target.name]:[]
+            },
+            [event.target.name]: parseFloat(event.target.value)
+        }))
+    };
+
+
     handleOnChange = (event) => {
-        this.setState({
+        this.setState(state=>({
+            error:{
+                ...state.error,
+                [event.target.name]:[]
+            },
             [event.target.name]: event.target.value
-        })
+        }))
     };
 
     handleChangeImg = (event) => {
@@ -145,6 +173,64 @@ export class FormNuevoVehiculo extends Component {
                 loading:false
             })
         }
+        console.log(this.state.capacidad)
+
+        if(prevState.enviar != this.state.enviar && this.state.enviar){
+            var valid = true;
+
+            if(!this.validateMatricula(this.state.matricula)) {
+                valid=false;
+
+                this.setState(state=>({
+                    error:{
+                        ...state.error,
+                        matricula:['Formato incorrecto']
+                    }
+                }))
+
+            }
+
+            if(this.state.capacidad<=0 || Number.isNaN(this.state.capacidad)){
+                valid=false;
+
+                this.setState(state=>({
+                    error:{
+                        ...state.error,
+                        capacidad:['El valor debe ser mayor que 0']
+                    }
+                }))
+            }
+
+            if(this.state.mma<=0 || Number.isNaN(this.state.mma)){
+                valid=false;
+
+                this.setState(state=>({
+                    error:{
+                        ...state.error,
+                        mma:['El valor debe ser mayor que 0']
+                    }
+                }))
+            }
+
+            if(valid){
+
+                const vehiculo = {
+                    matricula: this.state.matricula,
+                    imagen: this.state.imagen,
+                    capacidad: this.state.capacidad,
+                    tipoVehiculo: this.state.tipoVehiculo,
+                    mma: this.state.mma
+                }
+
+                this.props.addVehiculo(vehiculo);
+                this.props.cerrar();
+            }
+
+            this.setState({
+                enviar: false
+            })
+
+        }
     }
 
     render() {
@@ -154,7 +240,6 @@ export class FormNuevoVehiculo extends Component {
         return (
             
             <div>
-                
                 <div className= {classes.selectVehiculo}>
                     <InputLabel className={classes.titulo} id="demo-simple-label">Tipo de Vehiculo:</InputLabel>
 
@@ -179,17 +264,20 @@ export class FormNuevoVehiculo extends Component {
                 <div style= {{padding:'0 60px 0 60px'}}>
                     <div className={classes.matriculaCapacidad}>
 
-                        <TextField id="matricula" label="Matricula" type="text" variant="outlined" name="matricula" 
+                        <TextField id="matricula" label="Matricula" type="text" variant="outlined" name="matricula"
+                            error={this.state.error.matricula.length>0} helperText={this.state.error.matricula[0]}
                             required value={this.state.matricula} onChange={this.handleOnChange} /> 
                         
-                        <TextField id="capacidad" label="Capacidad" type="text" variant="outlined" name="capacidad" 
-                            required value={this.state.capacidad} onChange={this.handleOnChange} /> 
+                        <TextField id="capacidad" label="Capacidad" type="number" variant="outlined" name="capacidad" inputProps={{min: 1, type: 'number'}}
+                            error={this.state.error.capacidad.length>0} helperText={this.state.error.capacidad[0]}
+                            required value={this.state.capacidad} onChange={this.handleOnChangeNumber} /> 
 
                     </div>
 
                     <div className={classes.mmaImagen}>
-                        <TextField id="mma" label="MMA" type="text" variant="outlined" name="mma" 
-                            required value={this.state.mma} onChange={this.handleOnChange} /> 
+                        <TextField id="mma" label="MMA" type="number" variant="outlined" name="mma" inputProps={{min: 1, type: 'number'}}
+                            error={this.state.error.mma.length>0} helperText={this.state.error.mma[0]}
+                            required value={this.state.mma} onChange={this.handleOnChangeNumber} /> 
 
 
                             <input
