@@ -23,6 +23,12 @@ export const getClientes = () => (dispatch) => {
         })
 }
 
+export const clearClientes = () => (dispatch) => {
+    dispatch({
+        type:CLEAR_CLIENTES
+    })
+}
+
 export const getFacturasCliente = (id) => (dispatch) => {
     axios.get(`/facturaEmitida/${id}`)
         .then((res) => {
@@ -65,6 +71,8 @@ export const getFacturasClienteAndFecha = (datos) => (dispatch) => {
 
 
 export const sendDevolucion = (datos) => (dispatch) => {
+
+    console.log(datos)
     axios.post('/facturaEmitida/devolucion',datos)
         .then(() => {
             dispatch({

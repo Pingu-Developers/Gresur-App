@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
 
-import { getClientes } from '../redux/actions/clienteActions'
+import { getClientes,clearClientes } from '../redux/actions/clienteActions'
 import { clear } from '../redux/actions/dataActions'
 
 import FormDatosDevolucion from '../components/FormDatosDevolucion'
@@ -53,6 +53,7 @@ class dependienteDevoluciones extends Component {
     }
 
     componentWillUnmount(){
+        this.props.clearClientes();
         this.props.clear();
     }
     
@@ -81,6 +82,7 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
     getClientes,
+    clearClientes,
     clear
 }
 

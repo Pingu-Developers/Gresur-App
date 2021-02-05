@@ -13,6 +13,8 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.gresur.model.EstadoPedido;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.LineaFactura;
@@ -69,6 +71,11 @@ public class PedidoService {
 	public Iterable<Pedido> findAll() throws DataAccessException {
 		return pedidoRepo.findAll();
 	}
+	
+	@Transactional(readOnly = true)
+	public Page<Pedido> findAll(Pageable pageable) throws DataAccessException {
+		return pedidoRepo.findAll(pageable);
+	}
 
 	@Transactional(readOnly = true)
 	public Pedido findByID(Long id) throws DataAccessException {
@@ -79,6 +86,11 @@ public class PedidoService {
 	@Transactional(readOnly = true)
 	public List<Pedido> findByEstado(EstadoPedido estado) throws DataAccessException {
 		return pedidoRepo.findByEstado(estado);
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<Pedido> findByEstado(EstadoPedido estado,Pageable pageable) throws DataAccessException {
+		return pedidoRepo.findByEstado(estado,pageable);
 	}
 	
 	@Transactional(readOnly = true)

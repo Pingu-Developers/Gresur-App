@@ -477,7 +477,7 @@ render() {
                                     onChange={(event, newValue) => {
                                       this.handleChangeVehiculo(newValue)
                                     }}
-                                    options={vehiculos?vehiculos:[]}
+                                    options={vehiculos?vehiculos.sort((a,b)=> -b.tipoVehiculo[0].localeCompare(a.tipoVehiculo[0])):[]}
                                     groupBy={(option) => option.tipoVehiculo}
                                     getOptionLabel={(option) => option.matricula}
                                     className={classes.comboVehiculo}

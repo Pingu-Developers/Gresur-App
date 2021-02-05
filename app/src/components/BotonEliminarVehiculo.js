@@ -37,7 +37,7 @@ export class BotonEliminarVehiculo extends Component {
 
         return (
             <div>
-                <Button className={classes.boton} startIcon={<DeleteIcon />} variant='contained' color='secondary' onClick={(event) => this.handleSubmit(event,matricula)}>Borrar vehiculo</Button>
+                <Button style={{display:'none'}} className={classes.boton} startIcon={<DeleteIcon />} variant='contained' color='secondary' onClick={(event) => this.handleSubmit(event,matricula)}>Borrar vehiculo</Button>
             </div>
         )
     }

@@ -7,7 +7,24 @@ export const loadPedidos = (orden="DEFAULT") => (dispatch) => {
 
     axios.get(`/pedido/${orden}`)
         .then((res) => {
-            dispatch({type: SET_PEDIDOS, payload: res})
+            dispatch({type: SET_PEDIDOS, payload: res.data})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        })
+}
+
+export const loadPedidosPaginados = (orden="",pageNo,pageSize) => (dispatch) => {
+
+    dispatch({type: LOADING_UI})
+
+    axios.get(`/pedido/page=${pageNo}&size=${pageSize}&order=${orden}`)
+        .then((res) => {
+            dispatch({type: SET_PEDIDOS, payload: {content:res.data.content,totalElements:res.data.totalElements,totalPages:res.data.totalPages}})
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
@@ -24,7 +41,7 @@ export const loadPedidoById = (id) => (dispatch) => {
 
     axios.get(`/pedido/id/${id}`)
         .then((res) => {
-            dispatch({type: SET_PEDIDO, payload: res})
+            dispatch({type: SET_PEDIDO, payload: res.data})
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
@@ -41,7 +58,24 @@ export const loadPedidosByEstado = (estado, orden="DEFAULT") => (dispatch) => {
 
     axios.get(`/pedido/${estado}/${orden}`)
         .then((res) => {
-            dispatch({type: SET_PEDIDOS, payload: res});
+            dispatch({type: SET_PEDIDOS, payload: res.data});
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        })
+}
+
+export const loadPedidosByEstadoPaginado = (estado, orden="",pageNo,pageSize) => (dispatch) => {
+
+    dispatch({type: LOADING_UI})
+
+    axios.get(`/pedido/${estado}/page=${pageNo}&size=${pageSize}&order=${orden}`)
+        .then((res) => {
+            dispatch({type: SET_PEDIDOS, payload: {content:res.data.content,totalElements:res.data.totalElements,totalPages:res.data.totalPages}});
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
@@ -302,7 +336,7 @@ export const loadPedidosHoy = () => (dispatch) => {
 
     axios.get('/pedido/hoy')
         .then((res) => {
-            dispatch({type: SET_PEDIDOS, payload: res})
+            dispatch({type: SET_PEDIDOS, payload: res.data})
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
@@ -337,7 +371,7 @@ export const loadPedidosByEstadoTransportista = (estado) => (dispatch) => {
 
     axios.get(`/pedido/transportista/${estado}`)
         .then((res) => {
-            dispatch({type: SET_PEDIDOS, payload: res});
+            dispatch({type: SET_PEDIDOS, payload: res.data});
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
@@ -687,12 +721,12 @@ export const loadBalance = (year) => (dispatch) => {
         })
 }
 
-export const setEstaPagadoFacturaE = (id,estado="TODO",orden="DEFAULT") => function (dispatch) {
+export const setEstaPagadoFacturaE = (id,estado="TODO",orden="", pageNo,pageSize) => function (dispatch) {
     dispatch({type: LOADING_UI})
 
     axios.put(`/pedido/pagado/${id}`)
         .then((res) => {
-            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
+            estado === "TODO" ? dispatch(loadPedidosPaginados(orden,pageNo,pageSize)) : dispatch(loadPedidosByEstadoPaginado(estado, orden,pageNo,pageSize))
             dispatch({
                 type: SET_ENVIADO,
             });
@@ -713,12 +747,12 @@ export const setEstaPagadoFacturaE = (id,estado="TODO",orden="DEFAULT") => funct
         })
 }
 
-export const updatePedido = (estado="TODO",orden="DEFAULT", pedido) => function (dispatch) {
+export const updatePedido = (estado="TODO",orden="", pedido, pageNo,pageSize) => function (dispatch) {
     dispatch({type: LOADING_UI})
 
     axios.put('/pedido/update/', pedido)
         .then((res) => {
-            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
+            estado === "TODO" ? dispatch(loadPedidosPaginados(orden,pageNo,pageSize)) : dispatch(loadPedidosByEstadoPaginado(estado, orden,pageNo,pageSize))
             dispatch({
                 type: SET_ENVIADO,
             });
@@ -736,6 +770,6 @@ export const updatePedido = (estado="TODO",orden="DEFAULT", pedido) => function 
                     payload: err
                 })
             }
-            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
+            estado === "TODO" ? dispatch(loadPedidosPaginados(orden,pageNo,pageSize)) : dispatch(loadPedidosByEstadoPaginado(estado, orden,pageNo,pageSize))
         })
 }

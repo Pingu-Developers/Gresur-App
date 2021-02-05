@@ -418,6 +418,9 @@ export class compraMaterial extends Component {
     })
   }
 
+  componentWillUnmount(){
+    this.props.clearProductosPaginados()
+  }
   componentDidMount() {
     this.props.getProductosPaginados(
       this.state.valuePaginaActual,

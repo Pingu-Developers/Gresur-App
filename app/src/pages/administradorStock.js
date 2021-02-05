@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadAlmacenGestion } from '../redux/actions/dataActions';
+import { loadAlmacenGestion, clear} from '../redux/actions/dataActions';
 //Components
 import AccordionGestionStock from '../components/AccordionGestionStock';
 
@@ -23,6 +23,9 @@ class administradorStock extends Component {
         this.props.loadAlmacenGestion();
     }
 
+    componentWillUnmount(){
+        this.props.clear();
+    }
     render() {
         const almacenes = this.props.data.gestionAlmacen;
         return (
@@ -46,7 +49,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    loadAlmacenGestion
+    loadAlmacenGestion,
+    clear
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(administradorStock))
