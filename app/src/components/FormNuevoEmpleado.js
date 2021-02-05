@@ -127,7 +127,6 @@ class FormNuevoEmpleado extends Component{
   }
  ///////////////////////////////////////////
     componentDidUpdate(prevProps,prevState){
-      console.log(this.state)
       if(this.state.open != prevState.open && !this.state.open){
           this.setState({
               name:'', 

@@ -296,7 +296,6 @@ class FormNuevoContrato extends Component{
             step: this.state.step
 
          };
-         console.log(contrato)
         //step + 1
       //  this.props.onNextStep(contrato.step)
       //  this.props.addContrato(this.props.dni,contrato);

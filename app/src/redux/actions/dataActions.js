@@ -1,6 +1,6 @@
-import { SET_ALMACENGESTIONENCARGADO, CLEAR_ALMACENGESTIONENCARGADO, SET_BALANCE,SET_ENVIADO, CLEAR_BALANCE, SET_PEDIDO, CLEAR_PEDIDO, CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS } from '../types';
+import { SET_ALMACENGESTIONENCARGADO, CLEAR_ALMACENGESTIONENCARGADO, SET_BALANCE,SET_ENVIADO, CLEAR_BALANCE, SET_PEDIDO, CLEAR_PEDIDO, CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS,SET_USER  } from '../types';
 import axios from 'axios';
-
+import {getUserData} from './userActions';
 export const loadPedidos = (orden="DEFAULT") => (dispatch) => {
 
     dispatch({type: LOADING_UI})
@@ -256,6 +256,61 @@ export const clearPersonal = () => (dispatch) => {
     dispatch({type: CLEAR_PERSONAL})
     
 }
+
+export const loadPersonalProfile = () => function (dispatch) {
+    dispatch({type: LOADING_UI})
+    
+    axios.get('/adm/personal/profile')
+        .then((res) => {
+            dispatch({type: SET_USER, payload: res})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response
+            })
+        })
+}
+ 
+export const putPersonalProfile = (personal) => function (dispatch) {
+    axios.put('/adm/personal/profile',personal)    .then((res) => {
+        dispatch(loadPersonalContrato());
+        dispatch(getUserData());
+    })
+    .catch((err) => {
+        if(err.response){
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        } else {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err
+            })
+        }
+    })
+}
+
+export const putPersonalProfilePassword = (personal) => function (dispatch) {
+    axios.put('/auth/password',personal)    .then((res) => {
+        dispatch(loadPersonalProfile());
+    })
+    .catch((err) => {
+        if(err.response){
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data
+            })
+        } else {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err
+            })
+        }
+    })
+}
+
 
 export const addPersonal = (rolEmpleado,personal) => (dispatch) =>{
         axios.post(`/adm/add/${rolEmpleado}`,personal)

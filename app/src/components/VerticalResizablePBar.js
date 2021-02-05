@@ -59,11 +59,22 @@ class encargadoGestion extends Component {
         }
     }
     componentDidMount(){
+        // pone el scroll del histograma en su sitio
+        this.scrollDownHist()
+        window.addEventListener('resize', this.scrollDownHist)
+
+        // inicializa el estado
         this.setState({
             porcentajeCapacidad : this.props.porcentajeAlmacen, 
             minHeight : this.props.ocupacion / 100 * (this.props.porcentajeAlmacen / 100 * this.props.axisH),
             porcentajeOcupacionEst : this.props.ocupacion})
+
+        // llama a la funcion que actualiza las barras
         this.updateBars(true);
+    }
+
+    componentWillUnmount(){
+        window.removeEventListener('resize', this.scrollDownHist)
     }
 
     componentDidUpdate(prevprops, prevstate){
@@ -74,6 +85,12 @@ class encargadoGestion extends Component {
             })
         }
         this.updateBars(false);
+    }
+
+    scrollDownHist(){
+        var axis = document.getElementById("axis");
+        var hist = axis.parentElement;
+        hist.scrollTop = hist.scrollHeight;
     }
 
     updateBars(mount){
@@ -123,6 +140,16 @@ class encargadoGestion extends Component {
                     porcentajeOcupacionEst : ocupadoTmp > 100 ? 100 : ocupadoTmp});
             }
         }
+
+        // añadir y eliminar event listener para evitar conflicto
+        var noDraggableHist = () => {
+            var hist = doc.getElementById('axis').parentElement;
+            hist.removeEventListener("mousedown", this.props.dragHandler);
+        }
+        var draggableHist = () => {
+            var hist = doc.getElementById('axis').parentElement;
+            hist.addEventListener("mousedown", this.props.dragHandler);
+        }
       
         // funciones de resize
         var startResize = function(evt) {
@@ -140,11 +167,13 @@ class encargadoGestion extends Component {
 
         if(mount){
             rsz.addEventListener("mousedown", function(evt){
+                noDraggableHist();  //makes scroll not dragable
                 startResize(evt);
                 doc.body.addEventListener("mousemove", resize);
                 doc.body.addEventListener("mouseup", (ev) => {
                     doc.body.removeEventListener("mousemove", resize);
                     postData()
+                    draggableHist();    //makes scroll dragable again
                 }, {once : true});
             });
         }    

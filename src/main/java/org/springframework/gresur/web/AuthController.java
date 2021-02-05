@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.configuration.jwt.JwtUtils;
@@ -20,6 +21,7 @@ import org.springframework.gresur.model.userPayload.MessageResponse;
 import org.springframework.gresur.model.userPayload.SignupRequest;
 import org.springframework.gresur.repository.RolRepository;
 import org.springframework.gresur.repository.UserRepository;
+import org.springframework.gresur.util.Tuple2;
 import org.springframework.gresur.util.Tuple3;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -154,5 +156,19 @@ public class AuthController {
 		
 		return ResponseEntity.ok(res);
 	}
+	@PutMapping("/password")
+	@PreAuthorize("permitAll()")
+	public ResponseEntity<?> newPassword(@RequestBody Tuple2<String, String> pwds) {
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		User empleado = userRepository.findByUsername(user.getName()).orElse(null);
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		if(user!=null&&encoder.matches(pwds.getE1(), userDetails.getPassword())) {
+			empleado.setPassword(encoder.encode(pwds.getE2()));
+			userRepository.save(empleado);
+			return ResponseEntity.ok("Contraseña cambiada");
+		}
+		return ResponseEntity.badRequest().body("Contraseña invalida");
+	}
+	
 
 }
