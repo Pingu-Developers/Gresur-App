@@ -16,7 +16,8 @@ import Snackbar from '../components/SnackBar'
 
 //Redux stuff
 import { connect } from 'react-redux';
-import { loginUser } from '../redux/actions/userActions';
+import { loginUser,clear } from '../redux/actions/userActions';
+
 
 const style = {
     root: {
@@ -61,7 +62,61 @@ class login extends Component {
         this.state = {
             username:'',
             password:'',
-            errors: null
+            enviar:false,
+            data:null,
+            errores:{password:[], username:[]}
+        }
+    }
+
+    componentDidMount() {
+        this.props.clear()
+    }
+
+    componentDidUpdate(prevProps,prevState){
+
+        if(prevState.enviar != this.state.enviar && this.state.enviar){
+            var valid = true
+
+            if(this.state.username.length<1){
+                this.setState(state=>({
+                    errores:{
+                        ...state.errores,
+                        username:['Usuario vacio']
+                    }
+                }))
+                valid = false;
+            }else{
+                this.setState(state=>({
+                    errores:{
+                        ...state.errores,
+                        username:[]
+                    }
+                }))
+            }
+
+            if(this.state.password.length<6){
+                this.setState(state=>({
+                    errores:{
+                        ...state.errores,
+                        password:['Debe ser mayor de 6 caracteres']
+                    }
+                }))
+                valid = false;
+            }else{
+                this.setState(state=>({
+                    errores:{
+                        ...state.errores,
+                        password:[]
+                    }
+                }))
+            }
+            if(valid){
+                this.props.loginUser(this.state.data,this.props.history);
+            }
+            
+            this.setState({
+                enviar:false
+            })
         }
     }
 
@@ -71,15 +126,23 @@ class login extends Component {
              username: this.state.username,
              password: this.state.password
          };
-         this.props.loginUser(userData,this.props.history);
-         this.errors = this.props.UI.errors;
+         this.setState({
+             enviar:true,
+             data:userData
+         })
      }
 
+    
 
     handleChange = (event) =>  {
-        this.setState({
-            [event.target.name]:event.target.value
-        })
+        this.setState(state=>({
+            [event.target.name]:event.target.value,
+            errores:{
+                ...state.errores,
+                [event.target.name]:[]
+            }
+        }))
+        this.props.clear()
     }
 
     render() {
@@ -87,15 +150,15 @@ class login extends Component {
         document.body.style.background = `url(${GresurImage}) no-repeat center center fixed`;
         document.body.style.backgroundSize = "cover";
 
-        const {classes, UI} = this.props;
+        const {classes, UI:{loading,errors}} = this.props;
         return (
             
             <div>
 
                 <div className={classes.root}>
 
-                <Snackbar type = "error" open = {this.errors?true:false} message = {this.errors}></Snackbar>
-                {this.errors ? document.getElementById("botonSnack").click():null}
+                <Snackbar type = "error" open = {errors} truco ={true} message = {errors}></Snackbar>
+                {errors ? document.getElementById("botonSnack").click():null}
 
 
                 <Grid container spacing={0} className={classes.grid}>
@@ -113,13 +176,13 @@ class login extends Component {
                                 </Typography>
                                 <form  noValidate onSubmit={this.handleSubmit}>
                                     <TextField fullWidth id="username" name="username" label="Username" onChange={this.handleChange} className={classes.textField} 
-                                        error={this.errors?true:false} value={this.state.username}/>
+                                        error={errors||this.state.errores.username.length>0}  helperText={this.state.errores.username[0]} value={this.state.username}/>
                                     <TextField fullWidth id="password" name="password" label="Password" type="password" onChange={this.handleChange} className={classes.textField} 
-                                        error={this.errors?true:false} value={this.state.password}/>
+                                        error={errors||this.state.errores.password.length>0} helperText={this.state.errores.password[0]} value={this.state.password}/>
 
-                                    <Button type="submit" variant="contained" color="primary" className={classes.button} disabled={UI.loading}>
+                                    <Button type="submit" variant="contained" color="primary" className={classes.button} disabled={loading}>
                                     Login
-                                        {UI.loading && (
+                                        {loading && (
                                             <CircularProgress size={20} className={classes.progress}/>
                                         )}
                                     </Button>
@@ -151,7 +214,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapActionsToProps = {
-    loginUser
+    loginUser,
+    clear
 }
 
 export default connect(mapStateToProps,mapActionsToProps)(withStyles(style)(login))

@@ -15,6 +15,8 @@ import {
   getProductosPaginados,
   clearProductosPaginados,
 } from "../../../redux/actions/productoActions";
+import SnackCallController from '../../../components/SnackCallController'
+
 //MUI stuff
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -38,6 +40,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 //FIREBASE stuff
 import firebase from "../../../firebaseConfig/firebase";
 import  FormNuevoProveedor  from "../../../components/FormNuevoProveedor";
+import { TrainRounded } from "@material-ui/icons";
 
 const style = (theme) => ({
   root: {
@@ -75,10 +78,12 @@ const style = (theme) => ({
     alignItems: "center",
     display: "flex",
     justifyContent: "center",
+    width:"4%"
   },
   arrow: {
     position: "relative",
     top: 30,
+    width:"100%"
   },
   total: {
     position: "relative",
@@ -108,8 +113,10 @@ const style = (theme) => ({
     borderColor:'#C4C4C4',
     padding:60,
     paddingBottom:0,
+    boxSizing:"border-box",
     borderRadius: 10,
     height: "100%",
+    width:"100%"
   },
   formControl: {
     margin: theme.spacing(2),
@@ -155,6 +162,8 @@ export class compraMaterial extends Component {
       opendialoge: false,
       openProveedor: false,
       newProduct:{},
+      errors:false,
+      enviado:false
     };
     this.handleChangeCategoria = this.handleChangeCategoria.bind(this);
     this.handleChangeSearch = this.handleChangeSearch.bind(this);
@@ -284,6 +293,7 @@ export class compraMaterial extends Component {
   handleChangeProveedor(event, newValue) {
     this.setState({
       proveedorSel: newValue,
+      errors:false
     });
   }
 
@@ -474,7 +484,7 @@ export class compraMaterial extends Component {
       );
     }
 
-    if(this.state.enviar != prevState.enviar && this.state.enviar && this.state.proveedorSel){
+    if(this.state.enviar != prevState.enviar && this.state.enviar){
       if(this.state.proveedorSel && this.state.selected.length > 0){
         const factNueva = {
           proveedor: this.state.proveedorSel,
@@ -493,17 +503,22 @@ export class compraMaterial extends Component {
           valueSelected: [],
         })
         this.props.newFacturaRepo(DataEnv)
+      }else{
+        this.setState({errors:true})
       }
+
       this.setState({
         enviar:false
       })  
     }
+
   }
 
   render() {
     const {
       classes,
       proveedor: { proveedores },
+      UI:{errors,enviado},
       productos: { articlesDetails, totalPages },
     } = this.props;
 
@@ -521,7 +536,10 @@ export class compraMaterial extends Component {
     const loading = this.state.open && proveedores.length === 0;
     return (
       <Grid xs={12} container spacing={0}>
-        <Grid container spacing={3} style={{width:"39.7vw"}}>
+        <SnackCallController  enviado = {enviado} message = {"Compra realizada correctamente"} errors={errors} />
+
+        <div style={{display:"flex" , justifyContent:"space-between"}}>
+        <Grid container spacing={3} style={{width:"47%",boxSizing:"border-box",}}>
           <Grid item xs={12}>
             <TextField
               className={classes.search}
@@ -632,14 +650,14 @@ export class compraMaterial extends Component {
           </Grid>
         </Grid>
 
-        <Grid className={classes.arrowDiv} xs={1}>
+        <Grid className={classes.arrowDiv}>
           <ArrowForwardIcon
             className={classes.arrow}
             style={{ fontSize: 80 }}
           />
         </Grid>
 
-        <Grid container spacing={3} style={{width:"39.7vw"}}>
+        <Grid container spacing={3} style={{width:"47%",boxSizing:"border-box",}}>
           <Grid item xs={12}>
             <Typography className={classes.total} variant="body1">
               TOTAL: {total.toFixed(2)}€
@@ -674,6 +692,7 @@ export class compraMaterial extends Component {
                 <TextField
                   {...params}
                   label="Proveedor"
+                  error={this.state.errors}
                   InputProps={{
                     ...params.InputProps,
                     endAdornment: (
@@ -809,6 +828,7 @@ export class compraMaterial extends Component {
             </Paper>
           </Grid>
         </Grid>
+        </div>
         <Grid style={{ height: "55%" }} xs={12}>
           <fieldset className={classes.fieldset}>
             <legend>
@@ -1105,7 +1125,8 @@ export class compraMaterial extends Component {
 const mapStateToProps = (state) => ({
   proveedor: state.proveedor,
   productos: state.productos,
-  nuevoProducto: state.nuevoProducto
+  nuevoProducto: state.nuevoProducto,
+  UI: state.UI
 });
 
 const mapDispatchToProps = {

@@ -7,7 +7,12 @@ import { connect } from 'react-redux';
 import { loadVehiculosSeguroITVReparacion , loadPedidos, clear} from '../redux/actions/dataActions';
 
 //Components
+
 import VerticalTabs from '../components/VerticalTabsAdmin';
+import TablaMostradorVehiculosSeguroITVReparacion from '../components/TablaMostradorVehiculosSeguroITVReparacion';
+import PopUpNuevoVehiculo from '../components/PopUpNuevoVehiculo';
+import SnackCallController from '../components/SnackCallController';
+
 
 const style = {  
     verticalTabs: {
@@ -32,11 +37,22 @@ class administradorTransporte extends Component {
     }
 
     render() {
-        const {classes, data} = this.props;
+        const {classes, data,UI:{errors,enviado}} = this.props;
 
         return (
+
             <div>  
                 <VerticalTabs className={classes.verticalTabs} datos = {data}/>
+            <div>
+                <SnackCallController  enviado = {enviado} message = {"Factura realizada correctamente"} errors={errors} />
+                <div className={classes.tituloyForm}>
+                    <Typography variant='h3' className={classes.titulo}>VEHICULOS DE LA EMPRESA</Typography>
+                    <PopUpNuevoVehiculo className={classes.boton}/>
+                </div>
+
+                <div className={classes.main}>
+                    {data === undefined? null:<TablaMostradorVehiculosSeguroITVReparacion datos = {data}/>}
+                </div>
             </div>
         )
     }
@@ -50,7 +66,8 @@ administradorTransporte.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    data: state.data
+    data: state.data,
+    UI: state.UI
 })
 
 const mapActionsToProps = {

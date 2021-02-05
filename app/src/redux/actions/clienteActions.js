@@ -1,4 +1,4 @@
-import { SET_CLIENTES,CLEAR_CLIENTES,SET_FACTURAS,CLEAR_FACTURAS , SET_ERRORS,CLEAR_ERRORS } from '../types';
+import { SET_CLIENTES,CLEAR_CLIENTES,SET_FACTURAS,CLEAR_FACTURAS , SET_ERRORS,CLEAR_ERRORS ,SET_ENVIADO} from '../types';
 import axios from 'axios';
 
 
@@ -67,7 +67,9 @@ export const getFacturasClienteAndFecha = (datos) => (dispatch) => {
 export const sendDevolucion = (datos) => (dispatch) => {
     axios.post('/facturaEmitida/devolucion',datos)
         .then(() => {
-            dispatch({type: CLEAR_ERRORS})      
+            dispatch({
+                type: SET_ENVIADO,
+            });      
         })
         .catch((err) => {
             if(err.response){

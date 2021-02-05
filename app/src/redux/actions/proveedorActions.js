@@ -1,4 +1,4 @@
-import { SET_PROVEEDORES , CLEAR_PROVEEDORES , LOADING_UI, SET_ERRORS, CLEAR_ERRORS } from '../types';
+import { SET_PROVEEDORES , CLEAR_PROVEEDORES , LOADING_UI, SET_ERRORS, CLEAR_ERRORS,SET_ENVIADO } from '../types';
 import axios from 'axios';
 
 
@@ -50,7 +50,9 @@ export const newProveedores = (data) => (dispatch) =>{
 export const newFacturaRepo = (data) => (dispatch) =>{
     axios.post('facturaRecibida/repo',data)
         .then(()=>{
-            
+            dispatch({
+                type: SET_ENVIADO,
+            });
         })
         .catch((err) => {
             if(err.response){
@@ -68,7 +70,9 @@ export const newFacturaRepo = (data) => (dispatch) =>{
 export const newFacturaVehiculo = (tipo,data) => (dispatch) =>{
     axios.post(`facturaRecibida/${tipo}`,data)
         .then(()=>{
-            
+            dispatch({
+                type: SET_ENVIADO,
+            });
         })
         .catch((err) => {
             if(err.response){
@@ -85,7 +89,9 @@ export const newFacturaVehiculo = (tipo,data) => (dispatch) =>{
 export const newFacturaOtro = (data) => (dispatch) =>{
     axios.post(`facturaRecibida/otro`,data)
         .then(()=>{
-            
+            dispatch({
+                type: SET_ENVIADO,
+            });
         })
         .catch((err) => {
             if(err.response){

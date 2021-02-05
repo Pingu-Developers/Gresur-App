@@ -13,6 +13,7 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import SnackCallController from '../../../components/SnackCallController';
 
 import { getProveedores,clearProveedores,newProveedores,newFacturaOtro } from "../../../redux/actions/proveedorActions";
 
@@ -137,10 +138,12 @@ export class otro extends Component {
     }
 
     render() {
-        const { classes ,proveedor: { proveedores }} = this.props;
+        const { classes ,UI:{errors,enviado},proveedor: { proveedores }} = this.props;
         const loading = this.state.open && proveedores.length === 0;
         return (
             <div className={classes.root}>
+                <SnackCallController  enviado = {enviado} message = {"Factura realizada correctamente"} errors={errors} />
+                    
                 <div style={{display:"flex", justifyContent:"flex-end",alignItems:"center", width:"100%"}}>
                     <Autocomplete
                     id="proveedor"
@@ -239,6 +242,7 @@ export class otro extends Component {
 
 const mapStateToProps = (state) => ({
     proveedor: state.proveedor,
+    UI:state.UI
 })
 
 const mapDispatchToProps = {

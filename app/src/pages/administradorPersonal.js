@@ -8,7 +8,9 @@ import { loadPersonalContrato, clear} from '../redux/actions/dataActions';
 
 //Components
 import TablaPersonalDesplegable from '../components/TablaPersonalDesplegable';
-import PopUpNuevoEmpleado from '../components/PopUpNuevoEmpleado'
+import PopUpNuevoEmpleado from '../components/PopUpNuevoEmpleado';
+import SnackCallController from '../components/SnackCallController';
+
 
 export class administradorPersonal extends Component {
     constructor(props){
@@ -27,9 +29,10 @@ export class administradorPersonal extends Component {
     }
 
     render() {
-        const {classes, data} = this.props;
+        const {classes, data,UI:{errors,enviado}} = this.props;
         return (
            <div>
+                <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
                 <div>
                     <PopUpNuevoEmpleado/>
                 </div>
@@ -52,6 +55,7 @@ administradorPersonal.propTypes = {
 
 const mapStateToProps = (state) => ({
     data: state.data,
+    UI: state.UI
 })
 
 const mapActionsToProps = {

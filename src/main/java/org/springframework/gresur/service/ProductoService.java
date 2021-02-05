@@ -101,7 +101,6 @@ public class ProductoService {
 			for (Administrador adm : adminService.findAll()) {
 				adminReceptores.add(adm);
 			}
-			System.out.println("HOLA" + noti);
 			notificacionService.save(noti, adminReceptores);
 		}
 		

@@ -35,7 +35,7 @@ export default function SimpleAccordion(props) {
     <div className={classes.root}>
       {
         almacenes.map((gestAlmacen) =>
-          <Accordion>
+          <Accordion expanded={true}>
             <AccordionSummary
               className={classes.acordeon}
               expandIcon={<ExpandMoreIcon />}
@@ -50,8 +50,8 @@ export default function SimpleAccordion(props) {
                 <TableContainer>
                   <TableHead>
                     <TableRow>
-                      <TableCell><b>Categoría</b></TableCell>
-                      <TableCell><b>Ocupación por categoría</b></TableCell>
+                      <TableCell style={{backgroundColor: '#f7d1a6'}}><b>Categoría</b></TableCell>
+                      <TableCell style={{backgroundColor: '#f7d1a6'}}><b>Ocupación por categoría</b></TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>

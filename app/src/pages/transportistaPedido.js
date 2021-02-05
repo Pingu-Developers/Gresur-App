@@ -10,6 +10,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 //Redux stuff
 import { connect } from 'react-redux';
 import { loadPedidosHoy,loadPedidosByEstadoTransportista} from '../redux/actions/dataActions';
+import SnackCallController from '../components/SnackCallController';
 
 const style = {
     Select:{
@@ -77,9 +78,10 @@ export class tranportistaPedidos extends Component {
     }
 
     render() {
-        const {classes, data} = this.props;
+        const {classes, data , UI:{errors,enviado}} = this.props;
         return (
             <div>
+            <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
             <Typography variant='h3' className={classes.titulo}>MIS PEDIDOS</Typography>
             <Typography 
             className={classes.form}
@@ -118,7 +120,8 @@ tranportistaPedidos.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    data:state.data
+    data:state.data,
+    UI:state.UI
 })
 
 const mapActionsToProps = {

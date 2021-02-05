@@ -79,7 +79,7 @@ public class AlmacenController {
 		
 		EncargadoDeAlmacen encargado = (EncargadoDeAlmacen) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal(); 
 		
-		List<Tuple2<Categoria, Double>> tupla = this.getCategoriasCapacidad(encargado.getAlmacen());
+		List<Tuple2<Categoria, Double>> tupla = this.getCategoriasCapacidad2(encargado.getAlmacen());
 		List<Tuple3<Categoria, Double, Double>> res = new ArrayList<Tuple3<Categoria,Double,Double>>();
 		for(Tuple2<Categoria, Double> tp: tupla) {
 			Estanteria est = zonaService.findByCategoria(tp.getE1());
@@ -126,6 +126,45 @@ public class AlmacenController {
 			}
 			
 			tupla.setE1(cat);
+			
+			tupla.name1 = "categoria";
+			tupla.name2 = "ocupacionEstanteria";
+			
+			res.add(tupla);
+		}
+		return res;
+	}
+	
+	@GetMapping("/categorias")
+	@PreAuthorize("hasRole('ENCARGADO')")
+	public List<Categoria> getCategorias(){
+		
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		
+		EncargadoDeAlmacen encargado = (EncargadoDeAlmacen) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+		
+		List<Estanteria> estanterias =  zonaService.findAllEstanteriaByAlmacen(encargado.getAlmacen().getId());
+		return estanterias.stream().map(x -> x.getCategoria()).collect(Collectors.toList());
+	}
+	
+	private List<Tuple2<Categoria, Double>> getCategoriasCapacidad2(Almacen alm) {
+		
+		List<Tuple2<Categoria, Double>> res = new ArrayList<>();
+		
+		List<Estanteria> estanterias =  zonaService.findAllEstanteriaByAlmacen(alm.getId());
+		
+		for(Estanteria est: estanterias) {
+			
+			Tuple2<Categoria, Double> tupla = new Tuple2<Categoria, Double>();
+			
+			Double ocupacionProductosPorEstanteria = productoService.findByEstanteria(est.getCategoria())
+			.stream()
+			.map(x -> (x.getAlto() * x.getAncho() * x.getProfundo() * x.getStock())/est.getCapacidad() * 100)
+			.mapToDouble(x -> x).sum();
+			
+			tupla.setE1(est.getCategoria());
+			tupla.setE2(ocupacionProductosPorEstanteria);
 			
 			tupla.name1 = "categoria";
 			tupla.name2 = "ocupacionEstanteria";
