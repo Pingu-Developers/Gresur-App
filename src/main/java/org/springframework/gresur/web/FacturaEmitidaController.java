@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.Dependiente;
 import org.springframework.gresur.model.FacturaEmitida;
@@ -138,6 +141,57 @@ public class FacturaEmitidaController {
 		return ResponseEntity.ok(devolucion);
 	}
 	
+	@Transactional
+	@GetMapping("/cargar/{numFactura}")
+	public ResponseEntity<?> getFacturaByNumFactura(@PathVariable String numFactura) {
+		FacturaEmitida factura = facturaEmitidaService.findByNumFactura(numFactura);
+		if(factura != null) {
+			return ResponseEntity.ok(factura);
+		} else {
+			return ResponseEntity.badRequest().body("No se ha encontrado la factura");
+		}
+		
+	}
+	
+	@Transactional
+	@PostMapping("/rectificar")
+	public FacturaEmitida rectificarFactura(@RequestBody FacturaEmitida fra){
+
+		Double importe = 0.0;
+		FacturaEmitida f = new FacturaEmitida();
+		f.setCliente(fra.getCliente());
+		f.setDependiente(fra.getDependiente());	
+		f.setDescripcion(fra.getDescripcion());
+		f.setEstaPagada(fra.getEstaPagada());
+		f.setFechaEmision(LocalDate.now());
+		f.setImporte(importe);
+		f.setOriginal(fra);
+		FacturaEmitida f2 = facturaEmitidaService.save(f);
+		
+		List<LineaFactura> ls = new ArrayList<LineaFactura>();
+		fra.getLineasFacturas().forEach(x -> parseo(x, ls, f2));
+		List<LineaFactura> lsFinal = lineaFacturaService.saveAll(ls);
+		
+		f2.setLineasFacturas(lsFinal);
+		f2.setImporte(ls.stream().mapToDouble(x -> x.getPrecio()).sum());
+		
+		return facturaEmitidaService.save(f2);
+	}
+	private void parseo(LineaFactura linea, List<LineaFactura> ls, FacturaEmitida fra) {
+		linea.setId(null);
+		linea.setFactura(fra);
+		ls.add(linea);
+	}
+	
+	/*@Transactional
+	@PostMapping("/addProductoFactura/{id}")
+	public LineaFactura addProductoFactura (@PathVariable Long idProducto){
+		Producto prod = productoService.findById(idProducto);
+		LineaFactura lf = new LineaFactura();
+		lf.setCantidad(1);
+		lf.set
+		return null;
+	}*/
 	
 
 }

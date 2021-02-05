@@ -831,3 +831,44 @@ export const updatePedido = (estado="TODO",orden="", pedido, pageNo,pageSize) =>
             estado === "TODO" ? dispatch(loadPedidosPaginados(orden,pageNo,pageSize)) : dispatch(loadPedidosByEstadoPaginado(estado, orden,pageNo,pageSize))
         })
 }
+
+
+export const loadFacturaEmitida = (numFactura) => (dispatch) => {
+
+    dispatch({type: LOADING_UI})
+
+    axios.get(`/facturaEmitida/cargar/${numFactura}`)
+        .then((res) => {
+            dispatch({type: SET_FACTURAS, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+        .catch((err) => {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data
+            })
+        })
+}
+
+export const clearFacturaEmitida = () => (dispatch) => {
+    dispatch({type: CLEAR})
+}
+
+export const rectificaFactura = (factura) => (dispatch) => {
+    
+    axios.post(`/facturaEmitida/rectificar`, factura)
+    .catch((err) => {
+        if(err.response){
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data.message
+            })
+        } else {
+            dispatch({
+                type: SET_ERRORS,
+                payload: err
+            })
+        }
+    })
+
+}
