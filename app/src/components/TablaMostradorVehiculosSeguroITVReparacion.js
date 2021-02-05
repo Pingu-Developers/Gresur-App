@@ -62,7 +62,7 @@ const AccordionDetails = withStyles((theme) => ({
 
 export default function ControlledAccordions(props) {
   const classes = useStyles();
-  const datos = props.datos.vehiculosITVSeguroReparacion;
+  const datos = props.datos;
   const [expanded, setExpanded] = React.useState(0);
 
   const handleChange = (panel) => (event, isExpanded) => { 

@@ -1,11 +1,11 @@
 import { SET_ALMACENGESTIONENCARGADO, CLEAR_ALMACENGESTIONENCARGADO, SET_BALANCE, CLEAR_BALANCE, SET_PEDIDO, CLEAR_PEDIDO, CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS } from '../types';
 import axios from 'axios';
 
-export const loadPedidos = () => (dispatch) => {
+export const loadPedidos = (orden="DEFAULT") => (dispatch) => {
 
     dispatch({type: LOADING_UI})
 
-    axios.get('/pedido')
+    axios.get(`/pedido/${orden}`)
         .then((res) => {
             dispatch({type: SET_PEDIDOS, payload: res})
             dispatch({type: CLEAR_ERRORS})
@@ -35,11 +35,11 @@ export const loadPedidoById = (id) => (dispatch) => {
         })
 }
 
-export const loadPedidosByEstado = (estado) => (dispatch) => {
+export const loadPedidosByEstado = (estado, orden="DEFAULT") => (dispatch) => {
 
     dispatch({type: LOADING_UI})
 
-    axios.get(`/pedido/${estado}`)
+    axios.get(`/pedido/${estado}/${orden}`)
         .then((res) => {
             dispatch({type: SET_PEDIDOS, payload: res});
             dispatch({type: CLEAR_ERRORS})
@@ -56,11 +56,11 @@ export const clearPedidos = () => (dispatch) => {
     dispatch({type: CLEAR_PEDIDOS})
 }
 
-export const cancelarPedido = (id) => (dispatch) => {
+export const cancelarPedido = (id, estado="TODO", orden="DEFAULT") => (dispatch) => {
 
     axios.post(`/pedido/${id}`)
         .then((res) => {
-            dispatch(loadPedidos());
+            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
         })
         .catch((err) => {
             if(err.response){
@@ -548,6 +548,7 @@ export const updateEstanteriaCapacidad = (categoria, capacidad) => (dispatch) =>
                 payload: err
             })
         }
+        dispatch(loadAlmacenGestionEncargado());
     })
 }
 
@@ -662,12 +663,12 @@ export const loadBalance = (year) => (dispatch) => {
         })
 }
 
-export const setEstaPagadoFacturaE = (id) => function (dispatch) {
+export const setEstaPagadoFacturaE = (id,estado="TODO",orden="DEFAULT") => function (dispatch) {
     dispatch({type: LOADING_UI})
 
     axios.put(`/pedido/pagado/${id}`)
         .then((res) => {
-            dispatch(loadPedidos())
+            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
         })
 
         .catch((err) => {
@@ -682,5 +683,29 @@ export const setEstaPagadoFacturaE = (id) => function (dispatch) {
                     payload: err
                 })
             }
+        })
+}
+
+export const updatePedido = (estado="TODO",orden="DEFAULT", pedido) => function (dispatch) {
+    dispatch({type: LOADING_UI})
+
+    axios.put('/pedido/update/', pedido)
+        .then((res) => {
+            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
+        })
+
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
         })
 }
