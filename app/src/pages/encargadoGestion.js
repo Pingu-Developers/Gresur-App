@@ -30,11 +30,15 @@ const style = {
     },
     histogram: {
         padding: '30px 30px 30px 60px',
-        overflowY: 'hidden',
+        overflowY: 'auto',
+        scrollbarWidth: 'none',
         maxHeight: '60vh',
         minHeight: '60vh',
         width: '95%',
-        gridRow: '1 / span 5'
+        gridRow: '1 / span 5',
+        '&::-webkit-scrollbar': {
+            width: 0,
+        }
     },
     axis: {
         position: 'relative',
