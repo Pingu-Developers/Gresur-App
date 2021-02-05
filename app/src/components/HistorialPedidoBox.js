@@ -123,9 +123,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function HistorialPedidoBox(props) {
   const classes = useStyles();
-  const pedido = props.pedido;
-  const estado = props.estado;
-  const orden = props.orden;
+
+  const {pedido,estado,orden,pageNo,pageSize}=props
 
   const counter = useSelector(state => state);
   const dispatch = useDispatch();
@@ -133,12 +132,12 @@ export default function HistorialPedidoBox(props) {
   
   const handleSubmitPago = (id,event) => {
     event.preventDefault();
-    dispatch(setEstaPagadoFacturaE(id, estado, orden))
+    dispatch(setEstaPagadoFacturaE(id, estado, orden ,pageNo,pageSize))
   }
 
   const handleSubmitCancelacion = (id,event) => {
     event.preventDefault();
-    dispatch(cancelarPedido(id, estado, orden))
+    dispatch(cancelarPedido(id, estado, orden ,pageNo,pageSize))
   }
 
   return (
@@ -245,7 +244,7 @@ export default function HistorialPedidoBox(props) {
 
           <div className={classes.iconoObjeto}>
             <DoneAllIcon className={classes.icono}/>
-            <p><b>TOTAL DEL PEDIDO</b> ................................................................ {pedido.facturaEmitida.importe}€</p>
+            <p><b>TOTAL DEL PEDIDO</b> ................................................................ {pedido.facturaEmitida.importe.toFixed(2)}€</p>
           </div>
 
         </fieldset>

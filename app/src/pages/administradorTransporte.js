@@ -4,7 +4,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
 
 //Redux stuff
-import { loadVehiculosSeguroITVReparacion , loadPedidos, clear} from '../redux/actions/dataActions';
+import { loadVehiculosSeguroITVReparacion , loadPedidosPaginados, clear} from '../redux/actions/dataActions';
 
 //Components
 
@@ -27,7 +27,7 @@ class administradorTransporte extends Component {
 
     componentDidMount(){
         this.props.loadVehiculosSeguroITVReparacion();
-        this.props.loadPedidos();
+        this.props.loadPedidosPaginados("",0,2);
     }
 
     componentWillUnmount(){
@@ -61,7 +61,7 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
     loadVehiculosSeguroITVReparacion,
-    loadPedidos,
+    loadPedidosPaginados,
     clear
 }
 

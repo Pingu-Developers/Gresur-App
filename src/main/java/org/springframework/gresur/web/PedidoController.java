@@ -3,7 +3,6 @@ package org.springframework.gresur.web;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,10 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.Cliente;
@@ -96,18 +99,17 @@ public class PedidoController {
 	protected PersonalService<Transportista, TransportistaRepository> personalService;
 	
 	
-	@GetMapping("/{orden}")
+	@GetMapping("/page={pageNo}&size={pageSize}&order={orden}")
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') or hasRole('ADMIN')")
-	public Iterable<Pedido> findAll(@PathVariable("orden") String orden) {
-		Iterable<Pedido> ip = pedidoService.findAll();
+	public Page<Pedido> findAll(@PathVariable("pageNo") Integer pageNo , @PathVariable("pageSize") Integer pageSize ,@PathVariable("orden") String orden) {
 		
-		List<Pedido> lp = new ArrayList<Pedido>();
-		ip.forEach(x->lp.add(x));
+		Pageable paging = null;
 		
-		if(orden.equals("ASC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion));
-		else if(orden.equals("DESC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion).reversed());
+		if(!orden.equals("")) paging = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.valueOf(orden), "fechaRealizacion"));
+		else paging = PageRequest.of(pageNo, pageSize);
 		
-		return lp;
+		
+		return pedidoService.findAll(paging);
 	}
 	
 	@GetMapping("/id/{id}")
@@ -116,16 +118,17 @@ public class PedidoController {
 		return pedidoService.findByID(id);
 	}
 	
-	@GetMapping("/{estado}/{orden}")
+	@GetMapping("/{estado}/page={pageNo}&size={pageSize}&order={orden}")
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
-	public List<Pedido> findAllByEstadoOrden(@PathVariable("estado") String estado, @PathVariable("orden") String orden) {
+	public Page<Pedido> findAllByEstadoOrden(@PathVariable("estado") String estado,@PathVariable("pageNo") Integer pageNo , @PathVariable("pageSize") Integer pageSize ,@PathVariable("orden") String orden) {
 		
-		List<Pedido> lp = pedidoService.findByEstado(EstadoPedido.valueOf(estado));
+		Pageable paging = null;
 		
-		if(orden.equals("ASC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion));
-		else if(orden.equals("DESC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion).reversed());
+		if(!orden.equals("")) paging = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.valueOf(orden), "fechaRealizacion"));
+		else paging = PageRequest.of(pageNo, pageSize);
 		
-		return lp;
+
+		return pedidoService.findByEstado(EstadoPedido.valueOf(estado) , paging);
 	}
 	
 	@ExceptionHandler({Exception.class})

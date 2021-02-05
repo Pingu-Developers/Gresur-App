@@ -116,7 +116,9 @@ public class FacturaEmitidaController {
 					diff = linea.getCantidad()-pareja.getE2();
 					if(diff<0) {
 						throw new IllegalArgumentException("Cantidad superada");
-					}	
+					}
+					prod.setStock(prod.getStock()+pareja.getE2());
+					productoService.save(prod);
 				}
 			}			
 

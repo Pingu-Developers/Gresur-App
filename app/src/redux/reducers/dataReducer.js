@@ -24,7 +24,7 @@ export default function (state = initialState, action) {
         case SET_PEDIDOS:
             return {
                 ...state,
-                pedidos: action.payload.data
+                pedidos: action.payload
             };
         case CLEAR_PEDIDOS:
             return initialState;

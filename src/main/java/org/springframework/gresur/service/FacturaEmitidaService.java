@@ -41,8 +41,8 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 	@Transactional
 	public FacturaEmitida save(FacturaEmitida emitida) throws DataAccessException {
 		em.clear();
-
-		FacturaEmitida emitidaDB = facturaRepo.findById(emitida.getId()).orElse(null);
+		FacturaEmitida emitidaDB = emitida.getId() == null ? null : facturaRepo.findById(emitida.getId()).orElse(null);
+		
 		Cliente cliente = emitida.getCliente();
 		if(!facturaRepo.findByClienteIdAndEstaPagadaFalse(cliente.getId()).isEmpty() && emitidaDB==null)
 			throw new ClienteDefaulterException("El cliente tiene facturas pendientes");
@@ -51,7 +51,6 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 			emitida.setFechaEmision(emitida.getOriginal().getFechaEmision());
 			emitida.setNumFactura(configService.nextValEmitidasRectificada());
 		}
-		
 		FacturaEmitida ret = facturaRepo.save(emitida);
 		em.flush();
 		return ret;

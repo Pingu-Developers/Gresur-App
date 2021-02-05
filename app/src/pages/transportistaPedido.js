@@ -9,7 +9,7 @@ import InputBase from '@material-ui/core/InputBase';
 import withStyles from '@material-ui/core/styles/withStyles';
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadPedidosHoy,loadPedidosByEstadoTransportista} from '../redux/actions/dataActions';
+import { loadPedidosHoy,loadPedidosByEstadoTransportista ,clear} from '../redux/actions/dataActions';
 import SnackCallController from '../components/SnackCallController';
 
 const style = {
@@ -68,6 +68,9 @@ export class tranportistaPedidos extends Component {
         this.props.loadPedidosHoy();
     }
 
+    componentWillUnmount(){
+        this.props.clear();
+    }
     handleChangeSelected = (event) => {
 
         event.target.value ==="TODO"?this.props.loadPedidosHoy():this.props.loadPedidosByEstadoTransportista(event.target.value);
@@ -126,7 +129,8 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
     loadPedidosHoy,
-    loadPedidosByEstadoTransportista
+    loadPedidosByEstadoTransportista,
+    clear
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(tranportistaPedidos))

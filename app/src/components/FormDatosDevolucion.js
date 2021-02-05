@@ -214,11 +214,12 @@ export default function FormDatosDevolucion() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const formData = {
+        const formData2 = {
             e1: valueNum,
             e2: motivo,
             e3: valueSelected
         }
+        
         valueSelected.map((row) => {
             const linea = lineasSelected.filter(obj => {
                                     return obj.producto.id === row.e1
@@ -246,7 +247,7 @@ export default function FormDatosDevolucion() {
             }
 
         })
-        setFormData(formData);
+        setFormData(formData2);
         setNext(true&&errores.length === 0&&valueSelected.length > 0) 
         setN(n+1)  
     }
@@ -274,6 +275,8 @@ export default function FormDatosDevolucion() {
             document.getElementById("botonSnack2")? document.getElementById("botonSnack2").click() : console.log('No se encuentra boton para abrir la snackbar');
         }
         if(next && errores.length ===0){
+            console.log(formData)
+            
             dispatch(sendDevolucion(formData))
             setValue(null)
             setValueNum(null);
