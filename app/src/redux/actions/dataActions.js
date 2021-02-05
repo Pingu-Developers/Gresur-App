@@ -548,6 +548,7 @@ export const updateEstanteriaCapacidad = (categoria, capacidad) => (dispatch) =>
                 payload: err
             })
         }
+        dispatch(loadAlmacenGestionEncargado());
     })
 }
 
@@ -688,7 +689,7 @@ export const setEstaPagadoFacturaE = (id,estado="TODO",orden="DEFAULT") => funct
 export const updatePedido = (estado="TODO",orden="DEFAULT", pedido) => function (dispatch) {
     dispatch({type: LOADING_UI})
 
-    axios.put(`/update/`, pedido)
+    axios.put('/pedido/update/', pedido)
         .then((res) => {
             estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
         })
@@ -705,5 +706,6 @@ export const updatePedido = (estado="TODO",orden="DEFAULT", pedido) => function 
                     payload: err
                 })
             }
+            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
         })
 }

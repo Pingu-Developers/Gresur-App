@@ -6,19 +6,17 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { useTheme } from '@material-ui/core/styles';
-import MostradorAllSeguros from './MostradorAllSeguros';
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
-import MostradorAllITVs from './MostradorAllITVs';
-import FormNuevoVehiculo from './FormNuevoVehiculo';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { FormEditarPedido } from './FormEditarPedido';
+
+import FormUpdatePedido from './FormUpdatePedido';
 
 const useStyles = makeStyles((theme) => ({
 
     diaboton: {
         display:'flex',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        position: 'relative'
     },
 
     botonPagado: {
@@ -26,6 +24,12 @@ const useStyles = makeStyles((theme) => ({
         borderRadius: 20,
         fontWeight: 'bold'
       },
+
+    boton: {
+      position: 'absolute',
+      right: 0,
+      top: 7
+    }
 
 }));
 
@@ -37,7 +41,6 @@ export default function PopUpModificarPedido(props) {
   const pedido = props.pedido;
   const estado = props.estado;
   const orden = props.orden;
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -60,13 +63,13 @@ export default function PopUpModificarPedido(props) {
         aria-labelledby="responsive-dialog-title"
       >
         <div className={classes.diaboton}>
-            <DialogTitle id="responsive-dialog-title">Modificar pedido</DialogTitle>
+            <DialogTitle style={{width: '100%', padding: '16px 0px 16px 0px', textAlign: 'center'}} id="responsive-dialog-title"><b>MODIFICACION DEL PEDIDO</b></DialogTitle>
             <Button className={classes.boton} onClick={handleClose} color="primary"><CloseIcon/></Button>
         </div>
         <DialogContent>
           <DialogContentText>
            
-            <FormEditarPedido pedido={pedido} estado={estado} orden={orden} cerrar={handleClose}/>
+            <FormUpdatePedido pedido={pedido} estado={estado} orden={orden} cerrar={handleClose}/>
            
           </DialogContentText>
         </DialogContent>

@@ -458,6 +458,8 @@ public class PedidoController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> updatePedido(@Valid @RequestBody Pedido pedido) {
 				
+		clienteService.save(pedido.getFacturaEmitida().getCliente());
+		
 		Pedido p = pedidoService.save(pedido);
 		
 		return ResponseEntity.ok(p);

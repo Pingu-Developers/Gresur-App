@@ -15,9 +15,10 @@ import { FaBox } from "react-icons/fa";
 import Button from '@material-ui/core/Button';
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import Checkbox from '@material-ui/core/Checkbox';
-import CheckBoxSharpIcon from '@material-ui/icons/CheckBoxSharp';
-import CheckBoxOutlineBlankSharpIcon from '@material-ui/icons/CheckBoxOutlineBlankSharp';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import CancelIcon from '@material-ui/icons/Cancel';
+
+
 
 import { cancelarPedido, setEstaPagadoFacturaE } from '../redux/actions/dataActions';
 import PopUpModificarPedido from './PopUpModificarPedido';
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-block',
     padding: 20,
     width: '40vw',
+    userSelect: 'none'
   },
 
   productosPedido: {
@@ -158,14 +160,30 @@ export default function HistorialPedidoBox(props) {
 
           <div className={classes.iconoObjeto}>
             <TimerIcon className={classes.icono}/>
-            <p><b>Estado del pedido:</b> {pedido.estado}</p>
+            <p><b>Estado del pedido:</b>
+            <span style={pedido.estado!=="CANCELADO"? 
+              {fontSize: 16, marginLeft: 6, padding: 7, color: '#49C638'} : 
+              {fontSize: 16, marginLeft: 6, padding: 7, color: '#FF3D3D'}}>
+              <b>{pedido.estado}</b>
+            </span>
+            </p>
           </div>
           
           <div className={classes.iconoObjeto}>
             <MonetizationOnIcon className={classes.icono}/>
-            <p><b>Pedido pagado:</b> {pedido.facturaEmitida.estaPagada? 'SI' : 'NO'}</p>
-            <Button className={classes.botonPagado} variant='outlined' color="secondary" size="small" onClick={(event) => handleSubmitPago(pedido.id,event)}>
-              {pedido.facturaEmitida.estaPagada? 'NO PAGADO' : 'PAGADO'}
+            <p><b>Pedido pagado:</b></p>
+
+
+            <Button 
+              disabled={pedido.estado==='CANCELADO'} 
+              className={classes.botonPagado} 
+              variant='outlined'
+              color='secondary'
+              style={pedido.facturaEmitida.estaPagada || pedido.estado==="CANCELADO"? {} : {color: '#FF3D3D', borderColor: '#FF3D3D'}} 
+              size="small" 
+              onClick={(event) => handleSubmitPago(pedido.id,event)}>
+
+              {pedido.facturaEmitida.estaPagada? <CheckCircleIcon/> : <CancelIcon/>}
             </Button>          
           </div>
 
