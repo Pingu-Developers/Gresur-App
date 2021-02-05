@@ -457,10 +457,13 @@ public class PedidoController {
 	@PutMapping("/update")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> updatePedido(@Valid @RequestBody Pedido pedido) {
-				
+	
 		clienteService.save(pedido.getFacturaEmitida().getCliente());
 		
 		Pedido p = pedidoService.save(pedido);
+		
+		System.out.println("FECHAENVIADO" + pedido.getFechaEnvio());
+
 		
 		return ResponseEntity.ok(p);
 	}
