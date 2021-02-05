@@ -140,6 +140,16 @@ class encargadoGestion extends Component {
                     porcentajeOcupacionEst : ocupadoTmp > 100 ? 100 : ocupadoTmp});
             }
         }
+
+        // añadir y eliminar event listener para evitar conflicto
+        var noDraggableHist = () => {
+            var hist = doc.getElementById('axis').parentElement;
+            hist.removeEventListener("mousedown", this.props.dragHandler);
+        }
+        var draggableHist = () => {
+            var hist = doc.getElementById('axis').parentElement;
+            hist.addEventListener("mousedown", this.props.dragHandler);
+        }
       
         // funciones de resize
         var startResize = function(evt) {
@@ -157,11 +167,13 @@ class encargadoGestion extends Component {
 
         if(mount){
             rsz.addEventListener("mousedown", function(evt){
+                noDraggableHist();  //makes scroll not dragable
                 startResize(evt);
                 doc.body.addEventListener("mousemove", resize);
                 doc.body.addEventListener("mouseup", (ev) => {
                     doc.body.removeEventListener("mousemove", resize);
                     postData()
+                    draggableHist();    //makes scroll dragable again
                 }, {once : true});
             });
         }    
