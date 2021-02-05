@@ -645,6 +645,9 @@ export const updateEstanteriaCapacidad = (categoria, capacidad) => (dispatch) =>
     axios.put(`/estanterias/update/${categoria}/${capacidad}`)
     .then((res) => {
         dispatch(loadAlmacenGestionEncargado());
+        dispatch({
+            type: SET_ENVIADO,
+        });
     })
     .catch((err) => {
         if(err.response){

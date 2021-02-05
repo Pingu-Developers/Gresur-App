@@ -37,8 +37,8 @@ const useStyles = makeStyles((theme) => ({
 export default function FormUpdatePedido(props) {
     const classes = useStyles();
     const pedido = Object.assign({},props.pedido);
-    const estado = props.estado;
-    const orden = props.orden;
+
+    const {estado,orden,pageNo,pageSize}=props
 
     const counter = useSelector(state => state);
     const dispatch = useDispatch();
@@ -218,7 +218,7 @@ export default function FormUpdatePedido(props) {
                 pedido["facturaEmitida"]["cliente"]["email"] = email;
                 pedido["facturaEmitida"]["cliente"]["tlf"] = tlf;
 
-                dispatch(updatePedido(estado,orden,pedido));
+                dispatch(updatePedido(estado,orden,pedido,pageNo,pageSize));
                 props.cerrar();
             }
 

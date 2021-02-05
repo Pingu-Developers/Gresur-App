@@ -151,7 +151,7 @@ export default function HistorialPedidoBox(props) {
             <p><b>Fecha de realizacion:</b> {pedido.fechaRealizacion}</p>
 
             <div className={classes.botones}>
-              <PopUpModificarPedido pedido={pedido} estado={estado} orden={orden}/>
+              <PopUpModificarPedido pedido={pedido} estado={estado} orden={orden} pageNo={pageNo} pageSize={pageSize}/>
               <Button className={classes.botonCancelar} variant='outlined' color="secondary" size="small" disabled={pedido.estado !== "EN_ESPERA"} onClick={(event) => handleSubmitCancelacion(pedido.id,event)}><b>CANCELAR</b></Button>
             </div>
 

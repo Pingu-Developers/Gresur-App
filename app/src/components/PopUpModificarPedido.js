@@ -38,10 +38,7 @@ export default function PopUpModificarPedido(props) {
   const theme = useTheme();
   const classes = useStyles();
 
-  const pedido = props.pedido;
-  const estado = props.estado;
-  const orden = props.orden;
-
+  const {pedido,estado,orden,pageNo,pageSize}=props
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -69,7 +66,7 @@ export default function PopUpModificarPedido(props) {
         <DialogContent>
           <DialogContentText>
            
-            <FormUpdatePedido pedido={pedido} estado={estado} orden={orden} cerrar={handleClose}/>
+            <FormUpdatePedido pedido={pedido} estado={estado} orden={orden} pageNo={pageNo} pageSize={pageSize} cerrar={handleClose}/>
            
           </DialogContentText>
         </DialogContent>
