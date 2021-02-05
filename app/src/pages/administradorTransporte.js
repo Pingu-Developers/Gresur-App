@@ -2,32 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
-import Topbar from '../components/Topbar';
-import Typography from '@material-ui/core/Typography';
 
 //Redux stuff
-import { loadVehiculosSeguroITVReparacion , clear } from '../redux/actions/dataActions';
+import { loadVehiculosSeguroITVReparacion , loadPedidos, clear} from '../redux/actions/dataActions';
 
 //Components
+
+import VerticalTabs from '../components/VerticalTabsAdmin';
 import TablaMostradorVehiculosSeguroITVReparacion from '../components/TablaMostradorVehiculosSeguroITVReparacion';
 import PopUpNuevoVehiculo from '../components/PopUpNuevoVehiculo';
 import SnackCallController from '../components/SnackCallController';
 
 
-
-const style = {
-
-    titulo: {
-        margin: '30px 20px',
-        fontSize: 40,
-        fontWeight: 600,
-      },
-
-      tituloyForm: {
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-      },
+const style = {  
+    verticalTabs: {
+    }
 }
 
 class administradorTransporte extends Component {
@@ -40,6 +29,7 @@ class administradorTransporte extends Component {
 
     componentDidMount(){
         this.props.loadVehiculosSeguroITVReparacion();
+        this.props.loadPedidos();
     }
 
     componentWillUnmount(){
@@ -50,6 +40,9 @@ class administradorTransporte extends Component {
         const {classes, data,UI:{errors,enviado}} = this.props;
 
         return (
+
+            <div>  
+                <VerticalTabs className={classes.verticalTabs} datos = {data}/>
             <div>
                 <SnackCallController  enviado = {enviado} message = {"Factura realizada correctamente"} errors={errors} />
                 <div className={classes.tituloyForm}>
@@ -60,7 +53,6 @@ class administradorTransporte extends Component {
                 <div className={classes.main}>
                     {data === undefined? null:<TablaMostradorVehiculosSeguroITVReparacion datos = {data}/>}
                 </div>
-
             </div>
         )
     }
@@ -69,7 +61,8 @@ class administradorTransporte extends Component {
 administradorTransporte.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
-    loadVehiculosSeguroITVReparacion: PropTypes.func.isRequired
+    loadVehiculosSeguroITVReparacion: PropTypes.func.isRequired,
+    loadPedidos: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -79,6 +72,7 @@ const mapStateToProps = (state) => ({
 
 const mapActionsToProps = {
     loadVehiculosSeguroITVReparacion,
+    loadPedidos,
     clear
 }
 

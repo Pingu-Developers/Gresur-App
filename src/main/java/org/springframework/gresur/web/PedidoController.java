@@ -3,10 +3,14 @@ package org.springframework.gresur.web;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.Administrador;
@@ -92,22 +96,36 @@ public class PedidoController {
 	protected PersonalService<Transportista, TransportistaRepository> personalService;
 	
 	
-	@GetMapping
-	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') ")
-	public Iterable<Pedido> findAll() {
-		return pedidoService.findAll();
+	@GetMapping("/{orden}")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') or hasRole('ADMIN')")
+	public Iterable<Pedido> findAll(@PathVariable("orden") String orden) {
+		Iterable<Pedido> ip = pedidoService.findAll();
+		
+		List<Pedido> lp = new ArrayList<Pedido>();
+		ip.forEach(x->lp.add(x));
+		
+		if(orden.equals("ASC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion));
+		else if(orden.equals("DESC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion).reversed());
+		
+		return lp;
 	}
 	
 	@GetMapping("/id/{id}")
-	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMINISTRADOR')")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
 	public Pedido findById(@PathVariable("id") Long id) {
 		return pedidoService.findByID(id);
 	}
 	
-	@GetMapping("/{estado}")
-	@PreAuthorize("hasRole('DEPENDIENTE')")
-	public List<Pedido> findAllByEstado(@PathVariable("estado") String estado) {
-		return pedidoService.findByEstado(EstadoPedido.valueOf(estado));
+	@GetMapping("/{estado}/{orden}")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
+	public List<Pedido> findAllByEstadoOrden(@PathVariable("estado") String estado, @PathVariable("orden") String orden) {
+		
+		List<Pedido> lp = pedidoService.findByEstado(EstadoPedido.valueOf(estado));
+		
+		if(orden.equals("ASC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion));
+		else if(orden.equals("DESC")) lp.sort(Comparator.comparing(Pedido::getFechaRealizacion).reversed());
+		
+		return lp;
 	}
 	
 	@ExceptionHandler({Exception.class})
@@ -185,7 +203,7 @@ public class PedidoController {
 	}
 	
 	@PostMapping("/{id}")
-	@PreAuthorize("hasRole('DEPENDIENTE')")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
 	public ResponseEntity<?> cancelarPedido(@PathVariable("id") Long id) {
 		
 		Pedido pedido = pedidoService.findByID(id);
@@ -413,6 +431,38 @@ public class PedidoController {
 			
 		
 		return ls;
+	}
+	
+	@PutMapping("/pagado/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> setEstaPagado(@PathVariable("id") Long id) {
+		
+		Pedido p = pedidoService.findByID(id);
+		
+		if(p!=null) {
+			FacturaEmitida f = p.getFacturaEmitida();
+			f.setEstaPagada(f.getEstaPagada()? false : true);
+			f = facturaEmitidaService.save(f);
+			
+			p.setFacturaEmitida(f);
+			pedidoService.save(p);
+			
+			return ResponseEntity.ok(p);
+		}
+		else {
+			return ResponseEntity.badRequest().body("Error al intentar cambiar el estado del pago del pedido");
+		}
+	}
+	
+	@PutMapping("/update")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> updatePedido(@Valid @RequestBody Pedido pedido) {
+				
+		clienteService.save(pedido.getFacturaEmitida().getCliente());
+		
+		Pedido p = pedidoService.save(pedido);
+		
+		return ResponseEntity.ok(p);
 	}
 	
 }
