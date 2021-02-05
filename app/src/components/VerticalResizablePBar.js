@@ -59,11 +59,22 @@ class encargadoGestion extends Component {
         }
     }
     componentDidMount(){
+        // pone el scroll del histograma en su sitio
+        this.scrollDownHist()
+        window.addEventListener('resize', this.scrollDownHist)
+
+        // inicializa el estado
         this.setState({
             porcentajeCapacidad : this.props.porcentajeAlmacen, 
             minHeight : this.props.ocupacion / 100 * (this.props.porcentajeAlmacen / 100 * this.props.axisH),
             porcentajeOcupacionEst : this.props.ocupacion})
+
+        // llama a la funcion que actualiza las barras
         this.updateBars(true);
+    }
+
+    componentWillUnmount(){
+        window.removeEventListener('resize', this.scrollDownHist)
     }
 
     componentDidUpdate(prevprops, prevstate){
@@ -74,6 +85,12 @@ class encargadoGestion extends Component {
             })
         }
         this.updateBars(false);
+    }
+
+    scrollDownHist(){
+        var axis = document.getElementById("axis");
+        var hist = axis.parentElement;
+        hist.scrollTop = hist.scrollHeight;
     }
 
     updateBars(mount){

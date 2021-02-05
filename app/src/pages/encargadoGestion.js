@@ -41,7 +41,7 @@ const style = {
         borderLeft: '1px solid gray',
         borderBottom: '1px solid gray',
         height: '60vh',
-        minHeight: 400,
+        minHeight: 494,
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'space-around',
@@ -72,8 +72,11 @@ class encargadoGestion extends Component {
             zoom: undefined}
     }
     componentDidMount(){
+        //setea el zoom inicial
         var axis = document.getElementById('axis');
         this.setState({zoom: axis.clientHeight})
+
+        //carga los datos de la bd
         this.props.loadAlmacenGestionEncargado()
     }
 
