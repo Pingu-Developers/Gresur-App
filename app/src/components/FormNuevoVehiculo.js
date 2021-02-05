@@ -79,7 +79,8 @@ const initialState = {
     imagen: '',
     capacidad: '',
     tipoVehiculo: '',
-    mma: ''
+    mma: '',
+    loading:true
 }
 
 export class FormNuevoVehiculo extends Component {
@@ -136,6 +137,14 @@ export class FormNuevoVehiculo extends Component {
 
     componentDidMount() {
         this.props.loadTiposVehiculos();
+    }
+
+    componentDidUpdate(prevProps,prevState) {
+        if(prevState.imagen != this.state.imagen){
+            this.setState({
+                loading:false
+            })
+        }
     }
 
     render() {
@@ -199,7 +208,7 @@ export class FormNuevoVehiculo extends Component {
                 </div>
                 
                 <div className={classes.addBoton}>
-                    <Button onClick={this.handleSubmit} size="large" type ="submit" color="primary" 
+                    <Button disabled={this.state.loading} onClick={this.handleSubmit} size="large" type ="submit" color="primary" 
                         variant="contained" startIcon={<AddCircleIcon />}>
                         Añadir
                     </Button>
