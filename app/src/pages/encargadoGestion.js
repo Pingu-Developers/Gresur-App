@@ -30,18 +30,22 @@ const style = {
     },
     histogram: {
         padding: '30px 30px 30px 60px',
-        overflowY: 'hidden',
+        overflowY: 'auto',
+        scrollbarWidth: 'none',
         maxHeight: '60vh',
         minHeight: '60vh',
         width: '95%',
-        gridRow: '1 / span 5'
+        gridRow: '1 / span 5',
+        '&::-webkit-scrollbar': {
+            width: 0,
+        }
     },
     axis: {
         position: 'relative',
         borderLeft: '1px solid gray',
         borderBottom: '1px solid gray',
         height: '60vh',
-        minHeight: 400,
+        minHeight: 494,
         display: 'flex',
         alignItems: 'flex-end',
         justifyContent: 'space-around',
@@ -70,11 +74,27 @@ class encargadoGestion extends Component {
             disableZoomOut : true,
             disableZoomOutMap: true,
             zoom: undefined}
+
+        this.pos = {top: 0, left: 0, x: 0, y: 0}
+        this.mouseDownHandler = this.mouseDownHandler.bind(this);
+        this.mouseUpHandler = this.mouseUpHandler.bind(this);
+        this.mouseMoveHandler = this.mouseMoveHandler.bind(this);
     }
     componentDidMount(){
+        //setea el zoom inicial
         var axis = document.getElementById('axis');
         this.setState({zoom: axis.clientHeight})
+
+        //event Handler del histograma
+        var hist = axis.parentElement;
+        hist.addEventListener('mousedown', this.mouseDownHandler);
+
+        //carga los datos de la bd
         this.props.loadAlmacenGestionEncargado()
+    }
+
+    componentWillUnmount(){
+        this.props.clearAlmacenGestionEncargado()
     }
 
     componentWillUpdate(nextProps, nextState){
@@ -83,10 +103,7 @@ class encargadoGestion extends Component {
         }
     }
 
-    componentWillUnmount(){
-        this.props.clearAlmacenGestionEncargado()
-    }
-
+    // CALCULO DE PORCENTAJES
     porcentajeDeAlmacenAsignado(){
         let sum = 0.
         if(this.props.data.gestionAlmacenEncargado){
@@ -102,37 +119,48 @@ class encargadoGestion extends Component {
         return sum;
     }
 
+    // FUNCIONES DE ZOOM
     zoomIn(event){
         event.preventDefault();
         var axis = document.getElementById('axis');
         var hist = axis.parentElement;
+        var bottom = hist.scrollHeight - hist.scrollTop === hist.clientHeight;
 
         if(this.state.disableZoomOut && this.state.disableZoomOutMap){
             this.setState({disableZoomOut: false, disableZoomOutMap: false})
         } 
         if(axis.clientHeight < 5000){
             axis.style.height = axis.clientHeight * 1.2 + 'px';
-            hist.scrollTop = hist.scrollHeight;
+            hist.style.cursor = 'grab';
             this.setState({zoom: axis.clientHeight})
-        } else{
+        } 
+        if(axis.clientHeight >= 5000){
             this.setState({disableZoomIn: true})
-        }   
+        }
+        if(bottom){
+            hist.scrollTop = hist.scrollHeight;
+        }
     }
 
     zoomOut(event){
         event.preventDefault();
         var axis = document.getElementById('axis');
         var hist = axis.parentElement;
+        var bottom = hist.scrollHeight - hist.scrollTop === hist.clientHeight;
 
         if(this.state.disableZoomIn){
             this.setState({disableZoomIn : false})
         }
-        if(axis.clientHeight > window.innerHeight * 0.60){
+        if(axis.clientHeight > window.innerHeight * 0.60 + 1){
             axis.style.height = axis.clientHeight / 1.2 + 'px';
-            hist.scrollTop = hist.scrollHeight;
             this.setState({zoom: axis.clientHeight})
-        } else{
+        } 
+        if(axis.clientHeight < window.innerHeight * 0.60 + 1){
+            hist.style.cursor = 'default';
             this.setState({disableZoomOut: true, disableZoomOutMap: true})
+        }
+        if(bottom){
+            hist.scrollTop = hist.scrollHeight;
         }
     }
 
@@ -140,9 +168,51 @@ class encargadoGestion extends Component {
         event.preventDefault();
         var axis = document.getElementById('axis');
         axis.style.height = '60vh';
+        axis.parentElement.style.cursor = 'default';
         this.setState({disableZoomIn: false, disableZoomOut: true, disableZoomOutMap: true, zoom: axis.clientHeight})
     }
 
+    // FUNCIONES DE SCROLL ARRASTRANDO
+    mouseDownHandler(e){
+        var axis = document.getElementById('axis');
+        if(axis.clientHeight > window.innerHeight * 0.60 + 1){
+            var hist = document.getElementById('axis').parentElement;
+
+            hist.style.cursor = 'grabbing';
+            this.pos = {
+                left: hist.scrollLeft,
+                top: hist.scrollTop,
+                // Current mouse pos
+                x: e.clientX,
+                y: e.clientY,
+            };
+            document.addEventListener('mousemove', this.mouseMoveHandler);
+            document.addEventListener('mouseup', this.mouseUpHandler);
+        }
+    };
+
+    mouseMoveHandler(e){
+        var hist = document.getElementById('axis').parentElement;
+
+        // How far mouse been moved
+        const dx = e.clientX - this.pos.x;
+        const dy = e.clientY - this.pos.y;
+
+        //Scroll the element
+        hist.scrollTop = this.pos.top - dy;
+        hist.scrollLeft = this.pos.left - dx;
+    };
+
+    mouseUpHandler(){
+        var hist = document.getElementById('axis').parentElement;
+
+        hist.style.cursor = 'grab';
+
+        document.removeEventListener('mousemove', this.mouseMoveHandler);
+        document.removeEventListener('mouseup', this.mouseUpHandler);
+    }
+
+    // RENDER
     render() {
         const { classes, data:{gestionAlmacenEncargado} } = this.props;
         return (
@@ -161,7 +231,8 @@ class encargadoGestion extends Component {
                                             ocupacion = {entry.ocupacionEstanteria}
                                             porcentajeAlmacen = {entry.porcentajeAlmacen}
                                             totalOcupado = {this.porcentajeDeAlmacenAsignado()}
-                                            axisH = {document.getElementById('axis').clientHeight}/>
+                                            axisH = {document.getElementById('axis').clientHeight}
+                                            dragHandler = {this.mouseDownHandler}/>
                                 ) : null
                             }
                         </div>               
