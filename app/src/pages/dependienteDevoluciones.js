@@ -8,7 +8,7 @@ import { clear } from '../redux/actions/dataActions'
 
 import FormDatosDevolucion from '../components/FormDatosDevolucion'
 
-import Topbar from '../components/Topbar';
+import SnackCallController from '../components/SnackCallController';
 
 //MUI stuff
 import Typography from '@material-ui/core/Typography';
@@ -58,10 +58,12 @@ class dependienteDevoluciones extends Component {
     
     render() {
 
-        const { classes } = this.props;
+        const { classes ,UI:{errors,enviado} } = this.props;
 
         return (
             <div>
+                <SnackCallController  enviado = {enviado} message = {"Devolucion realizada correctamente"} errors={errors} />
+
                 <Typography variant='h3' className={classes.tituloCatalogo}>HACER UNA DEVOLUCION</Typography>
                 <FormDatosDevolucion/>
             </div>
@@ -74,7 +76,7 @@ dependienteDevoluciones.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    
+    UI:state.UI
 })
 
 const mapActionsToProps = {

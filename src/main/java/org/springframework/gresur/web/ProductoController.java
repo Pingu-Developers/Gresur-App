@@ -2,6 +2,7 @@ package org.springframework.gresur.web;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -14,17 +15,30 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.util.Pair;
+import org.springframework.gresur.configuration.services.UserDetailsImpl;
+import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.Categoria;
+import org.springframework.gresur.model.EncargadoDeAlmacen;
 import org.springframework.gresur.model.Estanteria;
 import org.springframework.gresur.model.FacturaEmitida;
+import org.springframework.gresur.model.Notificacion;
+import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.Producto;
+import org.springframework.gresur.model.TipoNotificacion;
 import org.springframework.gresur.model.Vehiculo;
+import org.springframework.gresur.repository.UserRepository;
+import org.springframework.gresur.service.AdministradorService;
+import org.springframework.gresur.service.NotificacionService;
 import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.util.Tuple2;
 import org.springframework.gresur.util.Tuple3;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,9 +57,18 @@ public class ProductoController {
 	
 	private final ProductoService productoService;
 	
+	private final NotificacionService notificacionService;
+	
+	private final AdministradorService adminService;
+	
 	@Autowired
-	public ProductoController(ProductoService productoService) {
+	UserRepository userRepository;
+	
+	@Autowired
+	public ProductoController(ProductoService productoService,NotificacionService notificacionService,AdministradorService adminService) {
 		this.productoService = productoService;
+		this.notificacionService = notificacionService;
+		this.adminService = adminService;
 	}
 	
 	@GetMapping
@@ -162,5 +185,41 @@ public class ProductoController {
 	public Page<Producto> getAllProductosNombreOrderedPageable(@PathVariable("string") String s,Pageable pageable) {
 		return productoService.findByProductosByNameOrderedPageable(s, pageable);		
 	}
-
+	
+	
+	@ExceptionHandler({ Exception.class })
+	@PreAuthorize("hasRole('ENCARGADO')")
+	@PostMapping("/notiStock")
+	public ResponseEntity<?> createNotiStock(@RequestBody Producto newProducto) {
+		
+		Authentication user = SecurityContextHolder.getContext().getAuthentication();
+		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+		
+		EncargadoDeAlmacen encargado = (EncargadoDeAlmacen) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+		
+		String cuerpo = "El Producto  "+newProducto.getNombre()+"-("+newProducto.getId()+") se recomienda su reposicion por bajo stock en el almacen " + encargado.getAlmacen().getId();
+		
+		List<Notificacion> notisprod = notificacionService.findNotiPersonalFechaCuerpo(encargado, LocalDate.now(),cuerpo);
+		
+		if(!notisprod.isEmpty()) {
+			return ResponseEntity.badRequest().body("Ya ha mandado esta notificacion hoy");
+		}else {
+			Notificacion noti = new Notificacion();
+			
+			noti.setEmisor(encargado);
+			noti.setCuerpo(cuerpo);
+			noti.setTipoNotificacion(TipoNotificacion.URGENTE);
+			noti.setFechaHora(LocalDateTime.now());
+			
+			List<Personal> adminReceptores = new ArrayList<>();
+			for (Administrador adm : adminService.findAll()) {
+				adminReceptores.add(adm);
+			}
+			notificacionService.save(noti, adminReceptores);
+			
+			return ResponseEntity.ok("Todo ok bro");
+			
+		}
+	}
+	
 }

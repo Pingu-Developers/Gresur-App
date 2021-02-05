@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 
 import  FormNuevoProveedor  from "../../../components/FormNuevoProveedor";
+import SnackCallController from '../../../components/SnackCallController';
 
 import Grid from '@material-ui/core/Grid';
 import Paper from "@material-ui/core/Paper";
@@ -81,7 +82,7 @@ const style = (theme) => ({
     imagen:{
         width: 150,
         height: 150,
-        marginLeft:"10%",
+        //marginLeft:"2%",
         display: "inline-block",
         position: "relative",
         top:-25
@@ -398,10 +399,11 @@ export class gatosEnvio extends Component {
 
 render() {
 
-    const {classes, vehiculo:{vehiculos , seguroitv},proveedor: { proveedores }} = this.props;
+    const {classes,UI:{errors,enviado}, vehiculo:{vehiculos , seguroitv},proveedor: { proveedores }} = this.props;
     const loading = this.state.open && proveedores.length === 0;
     return (
         <Grid container>
+            <SnackCallController  enviado = {enviado} message = {"Factura realizada correctamente"} errors={errors} />
             <div style={{display:"flex", justifyContent:"flex-end",alignItems:"center", width:"100%"}}>
             <Autocomplete
               id="proveedor"
@@ -700,6 +702,7 @@ gatosEnvio.propTypes = {
 const mapStateToProps = (state) => ({
     vehiculo: state.vehiculo,
     proveedor: state.proveedor,
+    UI: state.UI
 })
 
 const mapActionsToProps = {

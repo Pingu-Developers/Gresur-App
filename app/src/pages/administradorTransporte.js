@@ -11,6 +11,7 @@ import { loadVehiculosSeguroITVReparacion , clear } from '../redux/actions/dataA
 //Components
 import TablaMostradorVehiculosSeguroITVReparacion from '../components/TablaMostradorVehiculosSeguroITVReparacion';
 import PopUpNuevoVehiculo from '../components/PopUpNuevoVehiculo';
+import SnackCallController from '../components/SnackCallController';
 
 
 
@@ -46,10 +47,11 @@ class administradorTransporte extends Component {
     }
 
     render() {
-        const {classes, data} = this.props;
+        const {classes, data,UI:{errors,enviado}} = this.props;
 
         return (
             <div>
+                <SnackCallController  enviado = {enviado} message = {"Factura realizada correctamente"} errors={errors} />
                 <div className={classes.tituloyForm}>
                     <Typography variant='h3' className={classes.titulo}>VEHICULOS DE LA EMPRESA</Typography>
                     <PopUpNuevoVehiculo className={classes.boton}/>
@@ -71,7 +73,8 @@ administradorTransporte.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    data: state.data
+    data: state.data,
+    UI: state.UI
 })
 
 const mapActionsToProps = {

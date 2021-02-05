@@ -11,6 +11,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import PropTypes from 'prop-types';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 //COMPONENTES AUXILIARES
 import ButtonEnReparto from './ButtonEnReparto';
@@ -29,6 +30,14 @@ const useStyles = makeStyles({
     maxHeight: 440,
   }
 });
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
 
 export class TablaPedidosHoy extends Component{
 
@@ -94,8 +103,8 @@ render(){
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow >
+          <TableHead > 
+            <TableRow>
               {this.state.columns.map((column) => (      
                                 
                 <TableCell
@@ -103,6 +112,7 @@ render(){
                   align={column.align}
                   style={{ minWidth: column.minWidth,
                     fontWeight:"bold",
+                    backgroundColor:"#d4e6f1"
                   }}
                 >
                   {column.label}
@@ -117,7 +127,7 @@ render(){
               return (
                 <React.Fragment>
         
-                <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>       
+                <StyledTableRow role="checkbox" tabIndex={-1} key={row.code}>       
                    
                   {this.state.columns.map((column) => {
                     
@@ -134,7 +144,7 @@ render(){
                     );
                   })}
 
-                </TableRow>
+                </StyledTableRow>
                 </React.Fragment> );
               
             }
@@ -148,6 +158,7 @@ render(){
         count={this.props.datos.length}
         rowsPerPage={this.state.rowsPerPage}
         page={this.state.page}
+        labelRowsPerPage="Elementos por pagina:"
         onChangePage={this.handleChangePage}
         onChangeRowsPerPage={this.handleChangeRowsPerPage}
       />

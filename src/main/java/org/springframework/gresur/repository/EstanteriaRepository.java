@@ -14,7 +14,9 @@ public interface EstanteriaRepository extends CrudRepository<Estanteria, Long>{
 	
 	List<Estanteria> findAll();
 	List<Estanteria> findByAlmacenId(Long id);
+	
 	Optional<Estanteria> findByCategoria(Categoria cat);
+	
 
 	@Query(value = "SELECT SUM(CAPACIDAD) FROM ESTANTERIAS WHERE ALMACEN_ID = :almacen AND ID <> :estanteriaId", nativeQuery = true)
 	Optional<Double> sumCapacidadEstanteriasAlmacenNotEqualTo(@Param("almacen") Almacen almacen, @Param("estanteriaId") Long estanteriaId);

@@ -2,6 +2,7 @@ import { SET_ERRORS, SET_USER, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED ,LO
 import axios from 'axios';
 
 export const loginUser = (userData,history) => (dispatch) =>{
+    console.log("holap")
     dispatch({ type:LOADING_UI })
 
     axios.post('/auth/signin',userData)
@@ -178,4 +179,11 @@ export const postPedido = (nuevoPedido, nuevoCliente = null) => (dispatch) => {
                 })
             })
     }
+}
+
+export const clear = () => (dispatch) => {
+
+        dispatch({
+            type:CLEAR_ERRORS,
+        })
 }

@@ -1,4 +1,4 @@
-import { CLEAR_PRODUCTOS_PAGINADO , SET_PRODUCTOS_PAGINADO, LOADING_UI, SET_ERRORS, CLEAR_ERRORS } from '../types'
+import { CLEAR_PRODUCTOS_PAGINADO , SET_PRODUCTOS_PAGINADO,SET_CATEGORIASALM,CLEAR_CATEGORIASALM, LOADING_UI, SET_ERRORS, CLEAR_ERRORS, CLEAR_PRODUCTOS } from '../types'
 import axios from 'axios';
 
 export const getProductosPaginados = (page,categoria = null,string =null,size = 5,ord='') => (dispatch) =>{
@@ -75,6 +75,60 @@ export const getProductosPaginados = (page,categoria = null,string =null,size = 
 
     }   
 };
+
+export const getCategorias = () => (dispatch) =>{
+
+    axios.get(`almacen/categorias`)
+            .then( response => {
+                dispatch({
+                    type:SET_CATEGORIASALM,
+                    payload: response.data
+                });
+                dispatch({ type: CLEAR_ERRORS });
+            })
+            .catch((err) => {
+                if(err.response){
+                    dispatch({
+                        type: SET_ERRORS,
+                        payload: err.response.data.message
+                    })
+                } else {
+                    dispatch({
+                        type: SET_ERRORS,
+                        payload: err
+                    })
+                }
+            });
+}
+
+export const putNotificacion = (producto) => (dispatch) =>{
+
+    axios.post(`producto/notiStock`,producto)
+            .then( () => {
+                
+                dispatch({ type: CLEAR_ERRORS });
+            })
+            .catch((err) => {
+                console.log(err.response)
+                if(err.response){
+                    dispatch({
+                        type: SET_ERRORS,
+                        payload: err.response.data
+                    })
+                } else {
+                    dispatch({
+                        type: SET_ERRORS,
+                        payload: err
+                    })
+                }
+            });
+}
+
+export const clearCategorias = () => (dispatch) =>{
+    dispatch({
+        type: CLEAR_CATEGORIASALM
+    })
+}
 
 export const clearProductosPaginados = () => (dispatch) =>{
     dispatch({
