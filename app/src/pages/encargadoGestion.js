@@ -103,8 +103,6 @@ class encargadoGestion extends Component {
         }
     }
 
-    
-
     // CALCULO DE PORCENTAJES
     porcentajeDeAlmacenAsignado(){
         let sum = 0.
@@ -126,35 +124,43 @@ class encargadoGestion extends Component {
         event.preventDefault();
         var axis = document.getElementById('axis');
         var hist = axis.parentElement;
+        var bottom = hist.scrollHeight - hist.scrollTop === hist.clientHeight;
 
         if(this.state.disableZoomOut && this.state.disableZoomOutMap){
             this.setState({disableZoomOut: false, disableZoomOutMap: false})
         } 
         if(axis.clientHeight < 5000){
             axis.style.height = axis.clientHeight * 1.2 + 'px';
-            hist.scrollTop = hist.scrollHeight;
             hist.style.cursor = 'grab';
             this.setState({zoom: axis.clientHeight})
-        } else{
+        } 
+        if(axis.clientHeight >= 5000){
             this.setState({disableZoomIn: true})
-        }   
+        }
+        if(bottom){
+            hist.scrollTop = hist.scrollHeight;
+        }
     }
 
     zoomOut(event){
         event.preventDefault();
         var axis = document.getElementById('axis');
         var hist = axis.parentElement;
+        var bottom = hist.scrollHeight - hist.scrollTop === hist.clientHeight;
 
         if(this.state.disableZoomIn){
             this.setState({disableZoomIn : false})
         }
         if(axis.clientHeight > window.innerHeight * 0.60 + 1){
             axis.style.height = axis.clientHeight / 1.2 + 'px';
-            hist.scrollTop = hist.scrollHeight;
             this.setState({zoom: axis.clientHeight})
-        } else{
+        } 
+        if(axis.clientHeight < window.innerHeight * 0.60 + 1){
             hist.style.cursor = 'default';
             this.setState({disableZoomOut: true, disableZoomOutMap: true})
+        }
+        if(bottom){
+            hist.scrollTop = hist.scrollHeight;
         }
     }
 
