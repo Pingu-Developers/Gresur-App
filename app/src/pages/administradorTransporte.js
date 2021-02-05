@@ -9,8 +9,6 @@ import { loadVehiculosSeguroITVReparacion , loadPedidos, clear} from '../redux/a
 //Components
 
 import VerticalTabs from '../components/VerticalTabsAdmin';
-import TablaMostradorVehiculosSeguroITVReparacion from '../components/TablaMostradorVehiculosSeguroITVReparacion';
-import PopUpNuevoVehiculo from '../components/PopUpNuevoVehiculo';
 import SnackCallController from '../components/SnackCallController';
 
 
@@ -42,17 +40,8 @@ class administradorTransporte extends Component {
         return (
 
             <div>  
+                <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
                 <VerticalTabs className={classes.verticalTabs} datos = {data}/>
-            <div>
-                <SnackCallController  enviado = {enviado} message = {"Factura realizada correctamente"} errors={errors} />
-                <div className={classes.tituloyForm}>
-                    <Typography variant='h3' className={classes.titulo}>VEHICULOS DE LA EMPRESA</Typography>
-                    <PopUpNuevoVehiculo className={classes.boton}/>
-                </div>
-
-                <div className={classes.main}>
-                    {data === undefined? null:<TablaMostradorVehiculosSeguroITVReparacion datos = {data}/>}
-                </div>
             </div>
         )
     }

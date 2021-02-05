@@ -31,6 +31,11 @@ export default function CustomizedSnackbars(props) {
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
 
+  React.useEffect(() => {
+
+    return () => { dispatch(clear()); }
+  }, [] );
+
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;

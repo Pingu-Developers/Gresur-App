@@ -11,6 +11,8 @@ export const SET_ERRORS = 'SET_ERRORS';
 export const LOADING_UI = 'LOADING_UI';
 export const CLEAR_ERRORS = 'CLEAR_ERRORS';
 export const SET_ENVIADO = 'SET_ENVIADO';
+export const CLEAR_ENVIADO = 'CLEAR_ENVIADO';
+
 //dataReducer types
 export const SET_PEDIDOS = 'SET_PEDIDOS';
 export const CLEAR_PEDIDOS = 'CLEAR_PEDIDOS';
