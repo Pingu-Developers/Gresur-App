@@ -121,17 +121,19 @@ export default function HistorialPedidosAdmin(props) {
                                 />}
                     </FormControl>
                     <FormControl className={classes.formControl}  style={{minWidth:90}}>
+                        {pedidos.content.length===0?null:<div>
                         <InputLabel shrink id="demo-simple-select-placeholder-label-label">
-                        Nº pedidos:
-                        </InputLabel>
-                        <TextField
-                            id="outlined-multiline-static"
-                            style={{width:70}}
-                            className={classes.selectEmpty}
-                            value={pageSize}
-                            onChange={handleSize}
-                            type="number"
-                            />
+                            Nº pedidos:
+                            </InputLabel>
+                            <TextField
+                                id="outlined-multiline-static"
+                                style={{width:70}}
+                                className={classes.selectEmpty}
+                                value={pageSize}
+                                onChange={handleSize}
+                                type="number"
+                                />
+                                </div>}
                      </FormControl>
                 </div>
                 <div className={classes.selects}>
@@ -189,7 +191,7 @@ export default function HistorialPedidosAdmin(props) {
                     
                     : 
 
-                    pedidos.length === 0 ? 
+                    pedidos.content.length === 0 ? 
                     
                         counter.UI.loading ? 
                     
@@ -218,17 +220,19 @@ export default function HistorialPedidosAdmin(props) {
                                 />}
                     </FormControl>
                     <FormControl className={classes.formControl}  style={{minWidth:90}}>
+                        {pedidos.content.length===0?null:<div>
                         <InputLabel shrink id="demo-simple-select-placeholder-label-label">
-                        Nº pedidos:
+                            Nº pedidos:
                         </InputLabel>
-                        <TextField
-                            id="outlined-multiline-static"
-                            style={{width:70}}
-                            className={classes.selectEmpty}
-                            value={pageSize}
-                            onChange={handleSize}
-                            type="number"
-                            />
+                            <TextField
+                                id="outlined-multiline-static"
+                                style={{width:70}}
+                                className={classes.selectEmpty}
+                                value={pageSize}
+                                onChange={handleSize}
+                                type="number"
+                                />
+                           </div> }
                     </FormControl>
                 </div>
         </div>
