@@ -1,13 +1,17 @@
 package org.springframework.gresur.web;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Cliente;
 import org.springframework.gresur.service.ClienteService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +34,7 @@ public class ClienteController {
 	}
 	
 	@GetMapping
+	@PreAuthorize("hasRole('DEPENDIENTE')")
 	public Iterable<Cliente> getClientes(){
 		return clienteService.findAll();
 	}
@@ -37,26 +42,61 @@ public class ClienteController {
 	@ExceptionHandler({Exception.class})
 	@PostMapping("/add")
 	@PreAuthorize("hasRole('DEPENDIENTE')")
-	@Transactional
-	public Cliente add(@RequestBody @Valid Cliente cliente) throws DataAccessException{
-		return clienteService.save(cliente);
+	public ResponseEntity<?> add(@RequestBody @Valid Cliente cliente, BindingResult result) throws DataAccessException{
+		
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
+		
+		else {
+			try {
+				Cliente c = clienteService.save(cliente);
+				return ResponseEntity.ok(c);
+			}catch(Exception e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}			
+		}		
 	}
 	
 	@GetMapping("/{NIF}/isDefaulter")
 	@PreAuthorize("hasRole('DEPENDIENTE')")
-	public Boolean findClienteIsDefaulterByNIF(@PathVariable("NIF") String NIF) throws DataAccessException{
-		Cliente cliente = clienteService.findByNIF(NIF);
-		if(cliente == null) {
-			throw new IllegalArgumentException("El NIF no es válido o no existe nadie con ese NIF en la base de datos");
-		}else {
-			return clienteService.isDefaulter(cliente);
+	public ResponseEntity<?> findClienteIsDefaulterByNIF(@PathVariable("NIF") String NIF) throws DataAccessException{
+		
+		String nifFormato = "^[0-9]{8}([A-Z]{1})?";
+		
+		if(!NIF.matches(nifFormato)) {
+			return ResponseEntity.badRequest().body("Formato del NIF invalido");
+		}
+		
+		else {
+			Cliente cliente = clienteService.findByNIF(NIF);
+			
+			if(cliente == null) {
+				return ResponseEntity.badRequest().body("El NIF no es válido o no existe nadie con ese NIF en la base de datos");
+			}
+			
+			else { 
+				Boolean b = clienteService.isDefaulter(cliente);
+				return ResponseEntity.ok(b);
+			}
 		}
 	}
 	
 	@GetMapping("/{NIF}")
 	@PreAuthorize("hasRole('DEPENDIENTE')")
-	public Cliente findClienteByNIF(@PathVariable("NIF") String NIF) throws DataAccessException{
-		return clienteService.findByNIF(NIF);
+	public ResponseEntity<?> findClienteByNIF(@PathVariable("NIF") String NIF) throws DataAccessException{
+		
+		String nifFormato = "^[0-9]{8}([A-Z]{1})?";
+		
+		if(!NIF.matches(nifFormato)) {
+			return ResponseEntity.badRequest().body("Formato del NIF invalido");
+		}
+		
+		else {
+			Cliente c = clienteService.findByNIF(NIF);
+			return ResponseEntity.ok(c);
+		} 
 	}
 	
 }
