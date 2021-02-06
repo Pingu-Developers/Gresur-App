@@ -8,9 +8,8 @@ import { connect } from 'react-redux';
 import { loadVehiculosITVSeguroDisponibilidadByTransportista, loadOcupacionVehiculosEnReparto,clear } from '../redux/actions/dataActions';
 
 //Componentes
-import TablaMostradorVehiculos from '../components/TablaMostradorVehiculos';
-import BarraOcupacionVehiculo from '../components/BarraOcupacionVehiculo';
-import { FormatUnderlinedTwoTone } from '@material-ui/icons';
+import TablaMostradorVehiculos from '../components/Tables/TablaMostradorVehiculos';
+import BarraOcupacionVehiculo from '../components/ProgressBars/BarraOcupacionVehiculo';
 
 
 const style = {

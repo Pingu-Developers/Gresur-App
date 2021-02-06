@@ -186,7 +186,7 @@ INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion)
 		VALUES (4,'22727936A', 'Iris Estevez Arjona', 'eucsdu6d7@netscape.net', '619957551', 'C/ Kalea De España 66, Sant Joanet, Valencia, 46107');
 
 INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
-		VALUES (5,'39979389F', 'Eugenia Valero Borrego', 'g4zoiz6re@scientist.com', '634970870', 'C/ Praza Catalunya, Itsasondo, Gipuzkoa, 20341');
+		VALUES (5,'39979389F', 'Eugenia Valero Borrego', 'g4zoiz6re@scientist.com', '634970870', 'C/ Praza Catalunya, Itsasondo, Guipuzkoa, 20341');
 		
 INSERT INTO CLIENTES(ID,NIF, name, email, tlf, direccion) 
 		VALUES (6,'22264890Q', 'Victoriano Garzon Martin', 'fv7hkct7ac@lycos.es', '675958716', 'C/ Sector Catalunya 56, Puig-reig, Barcelona, 08133');

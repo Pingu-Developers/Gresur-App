@@ -7,9 +7,9 @@ import { loadPersonalContrato, clear} from '../redux/actions/dataActions';
 
 
 //Components
-import TablaPersonalDesplegable from '../components/TablaPersonalDesplegable';
-import PopUpNuevoEmpleado from '../components/PopUpNuevoEmpleado';
-import SnackCallController from '../components/SnackCallController';
+import TablaPersonalDesplegable from '../components/Tables/TablaPersonalDesplegable';
+import PopUpNuevoEmpleado from '../components/Dialogs/PopUpNuevoEmpleado';
+import SnackCallController from '../components/Other/SnackCallController';
 
 
 export class administradorPersonal extends Component {

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { loadPedidosPaginados, clear} from '../redux/actions/dataActions';
 
-import HistorialPedidosAdmin from '../components/HistorialPedidosAdmin';
-import SnackCallController from '../components/SnackCallController';
+import HistorialPedidosAdmin from '../components/HistoryLists/HistorialPedidosAdmin';
+import SnackCallController from '../components/Other/SnackCallController';
 
 export class dependienteHistorialPedido2 extends Component {
     static propTypes = {

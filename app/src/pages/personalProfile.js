@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
-import Profile from '../components/Profile';
+import Profile from '../components/Other/Profile';
 
 const style = {
 

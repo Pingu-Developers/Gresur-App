@@ -8,8 +8,8 @@ import { loadVehiculosSeguroITVReparacion , loadPedidosPaginados, clear} from '.
 
 //Components
 
-import VerticalTabs from '../components/VerticalTabsAdmin';
-import SnackCallController from '../components/SnackCallController';
+import VerticalTabs from '../components/Other/VerticalTabsAdmin';
+import SnackCallController from '../components/Other/SnackCallController';
 
 
 const style = {  

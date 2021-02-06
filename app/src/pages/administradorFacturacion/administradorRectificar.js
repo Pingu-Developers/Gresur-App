@@ -1,34 +1,14 @@
 import React, { Component } from 'react';
-import ReactDOM from "react-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import Input from "@material-ui/core/Input";
-import IconButton from "@material-ui/core/IconButton";
-import DoneIcon from "@material-ui/icons/DoneAllTwoTone";
-import RevertIcon from "@material-ui/icons/NotInterestedOutlined";
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
-import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { clearFacturaEmitida, loadFacturaEmitida,clear } from '../../redux/actions/dataActions';
-import Grid from '@material-ui/core/Grid';
-import { TableContainer } from '@material-ui/core';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import SearchIcon from '@material-ui/icons/Search';
-import SaveIcon from '@material-ui/icons/Save';
-import DialogoAddProductos from '../../components/DialogoAddProductos';
-import TablaEditarFactura from '../../components/TablaEditarFactura';
+import TablaEditarFactura from '../../components/Tables/TablaEditarFactura';
 
-import SnackCallController from '../../components/SnackCallController';
+import SnackCallController from '../../components/Other/SnackCallController';
 
 const style = {
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import TablaPedidosHoy from '../components/TablaPedidosHoy'
+import TablaPedidosHoy from '../components/Tables/TablaPedidosHoy'
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
@@ -10,7 +10,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 //Redux stuff
 import { connect } from 'react-redux';
 import { loadPedidosHoy,loadPedidosByEstadoTransportista ,clear} from '../redux/actions/dataActions';
-import SnackCallController from '../components/SnackCallController';
+import SnackCallController from '../components/Other/SnackCallController';
 
 const style = {
     Select:{

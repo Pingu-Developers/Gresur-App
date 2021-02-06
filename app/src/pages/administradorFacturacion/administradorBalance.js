@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
-import ControlledOpenSelect from '../../components/GraficoBalance';
 import Chart from "react-google-charts";
 import { loadBalance } from '../../redux/actions/dataActions';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
-import Grid from '@material-ui/core/Grid';
 
 
 const style = {
