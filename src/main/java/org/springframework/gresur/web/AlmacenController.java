@@ -18,9 +18,12 @@ import org.springframework.gresur.service.EstanteriaService;
 import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.util.Tuple2;
 import org.springframework.gresur.util.Tuple3;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -174,7 +177,6 @@ public class AlmacenController {
 		return res;
 	}
 
-
 	private Double getOcupacionTotalAlmacen(Almacen alm) {
 		Double capacidadTotal = alm.getCapacidad();
 		Double productosOcupacion = productoService.findAll().stream()
@@ -184,16 +186,28 @@ public class AlmacenController {
 		
 		return productosOcupacion/capacidadTotal;
 	}
+	
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public Iterable<Almacen> findAll(){
 		return almacenService.findAll();
 	}
+	
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public Almacen addAlmacen(@RequestBody @Valid Almacen alm){
-		return almacenService.save(alm);
+	public ResponseEntity<?> addAlmacen(@RequestBody @Valid Almacen alm, BindingResult result){
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
+		
+		else {
+			try {
+				Almacen a = almacenService.save(alm);				
+				return ResponseEntity.ok(a);
+			}catch(Exception e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}
 	}
-	
-
 }

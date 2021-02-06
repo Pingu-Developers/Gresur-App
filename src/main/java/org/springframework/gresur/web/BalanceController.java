@@ -2,15 +2,14 @@ package org.springframework.gresur.web;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.service.FacturaEmitidaService;
 import org.springframework.gresur.service.FacturaRecibidaService;
 import org.springframework.gresur.util.Tuple3;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,9 +32,10 @@ public class BalanceController {
 	}
 	
 	@GetMapping("/{year}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public List<Tuple3<String, Double, Double>> getBalance(@PathVariable Integer year){
 		List<Tuple3<String, Double, Double>> res = new ArrayList<Tuple3<String,Double,Double>>();
-		//List<Double> res = new ArrayList<Double>();
+
 		for(int i=1; i<=12; i++) {
 			LocalDate primerDiaMes = LocalDate.of(year, i, 1).minusDays(1);
 			LocalDate ultimoDiaMes = LocalDate.of(year, i, 1).plusMonths(1);
@@ -58,14 +58,6 @@ public class BalanceController {
 			
 			res.add(it);
 		}
-		
 		return res;
-		
 	}
-	
-	
-
-	
-	
-
 }
