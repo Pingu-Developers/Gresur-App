@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 
-import EstanteriaConfirm from '../../../components/EstanteriaConfirm'
+import EstanteriaConfirm from '../../../components/Dialogs/EstanteriaConfirm'
 
 import { connect } from "react-redux";
 import {
@@ -15,7 +14,7 @@ import {
   getProductosPaginados,
   clearProductosPaginados,
 } from "../../../redux/actions/productoActions";
-import SnackCallController from '../../../components/SnackCallController'
+import SnackCallController from '../../../components/Other/SnackCallController'
 
 //MUI stuff
 import Paper from "@material-ui/core/Paper";
@@ -34,13 +33,11 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import DeleteIcon from "@material-ui/icons/Delete";
-import FormControl from '@material-ui/core/FormControl';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 //FIREBASE stuff
 import firebase from "../../../firebaseConfig/firebase";
-import  FormNuevoProveedor  from "../../../components/FormNuevoProveedor";
-import { TrainRounded } from "@material-ui/icons";
+import  FormNuevoProveedor  from "../../../components/Forms/FormNuevoProveedor";
 
 const style = (theme) => ({
   root: {

@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
 
 import Typography from '@material-ui/core/Typography';
-import VerticalResizablePBar from '../components/VerticalResizablePBar';
-import AlmacenOcupacionPBar from '../components/AlmacenOcupacionPBar';
+import VerticalResizablePBar from '../components/ProgressBars/VerticalResizablePBar';
+import AlmacenOcupacionPBar from '../components/ProgressBars/AlmacenOcupacionPBar';
 import Button from '@material-ui/core/Button';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
 
 import { loadAlmacenGestionEncargado, clearAlmacenGestionEncargado } from '../redux/actions/dataActions'
-import EncargadoGestionAxisNums from '../components/EncargadoGestionAxisNums';
-import SnackCallController from '../components/SnackCallController';
+import EncargadoGestionAxisNums from '../components/Charts/EncargadoGestionAxisNums';
+import SnackCallController from '../components/Other/SnackCallController';
 
 const style = {
     titulo: {

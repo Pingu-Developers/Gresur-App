@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import gresur from '../images/Gresur_transparente.png'
-import Snackbar from '../components/SnackBar'
+import Snackbar from '../components/Other/SnackBar'
 
 //Redux stuff
 import { connect } from 'react-redux';

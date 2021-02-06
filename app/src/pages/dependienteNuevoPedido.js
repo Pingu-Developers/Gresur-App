@@ -23,10 +23,10 @@ import DoneIcon from '@material-ui/icons/Done';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import Stepper from '../components/Stepper';
-import Snackbar from '../components/SnackBar'
-import NestedList from '../components/NestedList';
-import ButtonPDF from '../components/ButtonPDF';
+import Stepper from '../components/Other/Stepper';
+import Snackbar from '../components/Other/SnackBar'
+import NestedList from '../components/HistoryLists/NestedList';
+import ButtonPDF from '../components/Buttons/ButtonPDF';
 
 import { loadClienteIsDefaulter, clearClienteIsDefaulter, clear } from '../redux/actions/dataActions';
 import { loadCliente, clearClienteByNIF } from '../redux/actions/dataActions';
@@ -1242,10 +1242,10 @@ const mapActionsToProps = {
     postPedido,
 }
 
-const provincias = ['Alava','Albacete','Alicante','Almería','Asturias','Avila','Badajoz','Barcelona','Burgos','Caceres',
+const provincias = ['Alava','Albacete','Alicante','Almeria','Asturias','Avila','Badajoz','Barcelona','Burgos','Caceres',
              'Cadiz','Cantabria','Castellon','Ciudad Real','Cordoba','La Coruña','Cuenca','Gerona','Granada','Guadalajara',
-             'Guipuzkoa','Huelva','Huesca','Islas Baleares','Jaen','Leon','Lerida','Lugo','Madrid','Málaga','Murcia','Navarra',
-             'Orense','Palencia','Las Palmas','Pontevedra','La Rioja','Salamanca','Segovia','Sevilla','Soria','Tarragona',
+             'Guipuzkoa','Huelva','Huesca','Islas Baleares','Jaen','Leon','Lleida','Lugo','Madrid','Malaga','Murcia','Navarra',
+             'Ourense','Palencia','Las Palmas','Pontevedra','La Rioja','Salamanca','Segovia','Sevilla','Soria','Tarragona',
              'Santa Cruz de Tenerife','Teruel','Toledo','Valencia','Valladolid','Vizcaya','Zamora','Zaragoza']
 
 function initialState(){

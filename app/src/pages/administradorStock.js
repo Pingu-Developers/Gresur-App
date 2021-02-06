@@ -5,7 +5,7 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
 import { loadAlmacenGestion, clear} from '../redux/actions/dataActions';
 //Components
-import AccordionGestionStock from '../components/AccordionGestionStock';
+import AccordionGestionStock from '../components/Accordions/AccordionGestionStock';
 
 const style = {
 

@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-import MostradorProductos from '../components/MostradorProductos';
+import MostradorProductos from '../components/HistoryLists/MostradorProductos';
 
 import { connect } from 'react-redux';
 import { getProductosPaginados, clearProductosPaginados } from '../redux/actions/productoActions'

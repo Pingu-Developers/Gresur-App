@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 
-import  FormNuevoProveedor  from "../../../components/FormNuevoProveedor";
-import SnackCallController from '../../../components/SnackCallController';
+import  FormNuevoProveedor  from "../../../components/Forms/FormNuevoProveedor";
+import SnackCallController from '../../../components/Other/SnackCallController';
 
 import Grid from '@material-ui/core/Grid';
 import Paper from "@material-ui/core/Paper";

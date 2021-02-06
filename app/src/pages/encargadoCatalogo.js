@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-import SnackCallController from '../components/SnackCallController'
+import SnackCallController from '../components/Other/SnackCallController'
 
 import { connect } from 'react-redux';
 import { getProductosPaginados, clearProductosPaginados,getCategorias,clearCategorias,putNotificacion } from '../redux/actions/productoActions'
@@ -24,7 +23,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import WarningIcon from '@material-ui/icons/Warning';
 import Tooltip from '@material-ui/core/Tooltip';
-import DialogoEditarProductos from '../components/DialogoEditarProducto';
+import DialogoEditarProductos from '../components/Dialogs/DialogoEditarProducto';
 import PriorityHighIcon from '@material-ui/icons/PriorityHigh';
 import IconButton from '@material-ui/core/IconButton';
 

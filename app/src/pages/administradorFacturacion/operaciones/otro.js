@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
-import  FormNuevoProveedor  from "../../../components/FormNuevoProveedor";
+import  FormNuevoProveedor  from "../../../components/Forms/FormNuevoProveedor";
 
-import Grid from '@material-ui/core/Grid';
 import Paper from "@material-ui/core/Paper";
 import withStyles from '@material-ui/core/styles/withStyles';
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -13,7 +11,7 @@ import AddCircleIcon from "@material-ui/icons/AddCircle";
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import SnackCallController from '../../../components/SnackCallController';
+import SnackCallController from '../../../components/Other/SnackCallController';
 
 import { getProveedores,clearProveedores,newProveedores,newFacturaOtro } from "../../../redux/actions/proveedorActions";
 

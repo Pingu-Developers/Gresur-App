@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 import CompraMaterial from './operaciones/compraMaterial'
@@ -8,10 +7,8 @@ import Otro  from './operaciones/otro';
 
 //Redux stuff
 import { connect } from 'react-redux';
-import { getProveedores, clearProveedores, newProveedores } from '../../redux/actions/proveedorActions';
-import { getProductosPaginados, clearProductosPaginados } from '../../redux/actions/productoActions';
+
 //MUI stuff
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
