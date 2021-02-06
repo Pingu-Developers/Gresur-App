@@ -23,6 +23,7 @@ import org.springframework.gresur.repository.RolRepository;
 import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.util.Tuple2;
 import org.springframework.gresur.util.Tuple3;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -167,7 +168,8 @@ public class AuthController {
 			userRepository.save(empleado);
 			return ResponseEntity.ok("Contraseña cambiada");
 		}
-		return ResponseEntity.badRequest().body("Contraseña invalida");
+		MessageResponse me = new MessageResponse("Wrong Password");
+		return ResponseEntity.ok(me);
 	}
 	
 
