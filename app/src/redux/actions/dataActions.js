@@ -90,11 +90,11 @@ export const clearPedidos = () => (dispatch) => {
     dispatch({type: CLEAR_PEDIDOS})
 }
 
-export const cancelarPedido = (id, estado="TODO", orden="DEFAULT") => (dispatch) => {
+export const cancelarPedido = (id, estado="TODO", orden="",pageNo,pageSize) => (dispatch) => {
 
     axios.post(`/pedido/${id}`)
         .then((res) => {
-            estado === "TODO" ? dispatch(loadPedidos(orden)) : dispatch(loadPedidosByEstado(estado, orden))
+            estado === "TODO" ? dispatch(loadPedidosPaginados(orden,pageNo,pageSize)) : dispatch(loadPedidosByEstadoPaginado(estado, orden,pageNo,pageSize))
             dispatch({
                 type: SET_ENVIADO,
             });
@@ -645,6 +645,9 @@ export const updateEstanteriaCapacidad = (categoria, capacidad) => (dispatch) =>
     axios.put(`/estanterias/update/${categoria}/${capacidad}`)
     .then((res) => {
         dispatch(loadAlmacenGestionEncargado());
+        dispatch({
+            type: SET_ENVIADO,
+        });
     })
     .catch((err) => {
         if(err.response){

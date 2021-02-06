@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { clearFacturaEmitida, loadFacturaEmitida } from '../../redux/actions/dataActions';
+import { clearFacturaEmitida, loadFacturaEmitida,clear } from '../../redux/actions/dataActions';
 import Grid from '@material-ui/core/Grid';
 import { TableContainer } from '@material-ui/core';
 import Table from '@material-ui/core/Table';
@@ -27,6 +27,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import SaveIcon from '@material-ui/icons/Save';
 import DialogoAddProductos from '../../components/DialogoAddProductos';
 import TablaEditarFactura from '../../components/TablaEditarFactura';
+
+import SnackCallController from '../../components/SnackCallController';
 
 const style = {
 
@@ -66,19 +68,21 @@ class rectificar extends Component {
         console.log(this.props);
     }
  
-
-
+    componentWillUnmount(){
+        this.props.clear();
+    }
 
     render() {
-        const { classes, data } = this.props;        
+        const { classes, data,UI:{errors,enviado} } = this.props;        
         
 
         return (
             <div>
-                <form id="busqueda" >
+                <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
+                <div id="busqueda" >
                 <TextField id="numFactura" name="numFactura" onChange={this.handleOnChange} label="Inserte nº de factura" />
                 <Button onClick={(event) => this.handleSubmit(event)}><SearchIcon /></Button>
-                </form>
+                </div>
                 {data.facturas.length === 0 ? null :
 
                 <TablaEditarFactura factura={data.facturas}/>
@@ -101,14 +105,14 @@ rectificar.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    data: state.data
+    data: state.data,
+    UI: state.UI
 })
 
 const mapActionsToProps = {
     loadFacturaEmitida,
-    clearFacturaEmitida
-
-
+    clearFacturaEmitida,
+    clear
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(rectificar))

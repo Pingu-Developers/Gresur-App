@@ -113,7 +113,7 @@ public class PedidoController {
 	}
 	
 	@GetMapping("/id/{id}")
-	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') or hasRole('ADMIN')")
 	public Pedido findById(@PathVariable("id") Long id) {
 		return pedidoService.findByID(id);
 	}
@@ -437,7 +437,7 @@ public class PedidoController {
 	}
 	
 	@PutMapping("/pagado/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
 	public ResponseEntity<?> setEstaPagado(@PathVariable("id") Long id) {
 		
 		Pedido p = pedidoService.findByID(id);
@@ -458,7 +458,7 @@ public class PedidoController {
 	}
 	
 	@PutMapping("/update")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
 	public ResponseEntity<?> updatePedido(@Valid @RequestBody Pedido pedido) {
 	
 		clienteService.save(pedido.getFacturaEmitida().getCliente());

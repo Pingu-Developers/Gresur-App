@@ -13,7 +13,7 @@ import ZoomOutMapIcon from '@material-ui/icons/ZoomOutMap';
 
 import { loadAlmacenGestionEncargado, clearAlmacenGestionEncargado } from '../redux/actions/dataActions'
 import EncargadoGestionAxisNums from '../components/EncargadoGestionAxisNums';
-
+import SnackCallController from '../components/SnackCallController';
 
 const style = {
     titulo: {
@@ -214,9 +214,10 @@ class encargadoGestion extends Component {
 
     // RENDER
     render() {
-        const { classes, data:{gestionAlmacenEncargado} } = this.props;
+        const { classes, data:{gestionAlmacenEncargado},UI:{errors,enviado} } = this.props;
         return (
             <div style = {{userSelect : 'none'}}>
+                <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
                 <Typography variant = 'h3' className = {classes.titulo}>GESTION DEL ALMACEN</Typography>
 
                 <div className = {classes.wrapper}>
@@ -297,7 +298,8 @@ class encargadoGestion extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    data:state.data
+    data:state.data,
+    UI: state.UI
 })
 
 const mapActionsToProps = {
