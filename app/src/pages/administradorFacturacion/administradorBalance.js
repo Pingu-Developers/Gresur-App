@@ -7,6 +7,8 @@ import { loadBalance } from '../../redux/actions/dataActions';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
+import { Divider } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography'
 
 
 const style = {
@@ -16,14 +18,14 @@ class balance extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            year: 2020,
+            year: new Date().getFullYear(),
             data: []
         }
     }
 
     handleChangeSelected = (event) => {
-
-        event.target.value ===2020?this.props.loadBalance(2020):this.props.loadBalance(event.target.value);
+        var dfltyear = new Date().getFullYear();
+        event.target.value === dfltyear?this.props.loadBalance(dfltyear):this.props.loadBalance(event.target.value);
 
         this.setState({
             [event.target.name]:event.target.value
@@ -32,7 +34,7 @@ class balance extends Component {
 
     
     componentDidMount() {
-        this.props.loadBalance(2020);
+        this.props.loadBalance(this.state.year);
     }
 
     render() {
@@ -41,53 +43,72 @@ class balance extends Component {
 
         return (
             <div>
-                <FormControl>
-                    <Select
-                        labelId="demo-simple-select-outlined-label"
-                        id="demo-simple-select-outlined"
-                        name="year"
-                        value={this.state.year ? this.state.year : 2020}
-                        onChange={this.handleChangeSelected}
-                    >
-                        <MenuItem value={2017}>2017</MenuItem>
-                        <MenuItem value={2018}>2018</MenuItem>
-                        <MenuItem value={2019}>2019</MenuItem>
-                        <MenuItem value={2020}>2020</MenuItem>
-                        <MenuItem value={2021}>2021</MenuItem>
+                <div style = {{display: 'inline-flex', paddingBottom: 10, alignItems: 'center'}}>
+                    <Typography>Año: </Typography>
+                    <FormControl style = {{marginLeft: 10}}>
+                        <Select
+                            labelId="demo-simple-select-outlined-label"
+                            id="demo-simple-select-outlined"
+                            name="year"
+                            value={this.state.year ? this.state.year : new Date().getFullYear()}
+                            onChange={this.handleChangeSelected}
+                        >
+                            <MenuItem value={2017}>2017</MenuItem>
+                            <MenuItem value={2018}>2018</MenuItem>
+                            <MenuItem value={2019}>2019</MenuItem>
+                            <MenuItem value={2020}>2020</MenuItem>
+                            <MenuItem value={2021}>2021</MenuItem>
 
 
-                    </Select>
-                </FormControl>
+                        </Select>
+                    </FormControl>
+                </div>
+                <Divider/>
                 {data.balance.length == 0 ?null:
                                     <Chart
                                     width={'100%'}
-                                    height={'600px'}
-                                    chartType="Bar"
+                                    height={'700px'}
+                                    chartType="ComboChart"
                                     loader={<div>Loading Chart</div>}
                                     data={[
-                                        ['Mes', 'Ingresos', 'Gastos'],
-                                        [data.balance[0].mes, data.balance[0].ingresos, data.balance[0].gastos],
-                                        [data.balance[1].mes, data.balance[1].ingresos, data.balance[1].gastos],
-                                        [data.balance[2].mes, data.balance[2].ingresos, data.balance[2].gastos],
-                                        [data.balance[3].mes, data.balance[3].ingresos, data.balance[3].gastos],
-                                        [data.balance[4].mes, data.balance[4].ingresos, data.balance[4].gastos],
-                                        [data.balance[5].mes, data.balance[5].ingresos, data.balance[5].gastos],
-                                        [data.balance[6].mes, data.balance[6].ingresos, data.balance[6].gastos],
-                                        [data.balance[7].mes, data.balance[7].ingresos, data.balance[7].gastos],
-                                        [data.balance[8].mes, data.balance[8].ingresos, data.balance[8].gastos],
-                                        [data.balance[9].mes, data.balance[9].ingresos, data.balance[9].gastos],
-                                        [data.balance[10].mes, data.balance[10].ingresos, data.balance[10].gastos],
-                                        [data.balance[11].mes, data.balance[11].ingresos, data.balance[11].gastos],
+                                        ['Mes', 'Ingresos', 'Gastos', 'Beneficio'],
+                                        ['ENERO', data.balance[0].ingresos, data.balance[0].gastos, data.balance[0].ingresos - data.balance[0].gastos],
+                                        ['FEBRERO', data.balance[1].ingresos, data.balance[1].gastos, data.balance[1].ingresos - data.balance[1].gastos],
+                                        ['MARZO', data.balance[2].ingresos, data.balance[2].gastos, data.balance[2].ingresos - data.balance[2].gastos],
+                                        ['ABRIL', data.balance[3].ingresos, data.balance[3].gastos, data.balance[3].ingresos - data.balance[3].gastos],
+                                        ['MAYO', data.balance[4].ingresos, data.balance[4].gastos, data.balance[4].ingresos - data.balance[4].gastos],
+                                        ['JUNIO', data.balance[5].ingresos, data.balance[5].gastos, data.balance[5].ingresos - data.balance[5].gastos],
+                                        ['JULIO', data.balance[6].ingresos, data.balance[6].gastos, data.balance[6].ingresos - data.balance[6].gastos],
+                                        ['AGOSTO', data.balance[7].ingresos, data.balance[7].gastos, data.balance[7].ingresos - data.balance[7].gastos],
+                                        ['SEPTIEMBRE', data.balance[8].ingresos, data.balance[8].gastos, data.balance[8].ingresos - data.balance[8].gastos],
+                                        ['OCTUBRE', data.balance[9].ingresos, data.balance[9].gastos, data.balance[9].ingresos - data.balance[9].gastos],
+                                        ['NOVIEMBRE', data.balance[10].ingresos, data.balance[10].gastos, data.balance[10].ingresos - data.balance[10].gastos],
+                                        ['DICIEMBRE', data.balance[11].ingresos, data.balance[11].gastos, data.balance[11].ingresos - data.balance[11].gastos],
                                     ]}
                                     options={{
                                         // Material design options
-                                        chart: {
-                                            title: 'Balance financiero de Gresur',
-                                            subtitle: 'Gráfico de Ingresos y gastos',
+                                        title: 'Balance financiero de Gresur',
+                                        seriesType: 'bars',
+                                        series: {2 : {type: 'line'}},
+
+                                        chartArea: {
+                                            height: '100%',
+                                            width: '100%',
+                                            top: 48,
+                                            left: 100,
+                                            right: '11%',
+                                            bottom: 150
+                                        },
+
+                                        hAxis: {
+                                            slantedText:true, 
+                                        },
+                                        vAxis: {
+                                            title: "Ingresos / Gastos ( € )"
                                         },
                                     }}
                                     // For tests
-                                    rootProps={{ 'data-testid': '2' }}
+                                    rootProps={{ 'data-testid': '1' }}
                                 />
                 
                 
