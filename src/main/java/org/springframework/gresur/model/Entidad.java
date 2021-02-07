@@ -35,15 +35,15 @@ public class Entidad{
 
 	@NotBlank
 	@Column(unique=true)
-	@Pattern(regexp = "^[0-9]{8}([A-Z]{1})?")
+	@Pattern(regexp = "^[0-9]{8}([A-Z]{1})?", message = "NIF no valido")
     protected String NIF;
 
     @NotBlank
-    @Email
+    @Email(message = "Email no valido")
     protected String email;
     
     @NotBlank
-    @Pattern(regexp = "^[0-9]{9}$")
+    @Pattern(regexp = "^[0-9]{9}$", message = "Telefono no valido")
     protected String tlf;
     
     @NotBlank

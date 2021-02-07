@@ -1,10 +1,16 @@
 package org.springframework.gresur.web;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.model.Proveedor;
 import org.springframework.gresur.service.ProveedorService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,15 +31,25 @@ public class ProveedorController {
 	}
 	
 	@GetMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public Iterable<Proveedor> getAll(){
 		return proveedorService.findAll();
 	}
 	
 	@PostMapping
-	public Proveedor newProveedor(@Valid @RequestBody Proveedor p){
-
-		return proveedorService.save(p);
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> newProveedor(@Valid @RequestBody Proveedor p, BindingResult result){
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
+		
+		try {
+			Proveedor pDef = proveedorService.save(p);			
+			return ResponseEntity.ok(pDef);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
-
 }
