@@ -96,26 +96,25 @@ public class ContratoController {
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
-		}
-		
+		}	
 		String nifFormato = "^[0-9]{8}([A-Z]{1})?";
-		
+	
 		if(!nif.matches(nifFormato)) {
 			return ResponseEntity.badRequest().body("Formato del NIF invalido");
 		}
-		
 		else {
-			Contrato contratoOld = contratoService.findByPersonalNIF(nif);
-
-			contratoOld.setEntidadBancaria(c.getEntidadBancaria());
-			contratoOld.setFechaFin(c.getFechaFin());
-			contratoOld.setFechaInicio(c.getFechaInicio());
-			contratoOld.setNomina(c.getNomina());
-			contratoOld.setTipoJornada(c.getTipoJornada());
-			contratoOld.setObservaciones(c.getObservaciones());
-			
 			try {
+				Contrato contratoOld = contratoService.findByPersonalNIF(nif);
+	
+				contratoOld.setEntidadBancaria(c.getEntidadBancaria());
+				contratoOld.setFechaFin(c.getFechaFin());
+				contratoOld.setFechaInicio(c.getFechaInicio());
+				contratoOld.setNomina(c.getNomina());
+				contratoOld.setTipoJornada(c.getTipoJornada());
+				contratoOld.setObservaciones(c.getObservaciones());
+			
 				Contrato contratoDef = contratoService.save(contratoOld);				
+				
 				return ResponseEntity.ok(contratoDef);
 			}catch(Exception e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
