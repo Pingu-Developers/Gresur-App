@@ -86,6 +86,13 @@
 	 </developers>
 
     <dependencies>
+    	<!-- GSON 2.6.2 -->
+    	<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.6.2</version><!--$NO-MVN-MAN-VER$-->
+		</dependency>
+		
         <!-- Spring and Spring Boot dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
