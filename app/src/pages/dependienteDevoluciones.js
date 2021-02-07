@@ -12,10 +12,6 @@ import SnackCallController from '../components/Other/SnackCallController';
 //MUI stuff
 import Typography from '@material-ui/core/Typography';
 
-
-
-
-
 const styles = theme =>({
 
     root:{
@@ -25,11 +21,10 @@ const styles = theme =>({
     tituloCatalogo: {
         margin: '30px 20px',
         fontSize: 40,
-        fontWeight: 600
-    },
-    subtituloCatalogo: {
-        margin: 2,
-        fontWeight: 600
+        fontWeight: 600,
+        color: '#7a7a7a',
+        borderBottom: '1px solid #bdbdbd',
+        paddingBottom: '10px'
     },
     fechaLeft:{
         margin:0,
@@ -65,7 +60,9 @@ class dependienteDevoluciones extends Component {
                 <SnackCallController  enviado = {enviado} message = {"Devolucion realizada correctamente"} errors={errors} />
 
                 <Typography variant='h3' className={classes.tituloCatalogo}>HACER UNA DEVOLUCION</Typography>
-                <FormDatosDevolucion/>
+                <div style = {{padding: '0px 30px 0px 30px'}}>
+                    <FormDatosDevolucion/>
+                </div>
             </div>
         )
     }

@@ -37,11 +37,14 @@ import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissa
 
 const style = {
     tituloNuevoPedido: {
-        margin: '30px 20px',
+        margin: '20px 0px 10px 20px',
+        padding: '10px 0px 5px 0px',
         fontSize: 40,
         fontWeight: 600,
         float: 'left',
-        width: '100%'
+        width: 'calc(100% - 20px - 30px)',
+        color: '#7a7a7a',
+        borderBottom: '1px solid #bdbdbd'
     },
     buttonDiv: {
         display: 'flex',
@@ -71,7 +74,9 @@ const style = {
         backgroundColor: '#f7f7f7',
         color: '#3d3d3d',
         maxHeight: 614,
-        overflowY: 'auto'
+        overflowY: 'auto',
+        border: '1px solid #bdbdbd',
+        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.15), 0 6px 20px 0 rgba(0, 0, 0, 0.14)'
     },
     input: {
         width: '40%',
@@ -649,6 +654,7 @@ export class dependienteNuevoPedido extends Component {
                   * COMIENZO DE LA VISTA 
                   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */}
                 <Typography variant='h3' className={classes.tituloNuevoPedido}>GENERAR UN NUEVO PEDIDO</Typography><br/>
+
                 <Stepper 
                     opcionales = {[2]}
                     stepTitles = {['1. Datos del cliente', '2. Selección de productos', '3. Datos de envío', '4. Resumen del pedido']}

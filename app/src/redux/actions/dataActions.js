@@ -41,14 +41,21 @@ export const loadPedidoById = (id) => (dispatch) => {
 
     axios.get(`/pedido/id/${id}`)
         .then((res) => {
-            dispatch({type: SET_PEDIDO, payload: res.data})
+            dispatch({type: SET_PEDIDO, payload: res})
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data.message
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
         })
 }
 

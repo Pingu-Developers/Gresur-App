@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
     },
 
     botonPagado: {
-        marginLeft: 35,
         borderRadius: 20,
         fontWeight: 'bold'
       },

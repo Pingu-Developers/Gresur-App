@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
         margin: '30px 20px',
         fontSize: 40,
         fontWeight: 600,
+        color: '#7a7a7a',
+        borderBottom: '1px solid #bdbdbd',
+        width: '100%'
       },
 
     formControl: {
@@ -36,13 +39,14 @@ const useStyles = makeStyles((theme) => ({
 
     selectEmpty: {
         marginTop: theme.spacing(2),
+        height: 30,
     },
 
     tituloFiltro: {
         display: 'flex',
-        alignItems: 'baseline',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        width: '100%'
+        paddingRight: 40,
     },
 
     warning: {
@@ -60,6 +64,18 @@ const useStyles = makeStyles((theme) => ({
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     },
+    paginacionGrp: {
+        display: 'inline-flex',
+        alignItems: 'center'
+    },
+    mainWrapper: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        justifyItems: 'center',
+        '@media(max-width: 1500px)':{
+            gridTemplateColumns: '1fr',
+        }
+    }
 }));
 
 
@@ -109,32 +125,42 @@ export default function HistorialPedidosAdmin(props) {
 
             </div>
             <div className={classes.tituloFiltro}>
-                <div>
-                <FormControl className={classes.formControl}>
-                        {pedidos.content.length===0 || pedidos.totalPages<=1?null:
+                <div className = {classes.paginacionGrp}>
+                    {pedidos.content.length===0 || pedidos.totalPages<=1?null:
+                        <FormControl className={classes.formControl}>             
                             <Pagination 
                                 count={pedidos.totalPages} 
                                 className={classes.selectEmpty}
                                 page={pageNo+1} 
                                 onChange={(event,newValue) => handlePage(newValue-1)} 
                                 color="secondary" 
-                                />}
-                    </FormControl>
-                    <FormControl className={classes.formControl}  style={{minWidth:90}}>
-                        {pedidos.content.length===0?null:<div>
-                        <InputLabel shrink id="demo-simple-select-placeholder-label-label">
-                            Nº pedidos:
-                            </InputLabel>
-                            <TextField
-                                id="outlined-multiline-static"
-                                style={{width:70}}
-                                className={classes.selectEmpty}
-                                value={pageSize}
-                                onChange={handleSize}
-                                type="number"
                                 />
-                                </div>}
-                     </FormControl>
+                        </FormControl>
+                    }
+                    <FormControl className={classes.formControl}  style={{minWidth:90}}>
+                        <div>
+                            {pedidos.content.length===0?null:
+                            <div style = {{display: 'grid', gridTemplateColumns : '1.3fr 1fr'}}>
+                                <InputLabel id="demo-simple-select-placeholder-label-label">
+                                    Nº pedidos:
+                                </InputLabel>
+                                <TextField
+                                    id="outlined-multiline-static"
+                                    style={{width:70, gridColumn: 2}}
+                                    className={classes.selectEmpty}
+                                    value={pageSize}
+                                    onChange={handleSize}
+                                    type="number"
+                                    variant = 'outlined'
+                                    inputProps = {
+                                        {
+                                            style : {padding : '0px 0px 0px 10px', height: 30}
+                                        }
+                                    }
+                                />
+                            </div> }
+                        </div>
+                    </FormControl>
                 </div>
                 <div className={classes.selects}>
                     
@@ -148,6 +174,7 @@ export default function HistorialPedidosAdmin(props) {
                             value={estado}
                             onChange={handleChangeEstado}
                             className={classes.selectEmpty}
+                            variant = 'outlined'
                         >
                         <MenuItem value="TODO">Todo</MenuItem>
                         <MenuItem value="EN_ESPERA">En Espera</MenuItem>
@@ -169,8 +196,9 @@ export default function HistorialPedidosAdmin(props) {
                             value={orden}
                             onChange={handleChangeOrden}
                             className={classes.selectEmpty}
+                            variant = 'outlined'
                         >   
-                            <MenuItem value=" ">Por defecto</MenuItem>
+                            <MenuItem value=" ">Id (Por defecto)</MenuItem>
                             <MenuItem value="DESC">Mas nuevo</MenuItem>
                             <MenuItem value="ASC">Mas antiguo</MenuItem>
                         </Select>
@@ -182,7 +210,7 @@ export default function HistorialPedidosAdmin(props) {
                 <CircularProgress color="secondary" />
             </Backdrop>
 
-            <div className={classes.main}>
+            <div className={classes.mainWrapper}>
                 {pedidos === undefined ? 
                     <div className={classes.warningError}>
                         <WarningIcon className={classes.warning} color='primary'/>
@@ -208,31 +236,41 @@ export default function HistorialPedidosAdmin(props) {
                             <HistorialPedidoBox pedido={row} estado={estado} orden={orden} pageNo={pageNo} pageSize={pageSize}/>
                 ))}
             </div>
-                <div>
-                    <FormControl className={classes.formControl}>
-                        {pedidos.content.length===0 || pedidos.totalPages<=1?null:
+                <div className = {classes.paginacionGrp}>
+                    {pedidos.content.length===0 || pedidos.totalPages<=1?null:
+                        <FormControl className={classes.formControl}>             
                             <Pagination 
                                 count={pedidos.totalPages} 
                                 className={classes.selectEmpty}
                                 page={pageNo+1} 
                                 onChange={(event,newValue) => handlePage(newValue-1)} 
                                 color="secondary" 
-                                />}
-                    </FormControl>
-                    <FormControl className={classes.formControl}  style={{minWidth:90}}>
-                        {pedidos.content.length===0?null:<div>
-                        <InputLabel shrink id="demo-simple-select-placeholder-label-label">
-                            Nº pedidos:
-                        </InputLabel>
-                            <TextField
-                                id="outlined-multiline-static"
-                                style={{width:70}}
-                                className={classes.selectEmpty}
-                                value={pageSize}
-                                onChange={handleSize}
-                                type="number"
                                 />
-                           </div> }
+                        </FormControl>
+                    }
+                    <FormControl className={classes.formControl}  style={{minWidth:90}}>
+                        <div>
+                            {pedidos.content.length===0?null:
+                            <div style = {{display: 'grid', gridTemplateColumns : '1.3fr 1fr'}}>
+                                <InputLabel id="demo-simple-select-placeholder-label-label">
+                                    Nº pedidos:
+                                </InputLabel>
+                                <TextField
+                                    id="outlined-multiline-static"
+                                    style={{width:70, gridColumn: 2}}
+                                    className={classes.selectEmpty}
+                                    value={pageSize}
+                                    onChange={handleSize}
+                                    type="number"
+                                    variant = 'outlined'
+                                    inputProps = {
+                                        {
+                                            style : {padding : '0px 0px 0px 10px', height: 30}
+                                        }
+                                    }
+                                />
+                            </div> }
+                        </div>
                     </FormControl>
                 </div>
         </div>
