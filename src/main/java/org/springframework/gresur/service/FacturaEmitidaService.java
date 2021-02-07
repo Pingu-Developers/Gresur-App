@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.gresur.model.Cliente;
+import org.springframework.gresur.model.Factura;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.repository.FacturaEmitidaRepository;
 import org.springframework.gresur.service.exceptions.ClienteDefaulterException;
@@ -44,12 +45,15 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 		FacturaEmitida emitidaDB = emitida.getId() == null ? null : facturaRepo.findById(emitida.getId()).orElse(null);
 		
 		Cliente cliente = emitida.getCliente();
-		if(!facturaRepo.findByClienteIdAndEstaPagadaFalse(cliente.getId()).isEmpty() && emitidaDB==null)
+		if(!facturaRepo.findByClienteIdAndEstaPagadaFalse(cliente.getId()).isEmpty() && emitidaDB==null && !emitida.esRectificativa())
 			throw new ClienteDefaulterException("El cliente tiene facturas pendientes");
 		
 		if(emitida.getId() == null && emitida.esRectificativa()) {
 			emitida.setFechaEmision(emitida.getOriginal().getFechaEmision());
 			emitida.setNumFactura(configService.nextValEmitidasRectificada());
+			FacturaEmitida anterior = (FacturaEmitida) emitida.getOriginal();
+			anterior.setEstaPagada(true);
+			facturaRepo.save(anterior);
 		}
 		FacturaEmitida ret = facturaRepo.save(emitida);
 		em.flush();

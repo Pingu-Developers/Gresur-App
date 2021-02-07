@@ -4,11 +4,6 @@ import withStyles from "@material-ui/core/styles/withStyles";
 
 import { connect } from "react-redux";
 import {
-    getProveedores,
-    clearProveedores,
-    newProveedores,
-} from "../../redux/actions/proveedorActions";
-import {
     getProductosPaginados,
     clearProductosPaginados,
 } from "../../redux/actions/productoActions";
@@ -34,16 +29,7 @@ const style = (theme) => ({
     paper: {
         padding: theme.spacing(1),
         color: theme.palette.text.secondary,
-        minHeight: 260,
-        maxHeight: 260,
-        overflowY: "auto",
-        overflowX: "hidden",
-    },
-    elegidos: {
-        padding: theme.spacing(1),
-        color: theme.palette.text.secondary,
-        minHeight: 260,
-        maxHeight: 260,
+        height: 260,
         overflowY: "auto",
         overflowX: "hidden",
     },
@@ -58,162 +44,29 @@ const style = (theme) => ({
         margin: 10,
         minWidth: 100,
     },
-    arrowDiv: {
-        position: "relative",
-        alignItems: "center",
-        display: "flex",
-        justifyContent: "center",
-    },
-    arrow: {
-        position: "relative",
-        top: 30,
-    },
-    total: {
-        position: "relative",
-        top: 25,
-        marginRight: 20,
-        fontSize: 25,
-        fontWeight: 600,
-        display: "inline-block",
-    },
-    addButton: {
-        position: "relative",
-        marginLeft: -10,
-        top: 20,
-    },
-    createButton: {
-        position: "relative",
-        marginLeft: 50,
-        top: 20,
-    },
-    foto: {
-        marginLeft: 20,
-        height: 50,
-        width: 50,
-    },
-    fieldset: {
-        borderRadius: 10,
-        height: "100%",
-    },
-    formControl: {
-        margin: theme.spacing(2),
-        minWidth: 220,
-    },
-    upload: {
-        padding: theme.spacing(1),
-        backgroundColor: "rgba(220,220,220,0.4)",
-        height: "100%",
-        width: "100%",
-        position: "relative",
-        alignItems: "center",
-        display: "flex",
-        justifyContent: "center",
-    },
-    input: {
-        display: 'none',
-    },
 });
 
 export class AddMaterial extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            valueSearch: "",
-            valueCategoria: "TODOS",
-            valuePaginaActual: 1,
-            open: false,
-            proveedorSel: null,
-            selected: [],
-            valueSelected: [],
-            nombreNuevoProd: "",
-            descNuevoProd: "",
-            stockSegNuevoProd: 1,
-            precioCompraNuevoProd: 1,
-            precioVentaNuevoProd: 1,
-            dimensionesNuevoProd: { H: 0.1, W: 0.1, D: 0.1 },
-            pesoNuevoProd: 0,
-            unidadNuevoProd: "",
-            urlImageNuevoProd: "",
-            opendialoge: false,
-            newProduct: {},
+            valuePaginaActual:1,
+            valueSearch:"",
+            valueCategoria:"TODOS"
         };
-        this.handleClickAnadir = this.handleClickAnadir.bind(this);
+        
         this.handleChangeCategoria = this.handleChangeCategoria.bind(this);
         this.handleChangeSearch = this.handleChangeSearch.bind(this);
         this.handleChangePage = this.handleChangePage.bind(this);
-        this.handleChangeProveedor = this.handleChangeProveedor.bind(this);
-        this.handleChangeNombre = this.handleChangeNombre.bind(this);
-        this.handleChangeDesc = this.handleChangeDesc.bind(this);
-        this.handleChangeStock = this.handleChangeStock.bind(this);
-        this.handleChangePrecioCompra = this.handleChangePrecioCompra.bind(this);
-        this.handleChangePrecioVenta = this.handleChangePrecioVenta.bind(this);
-        this.handleChangeD = this.handleChangeD.bind(this);
-        this.handleChangeW = this.handleChangeW.bind(this);
-        this.handleChangeH = this.handleChangeH.bind(this);
-        this.handleChangeH = this.handleChangeH.bind(this);
-        this.handleChangeUnidad = this.handleChangeUnidad.bind(this);
-        this.handleChangePeso = this.handleChangePeso.bind(this);
-        this.handleClickOpen = this.handleClickOpen.bind(this);
-        this.handleClose = this.handleClose.bind(this);
     }
-
-    handleClose() {
-        this.setState({
-            opendialoge: false,
-            newProduct: {},
-        });
-    };
-
-    handleClickOpen() {
-        const newItem = {
-            alto: this.state.dimensionesNuevoProd.H,
-            ancho: this.state.dimensionesNuevoProd.W,
-            descripcion: this.state.descNuevoProd,
-            nombre: this.state.nombreNuevoProd,
-            pesoUnitario: this.state.pesoNuevoProd,
-            precioCompra: this.state.precioCompraNuevoProd,
-            precioVenta: this.state.precioVentaNuevoProd,
-            profundo: this.state.dimensionesNuevoProd.D,
-            stock: 0,
-            stockSeguridad: this.state.stockSegNuevoProd,
-            unidad: this.state.unidadNuevoProd,
-            urlimagen: this.state.urlImageNuevoProd,
-        }
-
-        this.setState({
-            opendialoge: true,
-            newProduct: newItem
-        });
-    };
-
-    handleChangeUnidad(event) {
-        this.setState({
-            unidadNuevoProd: event.target.value,
-        });
-    }
-
-    handleChangePeso(event) {
-        this.setState({
-            pesoNuevoProd: event.target.value,
-        });
-    }
-
     handleChangeCategoria(event) {
         this.setState({
-            valuePaginaActual: 1,
-            valueSearch: "",
-            valueCategoria: event.target.value,
+          valuePaginaActual: 1,
+          valueSearch: "",
+          valueCategoria: event.target.value,
         });
-    }
-
-    handleChangeCategoria(event) {
-        this.setState({
-            valuePaginaActual: 1,
-            valueSearch: "",
-            valueCategoria: event.target.value,
-        });
-    }
-
+      }
+    
     handleChangeSearch(event) {
         this.props.clearProductosPaginados();
         this.setState({
@@ -230,147 +83,7 @@ export class AddMaterial extends Component {
         });
     }
 
-    handleChangeProveedor(event, newValue) {
-        this.setState({
-            proveedorSel: newValue,
-        });
-    }
-
-    handleClickAnadir(producto) {
-        const newLinea = {
-            id: null,
-            producto: producto,
-            cantidad: 1,
-            precio: producto.precioVenta
-        };
-        this.props.handleAdd(newLinea);
-        /*let temp = this.state.selected;
-        let temp2 = this.state.valueSelected;
-        if (temp.indexOf(producto) === -1) {
-            temp.push(producto);
-            temp2.push({ e1: producto.id, e2: 1 });
-        }
-        this.setState({
-            selected: temp,
-            valueSelected: temp2,
-        });*/
-    }
-
-    handleClickDeselected(producto) {
-        let temp = this.state.selected;
-        let temp2 = this.state.valueSelected;
-
-        const index = temp.indexOf(producto);
-        const index2 = temp2.indexOf(
-            temp2.filter((obj) => {
-                return obj.e1 === producto.id;
-            })[0]
-        );
-        if (index !== -1) {
-            temp.splice(index, 1);
-            temp2.splice(index2, 1);
-        }
-        this.setState({
-            selected: temp,
-            valueSelected: temp2,
-        });
-    }
-
-    handleChangeValueSelected = (producto, value) => {
-        let temp = this.state.valueSelected;
-        const index = temp.indexOf(
-            temp.filter((obj) => {
-                return obj.e1 === producto.id;
-            })[0]
-        );
-        if (index !== -1) {
-            temp.splice(index, 1, { e1: producto.id, e2: parseInt(value) });
-        }
-        this.setState({
-            valueSelected: temp,
-        });
-    };
-
-    handleChangeNombre(event) {
-        this.setState({
-            nombreNuevoProd: event.target.value,
-        });
-    }
-
-    handleChangeDesc(event) {
-        this.setState({
-            descNuevoProd: event.target.value,
-        });
-    }
-
-    handleChangeStock(event) {
-        this.setState({
-            stockSegNuevoProd: event.target.value,
-        });
-    }
-
-    handleChangePrecioCompra(event) {
-        this.setState({
-            precioCompraNuevoProd: event.target.value,
-        });
-    }
-
-    handleChangePrecioVenta(event) {
-        this.setState({
-            precioVentaNuevoProd: event.target.value,
-        });
-    }
-
-    handleChangeH(event) {
-        let temp = this.state.dimensionesNuevoProd;
-        temp.H = event.target.value;
-        this.setState({
-            dimensionesNuevoProd: temp,
-        });
-    }
-
-    handleChangeW(event) {
-        let temp = this.state.dimensionesNuevoProd;
-        temp.W = event.target.value;
-        this.setState({
-            dimensionesNuevoProd: temp,
-        });
-    }
-
-    handleChangeD(event) {
-        let temp = this.state.dimensionesNuevoProd;
-        temp.D = event.target.value;
-        this.setState({
-            dimensionesNuevoProd: temp,
-        });
-    }
-
-    handleChangeImg = (event) => {
-        event.preventDefault();
-        console.log('Comienzo de upload')
-        const file = event.target.files[0]
-        const storageRef = firebase.storage().ref(`pictures/${file.name}`)
-        const task = storageRef.put(file)
-
-        task.on('state_changed', (snapshot) => {
-            snapshot.ref.getDownloadURL().then(function (downloadURL) {
-                this.setState({
-                    urlImageNuevoProd: downloadURL
-                })
-            }.bind(this));
-            console.log(snapshot)
-        }, (err) => {
-            console.log(err)
-        })
-    }
-
     componentDidMount() {
-        this.props.getProductosPaginados(
-            this.state.valuePaginaActual,
-            null,
-            null,
-            10
-        );
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -428,22 +141,9 @@ export class AddMaterial extends Component {
     render() {
         const {
             classes,
-            proveedor: { proveedores },
             productos: { articlesDetails, totalPages },
         } = this.props;
 
-        let total = 0;
-        this.state.valueSelected.map((row) => {
-            const linea = this.state.selected.filter((obj) => {
-                return obj.id === row.e1;
-            })[0];
-
-            if (linea) {
-                total = total + linea.precioCompra * row.e2;
-            }
-        });
-
-        const loading = this.state.open && proveedores.length === 0;
         return (
             <Grid>
                 <Grid />
@@ -485,55 +185,36 @@ export class AddMaterial extends Component {
                     <Paper className={classes.paper} elevation={0} variant="outlined">
                         {articlesDetails
                             ? articlesDetails.map((producto) => (
-                                <div style={{ minHeight: 80 }}>
-                                    <Grid
-                                        style={{
-                                            height: "100%",
-                                            position: "relative",
-                                            alignItems: "center",
-                                            display: "flex",
-                                            justifyContent: "center",
-                                        }}
-                                        container
-                                        spacing={3}
-                                    >
-                                        <Grid item xs={2}>
-                                            <img
-                                                className={classes.foto}
-                                                src={producto.urlimagen}
-                                                alt="IMAGEN"
-                                            />
-                                        </Grid>
-                                        <Grid item xs={4}>
-                                            <Typography
-                                                className={classes.gridproductos}
-                                                variant="body1"
+                                <div>
+                                    <div style={{ minHeight: 80, width:500, display:"grid",gridTemplateColumns:"0.5fr 1fr 1fr 0.5fr",gridColumnGap: "20px" ,alignItems:"center"}}>
+                                        <img
+                                            style={{width:"90%",height:"90%", maxHeight:90}}
+                                            src={producto.urlimagen}
+                                            alt="IMAGEN"
+                                        />
+                                        <Typography
+                                            style={{overflowY:"hidden"}}
+                                            variant="body1"
                                             >
-                                                {producto.nombre}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={4}>
-                                            <Typography
-                                                className={classes.gridproductos}
-                                                variant="body1"
+                                            {producto.nombre}
+                                        </Typography>
+                                        <Typography
+                                            variant="body1"
                                             >
-                                                PVP: {producto.precioVenta}€
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <Button
-                                                className={classes.gridboton}
-                                                variant="contained"
-                                                size="small"
-                                                color="primary"
-                                                onClick={() => this.handleClickAnadir(producto)}
+                                            PVP: {producto.precioVenta}€
+                                        </Typography>
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            color="primary"
+                                            onClick={() => this.props.handleAdd(producto)}
                                             >
-                                                Añadir
-                          </Button>
-                                        </Grid>
-                                    </Grid>
+                                            Añadir
+                                        </Button>
+                                    </div>
                                     <Divider />
                                 </div>
+                                
                             ))
                             : () => null}
                     </Paper>
@@ -541,8 +222,6 @@ export class AddMaterial extends Component {
                         <Pagination
                             style={{ marginTop: 10 }}
                             count={totalPages}
-                            hidePrevButton={this.state.valuePaginaActual === 1}
-                            hideNextButton={this.state.valuePaginaActual === totalPages}
                             page={this.state.valuePaginaActual}
                             onChange={(event, newValue) =>
                                 this.handleChangePage(event, newValue)
@@ -557,14 +236,10 @@ export class AddMaterial extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    proveedor: state.proveedor,
     productos: state.productos,
 });
 
 const mapDispatchToProps = {
-    getProveedores,
-    clearProveedores,
-    newProveedores,
     getProductosPaginados,
     clearProductosPaginados,
 };

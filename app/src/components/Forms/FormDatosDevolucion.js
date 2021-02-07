@@ -162,10 +162,18 @@ export default function FormDatosDevolucion() {
         let temp = lineasSelected
         let temp2 = valueSelected
 
+        console.log(row)
+        console.log(temp)
+        console.log(temp2)
         const index = temp.indexOf(row);
         const index2 = temp2.indexOf(temp2.filter(obj => {
-            return obj.e1 === row.id
+            return obj.e1 === row.producto.id
           })[0]);
+        
+        
+        console.log(index)
+        console.log(index2)
+
         if(index !== -1){
             temp.splice(index,1)
             temp2.splice(index2,1)

@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.Data;
 
@@ -57,7 +58,7 @@ public class Factura{
 	
 	/* RELACIONES */
 	
-	@JsonIgnore
+	@JsonView
 	@OneToOne
 	protected Factura original;
 	
