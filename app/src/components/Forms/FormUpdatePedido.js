@@ -42,7 +42,9 @@ export default function FormUpdatePedido(props) {
     const counter = useSelector(state => state);
     const dispatch = useDispatch();
 
-    const [fechaEnvio, setFechaEnvio] = React.useState(pedido.fechaEnvio);
+    var fechaStr = pedido.fechaEnvio.split('-')
+
+    const [fechaEnvio, setFechaEnvio] = React.useState(new Date(fechaStr[0], fechaStr[1]-1, fechaStr[2]));
     const [direccionEnvio, setDireccionEnvio] = React.useState(pedido.direccionEnvio);
     const [nombre, setNombre] = React.useState(pedido.facturaEmitida.cliente.name);
     const [nif, setNIF] = React.useState(pedido.facturaEmitida.cliente.nif);
@@ -124,7 +126,7 @@ export default function FormUpdatePedido(props) {
 
     const dateInPast = function(fechaEnvio) {
         const fechaRealizacion = new Date(pedido.fechaRealizacion);
-        if (fechaRealizacion < fechaEnvio) {
+        if (fechaRealizacion.setHours(0,0,0,0) <= fechaEnvio.setHours(0,0,0,0)) {
           return true;
         }
       

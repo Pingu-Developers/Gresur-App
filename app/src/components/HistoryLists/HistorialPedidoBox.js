@@ -16,23 +16,23 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
+import Tooltip from '@material-ui/core/Tooltip'
 
 
 
 import { cancelarPedido, setEstaPagadoFacturaE } from '../../redux/actions/dataActions';
 import PopUpModificarPedido from '../Dialogs/PopUpModificarPedido';
+import ButtonPDF from '../Buttons/ButtonPDF';
 
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-   
-  },
-
   main: {
     display: 'inline-block',
-    padding: 20,
+    padding: '10px 20px 10px 20px',
     width: '40vw',
-    userSelect: 'none'
+    userSelect: 'none',
+    position: 'relative',
+    minWidth: 692,
   },
 
   productosPedido: {
@@ -50,7 +50,8 @@ const useStyles = makeStyles((theme) => ({
 
   precio: {
     gridColumn: '3',
-    gridRow: '1'
+    gridRow: '1',
+    textAlign: 'center'
   }, 
 
   campoProductos: {
@@ -108,8 +109,6 @@ const useStyles = makeStyles((theme) => ({
 
   botones:{
     display: 'flex',
-    marginLeft: 206,
-    marginTop: -45,
   },
 
   botonCancelar: {
@@ -144,15 +143,28 @@ export default function HistorialPedidoBox(props) {
         <fieldset className={classes.borderMain}>
           <legend className={classes.legend}><b>PEDIDO-{pedido.id}</b></legend>          
 
-          <div className={classes.iconoObjeto}>
+          <div className={classes.iconoObjeto} style = {{justifyContent : 'space-between'}}>
 
+          <span style = {{display: 'inline-flex', alignItems: 'center'}}>
             <CalendarTodayIcon className={classes.icono}/>
             <p><b>Fecha de realizacion:</b> {pedido.fechaRealizacion}</p>
+          </span>
 
+          { pedido.estado !== "EN_ESPERA" ? 
+            <Tooltip arrow placement = 'top' 
+              title = {<p style = {{fontSize: 12, margin: '0px 5px', width: 'max-content'}}>El pedido ya ha sido tramitado y no puede modificarse</p>}
+            >
+              <div className={classes.botones}>
+                <PopUpModificarPedido pedido={pedido} estado={estado} orden={orden} pageNo={pageNo} pageSize={pageSize}/>
+                <Button className={classes.botonCancelar} variant='outlined' color="secondary" size="small" disabled={true} onClick={(event) => handleSubmitCancelacion(pedido.id,event)}><b>CANCELAR</b></Button>
+              </div>
+            </Tooltip>
+            :
             <div className={classes.botones}>
               <PopUpModificarPedido pedido={pedido} estado={estado} orden={orden} pageNo={pageNo} pageSize={pageSize}/>
-              <Button className={classes.botonCancelar} variant='outlined' color="secondary" size="small" disabled={pedido.estado !== "EN_ESPERA"} onClick={(event) => handleSubmitCancelacion(pedido.id,event)}><b>CANCELAR</b></Button>
+              <Button className={classes.botonCancelar} variant='outlined' color="secondary" size="small" disabled={false} onClick={(event) => handleSubmitCancelacion(pedido.id,event)}><b>CANCELAR</b></Button>
             </div>
+          }
 
           </div>
 
@@ -247,6 +259,11 @@ export default function HistorialPedidoBox(props) {
           </div>
 
         </fieldset>
+        <ButtonPDF 
+          style = {{position: 'absolute', right: 0, bottom: 0, borderRadius: '100%', height: '60px', width: '30px'}}
+          idPedido = {pedido.id}
+          color = "secondary"
+          iconColor = "white"/>
     </div>
   );
 }

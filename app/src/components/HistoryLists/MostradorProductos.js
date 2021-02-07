@@ -11,9 +11,10 @@ const useStyles = makeStyles((theme) => ({
         gridTemplateColumns: '0.25fr 2fr 1fr 0.5fr',
         columnGap: 10,
         padding: 5,
-        borderBottom: '1px solid grey',
+        borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
         width: '100%',
-        alignItems: 'center'
+        alignItems: 'center',
+        color: 'rgba(0, 0, 0, 0.65)'
     },
 
     foto: {
@@ -37,14 +38,14 @@ const useStyles = makeStyles((theme) => ({
 
     stockDimensionesUnidad: {
         paddingLeft: 20,
-        borderLeft: '1px solid #808080',
+        borderLeft: '1px solid rgba(0, 0, 0, 0.12)',
         height: '100%',
         display: 'flex',
         alignItems: 'center'
     },
 
     precio: {
-        borderLeft: '1px solid #808080',
+        borderLeft: '1px solid rgba(0, 0, 0, 0.12)',
         textAlign: 'center',
         height: '100%',
         display: 'flex',

@@ -9,13 +9,14 @@ import Divider from '@material-ui/core/Divider';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import DateFnsUtils from '@date-io/date-fns';
-import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { loadClienteIsDefaulter, clearClienteIsDefaulter } from "../../redux/actions/dataActions"
 import { getFacturasCliente, getFacturasClienteAndFecha,sendDevolucion } from "../../redux/actions/clienteActions"
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded';
+import ChevronRightRoundedIcon from '@material-ui/icons/ChevronRightRounded';
+import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
 import ClearIcon from '@material-ui/icons/Clear';
 
 import {
@@ -27,87 +28,82 @@ import {
 
 const useStyles = makeStyles({
 
-    cuerpo:{
-        marginTop:10,
-    },
-    grid:{
-        width:"100%",
-        margin:20,
-        marginRight:0
-    },
-    grid2:{
-        width:"100%",
-        margin:20,
-        marginLeft:75
-    },
-    date:{
-        marginTop:-10
-    },
-    arrowDiv:{
-        position: 'relative',
-        alignItems:'center',
-        display:'flex',
-        justifyContent:'center',
-    },
-    tables:{
-        minHeight:260,
-        maxHeight:260,
-        overflowY:"auto",
-        overflowX:"hidden"        
-    },
-    tablesform:{
-        minHeight:200,
-        maxHeight:200,
-        overflowY:"auto",
-        overflowX:"hidden"
-    }, 
     fieldset: {
+        position: 'relative',
         borderRadius: 10,
         backgroundColor: '#f7f7f7',
-        color: '#3d3d3d'
+        color: '#3d3d3d',
+        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.15), 0 6px 20px 0 rgba(0, 0, 0, 0.14)',
+        border: '2px solid #bdbdbd',
+        padding: 20,
     },
-    bottomSpace: {
-       height:20,
+    formDiv: {
+        display: 'grid',
+        gridTemplateRows: '1fr 1fr 1fr',
+        gridTemplateColumns: '1fr 1fr',
+        padding: '20px',
+        gridGap: '10px 50px'
+    },
+    inputDiv:{
+        width:"100%",
+        height:"100%",
+    },
+    inputField: {
+        height: '100%',
+        width: '100%',
+        margin: 0,
+    },
+    textInput: {
+        backgroundColor: 'white',
+        width: '100%',
+        '&:disabled':{
+            backgroundColor: '#f7f7f7'
+        }
+    },
+    transferListDiv: {
+        display: 'grid',
+        gridTemplateColumns: '5fr 1fr 5fr',
+        gridTemplateRows: '0.5fr 10fr 1fr',
+        gridRowGap: 5,
+        justifyItems: 'center',
+        alignItems: 'center',
+        padding: '20px 20px 0px 20px',
+    },
+    transferList: {
+        width: 'calc(100% - 24px)',
+        backgroundColor: 'white',
+        padding: 10,
+        border: '2px solid #bdbdbd',
+        borderRadius: 20,
+        maxHeight: 296,
+        minHeight: 296,
+        overflowY: 'auto'
+    },
+    lineaDevolucion1: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 4fr 4fr 1fr',
+        gridTemplateRows: '1fr',
+        gridColumnGap: 10,
+        justifyItems: 'center',
+        alignItems: 'center',
+        borderBottom: '1px solid #bdbdbd',
+        padding: '10px 10px',
     },
     button:{
-        position:'relative',
-        top:25,
+        color: 'white',
+        height: 60,
+        width: 30,
+        position:'absolute',
+        borderRadius: '50%',
+        right: -25,
+        bottom: -25,
         '&$disabled' : {
             backgroundColor: '#f2f2f2',
             border: '1px solid #dbdbdb'
         }
     },
-    disabled:{},
-    rowTitle:{
-        position:'relative',
-        top:32,
-        marginLeft:"4.5%",
-        fontWeight: 600
+    disabled:{
     },
-    rowTitle2:{
-        float:'right',
-        position:'relative',
-        top:10,
-        marginRight:"36.4%",
-        fontWeight: 600
-    },
-    gridproductos :{
-        margin:8,
-        fontSize:14
-    },
-    gridboton :{
-        margin:8,
-        marginLeft:0,
-        fontSize:14
-    },
-    total: {
-        margin:10,
-        fontSize: 25,
-        fontWeight: 600,
-        float:'right'
-    }
-
-
 });
 
 export default function FormDatosDevolucion() {
@@ -310,10 +306,10 @@ export default function FormDatosDevolucion() {
             <legend> <Typography variant='subtitle1' className={classes.subtituloCatalogo}>Datos de la devolucion</Typography> </legend>
             {counter.data.isDefaulter?<Snackbar id="botonSnack" type = "error" open = {counter.data.isDefaulter} message= 'Este cliente tiene impagos!'/>:null}          
             {counter.cliente.errores?<Snackbar id="botonSnack2" type = "error" open = {counter.cliente.errores} message= {counter.cliente.errores}/>:null}
-            <Grid  container spacing={3}>
-                <Grid className={classes.grid }item xs={3}>
+            <div className = {classes.formDiv}>
+                <div className={classes.inputDiv} style = {{gridRow: 1, gridColumn: 1}}>
                     <Autocomplete
-                        size="small"
+                        className = {classes.inputField}
                         value={value}
                         onOpen={()=> {setOptions1(counter.cliente.clientes)}}
                         onChange={(event, newValue) => {
@@ -327,38 +323,37 @@ export default function FormDatosDevolucion() {
                         id="cliente"
                         options={options1}
                         getOptionLabel = {(option) => option.name}
-                        style={{ width: 300 }}
-
-                        renderInput={(params) => <TextField {...params} label="Cliente" variant="outlined" />}
+                        renderInput={(params) => <TextField {...params} label="Cliente" variant="outlined" className={classes.textInput}/>}
                     />
-                </Grid>
-                <Grid className={classes.grid } item xs={3}>
+                </div>
+                <div className={classes.inputDiv} style = {{gridRow: 2, gridColumn: 1}}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                             <KeyboardDatePicker
-                            disabled={value === null || value==='' || counter.data.isDefaulter?true:false}
-                            className={classes.fechaLeft}
-                            className={classes.date }
-                            disableToolbar
-                            autoOk={true}
-                            variant="inline"
-                            format="dd/MM/yyyy"
-                            margin="normal"
-                            label="Fecha de la compra"
-                            value={fechaInicio}
-                            onChange={(date)=>{
-                                handleFechaInicioChange(date)
-                                handelLoadFacturas(value,date)
-                            }}
-                            KeyboardButtonProps={{
-                                'aria-label': 'change date',
-                            }}
-                                />       
+                                className = {classes.inputField}
+                                disabled={value === null || value==='' || counter.data.isDefaulter?true:false}
+                                disableToolbar
+                                autoOk={true}
+                                variant="inline"
+                                format="dd/MM/yyyy"
+                                margin="normal"
+                                label="Fecha de la compra"
+                                value={fechaInicio}
+                                onChange={(date)=>{
+                                    handleFechaInicioChange(date)
+                                    handelLoadFacturas(value,date)
+                                }}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
+                                inputVariant = 'outlined'
+                                inputProps = {{className : classes.textInput }}
+                            />       
                     </MuiPickersUtilsProvider>
-                </Grid>
-                <Grid className={classes.grid } item xs={3}>
+                </div>
+                <div className={classes.inputDiv} style = {{gridRow: 3, gridColumn: 1}}>
                     <Autocomplete
-                        disabled={value === null || value==='' || counter.data.isDefaulter?true:false}
-                        size="small"
+                        className = {classes.inputField}
+                        disabled={value === null || value==='' || counter.data.isDefaulter}
                         id="numfactura"
                         freeSolo
                         options={options2 !== null && options2.length > 0?options2:[null]}
@@ -378,125 +373,130 @@ export default function FormDatosDevolucion() {
                         }}
                         getOptionDisabled={(option) => option  === null || option.numFactura === null}
                         getOptionLabel={(option) => option&&option.numFactura?option.numFactura:"SIN FACTURAS"}
-                        
-                        renderInput={(params) => <TextField {...params} label="Numero factura" variant="outlined" />}
+                        renderInput={(params) => 
+                            <TextField {...params}
+                                label="Numero factura"
+                                variant="outlined"
+                                className={classes.textInput}
+                                style = {{backgroundColor : (value === null || value==='' || counter.data.isDefaulter) ? '#f7f7f7' : 'white'}}
+                            />}
                         />
-                </Grid>
-                <Grid item xs={1}/>
-                <Grid className={classes.grid }  item xs={6}>
+                </div>
+                <div className={classes.inputDiv} style = {{gridRow: '1 / span 3', gridColumn: 2}}>
                     <TextField
-                        fullWidth
-                        disabled={value === null || value==='' || counter.data.isDefaulter?true:false}
+                        className = {classes.inputField}
+                        className={classes.textInput}
+                        style = {{backgroundColor : (value === null || value==='' || counter.data.isDefaulter) ? '#f7f7f7' : 'white'}}
+                        disabled={value === null || value==='' || counter.data.isDefaulter}
                         onChange = {(event) => {setMotivo(event.target.value)}}
                         inputRef={test}
                         value = {motivo}
-                        rows={5}
+                        rows={8}
                         id="outlined-textarea"
                         label="Motivos de devolucion"
                         multiline
                         variant="outlined"
                     />
-                </Grid>
-            </Grid>
-            <Divider />
-            <div className={classes.rowTitle}>Seleccione los productos a devolver</div>
-            <div className={classes.rowTitle2}>Productos a devolver</div>  
-            <Grid className={classes.grid2 } container spacing={2}>
-                <Grid  item xs={5}>
-                    <Paper className={classes.tables } variant="outlined" >
-                        <form onSubmit = {(event)=> {event.preventDefault(); }}>
-                            {valueNum && valueNum.lineasFacturas?valueNum.lineasFacturas.map((row)=>    
-                                row.cantidad !== 0? (
-                                    <div>
-                                        <Grid   container spacing={3}>
-                                            <Grid item xs={5}>
-                                                <Typography className={classes.gridproductos } variant='body1'>{row.producto.nombre} (x{row.cantidad})</Typography>
-                                            </Grid>
-                                            <Grid item xs={5}>
-                                                <Typography className={classes.gridproductos } variant='body1'>Precio Compra: {(row.precio/row.cantidad).toFixed(2)}€ / {row.producto.unidad}</Typography>
-                                            </Grid>
-                                            <Grid item xs={2}>
-                                            <Button className={classes.gridboton } variant="contained" type="submit" disabled={lineasSelected.indexOf(row)!==-1} size="small" color="primary" onClick = {() => {handleClickSelected(row)}}>Devolver</Button>
-                                            </Grid>
-                                        </Grid>
-                                        <Divider  />
-                                    </div>  
-                                ):null     
-                            ):()=>null}
-                        </form> 
-                    </Paper>
-                </Grid>
-                <Grid className={classes.arrowDiv } item xs={1}>
-                <ArrowForwardIcon className={classes.arrow } style={{ fontSize: 80 }} />
-                </Grid>
-                <Grid  item xs={5}>
-                    <Paper className={classes.tables } variant="outlined">
-                        <form className={classes.tablesform } onSubmit = {(event)=> {event.preventDefault(); }}>
-                            {lineasSelected.map((row)=>                            
-                                <div>
-                                    <Grid  container spacing={1}>
-                                        <Grid item xs={1}>
-                                            <Button className={classes.gridproductos } className={classes.iconButton }  type="submit" disabled={lineasSelected.indexOf(row)===-1} size="small" color="primary" onClick = {() => {handleClickDeselected(row)}}>
-                                                <ClearIcon />
-                                            </Button>
-                                        </Grid>
-                                        <Grid item xs={5}>
-                                            <Typography className={classes.gridproductos } variant='body1'>{row.producto.nombre}</Typography>
-                                        </Grid>
-                                        <Grid item xs={4}>
-                                            <Typography className={classes.gridproductos } variant='body1'>Cantidad: <TextField
-                                                    style = {{ height:12 , width:60, display:"inline-block", position:"relative", top: -4}}
-                                                    id={row.id}
-                                                    type="number"
-                                                    onKeyPress={(e)=>{e.target.keyCode === 13 && e.preventDefault();}}
-                                                    defaultValue = {1}
-                                                    onChange={(event)=>{
-                                                        handleChangeValueSelected(row.producto.id,event.target.value)
-                                                    }}
-                                                    inputProps={{ min: 1, max: row.cantidad , style:{padding:5} }}
-                                                    variant="outlined"
-                                                    error={errores.filter(obj => {
-                                                        return obj.id === row.producto.id
-                                                    })[0]?true:false}
-                                                    />                                        
-                                                   
-                                            </Typography>
-                                              
-                                        </Grid>                                      
-                                        <Grid item xs={1}>
-                                            <Grid container>
-                                                <Grid item xs={2}><Divider orientation='vertical' /></Grid>
-                                                    <Grid item xs={10}>
-                                                        <Typography className={classes.gridproductos } variant='body1'> 
-                                                            {valueSelected.filter(obj => {
-                                                                        return obj.e1 === row.producto.id
-                                                                    })[0]?((row.precio/row.cantidad)*valueSelected.filter(obj => {
-                                                                        return obj.e1 === row.producto.id
-                                                                    })[0].e2).toFixed(2):null}€
-                                                        </Typography>
-                                                    </Grid>          
-                                                </Grid> 
-                                            </Grid>
-                                    </Grid>
-                                    <Divider  />       
-                                </div>                                      
-                            )}
-                        </form>
-                        <Typography className={classes.total} variant='body1'> TOTAL: {total.toFixed(2)}€</Typography>
-                    </Paper>
-                </Grid>
-                <Grid item xs={5} className={classes.bottomSpace } />
-                <Grid item xs={5} className={classes.bottomSpace } />
+                </div>
+            </div>
 
-                <Grid item xs={2} className={classes.bottomSpace } >
-                    <form noValidate onSubmit={handleSubmit}>
-                        <Button classes={{root:classes.button , disabled:classes.disabled}}disabled={valueSelected.length > 0?false:true} type="submit" variant="contained" size="large" color="primary">
-                            <Typography variant='body1' >CONFIRMAR</Typography>
-                        </Button>
-                    </form>
-                </Grid >
+            <div style = {{display: (valueNum === null || valueNum === '' || value === null || value==='' || counter.data.isDefaulter) ? 'none':'block'}}>
                 
-            </Grid>
+                <Divider />
+
+                <div  className = {classes.transferListDiv}>
+
+                    <div style = {{gridRow: 1, gridColumn: 1}}>
+                        <Typography><b>Productos en la factura:</b></Typography>
+                    </div>
+
+                    <div style = {{gridRow: 1, gridColumn: 3}}>
+                        <Typography><b>Productos a devolver:</b></Typography>
+                    </div>
+
+                    <form 
+                    onSubmit = {(event)=> {event.preventDefault(); }} 
+                    className = {classes.transferList} 
+                    style = {{gridRow: 2, gridColumn: 1}}
+                    >
+                        {valueNum && valueNum.lineasFacturas?valueNum.lineasFacturas.map((row)=>    
+                            row.cantidad !== 0? (
+                                <div className = {classes.lineaDevolucion1}>
+                                    <img src = {row.producto.urlimagen} style = {{height:'100%', width: '100%'}}></img>
+                                    <Typography style = {{width: '80%', textAlign: 'left'}}>{row.producto.nombre} (x{row.cantidad})</Typography>
+                                    <Typography style = {{width: '80%', textAlign: 'left'}}>Precio Compra: {(row.precio/row.cantidad).toFixed(2)}€ / {row.producto.unidad}</Typography>
+                                    <Button style = {{width: '100%', color: 'white'}} color = "secondary" variant="contained" type="submit" disabled={lineasSelected.indexOf(row)!==-1} size="small" onClick = {() => {handleClickSelected(row)}}><ChevronRightRoundedIcon/></Button>
+                                </div>  
+                            ):null     
+                        ):()=>null}
+                    </form> 
+
+                    <div style = {{gridRow: 2, gridColumn: 2}}>
+                        <ArrowForwardRoundedIcon className={classes.arrow } style={{ fontSize: 80 }} />
+                    </div>
+
+                    <form 
+                    onSubmit = {(event)=> {event.preventDefault()}}
+                    className={classes.transferList }
+                    style = {{gridRow: 2, gridColumn: 3}}
+                    >
+                        {lineasSelected.map((row)=>                            
+                            <div className = {classes.lineaDevolucion1} style = {{gridTemplateColumns: '0.1fr 1fr 5fr 3fr 1.5fr'}}>
+                                
+                                <Button 
+                                    type="submit" 
+                                    disabled={lineasSelected.indexOf(row)===-1} 
+                                    color="secondary" 
+                                    onClick = {() => {handleClickDeselected(row)}}
+                                    style = {{borderRight: '1px solid #bdbdbd', borderRadius: 0}}
+                                >
+                                    <ClearIcon />
+                                </Button>
+
+                                <img src = {row.producto.urlimagen} style = {{height:'100%', width: '100%'}}></img>
+                                <Typography style = {{width: '80%', textAlign: 'left'}}>{row.producto.nombre}</Typography>
+                                
+                                <span style = {{display: 'inline-flex'}}>
+                                    <Typography>Cantidad:</Typography>
+                                    <TextField
+                                        style = {{ height:10 , width:60, top: -2, left: 10}}
+                                        id={row.id}
+                                        type="number"
+                                        onKeyPress={(e)=>{e.target.keyCode === 13 && e.preventDefault();}}
+                                        defaultValue = {1}
+                                        onChange={(event)=>{
+                                            handleChangeValueSelected(row.producto.id,event.target.value)
+                                        }}
+                                        inputProps={{ min: 1, max: row.cantidad , style:{padding:5} }}
+                                        variant="outlined"
+                                        error={errores.filter(obj => {
+                                            return obj.id === row.producto.id
+                                        })[0]?true:false}
+                                    />
+                                </span>
+                                    
+                                <Typography style = {{width: '100%', textAlign: 'right', borderLeft: '1px solid #bdbdbd'}}> 
+                                    {valueSelected.filter(obj => {
+                                                return obj.e1 === row.producto.id
+                                            })[0]?((row.precio/row.cantidad)*valueSelected.filter(obj => {
+                                                return obj.e1 === row.producto.id
+                                            })[0].e2).toFixed(2):null}€
+                                </Typography>
+                            </div>                                      
+                        )}
+                    </form>
+
+                    <div style = {{gridRow: 3, gridColumn: 3, width: '100%', textAlign: 'right'}}>
+                        <Typography variant = 'h5' style = {{paddingRight:10}}><b> TOTAL: </b>{total.toFixed(2)} €</Typography>
+                    </div>
+                </div>           
+            </div>
+
+            <Button 
+                onClick = {handleSubmit}
+                classes={{root:classes.button , disabled:classes.disabled}}disabled={valueSelected.length > 0?false:true} type="submit" variant="contained" size="large" color="primary">
+                <DoneRoundedIcon/>
+            </Button>
         </fieldset>
     )
 }

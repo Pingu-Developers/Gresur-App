@@ -70,6 +70,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return (
     <React.Fragment>
          <Button 
+            style = {this.props.style ? this.props.style : null}
             variant="contained" 
             color={this.props.color ? this.props.color : "primary"} 
             onClick={this.handleClickOpen}  
