@@ -14,7 +14,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.Data;
@@ -26,32 +25,32 @@ import lombok.EqualsAndHashCode;
 @Table(name = "seguros")
 public class Seguro extends BaseEntity implements Comparable<Seguro>{
 	
-	@NotBlank
+	@NotBlank(message = "No puede ser vacio")
 	@Column(name = "compania")
 	private String compania;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "tipo_seguro")
 	private TipoSeguro tipoSeguro;
 	
-	@NotNull
-	@PastOrPresent
+	@NotNull(message = "No puede ser nulo")
+	@PastOrPresent(message = "La fecha debe ser pasada o presente")
 	@Column(name = "fecha_contrato")
 	private LocalDate fechaContrato;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "fecha_expiracion")
 	private LocalDate fechaExpiracion;
 	
 	@JsonView
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@OneToOne(optional = false)
 	@JoinColumn(name = "factura_recibida_id")
 	private FacturaRecibida recibidas;
 	
 	@JsonView
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "vehiculo_id")
 	private Vehiculo vehiculo;

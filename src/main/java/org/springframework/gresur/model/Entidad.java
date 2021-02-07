@@ -28,26 +28,26 @@ public class Entidad{
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ENTITY_ID")
 	protected Long id;
 	
-	@NotBlank
-	@Size(min = 3, max = 50)
+	@NotBlank(message = "No puede ser vacio")
+	@Size(min = 3, max = 50, message = "Debe ser de entre 3 y 50 caracteres")
 	@Column(name = "name")
 	protected String name;
 
-	@NotBlank
+	@NotBlank(message = "No puede ser vacio")
 	@Column(unique=true)
 	@Pattern(regexp = "^[0-9]{8}([A-Z]{1})?", message = "NIF no valido")
     protected String NIF;
 
-    @NotBlank
+	@NotBlank(message = "No puede ser vacio")
     @Email(message = "Email no valido")
     protected String email;
     
-    @NotBlank
+	@NotBlank(message = "No puede ser vacio")
     @Pattern(regexp = "^[0-9]{9}$", message = "Telefono no valido")
     protected String tlf;
     
-    @NotBlank
-    @Size(max=100, min=3)
+	@NotBlank(message = "No puede ser vacio")
+    @Size(max=100, min=3, message = "Debe ser de entre 3 y 100 caracteres")
     @Lob
     protected String direccion;
 }

@@ -16,18 +16,17 @@ import lombok.Data;
 @Table(name = "lineas_enviado", uniqueConstraints = @UniqueConstraint(columnNames = {"notificacion_id", "personal_id"}))
 public class LineaEnviado extends BaseEntity{
 
-
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	public Boolean leido;
 	
 	@JsonIgnore
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "notificacion_id")
 	private Notificacion notificacion;
 	
 	@JsonIgnore
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "personal_id")
 	private Personal personal;

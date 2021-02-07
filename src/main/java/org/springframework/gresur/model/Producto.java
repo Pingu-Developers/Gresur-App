@@ -12,8 +12,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -24,49 +22,49 @@ import lombok.ToString;
 @Table(name = "productos")
 public class Producto extends BaseEntity{
 	
-	@NotBlank
+	@NotBlank(message = "No puede ser vacio")
 	@Column(unique = true)
 	private String nombre;
 	
 	@Lob
 	private String descripcion;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Enumerated(value = EnumType.STRING)
 	private Unidad unidad;
 	
-	@NotNull
-	@Min(value = 0, message = "debe ser mayor o igual a cero")
+	@NotNull(message = "No puede ser nulo")
+	@Min(value = 0, message = "Debe ser mayor o igual a cero")
 	private Integer stock;
 	
-	@Min(value = 0, message = "debe ser mayor o igual a cero")
+	@Min(value = 0, message = "Debe ser mayor o igual a cero")
 	@Column(name = "stock_seguridad")
 	private Integer stockSeguridad;
 	
 	@Column(name = "URL_imagen")
 	private String URLImagen;
 	
-	@Min(value = 0, message = "debe ser mayor o igual a cero")
+	@Min(value = 0, message = "Debe ser mayor o igual a cero")
 	@Column(name = "precio_venta")
 	private Double precioVenta;
 	
-	@Min(value = 0, message = "debe ser mayor o igual a cero")
+	@Min(value = 0, message = "Debe ser mayor o igual a cero")
 	@Column(name = "precio_compra")
 	private Double precioCompra;
 	
-	@NotNull
-	@Positive
+	@NotNull(message = "No puede ser nulo")
+	@Positive(message = "Debe ser mayor que cero")
 	private Double alto;
 	
-	@NotNull
-	@Positive
+	@NotNull(message = "No puede ser nulo")
+	@Positive(message = "Debe ser mayor que cero")
 	private Double ancho;
 	
-	@NotNull
-	@Positive
+	@NotNull(message = "No puede ser nulo")
+	@Positive(message = "Debe ser mayor que cero")
 	private Double profundo;
 	
-	@Min(value = 0, message = "debe ser mayor o igual a cero")
+	@Min(value = 0, message = "Debe ser mayor o igual a cero")
 	private Double pesoUnitario;
 	
 	@ManyToOne

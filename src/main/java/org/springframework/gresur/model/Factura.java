@@ -38,15 +38,15 @@ public class Factura{
 	@Column(name = "num_factura", unique = true)
 	protected String numFactura;
 	
-	@PastOrPresent
+	@PastOrPresent(message = "La fecha debe ser pasada o presente")
 	@Column(name = "fecha_emision")
 	protected LocalDate fechaEmision;
 	
-	@NotNull
-	@Min(value=0, message = "debe ser mayor o igual a cero")  
+	@NotNull(message = "No puede ser nulo")
+	@Min(value=0, message = "Debe ser mayor o igual a cero")  
 	protected Double importe;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "esta_pagada")
 	protected Boolean estaPagada;
 	
