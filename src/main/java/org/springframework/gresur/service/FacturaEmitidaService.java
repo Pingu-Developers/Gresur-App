@@ -54,6 +54,7 @@ public class FacturaEmitidaService extends FacturaService<FacturaEmitida, Factur
 			FacturaEmitida anterior = (FacturaEmitida) emitida.getOriginal();
 			anterior.setEstaPagada(true);
 			facturaRepo.save(anterior);
+			em.flush();
 		}
 		FacturaEmitida ret = facturaRepo.save(emitida);
 		em.flush();

@@ -1417,9 +1417,9 @@ public class PedidoServiceTest {
 		facturaPedido3Rect.setImporte(3100.15);
 		
 		facturaPedido3Rect.setOriginal(pedidoEnviado.getFacturaEmitida());
+		facturaPedido3Rect = facturaEmitidaService.save(facturaPedido3Rect);
 		factOriginal.setRectificativa(facturaPedido3Rect);
 		
-		facturaPedido3Rect = facturaEmitidaService.save(facturaPedido3Rect);
 		factOriginal = facturaEmitidaService.save(factOriginal);
 		
 		List<LineaFactura> lineasFacturaPedido3 = new ArrayList<LineaFactura>();
