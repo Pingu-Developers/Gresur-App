@@ -1,7 +1,5 @@
 package org.springframework.gresur.web;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -40,46 +38,19 @@ public class ContratoController {
 		this.contratoService = contratoService;
 	}
 
-	@GetMapping()
+	@GetMapping("/{rol}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public HashMap<String, List<Contrato>> findAllPersonal() {
-
-		HashMap<String, List<Contrato>> dic = new HashMap<String, List<Contrato>>();
-		List<Contrato> contratos = contratoService.findAll();
+	public ResponseEntity<?> findPersonal(@PathVariable("rol") String rol) {
 		
-		List<Contrato> t = new ArrayList<Contrato>();
-		List<Contrato> d = new ArrayList<Contrato>();
-		List<Contrato> ea = new ArrayList<Contrato>();
-		List<Contrato> adm = new ArrayList<Contrato>();
-
-		for (int i = 0; i < contratos.size(); i++) {
-			Personal p = contratos.get(i).getPersonal();
-			Contrato c = contratos.get(i);
-			String clase = p.getClass().getName().replace("org.springframework.gresur.model.", "").toString().toLowerCase();
-			switch (clase) {
-			case "administrador":
-				adm.add(c);
-				dic.put(clase, adm);
-				break;
-			case "encargadodealmacen":
-				ea.add(c);
-				dic.put(clase, ea);
-				break;
-			case "transportista":
-				t.add(c);
-				dic.put(clase, t);
-				break;
-			default:
-				d.add(c);
-				dic.put(clase, d);
-				break;
-			}
+		if(rol.equals("TODOS")) {
+			return ResponseEntity.ok(contratoService.findLastContratoAllEmpleados());
+		} else if(rol.equals("ENCARGADO") || rol.equals("DEPENDIENTE") || rol.equals("ADMINISTRADOR") || rol.equals("TRANSPORTISTA")) {
+			return ResponseEntity.ok(contratoService.findLastContratoRol(rol));
+		} else {
+			return ResponseEntity.badRequest().body("Rol invalido");
 		}
-
-		return dic;
 	}
 	
-	//TODO OJO: REVISAR FALLOS CON EL @Valid al hacer peticion
 	@PostMapping("/add/{nif}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> addContrato(@RequestBody Contrato c, @PathVariable("nif") String nif, BindingResult result) throws DataAccessException{
@@ -152,7 +123,6 @@ public class ContratoController {
 		}
 	}
 	
-	//TODO REVISAR BORRADO VALOR QUE DEVUELVE?
 	@DeleteMapping("/delete/{nif}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> deleteContrato(@PathVariable("nif") String nif) throws DataAccessException{
