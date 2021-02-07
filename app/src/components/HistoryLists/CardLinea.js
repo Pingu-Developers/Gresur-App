@@ -32,6 +32,7 @@ const style = theme => ({
         padding:0,
         display: 'grid',
         height:"100%",
+        maxHeight:160,
         gridTemplateRows:"0.1fr 0.5fr 1fr",
         backgroundColor:"#f8f8f8"
       },
@@ -63,7 +64,7 @@ export class CardLinea extends Component {
                     ></CardMedia>             
                     <CardContent className={classes.cardContent}>
                         
-                        <Typography component="h6" variant="h6">
+                        <Typography style={{width:305, height: 100,whiteSpace: "break-spaces",overflowY:"hidden" , overflowX:"hidden"}} component="h6" variant="h6">
                             {linea.producto.nombre}
                         </Typography>
                         <Typography variant="subtitle1" color="textSecondary">

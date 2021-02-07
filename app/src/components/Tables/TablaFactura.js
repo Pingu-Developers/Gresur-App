@@ -173,7 +173,7 @@ class TablaFactura extends Component {
       </div>
 
     </React.Fragment>  }
-        <Pdf targetRef={ref} filename="FacturaAzulejosGresur.pdf" scale={0.9}>
+        <Pdf targetRef={ref} filename={`FacturaAzulejosGresur.pdf`} x={50} y={7} options={{format:"a3"}} scale={1.1}>
     
         {({ toPdf }) => <Button style={{margin:10,float:'left',position:'relative',left:'40%'}}variant="contained" color="primary" onClick={toPdf}  
         startIcon={<PictureAsPdfIcon />}>Descargar PDF  </Button>} 

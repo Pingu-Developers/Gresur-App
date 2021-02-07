@@ -47,13 +47,15 @@ export class RowLinea extends Component {
                     src={linea.producto.urlimagen}
                     alt="IMAGEN"
                 />
-                <Typography
-                    style={{fontWeight:600}}
-                    variant="h5"
-                    color="textSecondary"
-                    >
-                    {linea.producto.nombre}
-                </Typography>
+                <div style={{width:"100%"}}>
+                    <Typography
+                        style={{fontWeight:600}}
+                        variant="h5"
+                        color="textSecondary"
+                        >
+                        {linea.producto.nombre}
+                    </Typography>
+                </div>
                 <Typography variant="subtitle1" color="textSecondary">
                     {unitario.toFixed(2)}€/{linea.producto.unidad.toLowerCase()}
                 </Typography>

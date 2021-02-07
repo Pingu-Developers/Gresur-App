@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import Facturas from './administradorFacturacion/administradorHacerFacturas'
 import Balance from './administradorFacturacion/administradorBalance'
-import Rectificar from './administradorFacturacion/administradorRectificar2'
+import Rectificar from './administradorFacturacion/administradorRectificar'
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';

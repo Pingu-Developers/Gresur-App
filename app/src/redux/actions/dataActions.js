@@ -865,6 +865,11 @@ export const clearFacturaEmitida = () => (dispatch) => {
 export const rectificaFactura = (factura) => (dispatch) => {
     
     axios.post(`/facturaEmitida/rectificar`, factura)
+    .then(()=>{
+        dispatch({
+            type: SET_ENVIADO,
+        });
+    })
     .catch((err) => {
         if(err.response){
             dispatch({
