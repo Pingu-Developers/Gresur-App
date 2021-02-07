@@ -30,6 +30,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,35 +60,47 @@ public class AuthController {
 	JwtUtils jwtUtils;
 	
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticatedUser(@Valid @RequestBody LoginRequest loginRequest){
-		Authentication authentication = authManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
+	public ResponseEntity<?> authenticatedUser(@Valid @RequestBody LoginRequest loginRequest, BindingResult result){
 		
-		SecurityContextHolder.getContext().setAuthentication(authentication);
-		String jwt = jwtUtils.generateJwtToken(authentication);
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
 		
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-		
-		List<String> roles = userDetails.getAuthorities().stream()
-				.map(item -> item.getAuthority())
-				.collect(Collectors.toList());
-		
-		return ResponseEntity.ok(new JwtResponse(jwt,
-												userDetails.getId(),
-												userDetails.getUsername(),
-												roles));
-				
+		else {
+			
+			Authentication authentication = authManager.authenticate(
+					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
+			
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			String jwt = jwtUtils.generateJwtToken(authentication);
+			
+			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			
+			List<String> roles = userDetails.getAuthorities().stream()
+					.map(item -> item.getAuthority())
+					.collect(Collectors.toList());
+			
+			return ResponseEntity.ok(new JwtResponse(jwt,
+													userDetails.getId(),
+													userDetails.getUsername(),
+													roles));
+		}	
 	}
 	
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, BindingResult result) {
+		
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
+		
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()
 					.body(new MessageResponse("Error: Username is already taken!"));
 		}
-
-		
 
 		// Create new user's account
 		User user = new User(signUpRequest.getUsername(), 
@@ -129,9 +143,13 @@ public class AuthController {
 		}
 
 		user.setRoles(roles);
-		userRepository.save(user);
-
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		
+		try {
+			userRepository.save(user);
+			return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 	@GetMapping("/user")
@@ -156,6 +174,7 @@ public class AuthController {
 		
 		return ResponseEntity.ok(res);
 	}
+	
 	@PutMapping("/password")
 	@PreAuthorize("permitAll()")
 	public ResponseEntity<?> newPassword(@RequestBody Tuple2<String, String> pwds) {
@@ -164,11 +183,18 @@ public class AuthController {
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
 		if(user!=null&&encoder.matches(pwds.getE1(), userDetails.getPassword())) {
 			empleado.setPassword(encoder.encode(pwds.getE2()));
-			userRepository.save(empleado);
-			return ResponseEntity.ok("Contraseña cambiada");
+			
+			try {
+				userRepository.save(empleado);
+				return ResponseEntity.ok("Contraseña cambiada");
+			}catch(Exception e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
 		}
-		return ResponseEntity.badRequest().body("Contraseña invalida");
+		
+		else {
+			MessageResponse me = new MessageResponse("Wrong Password");
+			return ResponseEntity.ok(me);
+		}
 	}
-	
-
 }
