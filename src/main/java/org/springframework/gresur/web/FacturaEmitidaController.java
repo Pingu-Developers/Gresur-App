@@ -58,7 +58,7 @@ public class FacturaEmitidaController {
 	}
 	
 	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('DEPENDIENTE')")
 	public ResponseEntity<?> getFacturasCliente(@PathVariable("id") Long id){
 		
 		List<FacturaEmitida> values = facturaEmitidaService.findFacturasByCliente(id);
@@ -74,7 +74,7 @@ public class FacturaEmitidaController {
 	}
 	
 	@PostMapping("/clienteFecha")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('DEPENDIENTE')")
 	public ResponseEntity<?> getFacturasClienteAndFecha(@RequestBody Tuple2<Long, LocalDate> data){
 		
 		List<FacturaEmitida> values = facturaEmitidaService.findFacturasByClienteAndFecha(data.getE1(), data.getE2());
@@ -92,7 +92,7 @@ public class FacturaEmitidaController {
 	@Transactional
 	@ExceptionHandler({ Exception.class })
 	@PostMapping("/devolucion")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('DEPENDIENTE')")
 	public ResponseEntity<?> createDevolucion(@Valid @RequestBody Tuple3<FacturaEmitida,String,List<Tuple2<Long,Integer>>> data, BindingResult result){
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
@@ -174,7 +174,7 @@ public class FacturaEmitidaController {
 	
 	@Transactional
 	@GetMapping("/cargar/{numFactura}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('DEPENDIENTE')")
 	public ResponseEntity<?> getFacturaByNumFactura(@PathVariable String numFactura) {
 		FacturaEmitida factura = facturaEmitidaService.findByNumFactura(numFactura);
 		if(factura != null) {
