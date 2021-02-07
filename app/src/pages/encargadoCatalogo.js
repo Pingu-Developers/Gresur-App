@@ -70,7 +70,12 @@ const style = theme => ({
     tabs: {
         borderRight: `1px solid ${theme.palette.divider}`,
         minWidth:180
-    }, 
+    },
+    tabBtn: {
+        '&:hover':{
+            backgroundColor: 'rgba(0, 188, 212, 0.2)',
+        },
+    },
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
         backgroundColor:"rgba(255,255,255,0.2)"
@@ -79,7 +84,8 @@ const style = theme => ({
         width: '100%',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        borderBottom: '1px solid #bdbdbd',
     },
     formBoton: {
         display: 'flex',
@@ -90,10 +96,12 @@ const style = theme => ({
         marginRight: 2
     },
     tituloCatalogo: {
-        margin: '30px 20px',
+        margin: '20px 0px 15px 20px',
         fontSize: 40,
         fontWeight: 600,
-        float: 'left'
+        float: 'left',
+        color: '#7a7a7a',
+
       },
       
     table:{
@@ -232,7 +240,7 @@ class EncargadoCatalogo extends Component {
                 className={classes.tabs}
             >
                 {categorias?categorias.map(categoria=>
-                    <Tab label={categoria === "BANOS"?"BAÑOS":categoria} {...a11yProps(categorias.indexOf(categoria))} />
+                    <Tab className = {classes.tabBtn} label={categoria === "BANOS"?"BAÑOS":categoria} {...a11yProps(categorias.indexOf(categoria))} />
                 ):null}
             </Tabs>
             <TabPanel className={classes.table} value={this.state.value} index={this.state.value}>
