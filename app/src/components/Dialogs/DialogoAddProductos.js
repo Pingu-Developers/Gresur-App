@@ -8,9 +8,15 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
 import AddMaterial from '../Forms/AddMaterial';
-
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import {
+  getProductosPaginados,
+  clearProductosPaginados,
+} from "../../redux/actions/productoActions";
 
 const styles = (theme) => ({
   root: {
@@ -56,26 +62,48 @@ export default function DialogoAddProductos(props) {
   const [open, setOpen] = React.useState(false);
 
   const {handleAdd} = props;
+  const dispatch = useDispatch();
+  const counter = useSelector(state => state);
 
   const handleClickOpen = () => {
+    dispatch(getProductosPaginados(
+      0,
+      null,
+      null,
+      10
+    ))
     setOpen(true);
   };
   const handleClose = () => {
+    dispatch(clearProductosPaginados());
     setOpen(false);
   };
 
+  const handleAnadir = (prod) =>{
+
+    const linea = {
+      id:null,
+      cantidad:1,
+      precio:prod.precioVenta,
+      producto:prod
+    }
+
+    handleAdd(linea);
+    handleClose();
+  }
+
   return (
     <div>
-      <Button onClick={handleClickOpen}>
-      <AddCircleIcon color="primary" />
-      </Button>
+      <Fab color="secondary" onClick={handleClickOpen} aria-label="add">
+          <AddIcon />
+      </Fab>
       
       <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={open}>
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           Añadir producto
         </DialogTitle>
         <DialogContent dividers>
-          <AddMaterial handleAdd={handleAdd}/>
+          <AddMaterial handleAdd={handleAnadir}/>
         </DialogContent>
         
         <DialogActions>

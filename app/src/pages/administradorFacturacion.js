@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import Facturas from './administradorFacturacion/administradorHacerFacturas'
 import Balance from './administradorFacturacion/administradorBalance'
-import Rectificar from './administradorFacturacion/administradorRectificar'
+import Rectificar from './administradorFacturacion/administradorRectificar2'
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -25,6 +25,7 @@ const style =theme=> ({
     },
     tabspanel: {
         width:"100%",
+        height:"max-content"
     },
 });
 
