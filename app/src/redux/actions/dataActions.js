@@ -1,6 +1,7 @@
-import { SET_ALMACENGESTIONENCARGADO, CLEAR_ALMACENGESTIONENCARGADO, SET_BALANCE,SET_ENVIADO, CLEAR_BALANCE, SET_PEDIDO, CLEAR_PEDIDO, CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURAS, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS,SET_USER  } from '../types';
+import { SET_ALMACENGESTIONENCARGADO, CLEAR_ALMACENGESTIONENCARGADO, SET_BALANCE,SET_ENVIADO, CLEAR_BALANCE, SET_PEDIDO, CLEAR_PEDIDO, CLEAR_ALMACENGESTION, SET_ALMACENGESTION, CLEAR_CLIENTE, SET_CLIENTE, CLEAR ,CLEAR_ISDEFAULTER, SET_PEDIDOS, SET_ERRORS, CLEAR_PEDIDOS, LOADING_UI, CLEAR_ERRORS, SET_PRODUCTOS, CLEAR_PRODUCTOS,SET_PERSONAL,CLEAR_PERSONAL, SET_VEHICULOS, CLEAR_VEHICULOS, SET_OCUPACION, CLEAR_OCUPACION, SET_ISDEFAULTER, SET_VEHICULOSITVSEGUROREPARACION, CLEAR_VEHICULOSITVSEGUROREPARACION,SET_CONTRATO,SET_ALMACEN,CLEAR_CONTRATO,SET_FACTURA, SET_TIPOSVEHICULOS, CLEAR_TIPOSVEHICULOS,SET_USER  } from '../types';
 import axios from 'axios';
 import {getUserData} from './userActions';
+import {getProductosPaginados} from './productoActions'
 export const loadPedidos = (orden="DEFAULT") => (dispatch) => {
 
     dispatch({type: LOADING_UI})
@@ -450,7 +451,7 @@ export const loadFactura = (id) => (dispatch) => {
 
     axios.get(`/pedido/factura/${id}`)
         .then((res) => {
-            dispatch({type: SET_FACTURAS, payload: res})
+            dispatch({type: SET_FACTURA, payload: res})
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
@@ -490,11 +491,11 @@ export const clearVehiculos = () => (dispatch) => {
     dispatch({type: CLEAR_VEHICULOS})
 }
 
-export const setProducto = (producto) => (dispatch) => {
+export const setProducto = (producto,page,categoria) => (dispatch) => {
 
     axios.post('/producto/save', producto)
         .then((res) => {
-            dispatch(loadProductos());
+            dispatch(getProductosPaginados(page,categoria,null,5,''))
             dispatch({
                 type: SET_ENVIADO,
             });
@@ -846,7 +847,7 @@ export const loadFacturaEmitida = (numFactura) => (dispatch) => {
 
     axios.get(`/facturaEmitida/cargar/${numFactura}`)
         .then((res) => {
-            dispatch({type: SET_FACTURAS, payload: res})
+            dispatch({type: SET_FACTURA, payload: res})
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
@@ -864,6 +865,11 @@ export const clearFacturaEmitida = () => (dispatch) => {
 export const rectificaFactura = (factura) => (dispatch) => {
     
     axios.post(`/facturaEmitida/rectificar`, factura)
+    .then(()=>{
+        dispatch({
+            type: SET_ENVIADO,
+        });
+    })
     .catch((err) => {
         if(err.response){
             dispatch({

@@ -123,13 +123,17 @@ public class ProductoController {
 			Producto p = productoService.findById(newProducto.getId());
 			p.setNombre(newProducto.getNombre());
 			p.setDescripcion(newProducto.getDescripcion());
+			p.setUnidad(newProducto.getUnidad());
 			p.setStock(newProducto.getStock());
 			p.setStockSeguridad(newProducto.getStockSeguridad());
 			p.setAncho(newProducto.getAncho());
 			p.setAlto(newProducto.getAlto());
 			p.setProfundo(newProducto.getProfundo());
 			p.setPrecioVenta(newProducto.getPrecioVenta());
-			p.setPrecioCompra(newProducto.getPrecioCompra());			
+			p.setPrecioCompra(newProducto.getPrecioCompra());
+			p.setPesoUnitario(newProducto.getPesoUnitario());
+			p.setURLImagen(newProducto.getURLImagen());
+			p = productoService.save(p);
 			return ResponseEntity.ok(p);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());

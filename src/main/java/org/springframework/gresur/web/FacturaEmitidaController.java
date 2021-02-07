@@ -108,58 +108,56 @@ public class FacturaEmitidaController {
 		
 		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
 		
-		FacturaEmitida original = facturaEmitidaService.findById(data.getE1().getId());
-		FacturaEmitida devolucion = new FacturaEmitida();
 		
-		
-		List<LineaFactura> lineasDevolucion = new ArrayList<>();
-		
-		Double importe = 0.;
-		
-				
-		devolucion.setDependiente((Dependiente) per);
-		devolucion.setCliente(original.getCliente());
-		devolucion.setDescripcion(data.getE2());
-		devolucion.setEstaPagada(true);
-		devolucion.setImporte(importe);		
-		devolucion.setOriginal(original);
 		
 		try {
+			FacturaEmitida original = facturaEmitidaService.findById(data.getE1().getId());
+			FacturaEmitida devolucion = new FacturaEmitida();
+			
+			
+			List<LineaFactura> lineasDevolucion = new ArrayList<>();
+			
+			Double importe = 0.;
+							
+			devolucion.setDependiente((Dependiente) per);
+			devolucion.setCliente(original.getCliente());
+			devolucion.setDescripcion(data.getE2());
+			devolucion.setEstaPagada(true);
+			devolucion.setImporte(importe);		
+			devolucion.setOriginal(original);
+			
 			devolucion = facturaEmitidaService.save(devolucion);
-		}catch(Exception e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
-		
-		
-		for (LineaFactura linea : original.getLineasFacturas()) {
 			
-			Integer diff = linea.getCantidad() ;
 			
-			for (Tuple2<Long,Integer> pareja : data.getE3()) {	
+			for (LineaFactura linea : original.getLineasFacturas()) {
 				
-				Producto prod = productoService.findById(pareja.getE1());
-				Producto prod2 = productoService.findById(linea.getProducto().getId());
-				if(prod2==prod) {
-					diff = linea.getCantidad()-pareja.getE2();
-					if(diff<0) {
-						throw new IllegalArgumentException("Cantidad superada");
+				Integer diff = linea.getCantidad() ;
+				
+				for (Tuple2<Long,Integer> pareja : data.getE3()) {	
+					
+					Producto prod = productoService.findById(pareja.getE1());
+					Producto prod2 = productoService.findById(linea.getProducto().getId());
+					if(prod2==prod) {
+						diff = linea.getCantidad()-pareja.getE2();
+						if(diff<0) {
+							throw new IllegalArgumentException("Cantidad superada");
+						}
+						prod.setStock(prod.getStock()+pareja.getE2());
+						productoService.save(prod);
 					}
-					prod.setStock(prod.getStock()+pareja.getE2());
-					productoService.save(prod);
-				}
-			}			
+				}			
 
-			LineaFactura lf = new LineaFactura();
-			lf.setProducto(linea.getProducto());
-			lf.setCantidad(diff);
-			lf.setPrecio(linea.getPrecio()/linea.getCantidad()*lf.getCantidad());
-			importe += lf.getPrecio();
-			lf.setFactura(devolucion);
+				LineaFactura lf = new LineaFactura();
+				lf.setProducto(linea.getProducto());
+				lf.setCantidad(diff);
+				Double precioNew = linea.getCantidad()!=0?linea.getPrecio()/linea.getCantidad()*lf.getCantidad():0;
+				lf.setPrecio(precioNew);
+				importe += lf.getPrecio();
+				lf.setFactura(devolucion);
+				
+				lineasDevolucion.add(lf);
+			}
 			
-			lineasDevolucion.add(lf);
-		}
-		
-		try {
 			lineasDevolucion = lineaFacturaService.saveAll(lineasDevolucion);
 			
 			devolucion.setLineasFacturas(lineasDevolucion);
@@ -169,7 +167,7 @@ public class FacturaEmitidaController {
 			return ResponseEntity.ok(devolucion);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
-		}		
+		}	
 	}
 	
 	@Transactional
@@ -178,7 +176,11 @@ public class FacturaEmitidaController {
 	public ResponseEntity<?> getFacturaByNumFactura(@PathVariable String numFactura) {
 		FacturaEmitida factura = facturaEmitidaService.findByNumFactura(numFactura);
 		if(factura != null) {
-			return ResponseEntity.ok(factura);
+			if(factura.esDefinitiva()) {
+				return ResponseEntity.ok(factura);
+			}else {
+				return ResponseEntity.badRequest().body("Esta factura esta rectificada compruebe: "+ factura.getDefinitiva().getNumFactura());
+			}
 		} else {
 			return ResponseEntity.badRequest().body("No se ha encontrado la factura");
 		}
@@ -187,37 +189,55 @@ public class FacturaEmitidaController {
 	@Transactional
 	@PostMapping("/rectificar")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> rectificarFactura(@RequestBody FacturaEmitida fra){
-
-		Double importe = 0.0;
-		FacturaEmitida f = new FacturaEmitida();
-		f.setCliente(fra.getCliente());
-		f.setDependiente(fra.getDependiente());	
-		f.setDescripcion(fra.getDescripcion());
-		f.setEstaPagada(fra.getEstaPagada());
-		f.setFechaEmision(LocalDate.now());
-		f.setImporte(importe);
-		f.setOriginal(fra);
-		
+	public ResponseEntity<?> rectificarFactura(@Valid @RequestBody FacturaEmitida fra, BindingResult result){
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
+		if(!fra.getOriginal().esDefinitiva()) {
+			return ResponseEntity.badRequest().body("Intento modifiar una factura no final");
+		}
 		try {
+			FacturaEmitida f = new FacturaEmitida();
+			f.setCliente(fra.getCliente());
+			f.setDependiente(fra.getDependiente());	
+			f.setDescripcion(fra.getDescripcion());
+			f.setEstaPagada(fra.getEstaPagada());
+			f.setImporte(0.0);
+			FacturaEmitida ori = facturaEmitidaService.findByNumFactura(fra.getOriginal().getNumFactura());
+			f.setOriginal(ori);
 			FacturaEmitida f2 = facturaEmitidaService.save(f);
 			
-			List<LineaFactura> ls = new ArrayList<LineaFactura>();
-			fra.getLineasFacturas().forEach(x -> parseo(x, ls, f2));
+			List<LineaFactura> ls = fra.getLineasFacturas();
+			ls.forEach(x -> x.setFactura(f2));
+			for (LineaFactura lineaOriginal : f.getOriginal().getLineasFacturas()) {
+				
+				Integer diff = lineaOriginal.getCantidad() ;
+				Producto prod = productoService.findById(lineaOriginal.getProducto().getId());
+				
+				for (LineaFactura newlinea : ls) {	
+					
+					Producto prod2 = productoService.findById(newlinea.getProducto().getId());	
+					if(prod2==prod) {
+						diff = lineaOriginal.getCantidad()-newlinea.getCantidad();				
+					}
+				}
+				
+				prod.setStock(prod.getStock()+diff);
+				productoService.save(prod);	
+			}
+			
 			List<LineaFactura> lsFinal = lineaFacturaService.saveAll(ls);
 			
 			f2.setLineasFacturas(lsFinal);
-			f2.setImporte(ls.stream().mapToDouble(x -> x.getPrecio()).sum());
-			
-			return ResponseEntity.ok(f2);
-		}catch(Exception e) {
+			f2.setImporte(fra.getImporte());
+			FacturaEmitida f3 = facturaEmitidaService.save(f2);
+			return ResponseEntity.ok(f3);
+		}catch (Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
+
+
 	}
-	private void parseo(LineaFactura linea, List<LineaFactura> ls, FacturaEmitida fra) {
-		linea.setId(null);
-		linea.setFactura(fra);
-		ls.add(linea);
-	}
-	
+
 }

@@ -19,6 +19,7 @@ class balance extends Component {
         super(props);
         this.state = {
             year: new Date().getFullYear(),
+            arr:[0,1,2,3,4],
             data: []
         }
     }
@@ -40,7 +41,7 @@ class balance extends Component {
     render() {
         
         const { classes, data } = this.props;
-
+        const año = new Date().getFullYear()
         return (
             <div>
                 <div style = {{display: 'inline-flex', paddingBottom: 10, alignItems: 'center'}}>
@@ -53,13 +54,7 @@ class balance extends Component {
                             value={this.state.year ? this.state.year : new Date().getFullYear()}
                             onChange={this.handleChangeSelected}
                         >
-                            <MenuItem value={2017}>2017</MenuItem>
-                            <MenuItem value={2018}>2018</MenuItem>
-                            <MenuItem value={2019}>2019</MenuItem>
-                            <MenuItem value={2020}>2020</MenuItem>
-                            <MenuItem value={2021}>2021</MenuItem>
-
-
+                            {this.state.arr.map(i => <MenuItem value={año-this.state.arr.length+1+i}>{año-this.state.arr.length+1+i}</MenuItem>)}
                         </Select>
                     </FormControl>
                 </div>

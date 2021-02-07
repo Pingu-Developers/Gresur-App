@@ -25,6 +25,7 @@ const style =theme=> ({
     },
     tabspanel: {
         width:"100%",
+        height:"max-content"
     },
 });
 
