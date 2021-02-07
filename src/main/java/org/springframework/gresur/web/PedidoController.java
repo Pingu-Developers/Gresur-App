@@ -49,6 +49,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -102,12 +104,10 @@ public class PedidoController {
 	@GetMapping("/page={pageNo}&size={pageSize}&order={orden}")
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('TRANSPORTISTA') or hasRole('ADMIN')")
 	public Page<Pedido> findAll(@PathVariable("pageNo") Integer pageNo , @PathVariable("pageSize") Integer pageSize ,@PathVariable("orden") String orden) {
-		
 		Pageable paging = null;
 		
 		if(!orden.equals("")) paging = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.valueOf(orden), "fechaRealizacion"));
 		else paging = PageRequest.of(pageNo, pageSize);
-		
 		
 		return pedidoService.findAll(paging);
 	}
@@ -135,74 +135,76 @@ public class PedidoController {
 	@PostMapping("/add")
 	@PreAuthorize("hasRole('DEPENDIENTE')")
 	@Transactional
-	public Pedido add(@RequestBody Tuple4<String, String, LocalDate, Tuple4<Double, Boolean, String, List<Tuple2<Long, Integer>>>> pedido) {
+	public ResponseEntity<?> add(@RequestBody Tuple4<String, String, LocalDate, Tuple4<Double, Boolean, String, List<Tuple2<Long, Integer>>>> pedido) {
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
 		
 		Dependiente dependiente = (Dependiente) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
 		
-		
-		String direccionEnvio = pedido.getE1();
-		EstadoPedido estado = EstadoPedido.valueOf(pedido.getE2());
-		LocalDate fechaEnvio = pedido.getE3();
-		
-		if(!fechaEnvio.isAfter(LocalDate.now())) {
-			throw new IllegalArgumentException("La fecha de envío debe ser futura");
-		}
-		
-		Double importeFactura = pedido.getE4().getE1();
-		Boolean estaPagada = pedido.getE4().getE2();
-		Cliente cliente = clienteService.findByNIF(pedido.getE4().getE3());
-		
-		
-		FacturaEmitida factura = new FacturaEmitida();
-		factura.setCliente(cliente);
-		factura.setDependiente(dependiente);
-		factura.setEstaPagada(true);
-		factura.setImporte(importeFactura);
-		factura = facturaEmitidaService.save(factura);
-		
-		List<LineaFactura> lf = new ArrayList<LineaFactura>();
-		for(Tuple2<Long, Integer> pair : pedido.getE4().getE4()) {
-			LineaFactura linea = new LineaFactura();
-			linea.setCantidad(pair.getE2());
-			linea.setFactura(factura);
-			linea.setProducto(productoService.findById(pair.getE1()));
-			linea.setPrecio(pair.getE2()*productoService.findById(pair.getE1()).getPrecioVenta());
-			linea = lineaFacturaService.save(linea);
-			lf.add(linea);
-		}
-		factura.setLineasFacturas(lf);
-		factura.setEstaPagada(estaPagada);
-		factura = facturaEmitidaService.save(factura);
-		
-		
-		Pedido pedidoRes = new Pedido();
-		pedidoRes.setDireccionEnvio(direccionEnvio);
-		pedidoRes.setEstado(estado);
-		pedidoRes.setFacturaEmitida(factura);
-		pedidoRes.setFechaEnvio(fechaEnvio);
-		pedidoRes.setFechaRealizacion(LocalDate.now());
-		pedidoRes = pedidoService.save(pedidoRes);
-		
-		// Receptores de la notificacion
-		List<Personal> lPer = new ArrayList<>();
-		for (Personal per : adminService.findAllPersonal()) {
-			if(per.getClass() == Administrador.class)
-				lPer.add(per);
-		}
-		
-		for(LineaFactura linea : lf) {
-			if(linea.getCantidad() > linea.getProducto().getStock()) {
-				Notificacion aviso = new Notificacion();
-				aviso.setCuerpo("Se necesita reposición del producto: " + linea.getProducto().getNombre() + " para poder completar el pedido con id " + pedidoRes.getId());
-				aviso.setTipoNotificacion(TipoNotificacion.SISTEMA);
-				aviso.setFechaHora(LocalDateTime.now());
-				aviso = notificacionService.save(aviso, lPer);
+		try {
+			String direccionEnvio = pedido.getE1();
+			EstadoPedido estado = EstadoPedido.valueOf(pedido.getE2());
+			LocalDate fechaEnvio = pedido.getE3();
+			
+			if(!fechaEnvio.isAfter(LocalDate.now())) {
+				return ResponseEntity.badRequest().body("La fecha de envío debe ser futura");
 			}
-		}
-		
-		return pedidoRes;
+			
+			else {
+				Double importeFactura = pedido.getE4().getE1();
+				Boolean estaPagada = pedido.getE4().getE2();
+				Cliente cliente = clienteService.findByNIF(pedido.getE4().getE3());
+				
+				FacturaEmitida factura = new FacturaEmitida();
+				factura.setCliente(cliente);
+				factura.setDependiente(dependiente);
+				factura.setEstaPagada(true);
+				factura.setImporte(importeFactura);
+				factura = facturaEmitidaService.save(factura);
+				
+				List<LineaFactura> lf = new ArrayList<LineaFactura>();
+				for(Tuple2<Long, Integer> pair : pedido.getE4().getE4()) {
+					LineaFactura linea = new LineaFactura();
+					linea.setCantidad(pair.getE2());
+					linea.setFactura(factura);
+					linea.setProducto(productoService.findById(pair.getE1()));
+					linea.setPrecio(pair.getE2()*productoService.findById(pair.getE1()).getPrecioVenta());
+					linea = lineaFacturaService.save(linea);
+					lf.add(linea);
+				}
+				factura.setLineasFacturas(lf);
+				factura.setEstaPagada(estaPagada);
+				factura = facturaEmitidaService.save(factura);
+				
+				Pedido pedidoRes = new Pedido();
+				pedidoRes.setDireccionEnvio(direccionEnvio);
+				pedidoRes.setEstado(estado);
+				pedidoRes.setFacturaEmitida(factura);
+				pedidoRes.setFechaEnvio(fechaEnvio);
+				pedidoRes.setFechaRealizacion(LocalDate.now());
+				pedidoRes = pedidoService.save(pedidoRes);
+				
+				// Receptores de la notificacion
+				List<Personal> lPer = new ArrayList<>();
+				for (Personal per : adminService.findAllPersonal()) {
+					if(per.getClass() == Administrador.class)
+						lPer.add(per);
+				}
+				
+				for(LineaFactura linea : lf) {
+					if(linea.getCantidad() > linea.getProducto().getStock()) {
+						Notificacion aviso = new Notificacion();
+						aviso.setCuerpo("Se necesita reposición del producto: " + linea.getProducto().getNombre() + " para poder completar el pedido con id " + pedidoRes.getId());
+						aviso.setTipoNotificacion(TipoNotificacion.SISTEMA);
+						aviso.setFechaHora(LocalDateTime.now());
+						aviso = notificacionService.save(aviso, lPer);
+					}
+				}
+				return ResponseEntity.ok(pedidoRes);
+			}
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}		
 	}
 	
 	@PostMapping("/{id}")
@@ -325,24 +327,24 @@ public class PedidoController {
 			t5.setE3(p.getEstado());
 			t5.setE4(cliente);
 			t5.setE5(vehiculoT);
-			ls.add(t5);
-						
+			ls.add(t5);				
 		}
-			
-			
-		
 		return ls;
 	}
+	
 	@GetMapping("/factura/{id}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('TRANSPORTISTA') or hasRole('DEPENDIENTE')")
-	public Pedido findFacturaPedido(@PathVariable("id") Long id) {		
-		
+	public Pedido findFacturaPedido(@PathVariable("id") Long id) {
 		return pedidoService.findByID(id);
 	}
 	
 	@PutMapping("/reparto/{id}")
 	@PreAuthorize("hasRole('TRANSPORTISTA')")
-	public ResponseEntity<?> setEnReparto(@PathVariable("id") Long id,@RequestBody Vehiculo veh) {
+	public ResponseEntity<?> setEnReparto(@PathVariable("id") Long id,@RequestBody @Valid Vehiculo veh, BindingResult result) {
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
 		
 		Pedido p = pedidoService.findByID(id);
 		
@@ -365,7 +367,6 @@ public class PedidoController {
 		}else {
 			return ResponseEntity.badRequest().body("Error: Pedido not found");
 		}
-		
 	}
 	
 	@PutMapping("/entregado/{id}")
@@ -399,7 +400,6 @@ public class PedidoController {
 		
 		List<Tuple5<Long, String, EstadoPedido, String, String>> ls = new ArrayList<Tuple5<Long,String,EstadoPedido,String,String>>();
 
-		
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
 		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
@@ -412,7 +412,6 @@ public class PedidoController {
 				.stream()
 				.filter(x->x.getTransportista().getNIF().equals(per.getNIF()))
 				.collect(Collectors.toList());
-		
 		
 		String s = "";
 		
@@ -429,10 +428,7 @@ public class PedidoController {
 			t5.setE4(cliente);
 			t5.setE5(vehiculoT);
 			ls.add(t5);
-						
 		}
-			
-		
 		return ls;
 	}
 	
@@ -443,15 +439,20 @@ public class PedidoController {
 		Pedido p = pedidoService.findByID(id);
 		
 		if(p!=null) {
-			FacturaEmitida f = p.getFacturaEmitida();
-			f.setEstaPagada(f.getEstaPagada()? false : true);
-			f = facturaEmitidaService.save(f);
-			
-			p.setFacturaEmitida(f);
-			pedidoService.save(p);
-			
-			return ResponseEntity.ok(p);
+			try {
+				FacturaEmitida f = p.getFacturaEmitida();
+				f.setEstaPagada(f.getEstaPagada()? false : true);
+				f = facturaEmitidaService.save(f);
+				
+				p.setFacturaEmitida(f);
+				pedidoService.save(p);
+				
+				return ResponseEntity.ok(p);
+			}catch(Exception e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
 		}
+		
 		else {
 			return ResponseEntity.badRequest().body("Error al intentar cambiar el estado del pago del pedido");
 		}
@@ -459,16 +460,20 @@ public class PedidoController {
 	
 	@PutMapping("/update")
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
-	public ResponseEntity<?> updatePedido(@Valid @RequestBody Pedido pedido) {
-	
-		clienteService.save(pedido.getFacturaEmitida().getCliente());
+	public ResponseEntity<?> updatePedido(@Valid @RequestBody Pedido pedido, BindingResult result) {
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
 		
-		Pedido p = pedidoService.save(pedido);
-		
-		System.out.println("FECHAENVIADO" + pedido.getFechaEnvio());
-
-		
-		return ResponseEntity.ok(p);
+		try {
+			clienteService.save(pedido.getFacturaEmitida().getCliente());
+			Pedido p = pedidoService.save(pedido);
+				
+			return ResponseEntity.ok(p);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 }

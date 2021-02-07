@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 //MATERIAL UI STUFF
-import { withStyles, makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -20,7 +20,7 @@ import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 import Pdf from "react-to-pdf";
 
 //REDUX STUFF
-import { loadFactura, loadPedidoById} from '../../redux/actions/dataActions';
+import { loadPedidoById} from '../../redux/actions/dataActions';
 import { connect } from 'react-redux';
 
 const StyledTableCell = withStyles((theme) => ({
@@ -55,22 +55,19 @@ class TablaFactura extends Component {
     }
 
     componentDidMount(){
-      this.props.loadFactura(this.props.datos);
       this.props.loadPedidoById(this.props.datos);
-  }
-
+    }
+    
     render(){
-      const classes = this.props;
+      const pedido = this.props.data.pedido;
+      const factura = pedido ? pedido.facturaEmitida : undefined;
       return (
         <React.Fragment>
        
           <div style={{padding : '20px 50px 20px 50px', marginTop: 50}}>
-      {this.props.data.facturas.facturaEmitida===undefined?null:
-
-    <React.Fragment >
-      
-    <div  ref={ref}>
-
+            {!pedido || !factura ? null:
+              <React.Fragment >
+                <div  ref={ref}>
       {/******************* ENCABEZADO *********************/}
       <div style = {{display : 'inline-flex', justifyContent:'space-between', alignItems: 'center', width:'100%', borderBottom: '1px solid #bdbdbd'}}>
         <img style={{ marginLeft:10}} src = {GresurImg} width='100'></img>
@@ -82,7 +79,7 @@ class TablaFactura extends Component {
                 Nº Factura: 
               </Typography> 
               <Typography display='inline'>
-                {this.props.data.facturas.facturaEmitida.numFactura} 
+                {factura.numFactura} 
               </Typography>
             </span>
             <br/>
@@ -91,7 +88,7 @@ class TablaFactura extends Component {
                 Fecha emisión: 
               </Typography> 
               <Typography display='inline'>
-                {this.props.data.facturas.fechaEmisión} 
+                {factura.fechaEmision} 
               </Typography>
             </span>
         </div>
@@ -111,15 +108,15 @@ class TablaFactura extends Component {
           <Divider />
 
           <div style = {{paddingTop: 10}}>
-              <Typography style = {{padding: '5px 0 5px 0'}}> <b>D / Dª : </b> {this.props.data.facturas.facturaEmitida.cliente.name} </Typography>
-              <Typography style = {{padding: '5px 0 5px 0'}}> <b>Telf : </b> {this.props.data.facturas.facturaEmitida.cliente.tlf} </Typography>
-              <Typography style = {{padding: '5px 0 5px 0'}}> <b>Domicilio : </b> {this.props.data.facturas.facturaEmitida.cliente.direccion} </Typography>
+              <Typography style = {{padding: '5px 0 5px 0'}}> <b>D / Dª : </b> {factura.cliente.name} </Typography>
+              <Typography style = {{padding: '5px 0 5px 0'}}> <b>Telf : </b> {factura.cliente.tlf} </Typography>
+              <Typography style = {{padding: '5px 0 5px 0'}}> <b>Domicilio : </b> {factura.cliente.direccion} </Typography>
           </div>
 
           <Divider />
 
           <div style = {{paddingTop: 20}}>
-            <Typography style = {{padding: '5px 0 5px 0'}}> <b>Fecha : </b> {this.props.data.pedido ? this.props.data.pedido.fechaRealizacion : ''} </Typography>
+            <Typography style = {{padding: '5px 0 5px 0'}}> <b>Fecha : </b> {pedido ? pedido.fechaRealizacion : ''} </Typography>
           </div>
 
       </div>   
@@ -138,7 +135,7 @@ class TablaFactura extends Component {
 
           <TableBody>
             {
-              this.props.data.facturas.facturaEmitida.lineasFacturas.map((linea)=>
+              factura.lineasFacturas.map((linea)=>
                 <StyledTableRow>
                   <StyledTableCell align="center">{linea.cantidad}</StyledTableCell>
                   <StyledTableCell align="center">{linea.producto.nombre}</StyledTableCell>
@@ -155,8 +152,8 @@ class TablaFactura extends Component {
                   <Typography style = {{float: 'inline-end'}}><b>IVA:   </b></Typography>
                 </StyledTableCell>
                 <StyledTableCell style = {{width: 'min-content'}}>
-                    <Typography style = {{float: 'inline-end'}}>  {(this.props.data.facturas.facturaEmitida.importe*(100/121)).toFixed(2)}€</Typography>
-                    <Typography style = {{float: 'inline-end'}}>  {(this.props.data.facturas.facturaEmitida.importe/121*21).toFixed(2)}€</Typography>
+                    <Typography style = {{float: 'inline-end'}}>  {(factura.importe*(100/121)).toFixed(2)}€</Typography>
+                    <Typography style = {{float: 'inline-end'}}>  {(factura.importe/121*21).toFixed(2)}€</Typography>
                 </StyledTableCell>
             </TableRow>
             <TableRow>
@@ -166,7 +163,7 @@ class TablaFactura extends Component {
                   <Typography style = {{float: 'inline-end'}}><b>TOTAL:   </b></Typography>
                 </StyledTableCell>
                 <StyledTableCell style = {{width: 'min-content'}}>
-                    <Typography style = {{float: 'inline-end'}}>  {this.props.data.facturas.facturaEmitida.importe}€</Typography>
+                    <Typography style = {{float: 'inline-end'}}>  {factura.importe}€</Typography>
                 </StyledTableCell>
             </TableRow>
         </Table>
@@ -191,7 +188,6 @@ class TablaFactura extends Component {
 TablaFactura.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
-    loadFactura: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -199,7 +195,6 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-  loadFactura,
   loadPedidoById,
 }
 

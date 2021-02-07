@@ -17,7 +17,6 @@ import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Seguro;
-import org.springframework.gresur.model.TipoSeguro;
 import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Transportista;
 import org.springframework.gresur.model.Vehiculo;
@@ -30,9 +29,12 @@ import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
 import org.springframework.gresur.util.Tuple2;
 import org.springframework.gresur.util.Tuple4;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -179,19 +181,38 @@ public class VehiculoController {
 	
 	@PostMapping("/info")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Tuple2<Seguro,ITV> getInfo(@RequestBody @Valid Vehiculo vehiculo){
-		Tuple2<Seguro,ITV> res = new Tuple2<>();
-		res.setE1(seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula()));
-		res.setE2(itvService.findLastITVVehiculo(vehiculo.getMatricula()));
-		res.name1 = "seguro";
-		res.name2 = "itv";
-		return res;
+	public ResponseEntity<?> getInfo(@RequestBody @Valid Vehiculo vehiculo, BindingResult result){
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
+				
+		try {
+			Tuple2<Seguro,ITV> res = new Tuple2<>();
+			res.setE1(seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula()));
+			res.setE2(itvService.findLastITVVehiculo(vehiculo.getMatricula()));
+			res.name1 = "seguro";
+			res.name2 = "itv";				
+			return ResponseEntity.ok(res);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 	@PostMapping("/add")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Vehiculo addVehiculo(@RequestBody @Valid Vehiculo vehiculo){
-		return vehiculoService.save(vehiculo);
+	public ResponseEntity<?> addVehiculo(@RequestBody @Valid Vehiculo vehiculo, BindingResult result){
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
+		
+		try {
+			Vehiculo v = vehiculoService.save(vehiculo);				
+			return ResponseEntity.ok(v);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}		
 	}
 	
 	@GetMapping("/allTiposVehiculos")
@@ -202,8 +223,19 @@ public class VehiculoController {
 	
 	@DeleteMapping("/delete/{matricula}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public void deleteContrato(@PathVariable("matricula") String matricula) throws DataAccessException{
-		vehiculoService.deleteByMatricula(matricula);
+	public ResponseEntity<?> deleteContrato(@PathVariable("matricula") String matricula) throws DataAccessException{
+		
+		if(!matricula.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}") || !matricula.matches("E[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}")) {
+			return ResponseEntity.badRequest().body("Formato de matricula no valido");
+		}
+		else {
+			try {
+				vehiculoService.deleteByMatricula(matricula);
+				return ResponseEntity.ok("Borrado realizado correctamente");
+			}catch(Exception e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}
 	}
 
 }

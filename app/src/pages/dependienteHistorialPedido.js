@@ -23,7 +23,7 @@ export class dependienteHistorialPedido2 extends Component {
         const {classes, data:{pedidos},UI:{errors,enviado}} = this.props;
 
         return (
-            <div style={{margin:"auto", width:"88%"}}>
+            <div style={{width:"100%"}}>
                 <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
                 {pedidos.content?<HistorialPedidosAdmin datos = {pedidos}/>:null}
             </div>
