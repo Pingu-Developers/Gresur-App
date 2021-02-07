@@ -8,16 +8,12 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.Dependiente;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.LineaFactura;
 import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.Producto;
-import org.springframework.gresur.model.userPayload.MessageResponse;
 import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.service.FacturaEmitidaService;
 import org.springframework.gresur.service.LineasFacturaService;
@@ -25,9 +21,12 @@ import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.util.Tuple2;
 import org.springframework.gresur.util.Tuple3;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,25 +58,46 @@ public class FacturaEmitidaController {
 	}
 	
 	@GetMapping("/{id}")
-	public List<FacturaEmitida> getFacturasCliente(@PathVariable("id") Long id){
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> getFacturasCliente(@PathVariable("id") Long id){
 		
 		List<FacturaEmitida> values = facturaEmitidaService.findFacturasByCliente(id);
 		
-		return values.stream().filter(x -> x.esDefinitiva()).collect(Collectors.toList());
+		if(values==null) {
+			return ResponseEntity.badRequest().body("No se encontraron factura para dicho cliente");
+		}
+		
+		else {
+			List<FacturaEmitida> lfe = values.stream().filter(x -> x.esDefinitiva()).collect(Collectors.toList());
+			return ResponseEntity.ok(lfe);
+		}
 	}
 	
 	@PostMapping("/clienteFecha")
-	public List<FacturaEmitida> getFacturasClienteAndFecha(@Valid @RequestBody Tuple2<Long, LocalDate> data){
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> getFacturasClienteAndFecha(@RequestBody Tuple2<Long, LocalDate> data){
 		
 		List<FacturaEmitida> values = facturaEmitidaService.findFacturasByClienteAndFecha(data.getE1(), data.getE2());
 		
-		return values.stream().filter(x -> x.esDefinitiva()).collect(Collectors.toList());
+		if(values==null) {
+			return ResponseEntity.badRequest().body("No se encontraron factura para dicho cliente");
+		}
+		
+		else {
+			List<FacturaEmitida> lfe = values.stream().filter(x -> x.esDefinitiva()).collect(Collectors.toList());
+			return ResponseEntity.ok(lfe);
+		}
 	}
 	
 	@Transactional
 	@ExceptionHandler({ Exception.class })
 	@PostMapping("/devolucion")
-	public ResponseEntity<?> createDevolucion(@Valid @RequestBody Tuple3<FacturaEmitida,String,List<Tuple2<Long,Integer>>> data){
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> createDevolucion(@Valid @RequestBody Tuple3<FacturaEmitida,String,List<Tuple2<Long,Integer>>> data, BindingResult result){
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
 		
 		if(data.getE3().size() == 0) {
 			throw new IllegalArgumentException("Factura sin lineas");
@@ -103,7 +123,14 @@ public class FacturaEmitidaController {
 		devolucion.setEstaPagada(true);
 		devolucion.setImporte(importe);		
 		devolucion.setOriginal(original);
-		devolucion = facturaEmitidaService.save(devolucion);		
+		
+		try {
+			devolucion = facturaEmitidaService.save(devolucion);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+		
+		
 		for (LineaFactura linea : original.getLineasFacturas()) {
 			
 			Integer diff = linea.getCantidad() ;
@@ -132,17 +159,22 @@ public class FacturaEmitidaController {
 			lineasDevolucion.add(lf);
 		}
 		
-		lineaFacturaService.saveAll(lineasDevolucion);
-		devolucion.setLineasFacturas(lineasDevolucion);
-		devolucion.setImporte(importe);
-		
-		devolucion = facturaEmitidaService.save(devolucion);
-		
-		return ResponseEntity.ok(devolucion);
+		try {
+			lineasDevolucion = lineaFacturaService.saveAll(lineasDevolucion);
+			
+			devolucion.setLineasFacturas(lineasDevolucion);
+			devolucion.setImporte(importe);
+			devolucion = facturaEmitidaService.save(devolucion);
+			
+			return ResponseEntity.ok(devolucion);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}		
 	}
 	
 	@Transactional
 	@GetMapping("/cargar/{numFactura}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> getFacturaByNumFactura(@PathVariable String numFactura) {
 		FacturaEmitida factura = facturaEmitidaService.findByNumFactura(numFactura);
 		if(factura != null) {
@@ -150,12 +182,12 @@ public class FacturaEmitidaController {
 		} else {
 			return ResponseEntity.badRequest().body("No se ha encontrado la factura");
 		}
-		
 	}
 	
 	@Transactional
 	@PostMapping("/rectificar")
-	public FacturaEmitida rectificarFactura(@RequestBody FacturaEmitida fra){
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> rectificarFactura(@RequestBody FacturaEmitida fra){
 
 		Double importe = 0.0;
 		FacturaEmitida f = new FacturaEmitida();
@@ -166,16 +198,21 @@ public class FacturaEmitidaController {
 		f.setFechaEmision(LocalDate.now());
 		f.setImporte(importe);
 		f.setOriginal(fra);
-		FacturaEmitida f2 = facturaEmitidaService.save(f);
 		
-		List<LineaFactura> ls = new ArrayList<LineaFactura>();
-		fra.getLineasFacturas().forEach(x -> parseo(x, ls, f2));
-		List<LineaFactura> lsFinal = lineaFacturaService.saveAll(ls);
-		
-		f2.setLineasFacturas(lsFinal);
-		f2.setImporte(ls.stream().mapToDouble(x -> x.getPrecio()).sum());
-		
-		return facturaEmitidaService.save(f2);
+		try {
+			FacturaEmitida f2 = facturaEmitidaService.save(f);
+			
+			List<LineaFactura> ls = new ArrayList<LineaFactura>();
+			fra.getLineasFacturas().forEach(x -> parseo(x, ls, f2));
+			List<LineaFactura> lsFinal = lineaFacturaService.saveAll(ls);
+			
+			f2.setLineasFacturas(lsFinal);
+			f2.setImporte(ls.stream().mapToDouble(x -> x.getPrecio()).sum());
+			
+			return ResponseEntity.ok(f2);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	private void parseo(LineaFactura linea, List<LineaFactura> ls, FacturaEmitida fra) {
 		linea.setId(null);
@@ -183,15 +220,4 @@ public class FacturaEmitidaController {
 		ls.add(linea);
 	}
 	
-	/*@Transactional
-	@PostMapping("/addProductoFactura/{id}")
-	public LineaFactura addProductoFactura (@PathVariable Long idProducto){
-		Producto prod = productoService.findById(idProducto);
-		LineaFactura lf = new LineaFactura();
-		lf.setCantidad(1);
-		lf.set
-		return null;
-	}*/
-	
-
 }
