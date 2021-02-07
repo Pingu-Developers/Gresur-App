@@ -19,6 +19,10 @@ const style = {
         margin: '30px 20px',
         fontSize: 40,
         fontWeight: 600,
+        borderBottom: '1px solid #bdbdbd',
+        margin: '20px 0px 15px 0px',
+        color: '#7a7a7a',
+        padding: '0px 0px 15px 20px'
     },
     wrapper: {
         display: 'grid',
