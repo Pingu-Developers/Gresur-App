@@ -14,27 +14,27 @@ import lombok.EqualsAndHashCode;
 @Table(name = "config")
 public class Configuracion extends BaseEntity{
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "salario_minimo")
 	private Double salarioMinimo;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "num_max_notificaciones")
 	private Integer numMaxNotificaciones;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "factura_emitida_seq")
 	private Long facturaEmitidaSeq;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "factura_recibida_seq")
 	private Long facturaRecibidaSeq;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "factura_emitida_rect_seq")
 	private Long facturaEmitidaRectSeq;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "factura_recibida_rect_seq")
 	private Long facturaRecibidaRectSeq;
 }

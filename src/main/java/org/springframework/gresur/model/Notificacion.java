@@ -25,16 +25,16 @@ import lombok.EqualsAndHashCode;
 @Table(name="notificaciones")
 public class Notificacion extends BaseEntity{
 
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Enumerated(value = EnumType.STRING)
 	@Column(name ="tipo_notificacion")
 	private TipoNotificacion tipoNotificacion;
 	
-	@NotBlank
+	@NotBlank(message = "No puede ser vacio")
 	@Lob
 	private String cuerpo;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	private LocalDateTime fechaHora;
 	
 	@ManyToOne

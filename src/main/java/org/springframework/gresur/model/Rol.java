@@ -13,7 +13,7 @@ import lombok.Data;
 @Table(name="roles")
 public class Rol extends BaseEntity{
 
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Enumerated(EnumType.STRING)
 	private ERol name;
 }
