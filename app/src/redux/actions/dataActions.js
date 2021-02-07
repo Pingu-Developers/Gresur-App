@@ -172,10 +172,10 @@ export const clearProductos = () => (dispatch) => {
     dispatch({type: CLEAR_PRODUCTOS})
 }
 
-export const loadPersonalContrato = () => function (dispatch) {
+export const loadPersonalContrato = (rol) => function (dispatch) {
     dispatch({type: LOADING_UI})
     
-    axios.get('/contrato')
+    axios.get(`/contrato/${rol}`)
         .then((res) => {
             dispatch({type: SET_CONTRATO, payload: res})
             dispatch({type: CLEAR_ERRORS})

@@ -17,7 +17,8 @@ import { connect } from 'react-redux';
 
 const styles = theme => ({
   wdialogue: {
-    width:230
+    color: 'white',
+    backgroundColor: 'rgb(255, 141, 141)',
   }
 });
 
@@ -53,7 +54,8 @@ const styles = theme => ({
     const { data,classes } = this.props;
   return (
     <div>
-      <Button className={classes.wdialogue}variant="contained" color="primary" onClick={this.handleClickOpen}  startIcon={<DeleteIcon />}>Rescindir contrato
+      <Button className={classes.wdialogue} variant="contained" onClick={this.handleClickOpen}> 
+        <DeleteIcon />
       </Button>
       <Dialog
         open={this.state.open}
