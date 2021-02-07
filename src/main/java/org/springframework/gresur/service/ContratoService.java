@@ -40,6 +40,27 @@ public class ContratoService {
 	}
 	
 	@Transactional(readOnly = true)
+	public List<Contrato> findLastContratoAllEmpleados() throws DataAccessException{
+		return contratoRepository.findLastContratoAllEmpleados();
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Contrato> findLastContratoRol(String rol) throws DataAccessException{
+		switch(rol) {
+			case "DEPENDIENTE":
+				return contratoRepository.findLastContratoDependiente();
+			case "TRANSPORTISTA":
+				return contratoRepository.findLastContratoTransportista();
+			case "ADMINISTRADOR":
+				return contratoRepository.findLastContratoAdministrador();
+			case "ENCARGADO":
+				return contratoRepository.findLastContratoEncargado();
+			default:
+				throw new IllegalArgumentException("invalid rol");
+		}
+	}
+	
+	@Transactional(readOnly = true)
 	public Contrato findById(Long id) throws DataAccessException{
 		return contratoRepository.findById(id).orElse(null);
 	}
