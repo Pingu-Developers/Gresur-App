@@ -27,8 +27,8 @@ public class EstanteriaController {
 	}
 	
 	@GetMapping
-	public List<Estanteria> getFacturasCliente(){
-	
+	@PreAuthorize("hasRole('ADMIN') or hasRole('ENCARGADO')")
+	public List<Estanteria> getAllEstanterias(){
 		return estanteriaService.findAll();
 	}
 	
@@ -36,12 +36,11 @@ public class EstanteriaController {
 	@PreAuthorize("hasRole('ENCARGADO')")
 	public ResponseEntity<?> updateEstanteriaCapacidad(@PathVariable("categoria") Categoria cat, @PathVariable("capacidad") Double porcentajeCapacidad){
 		try {
-			Estanteria e = estanteriaService.findByCategoria(cat);
-			e.setCapacidad(e.getAlmacen().getCapacidad() * (porcentajeCapacidad/100));
-			estanteriaService.save(e);
-			return ResponseEntity.ok("");
+			Estanteria est = estanteriaService.findByCategoria(cat);
+			est.setCapacidad(est.getAlmacen().getCapacidad() * (porcentajeCapacidad/100));
+			Estanteria eDef = estanteriaService.save(est);
+			return ResponseEntity.ok(eDef);
 		} catch (Exception e) {
-			System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n\n\n\n\n\n\n\n" + e);
 			return ResponseEntity.badRequest().body(e);
 		}
 		

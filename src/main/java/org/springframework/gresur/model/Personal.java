@@ -18,7 +18,7 @@ public class Personal extends Entidad{
 	
 	@Column(unique = true)
 	@NotBlank
-	@Pattern(regexp = "^[0-9]{2}\\s?[0-9]{10}$")
+	@Pattern(regexp = "^[0-9]{2}\\s?[0-9]{10}$", message = "NSS no valido")
 	protected String NSS;
 	
 	protected String image;

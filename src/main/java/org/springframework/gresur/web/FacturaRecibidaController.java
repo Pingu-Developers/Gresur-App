@@ -21,7 +21,10 @@ import org.springframework.gresur.service.ReparacionService;
 import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.util.Tuple2;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,92 +64,141 @@ public class FacturaRecibidaController {
 	@Transactional
 	@ExceptionHandler({ Exception.class })
 	@PostMapping("/repo")
-	public ResponseEntity<?> createEmitidaReposicion(@Valid @RequestBody Tuple2<FacturaRecibida,List<Tuple2<Long,Integer>>> data){
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> createEmitidaReposicion(@Valid @RequestBody Tuple2<FacturaRecibida,List<Tuple2<Long,Integer>>> data, BindingResult result){
 		
-		FacturaRecibida fact = data.getE1();
-		fact.setFechaEmision(LocalDate.now());
-		fact = facturaRecibidaService.save(fact);
-		
-		List<LineaFactura> lineasCompra = new ArrayList<>();
-		for (Tuple2<Long,Integer> linea : data.getE2()) {
-			Producto p = productoService.findById(linea.getE1());
-			
-			LineaFactura lf = new LineaFactura();
-			lf.setCantidad(linea.getE2());
-			lf.setProducto(p);
-			lf.setPrecio(p.getPrecioCompra()*lf.getCantidad());
-			lf.setFactura(fact);
-			fact.setImporte(fact.getImporte()+lf.getPrecio());
-			
-			lf = lineaFacturaService.save(lf);
-			
-			p.setStock(p.getStock()+lf.getCantidad());
-			productoService.save(p);
-			lineasCompra.add(lf);
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
-		fact.setLineasFacturas(lineasCompra);
-		fact = facturaRecibidaService.save(fact);
-		
-		return ResponseEntity.ok(fact);
+		try {
+			FacturaRecibida fact = data.getE1();
+			fact.setFechaEmision(LocalDate.now());
+			fact = facturaRecibidaService.save(fact);
+			
+			List<LineaFactura> lineasCompra = new ArrayList<>();
+			for (Tuple2<Long,Integer> linea : data.getE2()) {
+				Producto p = productoService.findById(linea.getE1());
+				
+				LineaFactura lf = new LineaFactura();
+				lf.setCantidad(linea.getE2());
+				lf.setProducto(p);
+				lf.setPrecio(p.getPrecioCompra()*lf.getCantidad());
+				lf.setFactura(fact);
+				fact.setImporte(fact.getImporte()+lf.getPrecio());
+				
+				lf = lineaFacturaService.save(lf);
+				
+				p.setStock(p.getStock()+lf.getCantidad());
+				productoService.save(p);
+				lineasCompra.add(lf);
+			}
+			
+			fact.setLineasFacturas(lineasCompra);
+			fact = facturaRecibidaService.save(fact);				
+			return ResponseEntity.ok(fact);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
-	
 	
 	@Transactional
 	@PostMapping("/seguro")
-	public ResponseEntity<?> createRecibidaSeguro(@Valid @RequestBody Tuple2<FacturaRecibida,Seguro> data){
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> createRecibidaSeguro(@Valid @RequestBody Tuple2<FacturaRecibida,Seguro> data, BindingResult result){
 		
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
 		
-		FacturaRecibida fact = data.getE1();
-		fact.setFechaEmision(LocalDate.now());
-		fact = facturaRecibidaService.save(fact);
-		
-		Seguro s = data.getE2();
-		
-		s.setRecibidas(fact);
-		seguroService.save(s);
-		
-		return ResponseEntity.ok(fact);
+		try {
+			FacturaRecibida fact = data.getE1();
+			fact.setFechaEmision(LocalDate.now());
+			fact = facturaRecibidaService.save(fact);
+			
+			Seguro s = data.getE2();
+			s.setRecibidas(fact);
+			seguroService.save(s);
+			
+			return ResponseEntity.ok(fact);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 	@Transactional
 	@PostMapping("/itv")
-	public ResponseEntity<?> createRecibidaITV(@Valid @RequestBody Tuple2<FacturaRecibida,ITV> data){
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> createRecibidaITV(@Valid @RequestBody Tuple2<FacturaRecibida,ITV> data, BindingResult result){
 		
-		FacturaRecibida fact = data.getE1();
-		fact.setFechaEmision(LocalDate.now());
-		fact = facturaRecibidaService.save(fact);
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
 		
-		ITV i = data.getE2();
-		
-		i.setRecibidas(fact);
-		itvService.save(i);
-		
-		return ResponseEntity.ok(fact);
+		try {
+			FacturaRecibida fact = data.getE1();
+			fact.setFechaEmision(LocalDate.now());
+			fact = facturaRecibidaService.save(fact);
+			
+			ITV i = data.getE2();
+			
+			i.setRecibidas(fact);
+			itvService.save(i);
+			
+			return ResponseEntity.ok(fact);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 	@Transactional
 	@PostMapping("/reparacion")
-	public ResponseEntity<?> createRecibidaReparacion(@Valid @RequestBody Tuple2<FacturaRecibida,Reparacion> data){
-		FacturaRecibida fact = data.getE1();
-		fact.setFechaEmision(LocalDate.now());
-		fact = facturaRecibidaService.save(fact);
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> createRecibidaReparacion(@Valid @RequestBody Tuple2<FacturaRecibida,Reparacion> data, BindingResult result){
 		
-		Reparacion r = data.getE2();
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
 		
-		r.setRecibidas(fact);
-		reparacionService.save(r);
-		
-		return ResponseEntity.ok(fact);
+		try {
+			FacturaRecibida fact = data.getE1();
+			fact.setFechaEmision(LocalDate.now());
+			fact = facturaRecibidaService.save(fact);
+			
+			Reparacion r = data.getE2();
+			
+			r.setRecibidas(fact);
+			reparacionService.save(r);
+			
+			return ResponseEntity.ok(fact);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 	
 	@Transactional
 	@PostMapping("/otro")
-	public ResponseEntity<?> createRecibidaOtro(@Valid @RequestBody FacturaRecibida data){
-		FacturaRecibida fact = data;
-		fact.setFechaEmision(LocalDate.now());
-		fact = facturaRecibidaService.save(fact);
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> createRecibidaOtro(@Valid @RequestBody FacturaRecibida data, BindingResult result){
 		
-		return ResponseEntity.ok(fact);
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
+		
+		try {
+			FacturaRecibida fact = data;
+			fact.setFechaEmision(LocalDate.now());
+			fact = facturaRecibidaService.save(fact);
+			
+			return ResponseEntity.ok(fact);
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
+	
 }
