@@ -1,5 +1,6 @@
 package org.springframework.gresur.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
@@ -13,4 +14,5 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	
 	Boolean existsByUsername(String username);
 	
+	List<User> findByUsernameContaining(String username);
 }
