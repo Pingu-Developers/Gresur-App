@@ -28,6 +28,7 @@ function TabPanel(props) {
             id={`vertical-tabpanel-${index}`}
             aria-labelledby={`vertical-tab-${index}`}
             {...other}
+            style = {{overflowY: 'auto', height: '80vh'}}
             >
             {value === index && (
                 <Box p={3}>
@@ -61,6 +62,23 @@ const style = theme => ({
         gridTemplateRows: '30fr',
         height: 384,
     },
+    tituloForm: {
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid #bdbdbd',
+        margin: '30px 0px 20px 0px',
+        padding: '0px 0px 15px 0px'
+    },
+    titulo: {
+        margin: '30px 20px',
+        fontSize: 40,
+        fontWeight: 600,
+        float: 'left',
+        color: '#7a7a7a',
+        margin: '0px 0px 0px 20px'
+      },
     tabs: {
         borderRight: `1px solid ${theme.palette.divider}`,
     },
@@ -120,7 +138,8 @@ export class administradorPersonal extends Component {
         return (
            <div>
                 <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
-                <div>
+                <div className = {classes.tituloForm}>
+                    <Typography variant = 'h3' className = {classes.titulo}>GESTION DE PERSONAL</Typography>
                     <PopUpNuevoEmpleado/>
                 </div>
 

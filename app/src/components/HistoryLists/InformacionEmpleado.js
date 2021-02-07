@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#dadada',
     width: '100%',
     borderRadius: 20,
-    marginBottom: 20,
+    marginBottom: 30,
     color: '#7a7a7a',
     boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.15), 0 6px 20px 0 rgba(0, 0, 0, 0.14)'
   },
@@ -25,7 +25,8 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     fontSize: 20,
     paddingLeft: 20,
-    width: '100%'
+    width: 'calc(100% - 20px)',
+    margin: '10px 0px 10px 0px',
   },
   infoBody: {
     display: 'grid',
@@ -47,9 +48,11 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonDiv: {
     position: 'absolute',
-    display: 'inline-flex',
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gridGap: 10,
     right: 0,
-    bottom: 0
+    bottom: -15
   }
 }));
 

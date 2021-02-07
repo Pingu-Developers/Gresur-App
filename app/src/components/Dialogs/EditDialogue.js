@@ -101,7 +101,7 @@ import { connect } from 'react-redux';
         marginLeft: theme.spacing(17)
   
       }, wdialogue: {
-        width:230
+        color: 'white'
       }
   });
 
@@ -179,8 +179,8 @@ import { connect } from 'react-redux';
 
   return (
     <div>
-      <Button variant="contained" color="primary" className={classes.wdialogue} onClick={this.handleClickOpen}  startIcon={<EditIcon />}>
-        Renovar contrato
+      <Button variant="contained" color="secondary" className={classes.wdialogue} onClick={this.handleClickOpen}> 
+        <EditIcon />
       </Button>
       <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
       <CloseOutlinedIcon style={{ color: red[600] }}  onClick={this.handleClose} />

@@ -37,9 +37,12 @@ import { connect } from 'react-redux';
     },
     cancel:{
       colorPrimary:"red"
-    },separador:{
-      marginBottom: theme.spacing(2),
-      marginLeft: theme.spacing(7)
+    },
+    buttonAdd:{
+      color: 'white',
+      height: 40,
+      width: 60,
+      marginRight: 20,
     }
 
   });
@@ -74,8 +77,8 @@ class PopUpNuevoEmpleado extends Component{
 
        return(
            <div>
-              <Button variant="contained" color="primary" onClick={this.handleClickOpen} startIcon={<AddCircleIcon />} className={classes.separador}>
-                Añadir nuevo empleado
+              <Button variant="contained" color="secondary" onClick={this.handleClickOpen} className={classes.buttonAdd}>
+                <AddCircleIcon />
               </Button>
             
               <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">
