@@ -17,6 +17,7 @@ import { setProducto } from '../../redux/actions/dataActions';
 import { getProductosPaginados} from '../../redux/actions/productoActions'
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+
 const useStyles = makeStyles((theme) => ({
 
   title:{
@@ -57,68 +58,7 @@ export default function ResponsiveDialog(props) {
   };
 
   const handleEnviar = () => {
-    setEnviar(true);
-  };
-
-  const handleSubmit = (producto)=>{
-    dispatch(setProducto(producto));
-    props.handleReload()
-    handleClose()
-  }
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
- 
-
-  const [nombre,setNombre ] = React.useState(producto.nombre);
-  const [descripcion,setDescripcion ] = React.useState(producto.descripcion);
-  const [ancho,setAncho ] = React.useState(producto.ancho);
-  const [alto,setAlto ] = React.useState(producto.alto);
-  const [profundo,setProfundo ] = React.useState(producto.profundo);
-  const [stock,setStock ] = React.useState(producto.stock);
-  const [stockS,setStockS ] = React.useState(producto.stockSeguridad);
-  const [precioV,setPrecioV ] = React.useState(producto.precioVenta);
-  const [precioC,setPrecioC ] = React.useState(producto.precioCompra);
-  const [pesoU,setPesoU ] = React.useState(producto.pesoUnitario);
-  const [unidad,setUnidad] = React.useState(producto.unidad);
-  const [urlImagen,setUrlImagen] = React.useState(producto.urlimagen);
-  const [error, setError] = React.useState({
-    nombre:[], ancho:[], alto: [], profundo:[], stock: [], stockS:[], precioV:[], precioC: [], pesoU:[], unidad:[]
-  });
-
-  const handleNumFloat = (value,min) =>{
-    return Number.isNaN(parseFloat(value))||parseFloat(value)<min? min: parseFloat(value)
-  }
-
-  const handleNumInt = (value,min) =>{
-    return Number.isNaN(parseInt(value))||parseInt(value)<min? min: parseInt(value)
-  }
-
-  const handleChangeImg = (event) => {
-    event.preventDefault();
-    console.log('Comienzo de upload')
-    //Aqui hacemos el upload a Firebase
-    const file = event.target.files[0]
-    const storageRef = firebase.storage().ref(`pictures/${file.name}`)
-    const task = storageRef.put(file)
-    //Ya esta subida en Firebase
-
-    //Cogemos el url de Firebase para guardar el URL 
-    task.on('state_changed',(snapshot) => {
-     snapshot.ref.getDownloadURL().then(function(downloadURL) {
-        setUrlImagen(downloadURL)
-     }.bind(this));
-      console.log(snapshot)    
-    },(err) => {
-      console.log(err)
-    })
-  }
-
-  React.useEffect(()=> {
-    if(enviar){
-      var valid = true;
+    var valid = true;
 
       var errores = {nombre:[], ancho:[], alto: [], profundo:[], stock: [], stockS:[], precioV:[], precioC: [], pesoU:[], unidad:[]};
 
@@ -239,12 +179,67 @@ export default function ResponsiveDialog(props) {
           pesoUnitario: pesoU,
           urlimagen: urlImagen
         }
+        console.log(productoNew)
+        dispatch(setProducto(productoNew,props.page,props.categoria));
         handleSubmit(productoNew);
       }
+  };
 
-      setEnviar(false);
-    }
-   },[enviar])
+  const handleSubmit = (producto)=>{
+    handleClose()
+    //props.handleReload()
+  }
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  
+  const [nombre,setNombre ] = React.useState(producto.nombre);
+  const [descripcion,setDescripcion ] = React.useState(producto.descripcion);
+  const [ancho,setAncho ] = React.useState(producto.ancho);
+  const [alto,setAlto ] = React.useState(producto.alto);
+  const [profundo,setProfundo ] = React.useState(producto.profundo);
+  const [stock,setStock ] = React.useState(producto.stock);
+  const [stockS,setStockS ] = React.useState(producto.stockSeguridad);
+  const [precioV,setPrecioV ] = React.useState(producto.precioVenta);
+  const [precioC,setPrecioC ] = React.useState(producto.precioCompra);
+  const [pesoU,setPesoU ] = React.useState(producto.pesoUnitario);
+  const [unidad,setUnidad] = React.useState(producto.unidad);
+  const [urlImagen,setUrlImagen] = React.useState(producto.urlimagen);
+  const [error, setError] = React.useState({
+    nombre:[], ancho:[], alto: [], profundo:[], stock: [], stockS:[], precioV:[], precioC: [], pesoU:[], unidad:[]
+  });
+
+  const handleNumFloat = (value,min) =>{
+    return Number.isNaN(parseFloat(value))||parseFloat(value)<min? min: parseFloat(value)
+  }
+
+  const handleNumInt = (value,min) =>{
+    return Number.isNaN(parseInt(value))||parseInt(value)<min? min: parseInt(value)
+  }
+
+  const handleChangeImg = (event) => {
+    event.preventDefault();
+    console.log('Comienzo de upload')
+    //Aqui hacemos el upload a Firebase
+    const file = event.target.files[0]
+    const storageRef = firebase.storage().ref(`pictures/${file.name}`)
+    const task = storageRef.put(file)
+    //Ya esta subida en Firebase
+
+    //Cogemos el url de Firebase para guardar el URL 
+    task.on('state_changed',(snapshot) => {
+     snapshot.ref.getDownloadURL().then(function(downloadURL) {
+        setUrlImagen(downloadURL)
+     }.bind(this));
+      console.log(snapshot)    
+    },(err) => {
+      console.log(err)
+    })
+  }
+
+
 
   return (
     <div>

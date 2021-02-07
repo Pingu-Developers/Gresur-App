@@ -137,7 +137,7 @@ class EncargadoCatalogo extends Component {
         bajoStock:false,
         enviarNoti:false,
         productos:[],
-        reload:false
+        reload:false,
     };
     this.handlePageChange = this.handlePageChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -173,16 +173,13 @@ class EncargadoCatalogo extends Component {
                 this.props.getProductosPaginados(this.state.activePage,this.props.productos.categorias[this.state.value],null,5,'')
                         
         }
-
-        if(this.state.reload !== prevState.reload && this.state.reload){
-
-            this.props.clearProductosPaginados();
-            this.props.getProductosPaginados(this.state.activePage,this.props.productos.categorias[this.state.value],null,5,'')
+        if(prevState.reload !== this.state.reload && this.state.reload){
 
             this.setState({
-                reload:false,
+                reload:false
             })
         }
+
 
         if(prevProps.productos.articlesDetails != this.props.productos.articlesDetails && this.props.productos.articlesDetails){
             const bajoStock = this.props.productos.articlesDetails.filter(
@@ -277,7 +274,7 @@ class EncargadoCatalogo extends Component {
                             <TableBody>
                                 {articlesDetails?articlesDetails.map((producto) =>
                                         <StyledTableRow key={producto.nombre}>
-                                            <TableCell><DialogoEditarProductos producto={producto}  handleReload={this.handleReload} /></TableCell>                                                 
+                                            <TableCell><DialogoEditarProductos producto={producto} page={this.state.activePage} categoria={this.props.productos.categorias[this.state.value]} handleReload={this.handleReload} /></TableCell>                                                 
                                             <HtmlTooltip
                                                 title={
                                                     <React.Fragment>
