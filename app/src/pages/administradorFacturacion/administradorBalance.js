@@ -72,18 +72,18 @@ class balance extends Component {
                                     loader={<div>Loading Chart</div>}
                                     data={[
                                         ['Mes', 'Ingresos', 'Gastos', 'Beneficio'],
-                                        ['ENERO', data.balance[0].ingresos, data.balance[0].gastos, data.balance[0].ingresos - data.balance[0].gastos],
-                                        ['FEBRERO', data.balance[1].ingresos, data.balance[1].gastos, data.balance[1].ingresos - data.balance[1].gastos],
-                                        ['MARZO', data.balance[2].ingresos, data.balance[2].gastos, data.balance[2].ingresos - data.balance[2].gastos],
-                                        ['ABRIL', data.balance[3].ingresos, data.balance[3].gastos, data.balance[3].ingresos - data.balance[3].gastos],
-                                        ['MAYO', data.balance[4].ingresos, data.balance[4].gastos, data.balance[4].ingresos - data.balance[4].gastos],
-                                        ['JUNIO', data.balance[5].ingresos, data.balance[5].gastos, data.balance[5].ingresos - data.balance[5].gastos],
-                                        ['JULIO', data.balance[6].ingresos, data.balance[6].gastos, data.balance[6].ingresos - data.balance[6].gastos],
-                                        ['AGOSTO', data.balance[7].ingresos, data.balance[7].gastos, data.balance[7].ingresos - data.balance[7].gastos],
-                                        ['SEPTIEMBRE', data.balance[8].ingresos, data.balance[8].gastos, data.balance[8].ingresos - data.balance[8].gastos],
-                                        ['OCTUBRE', data.balance[9].ingresos, data.balance[9].gastos, data.balance[9].ingresos - data.balance[9].gastos],
-                                        ['NOVIEMBRE', data.balance[10].ingresos, data.balance[10].gastos, data.balance[10].ingresos - data.balance[10].gastos],
-                                        ['DICIEMBRE', data.balance[11].ingresos, data.balance[11].gastos, data.balance[11].ingresos - data.balance[11].gastos],
+                                        ['ENERO', data.balance[0].ingresos, -data.balance[0].gastos, data.balance[0].ingresos - data.balance[0].gastos],
+                                        ['FEBRERO', data.balance[1].ingresos, -data.balance[1].gastos, data.balance[1].ingresos - data.balance[1].gastos],
+                                        ['MARZO', data.balance[2].ingresos, -data.balance[2].gastos, data.balance[2].ingresos - data.balance[2].gastos],
+                                        ['ABRIL', data.balance[3].ingresos, -data.balance[3].gastos, data.balance[3].ingresos - data.balance[3].gastos],
+                                        ['MAYO', data.balance[4].ingresos, -data.balance[4].gastos, data.balance[4].ingresos - data.balance[4].gastos],
+                                        ['JUNIO', data.balance[5].ingresos, -data.balance[5].gastos, data.balance[5].ingresos - data.balance[5].gastos],
+                                        ['JULIO', data.balance[6].ingresos, -data.balance[6].gastos, data.balance[6].ingresos - data.balance[6].gastos],
+                                        ['AGOSTO', data.balance[7].ingresos, -data.balance[7].gastos, data.balance[7].ingresos - data.balance[7].gastos],
+                                        ['SEPTIEMBRE', data.balance[8].ingresos, -data.balance[8].gastos, data.balance[8].ingresos - data.balance[8].gastos],
+                                        ['OCTUBRE', data.balance[9].ingresos, -data.balance[9].gastos, data.balance[9].ingresos - data.balance[9].gastos],
+                                        ['NOVIEMBRE', data.balance[10].ingresos, -data.balance[10].gastos, data.balance[10].ingresos - data.balance[10].gastos],
+                                        ['DICIEMBRE', data.balance[11].ingresos, -data.balance[11].gastos, data.balance[11].ingresos - data.balance[11].gastos],
                                     ]}
                                     options={{
                                         // Material design options
