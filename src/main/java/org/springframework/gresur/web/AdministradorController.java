@@ -72,7 +72,27 @@ public class AdministradorController {
 		this.admService = admService;
 	}
 
-
+	private String createUvus(String []uvus) {
+		String user = "";
+		Integer n = uvus.length;
+		if(n>=3) {
+			String uvusNombre = uvus[0].length()>=3?uvus[0].substring(0,3).toLowerCase():uvus[0].length()==2?uvus[0].concat("x"):uvus[0].concat("xx");
+			String uvusApellido1 = uvus[1].length()>=3?uvus[1].substring(0,3).toLowerCase():uvus[1].length()==2?uvus[1].concat("x"):uvus[1].concat("xx");
+			String uvusApellido2 = uvus[2].length()>=3?uvus[2].substring(0,3).toLowerCase():uvus[2].length()==2?uvus[2].concat("x"):uvus[2].concat("xx");
+			user = uvusNombre+uvusApellido1+uvusApellido2;
+		}
+		if(n==2) {
+			String uvusNombre = uvus[0].length()>=3?uvus[0].substring(0,3).toLowerCase():uvus[0].length()==2?uvus[0].concat("x"):uvus[0].concat("xx");
+			String uvusApellido1 = uvus[1].length()>=3?uvus[1].substring(0,3).toLowerCase():uvus[1].length()==2?uvus[1].concat("x"):uvus[1].concat("xx");
+			user = uvusNombre+uvusApellido1+"xxx";
+		}
+		if(n==1) {
+			String uvusNombre = uvus[0].length()>=3?uvus[0].substring(0,3).toLowerCase():uvus[0].length()==2?uvus[0].concat("x"):uvus[0].concat("xx");
+			user = uvusNombre+"xxx"+"xxx";
+		}
+		return user;
+	}
+	
 	@PostMapping("/add/administrador")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> addAdministrador(@RequestBody @Valid Administrador p, BindingResult result) throws DataAccessException{
@@ -85,8 +105,7 @@ public class AdministradorController {
 		else {
 			String [] uvus = p.getName().split(" ");
 
-			String nombre = uvus.length>=3?uvus[0].substring(0, 3).toLowerCase()+uvus[1].substring(0,3).toLowerCase()+uvus[2].substring(0,3).toLowerCase()
-					:uvus[0].substring(0, 3).toLowerCase()+uvus[1].substring(0,3).toLowerCase();
+			String nombre = createUvus(uvus);
 			
 			Administrador adm = p;
 			
@@ -126,8 +145,7 @@ public class AdministradorController {
 		else {
 			String [] uvus = p.getName().split(" ");
 
-			String nombre = uvus.length>=3?uvus[0].substring(0, 3).toLowerCase()+uvus[1].substring(0,3).toLowerCase()+uvus[2].substring(0,3).toLowerCase()
-					:uvus[0].substring(0, 3).toLowerCase()+uvus[1].substring(0,3).toLowerCase();
+			String nombre = createUvus(uvus);
 
 			Dependiente d = p;
 
@@ -167,8 +185,7 @@ public class AdministradorController {
 		else {
 			String [] uvus = p.getName().split(" ");
 
-			String nombre = uvus.length>=3?uvus[0].substring(0, 3).toLowerCase()+uvus[1].substring(0,3).toLowerCase()+uvus[2].substring(0,3).toLowerCase()
-					:uvus[0].substring(0, 3).toLowerCase()+uvus[1].substring(0,3).toLowerCase();
+			String nombre = createUvus(uvus);
 
 			Transportista t = p;
 			
@@ -207,8 +224,7 @@ public class AdministradorController {
 		else {
 			String [] uvus = p.getName().split(" ");
 
-			String nombre = uvus.length>=3?uvus[0].substring(0, 3).toLowerCase()+uvus[1].substring(0,3).toLowerCase()+uvus[2].substring(0,3).toLowerCase()
-					:uvus[0].substring(0, 3).toLowerCase()+uvus[1].substring(0,3).toLowerCase();
+			String nombre = createUvus(uvus);
 			
 			EncargadoDeAlmacen encargado = p;
 			
