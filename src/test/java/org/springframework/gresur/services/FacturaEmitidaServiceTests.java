@@ -284,21 +284,4 @@ public class FacturaEmitidaServiceTests {
 		List<FacturaEmitida> lfem = facturaEmitidaService.findAll();
 		assertThat(lfem.get(lfem.size()-1)).isNotEqualTo(nuevaCompra);
 	}
-	
-	@Test
-	@Transactional
-	@DisplayName("RN: No se vende a clientes con impagos (update) -- caso negativo")
-	void updateClienteDefaulterNegative() {
-		
-		/* pongo la factura en sin pagar (esto no da problema al hacerlo)*/
-		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
-		fem.setEstaPagada(false);		
-		FacturaEmitida femUpdate = facturaEmitidaService.save(fem);
-
-		assertThat(facturaEmitidaService.findById(fem.getId()).getEstaPagada()).isEqualTo(false);
-		
-		/* Para una factura sin pagar debe dejarme cambiar el atributo estaPagada, pero ningun otro*/
-		fem.setImporte(928.13929);
-		assertThrows(ClienteDefaulterException.class, ()->{facturaEmitidaService.save(femUpdate);});
-	}
 }
