@@ -767,10 +767,10 @@ export const clearVehiculosSeguroITVReparacion = () => (dispatch) => {
     
 }
 
-export const addVehiculo = (vehiculo) => (dispatch) =>{
+export const addVehiculo = (vehiculo,pageNo,size) => (dispatch) =>{
     axios.post(`/vehiculo/add/`, vehiculo)
     .then((res) => {
-        dispatch(loadVehiculosSeguroITVReparacionPaged(0,2));
+        dispatch(loadVehiculosSeguroITVReparacionPaged(pageNo,size));
         dispatch({
             type: SET_ENVIADO,
         });
@@ -945,4 +945,8 @@ export const rectificaFactura = (factura) => (dispatch) => {
         }
     })
 
+}
+
+export const clearLoading = () => (dispatch) => {
+    dispatch({type: CLEAR_ERRORS})
 }
