@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.gresur.configuration.ExceptionHandlerConfiguration;
 import org.springframework.gresur.configuration.SecurityConfiguration;
 import org.springframework.gresur.service.AlmacenService;
 import org.springframework.gresur.service.EncargadoDeAlmacenService;
@@ -21,7 +22,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(controllers = EncargadoDeAlmacenController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
-excludeAutoConfiguration= SecurityConfiguration.class)
+excludeAutoConfiguration= {SecurityConfiguration.class,ExceptionHandlerConfiguration.class})
 
 class EncargadoControllerTest {
 
