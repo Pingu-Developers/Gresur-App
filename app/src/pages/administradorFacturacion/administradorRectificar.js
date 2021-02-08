@@ -184,23 +184,22 @@ export class administradorRectificar2 extends Component {
         if(prevState.send !== this.state.send && this.state.send && this.props.data.facturas.numFactura){
             console.log(this.state.lineas)
             var valid = true;
-            if(this.state.lineas.every((val, index) => val>0 )){
+            if(this.state.lineas.length>0 && this.state.lineas.every((val, index) => val>0 )){
                 valid = false;
             }
 
             if(this.state.lineas.every((val,index)=> {return (val.producto === this.props.data.facturas.lineasFacturas[index].producto) 
-                &&(val.cantidad === this.props.data.facturas.lineasFacturas[index].cantidad)}))
+                &&(val.cantidad === this.props.data.facturas.lineasFacturas[index].cantidad)}) && (this.state.lineas.length == 0 && this.props.data.facturas.lineasFacturas.length == 0))
             {
                 valid=false;
                 document.getElementById("botonSnack")? document.getElementById("botonSnack").click() : null();
-                console.log("SAME")
             }
             if(valid){
                 const facturaRect = {
                     ...this.props.data.facturas,
                     id:null,
                     numFactura:null,
-                    lineasFacturas:this.state.lineas,
+                    lineasFacturas:[...this.state.lineas],
                     importe:parseFloat(this.state.total.toFixed(2)),
                     descripcion:"",
                     original:this.props.data.facturas
