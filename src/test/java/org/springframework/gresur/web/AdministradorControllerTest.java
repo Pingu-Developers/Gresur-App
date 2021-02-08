@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.gresur.configuration.ExceptionHandlerConfiguration;
 import org.springframework.gresur.configuration.SecurityConfiguration;
 import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.Almacen;
@@ -30,12 +31,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.google.gson.Gson;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.ArgumentMatchers.any;
 
 @WebMvcTest(controllers = AdministradorController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
-excludeAutoConfiguration= SecurityConfiguration.class)
+excludeAutoConfiguration= {SecurityConfiguration.class,ExceptionHandlerConfiguration.class})
 
 class AdministradorControllerTest {
 	
@@ -62,7 +61,7 @@ class AdministradorControllerTest {
 	
 	@MockBean
 	AdministradorService admService;
-
+	
 	private Administrador administrador;
 	private Dependiente dependiente;
 	private EncargadoDeAlmacen encargado;
@@ -285,7 +284,6 @@ class AdministradorControllerTest {
 	void testGetPersonalProfileisOk() throws Exception  {
 		mockMvc.perform(MockMvcRequestBuilders.
 					get("/api/adm/personal/profile")
-					.contentType(MediaType.APPLICATION_JSON)
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
