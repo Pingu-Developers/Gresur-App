@@ -270,7 +270,7 @@ public class VehiculoController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> deleteContrato(@PathVariable("matricula") String matricula) throws DataAccessException{
 		
-		if(!matricula.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}") || !matricula.matches("E[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}")) {
+		if(!(matricula.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}") || matricula.matches("E[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}"))) {
 			return ResponseEntity.badRequest().body("Formato de matricula no valido");
 		}
 		else {
