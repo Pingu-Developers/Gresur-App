@@ -93,6 +93,16 @@ public class ContratoController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> updateContrato(@RequestBody @Valid Contrato c,@PathVariable("nif") String nif, BindingResult result) throws DataAccessException{
 		
+		Contrato contratoOld = contratoService.findByPersonalNIF(nif);
+		
+		if(contratoOld==null) {
+			return ResponseEntity.badRequest().body("El contrato que se intenta editar no existe");
+		}
+		
+		if(contratoOld.getVersion()!=c.getVersion()) {
+			return ResponseEntity.badRequest().body("Concurrent modification");
+		}
+		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
@@ -104,8 +114,6 @@ public class ContratoController {
 		}
 		else {
 			try {
-				Contrato contratoOld = contratoService.findByPersonalNIF(nif);
-	
 				contratoOld.setEntidadBancaria(c.getEntidadBancaria());
 				contratoOld.setFechaFin(c.getFechaFin());
 				contratoOld.setFechaInicio(c.getFechaInicio());

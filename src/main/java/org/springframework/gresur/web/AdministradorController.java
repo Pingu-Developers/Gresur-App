@@ -313,7 +313,7 @@ public class AdministradorController {
 	}
 	
 	@PutMapping("/personal/profile")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("permitAll()")
 	public ResponseEntity<?> putPersonalByNif(@Valid @RequestBody Personal personalModificado, BindingResult result){
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();

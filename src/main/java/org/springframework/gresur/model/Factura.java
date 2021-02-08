@@ -16,6 +16,7 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
@@ -34,6 +35,10 @@ public class Factura{
 	@Id
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ENTITY_ID")
 	protected Long id;
+	
+	@Version
+	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	private Integer version;
 	
 	@Column(name = "num_factura", unique = true)
 	protected String numFactura;

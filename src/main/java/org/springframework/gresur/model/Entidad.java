@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.TableGenerator;
+import javax.persistence.Version;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -27,6 +28,10 @@ public class Entidad{
             allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ENTITY_ID")
 	protected Long id;
+	
+	@Version
+	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	private Integer version;
 	
 	@NotBlank(message = "No puede ser vacio")
 	@Size(min = 3, max = 50, message = "Debe ser de entre 3 y 50 caracteres")

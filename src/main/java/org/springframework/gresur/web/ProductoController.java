@@ -110,9 +110,19 @@ public class ProductoController {
 		return diccVehiculoProductos;
 	}
 	
-	@PostMapping("/save")
+	@PostMapping("/save") //TODO SERIA UN PUT porque ACTUALIZA?
 	@PreAuthorize("hasRole('ADMIN') or hasRole('ENCARGADO')")
 	public ResponseEntity<?> saveProducto(@RequestBody @Valid Producto newProducto, BindingResult result) {
+		
+		Producto p = productoService.findById(newProducto.getId());
+		
+		if(p==null) {
+			return ResponseEntity.badRequest().body("El producto que se intenta editar no existe");
+		}
+		
+		if(p.getVersion() != newProducto.getVersion()) {
+			return ResponseEntity.badRequest().body("Concurrent modification");
+		}
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
@@ -120,7 +130,6 @@ public class ProductoController {
 		}
 		
 		try {
-			Producto p = productoService.findById(newProducto.getId());
 			p.setNombre(newProducto.getNombre());
 			p.setDescripcion(newProducto.getDescripcion());
 			p.setUnidad(newProducto.getUnidad());
