@@ -25,7 +25,9 @@ import org.springframework.gresur.service.AdministradorService;
 import org.springframework.gresur.service.ContratoService;
 import org.springframework.gresur.service.PersonalService;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
@@ -33,6 +35,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import java.time.LocalDate;
 import javax.persistence.EntityManager;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -52,7 +55,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= SecurityConfiguration.class)
 class ContratoControllerTest {
-
+	
 	@Autowired
 	private MockMvc mockMvc;
 	
@@ -61,9 +64,6 @@ class ContratoControllerTest {
 	
 	@MockBean
 	AdministradorService admService;
-	
-	@MockBean
-	EntityManager em;
 	
 	private String rolTodos = "TODOS";
 	private String rol = "DEPENDIENTE";
@@ -113,15 +113,19 @@ class ContratoControllerTest {
 	@DisplayName("Agregar Contrato Por NIF -- caso positivo")
     @Test
 	void testPostAddContratoByNifisOk() throws Exception  {
+		nif = "dnfsodnfiosdn";
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(contrato);
+		
 		mockMvc.perform(MockMvcRequestBuilders.
-					post("/api/contrato/add/nif")
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(jsonString)
+					post("/api/contrato/add/{nif}", nif)
 					.with(csrf())
-					).andExpect(MockMvcResultMatchers.status().isOk());
+					.characterEncoding("utf-8")
+					.content(jsonString)
+					.contentType(MediaType.APPLICATION_JSON)
+					).andExpect(MockMvcResultMatchers.status().isBadRequest());		
 	}
+	
 		/*		@WithMockUser(value = "spring")
 	@DisplayName("Agregar Contrato Por NIF -- caso negativo")
     @Test
