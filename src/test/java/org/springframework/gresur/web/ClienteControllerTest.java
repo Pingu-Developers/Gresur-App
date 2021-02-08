@@ -9,23 +9,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.gresur.configuration.SecurityConfiguration;
-import org.springframework.gresur.model.Administrador;
-import org.springframework.gresur.model.Almacen;
 import org.springframework.gresur.model.Cliente;
-import org.springframework.gresur.model.Dependiente;
-import org.springframework.gresur.model.EncargadoDeAlmacen;
-import org.springframework.gresur.model.Personal;
-import org.springframework.gresur.model.Transportista;
-import org.springframework.gresur.repository.RolRepository;
-import org.springframework.gresur.repository.UserRepository;
-import org.springframework.gresur.service.AdministradorService;
 import org.springframework.gresur.service.ClienteService;
-import org.springframework.gresur.service.DependienteService;
-import org.springframework.gresur.service.EncargadoDeAlmacenService;
-import org.springframework.gresur.service.TransportistaService;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import org.springframework.test.web.servlet.MockMvc;
@@ -33,9 +20,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.google.gson.Gson;
 import static org.mockito.BDDMockito.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.ArgumentMatchers.any;
+
 @WebMvcTest(controllers = ClienteController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= SecurityConfiguration.class)
@@ -116,15 +103,30 @@ class ClienteControllerTest {
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	@WithMockUser(value = "spring")
-	@DisplayName("Consultar cliente defaulter por nif -- caso negativo")
+	@DisplayName("Consultar cliente defaulter por nif -- caso negativo (NIF No Encontrado)")
     @Test
-	void testGetClienteDefaulterByNifError() throws Exception  {
-		mockMvc.perform(MockMvcRequestBuilders.
+	void testGetClienteDefaulterByNifErrorNotFound() throws Exception  {
+		String error = mockMvc.perform(MockMvcRequestBuilders.
 					get("/api/cliente/{NIF}/isDefaulter",cliente.getNIF()) 
 					.with(csrf())
-					).andExpect(MockMvcResultMatchers.status().isBadRequest());
+					).andExpect(MockMvcResultMatchers.status().isBadRequest())
+				.andReturn().getResponse().getContentAsString();
+		assertThat(error).isEqualTo("El NIF no es válido o no existe nadie con ese NIF en la base de datos");
+
 	}
-	
+	@WithMockUser(value = "spring")
+	@DisplayName("Consultar cliente defaulter por nif -- caso negativo (NIF No Valido)")
+    @Test
+	void testGetClienteDefaulterByNifErrorInvalid() throws Exception  {
+		cliente.setNIF("123A");
+		String error = mockMvc.perform(MockMvcRequestBuilders.
+					get("/api/cliente/{NIF}/isDefaulter",cliente.getNIF()) 
+					.with(csrf())
+					).andExpect(MockMvcResultMatchers.status().isBadRequest())
+				.andReturn().getResponse().getContentAsString();
+		assertThat(error).isEqualTo("Formato del NIF invalido");
+
+	}
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * 									GET     CLIENTE	    BY NIF								 *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -142,9 +144,12 @@ class ClienteControllerTest {
 	@DisplayName("Consultar cliente  por nif -- caso negativo")
     @Test
 	void testGetClienteByNifisError() throws Exception  {
-		mockMvc.perform(MockMvcRequestBuilders.
+		cliente.setNIF("123A");
+		String error = mockMvc.perform(MockMvcRequestBuilders.
 					get("/api/cliente/{NIF}",cliente.getNIF()) 
 					.with(csrf())
-					).andExpect(MockMvcResultMatchers.status().isOk());
+					).andExpect(MockMvcResultMatchers.status().isBadRequest())
+				.andReturn().getResponse().getContentAsString();
+		assertThat(error).isEqualTo("Formato del NIF invalido");
 	}
 }
