@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
 
     boton: {
-        marginRight:30
+        marginRight:0
     }
 
 }));

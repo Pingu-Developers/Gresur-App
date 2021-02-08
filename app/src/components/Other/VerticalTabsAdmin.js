@@ -59,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
 export default function VerticalTabs(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const vehiculos = props.datos.vehiculosITVSeguroReparacion;
   const pedidos = props.datos.pedidos;
 
   const handleChange = (event, newValue) => {
@@ -83,7 +82,7 @@ export default function VerticalTabs(props) {
 
       </Tabs>
       <TabPanel style={{width:'100%'}} value={value} index={0}>
-        <VehiculosInfoAdmin datos = {vehiculos}/>      
+        <VehiculosInfoAdmin />      
       </TabPanel>
       <TabPanel style={{width:'100%'}} value={value} index={1}>
         <HistorialPedidosAdmin datos = {pedidos}/>
