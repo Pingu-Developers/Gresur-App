@@ -29,9 +29,6 @@ import {
   } from '@material-ui/pickers';
 
 const style = (theme) => ({
-    grid1:{
-        height:"66vh",
-    },
     paper:{
         backgroundColor:"#fafafa",
         height:"100%",
@@ -59,7 +56,6 @@ const style = (theme) => ({
         marginLeft:"5%",
         padding:5,
         height:"20vh",
-
     },
     grid4:{
         marginLeft:"5%",
@@ -105,8 +101,11 @@ const style = (theme) => ({
         paddingBottom:0,
         borderRadius: 10,
         marginLeft:10,
-        marginRight:20
-
+        marginRight:20,
+        overflowY: 'auto',
+        height: 280,
+        minHeight: 280,
+        width: 500,
       },
     warning: {
         width: 60,
@@ -433,6 +432,7 @@ render() {
               loading={loading}
               renderInput={(params) => (
                 <TextField
+                  variant = "outlined"
                   {...params}
                   error={this.state.errores.proveedorSel.length>0}
                   helperText={this.state.errores.proveedorSel[0]}
@@ -459,14 +459,14 @@ render() {
             <FormNuevoProveedor handleClose={this.handleCloseProveedor} open={this.state.openProveedor}/>
             <Button
               variant="contained"
-              color="primary"
-              style={{height:"60%"}}
+              color="secondary"
+              style={{height:"60%", color: 'white'}}
               onClick={this.handleEnviar}
             >
               Crear factura
             </Button>
             </div>
-            <Grid item xs={12} className={classes.grid1}>
+            <Grid item xs={12}>
                 <Paper variant="outlined" className={classes.paper}>
                     <Grid container className={classes.container} >
                         <Grid container item direction="column" className={classes.verticalGrid1}>
@@ -489,6 +489,7 @@ render() {
                                          variant="outlined" />}
                                 />
                             </Grid>
+                            <div style = {{display: 'flex', width: '100%', justifyContent: 'center'}}>
                             {this.state.valueVehiculo&&seguroitv?<fieldset className={classes.fieldset}>
                                 <Grid item className={classes.grid3}>
                                     <Typography variant={"h5"} className={classes.title}>Vehiculo</Typography>
@@ -535,6 +536,7 @@ render() {
                                     </div> 
                                 </Grid>
                             </fieldset>:null}
+                        </div>
                             
                          </Grid>
                          <Grid container item direction="column" className={classes.verticalGrid2}>

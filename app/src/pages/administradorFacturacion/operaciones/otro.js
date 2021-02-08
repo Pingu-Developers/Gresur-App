@@ -172,6 +172,7 @@ export class otro extends Component {
                     renderInput={(params) => (
                         <TextField
                         {...params}
+                        variant = "outlined"
                         error={this.state.errores.proveedorSel.length>0}
                         helperText={this.state.errores.proveedorSel[0]}
                         label="Proveedor"
@@ -197,8 +198,8 @@ export class otro extends Component {
                     <FormNuevoProveedor handleClose={this.handleCloseProveedor} open={this.state.openProveedor}/>
                     <Button
                     variant="contained"
-                    color="primary"
-                    style={{height:"60%"}}
+                    color="secondary"
+                    style={{height:"60%", color: 'white'}}
                     onClick={this.handleEnviar}
                     >
                     Crear factura
