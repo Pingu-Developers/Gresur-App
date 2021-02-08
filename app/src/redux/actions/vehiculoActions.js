@@ -19,13 +19,10 @@ export const getVehiculos = () => (dispatch) =>{
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -47,13 +44,10 @@ export const getVehiculosInfo = (value) => (dispatch) =>{
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }

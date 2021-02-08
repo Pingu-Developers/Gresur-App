@@ -15,10 +15,10 @@ export const getClientes = () => (dispatch) => {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-               console.log(err)
+                console.log(err)
             }
         })
 }
@@ -41,10 +41,10 @@ export const getFacturasCliente = (id) => (dispatch) => {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-               console.log(err)
+                console.log(err)
             }
         })
 }
@@ -83,10 +83,10 @@ export const sendDevolucion = (datos) => (dispatch) => {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-               console.log(err)
+                console.log(err)
             }
         })
 }
