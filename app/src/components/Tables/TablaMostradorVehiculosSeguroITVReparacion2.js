@@ -57,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
     gridTemplateRows:"1fr 1fr"
   },
   categoria:{
+    overflow:"hidden",
     height:200,
     margin:20,
     boxSizing:'content-box',
@@ -222,8 +223,7 @@ export default function ControlledAccordions(props) {
                     </div>:
                     <div className={classes.categoria} style={{display:"grid",gridTemplateRows:"1fr 1fr",justifyItems:"center",alignItems:"center"}}>
                         <WarningIcon className={classes.warning} color='primary'/>
-                        <Typography align="center" variant="body2" color="textSecondary" style={{margin: "10px 15px"}}>El vehiculo con matricula {row.vehiculo.matricula}
-                         no dispone de ninguna ITV</Typography>
+                        <Typography align="center" variant="body2" color="textSecondary" style={{margin: "10px 15px"}}>El vehiculo con matricula {row.vehiculo.matricula} no dispone de ninguna ITV</Typography>
                     </div>}
                     
                     <div className={classes.categoria} style={{marginTop:0, height:220,gridRow:2,gridColumn:"1 / span 3",overflow: "hidden",

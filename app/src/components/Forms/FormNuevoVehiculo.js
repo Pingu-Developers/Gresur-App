@@ -170,7 +170,6 @@ export class FormNuevoVehiculo extends Component {
                 loading:false
             })
         }
-        console.log(this.state.capacidad)
 
         if(prevState.enviar != this.state.enviar && this.state.enviar){
             var valid = true;
@@ -218,8 +217,7 @@ export class FormNuevoVehiculo extends Component {
                     tipoVehiculo: this.state.tipoVehiculo,
                     mma: this.state.mma
                 }
-
-                this.props.addVehiculo(vehiculo);
+                this.props.addVehiculo(vehiculo,this.props.page,this.props.size);
                 this.props.cerrar();
             }
 
@@ -233,7 +231,6 @@ export class FormNuevoVehiculo extends Component {
     render() {
         const {classes}= this.props;
         const tiposVehiculos = this.props.data.tiposVehiculos;
-
         return (
             
             <div>

@@ -66,7 +66,7 @@ export default function ResponsiveDialog(props) {
         <DialogContent>
           <DialogContentText>
            
-            <FormNuevoVehiculo cerrar={handleClose}/>
+            <FormNuevoVehiculo page={props.page} size={props.size} cerrar={handleClose}/>
            
           </DialogContentText>
         </DialogContent>
