@@ -39,8 +39,8 @@ const initialState = {
       enviado:false,
 } 
 const containerStyle = {
-  width: '1000px',
-  height: '750px'
+  width: '100%',
+  height: '100%'
 };
 
 const center = {
@@ -206,10 +206,10 @@ class Mapa extends Component {
       googleMapsApiKey="AIzaSyDJnDnhlu5Xf8OAtfDqjbqcaMvH0Rxs_2Y"
       libraries = {libraries}
       >
-        <Grid container spacing={5}>
-        <Grid item xs={3} style={{display:'inline-block',justifyContent:'center', paddingTop:'3%', paddingLeft:'5%'}}>
+        <Grid container spacing={5} >
+        <Grid item xs={3} style={{position: 'absolute', top:120, left: -10, zIndex: 1000}}>
           <Paper style={{border: 'solid', borderColor:'#f5b041', borderWidth:'3px'}}>
-            <Typography style={{display:'flex', justifyContent:'center', fontWeight:'bold', margin:'3%',fontSize:'30px'}}>Calcular ruta óptima</Typography>
+            <Typography style={{textAlign: 'center', color: '#7a7a7a', fontWeight:'bold', margin:20 ,fontSize:'30px'}}>Calcular ruta óptima</Typography>
       <div className='map-settings' >
           <div className='row'>
             <div className='col-md-6 col-lg-4'>
@@ -429,10 +429,9 @@ class Mapa extends Component {
         </div>
         </Paper>
         </Grid>
-        <Grid item xs='480px' style={{ display:'inline',paddingTop:'3%',paddingLeft:'5%'}}>
-          <Paper style={{border: 'solid', borderColor:'#f5b041', borderWidth:'3px'}} >
+
+        <Grid item xs='480px' style={{ position: 'absolute', margin: 0, border: 0, height: '94%', width: '100%', padding:0}}>
         <GoogleMap 
-          mapContainerStyle = {{width:'50px'}}
           clickableIcons = {true}
           mapContainerStyle={containerStyle}
           center={center}
@@ -459,7 +458,7 @@ class Mapa extends Component {
                     waypoints: this.state.waypoints,
                     travelMode: this.state.travelMode,
                     //PONER A TRUE DESPUES DE LAS PRUEBAS
-                    optimizeWaypoints: false
+                    optimizeWaypoints: true
 
                   }}
                   // required
@@ -489,7 +488,6 @@ class Mapa extends Component {
           <></>
           
         </GoogleMap>
-        </Paper>
         </Grid>
         </Grid>
         </LoadScript>
