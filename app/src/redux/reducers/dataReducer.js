@@ -96,7 +96,10 @@ export default function (state = initialState, action) {
                 gestionAlmacenEncargado: action.payload.data
             }
         case CLEAR_ALMACENGESTIONENCARGADO:
-            return initialState;
+            return {
+                ...state,
+                gestionAlmacenEncargado: []
+            };
         case SET_VEHICULOSITVSEGUROREPARACION:
             return {
                 ...state,

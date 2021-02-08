@@ -93,7 +93,7 @@ class encargadoGestion extends Component {
         hist.addEventListener('mousedown', this.mouseDownHandler);
 
         //carga los datos de la bd
-        this.props.loadAlmacenGestionEncargado()
+        this.props.loadAlmacenGestionEncargado(!this.props.almacenAdm ? -1 : this.props.almacenAdm)
     }
 
     componentWillUnmount(){
@@ -236,7 +236,8 @@ class encargadoGestion extends Component {
                                             porcentajeAlmacen = {entry.porcentajeAlmacen}
                                             totalOcupado = {this.porcentajeDeAlmacenAsignado()}
                                             axisH = {document.getElementById('axis').clientHeight}
-                                            dragHandler = {this.mouseDownHandler}/>
+                                            dragHandler = {this.mouseDownHandler}
+                                            almAdm = {!this.props.almacenAdm ? -1 : this.props.almacenAdm}/>
                                 ) : null
                             }
                         </div>               

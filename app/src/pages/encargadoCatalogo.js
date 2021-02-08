@@ -202,7 +202,7 @@ class EncargadoCatalogo extends Component {
         }
 
         if(this.state.enviarNoti !== prevState.enviarNoti && this.state.enviarNoti ){
-            this.props.putNotificacion(this.state.productos.slice(-1).pop())
+            this.props.putNotificacion(!this.props.almacenAdm ? -1 : this.props.almacenAdm,this.state.productos.slice(-1).pop())
             this.setState({
                 enviarNoti:false,
             })
@@ -211,7 +211,7 @@ class EncargadoCatalogo extends Component {
     }
 
     componentDidMount () {
-        this.props.getCategorias()
+        this.props.getCategorias(!this.props.almacenAdm ? -1 : this.props.almacenAdm)
         this.setState({
             value:0
         })
