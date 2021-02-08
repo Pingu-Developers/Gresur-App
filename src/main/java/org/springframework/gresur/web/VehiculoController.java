@@ -3,6 +3,7 @@ package org.springframework.gresur.web;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +12,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Personal;
@@ -170,6 +173,48 @@ public class VehiculoController {
 		}
 		
 		return ldef;
+	}
+	
+	@GetMapping("/allpaginado")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Map<String,Object> getAllVehiculos(Pageable pageable){
+		
+		Page<Vehiculo> pagina = vehiculoService.findAll(pageable); 
+		List<Vehiculo> listaVehiculos = pagina.toList();
+	
+		List<Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>>> ldef = new ArrayList<Tuple4<Vehiculo,List<Seguro>,List<ITV>,List<Reparacion>>>();
+		
+		for (Vehiculo v: listaVehiculos) {
+			
+			Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>> tp = new Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>>();
+					
+			tp.setE1(v);
+			
+			List<Seguro> ls = seguroService.findByVehiculo(v.getMatricula());
+			ls.sort(Comparator.comparing(Seguro::getFechaExpiracion).reversed());
+			tp.setE2(ls);
+			
+			List<ITV> li = itvService.findByVehiculo(v.getMatricula());
+			li.sort(Comparator.comparing(ITV::getExpiracion).reversed());
+			tp.setE3(li);
+			
+			List<Reparacion> lr = reparacionService.findByMatricula(v.getMatricula());
+			lr.sort(Comparator.comparing(Reparacion::getFechaEntradaTaller).reversed());
+			tp.setE4(lr);
+			
+			tp.name1="vehiculo";
+			tp.name2="seguros";
+			tp.name3="itvs";
+			tp.name4="reparaciones";
+			
+			ldef.add(tp);
+		}
+		
+		Map<String,Object> res = new HashMap<>();
+		res.put("articleDetails", ldef);
+		res.put("totalPages", pagina.getTotalPages());
+		res.put("totalElements", pagina.getTotalElements());
+		return res;
 	}
 	
 	@GetMapping("/allsimple")

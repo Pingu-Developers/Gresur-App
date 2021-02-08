@@ -37,11 +37,10 @@ export default function ResponsiveDialog(props) {
 
   const data = props.data;
   const condicion = props.condicion;
-  const resp = condicion===false? 'Ver historial de ITVs' : 'Ver historial de seguros';
 
   return (
     <div>
-      <Button variant='contained' color='primary' onClick={handleClickOpen}>{resp}</Button>
+      <Button variant='outlined' color='secondary' onClick={handleClickOpen}>Ver historial</Button>
       <Dialog
         fullWidth={true}
         fullScreen={false}
@@ -51,7 +50,7 @@ export default function ResponsiveDialog(props) {
         aria-labelledby="responsive-dialog-title"
       >
         <div className={classes.diaboton}>
-            <DialogTitle id="responsive-dialog-title">{resp}</DialogTitle>
+            <DialogTitle id="responsive-dialog-title">Historial</DialogTitle>
             <Button className={classes.boton} onClick={handleClose} color="primary"><CloseIcon/></Button>
         </div>
         <DialogContent>

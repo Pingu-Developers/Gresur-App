@@ -40,7 +40,6 @@ export default function CustomizedTables(props) {
   const datos = props.data;
 
   return (
-    <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
           <TableRow className={classes.columnas}>
@@ -66,6 +65,5 @@ export default function CustomizedTables(props) {
           ))}
         </TableBody>
       </Table>
-    </TableContainer>
   );
 }

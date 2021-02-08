@@ -13,6 +13,8 @@ import javax.persistence.PersistenceContext;
 import org.omg.CORBA.portable.UnknownException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Notificacion;
@@ -68,6 +70,12 @@ public class VehiculoService {
 	public Iterable<Vehiculo> findAll() throws DataAccessException{
 		return vehiculoRepository.findAll();
 	}
+	
+	@Transactional(readOnly = true)
+	public Page<Vehiculo> findAll(Pageable pageable) throws DataAccessException{
+		return vehiculoRepository.findAll(pageable);
+	}
+	
 	@Transactional(readOnly = true)
 	public Vehiculo findByMatricula(String matricula) throws DataAccessException{
 		return vehiculoRepository.findByMatricula(matricula).orElse(null);

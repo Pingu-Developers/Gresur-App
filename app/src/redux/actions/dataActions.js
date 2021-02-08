@@ -701,6 +701,30 @@ export const loadVehiculosSeguroITVReparacion = () => function (dispatch) {
         })
 }
 
+export const loadVehiculosSeguroITVReparacionPaged = (pageNumber,size) => function (dispatch) {
+    dispatch({type: LOADING_UI})
+
+    axios.get(`/vehiculo/allpaginado?page=${pageNumber}&size=${size}`)
+        .then((res) => {
+            dispatch({type: SET_VEHICULOSITVSEGUROREPARACION, payload: res})
+            dispatch({type: CLEAR_ERRORS})
+        })
+
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data.message
+                })
+            } else {
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err
+                })
+            }
+        })
+}
+
 export const clearVehiculosSeguroITVReparacion = () => (dispatch) => {
     dispatch({type: CLEAR_VEHICULOSITVSEGUROREPARACION})
     
