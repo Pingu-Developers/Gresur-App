@@ -166,6 +166,7 @@ export default function ResponsiveDialog(props) {
       if(valid) {
         const productoNew = {
           id: producto.id,
+          version: producto.version,
           nombre: nombre,
           descripcion: descripcion,
           unidad: unidad,

@@ -127,6 +127,8 @@ import { connect } from 'react-redux';
         event.preventDefault();
         //Valores del nuevo contrato rellenado en el formulario
          const contrato = {
+            id: this.props.edicion.id,
+            version: this.props.edicion.version,
             nomina: this.state.nomina,
             entidadBancaria: this.state.entidadBancaria,
             fechaInicio: this.state.fechaInicio,
