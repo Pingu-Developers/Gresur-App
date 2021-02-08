@@ -110,6 +110,7 @@ export class administradorPersonal extends Component {
 
     componentDidUpdate(prevprops, prevstate) {
         if(prevstate.value !== this.state.value){
+            console.log("Pls")
             switch(this.state.value){
                 case 0:
                     this.props.loadPersonalContrato("TODOS"); break;

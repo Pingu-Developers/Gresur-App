@@ -12,10 +12,14 @@ export const loadPedidos = (orden="DEFAULT") => (dispatch) => {
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data.message
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -29,10 +33,14 @@ export const loadPedidosPaginados = (orden="",pageNo,pageSize) => (dispatch) => 
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data.message
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -49,13 +57,10 @@ export const loadPedidoById = (id) => (dispatch) => {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -70,10 +75,14 @@ export const loadPedidosByEstado = (estado, orden="DEFAULT") => (dispatch) => {
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data.message
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -87,10 +96,14 @@ export const loadPedidosByEstadoPaginado = (estado, orden="",pageNo,pageSize) =>
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data.message
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -111,10 +124,10 @@ export const cancelarPedido = (id, estado="TODO", orden="",pageNo,pageSize) => (
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-               console.log(err)
+                console.log(err)
             }
         })
 
@@ -129,17 +142,13 @@ export const loadProductos = () => (dispatch) => {
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -153,17 +162,13 @@ export const loadProductosByNombre = (nombre) => (dispatch) => {
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -172,7 +177,7 @@ export const clearProductos = () => (dispatch) => {
     dispatch({type: CLEAR_PRODUCTOS})
 }
 
-export const loadPersonalContrato = (rol) => function (dispatch) {
+export const loadPersonalContrato = (rol="TODOS") => function (dispatch) {
     dispatch({type: LOADING_UI})
     
     axios.get(`/contrato/${rol}`)
@@ -181,10 +186,14 @@ export const loadPersonalContrato = (rol) => function (dispatch) {
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -197,10 +206,14 @@ export const loadPersonal = () => function (dispatch) {
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -233,10 +246,14 @@ export const loadAlmacen = () => function (dispatch){
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 
 
@@ -251,10 +268,14 @@ export const loadAlmacenDisponible = () => function (dispatch){
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 
 
@@ -273,29 +294,31 @@ export const loadPersonalProfile = () => function (dispatch) {
             dispatch({type: SET_USER, payload: res})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
  
 export const putPersonalProfile = (personal) => function (dispatch) {
-    axios.put('/adm/personal/profile',personal)    .then((res) => {
-        dispatch(loadPersonalContrato());
+    axios.put('/adm/personal/profile',personal)    
+    .then((res) => {
+        //dispatch(loadPersonalContrato());
         dispatch(getUserData());
     })
     .catch((err) => {
         if(err.response){
             dispatch({
                 type: SET_ERRORS,
-                payload: err.response.data.message
+                payload: err.response.data
             })
         } else {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err
-            })
+            console.log(err)
         }
     })
 }
@@ -311,10 +334,7 @@ export const putPersonalProfilePassword = (personal) => function (dispatch) {
                 payload: err.response.data
             })
         } else {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err
-            })
+            console.log(err)
         }
     })
 }
@@ -326,7 +346,14 @@ export const addPersonal = (rolEmpleado,personal) => (dispatch) =>{
             dispatch(loadPersonal());
         })
         .catch((err) => {
-            console.log(err)
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         }) 
 }
 
@@ -339,7 +366,14 @@ export const addContrato = (nif,contrato) => (dispatch) =>{
         });
     })
     .catch((err) => {
-        console.log(err)
+        if(err.response){
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data
+            })
+        } else {
+            console.log(err)
+        }
     }) 
 }
 
@@ -355,10 +389,10 @@ export const editContrato = (nif,contrato) => (dispatch) =>{
         if(err.response){
             dispatch({
                 type: SET_ERRORS,
-                payload: err.response.data.message
+                payload: err.response.data
             })
         } else {
-           console.log(err)
+            console.log(err)
         }
     })
 }
@@ -376,7 +410,14 @@ export const enReparto = (id,vehiculo) => (dispatch) =>{
         });
     })
     .catch((err) => {
-        console.log(err)
+        if(err.response){
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data
+            })
+        } else {
+            console.log(err)
+        }
     }) 
 }
 
@@ -389,7 +430,14 @@ export const entregado = (id) => (dispatch) =>{
         });
     })
     .catch((err) => {
-        console.log(err)
+        if(err.response){
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data
+            })
+        } else {
+            console.log(err)
+        }
     }) 
 }
 
@@ -403,10 +451,14 @@ export const loadPedidosHoy = () => (dispatch) => {
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data.message
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -421,10 +473,14 @@ export const transportistaEnReparto = () => (dispatch) => {
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data.message
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -438,10 +494,14 @@ export const loadPedidosByEstadoTransportista = (estado) => (dispatch) => {
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data.message
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -455,10 +515,14 @@ export const loadFactura = (id) => (dispatch) => {
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data.message
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -476,13 +540,10 @@ export const loadVehiculosITVSeguroDisponibilidadByTransportista = () => functio
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -504,10 +565,10 @@ export const setProducto = (producto,page,categoria) => (dispatch) => {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-               console.log(err)
+                console.log(err)
             }
         })
 }
@@ -525,13 +586,10 @@ export const loadOcupacionVehiculosEnReparto = () => function (dispatch) {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -554,13 +612,10 @@ export const loadClienteIsDefaulter = (NIF) => function (dispatch) {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -583,13 +638,10 @@ export const loadCliente = (NIF) => function (dispatch) {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -613,13 +665,10 @@ export const loadAlmacenGestion = () => (dispatch) => {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -638,13 +687,10 @@ export const loadAlmacenGestionEncargado = (almacenAdm) => (dispatch) => {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -661,13 +707,10 @@ export const updateEstanteriaCapacidad = (categoria, capacidad, almAdm) => (disp
         if(err.response){
             dispatch({
                 type: SET_ERRORS,
-                payload: err.response.data.message
+                payload: err.response.data
             })
         } else {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err
-            })
+            console.log(err)
         }
         dispatch(loadAlmacenGestionEncargado(almAdm));
     })
@@ -690,13 +733,10 @@ export const loadVehiculosSeguroITVReparacion = () => function (dispatch) {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -714,13 +754,10 @@ export const loadVehiculosSeguroITVReparacionPaged = (pageNumber,size) => functi
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -730,16 +767,23 @@ export const clearVehiculosSeguroITVReparacion = () => (dispatch) => {
     
 }
 
-export const addVehiculo = (vehiculo) => (dispatch) =>{
+export const addVehiculo = (vehiculo,pageNo,size) => (dispatch) =>{
     axios.post(`/vehiculo/add/`, vehiculo)
     .then((res) => {
-        dispatch(loadVehiculosSeguroITVReparacion());
+        dispatch(loadVehiculosSeguroITVReparacionPaged(pageNo,size));
         dispatch({
             type: SET_ENVIADO,
         });
     })
     .catch((err) => {
-        console.log(err)
+        if(err.response){
+            dispatch({
+                type: SET_ERRORS,
+                payload: err.response.data
+            })
+        } else {
+            console.log(err)
+        }
     }) 
 }
 
@@ -756,13 +800,10 @@ export const loadTiposVehiculos = () => function (dispatch) {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -784,13 +825,10 @@ export const deleteVehiculo = (matricula) => function (dispatch) {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -804,10 +842,14 @@ export const loadBalance = (year) => (dispatch) => {
             dispatch({type: SET_BALANCE, payload: res})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data.message
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -826,13 +868,10 @@ export const setEstaPagadoFacturaE = (id,estado="TODO",orden="", pageNo,pageSize
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         })
 }
@@ -852,13 +891,10 @@ export const updatePedido = (estado="TODO",orden="", pedido, pageNo,pageSize) =>
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
             estado === "TODO" ? dispatch(loadPedidosPaginados(orden,pageNo,pageSize)) : dispatch(loadPedidosByEstadoPaginado(estado, orden,pageNo,pageSize))
         })
@@ -875,10 +911,14 @@ export const loadFacturaEmitida = (numFactura) => (dispatch) => {
             dispatch({type: CLEAR_ERRORS})
         })
         .catch((err) => {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err.response.data
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -898,14 +938,15 @@ export const rectificaFactura = (factura) => (dispatch) => {
         if(err.response){
             dispatch({
                 type: SET_ERRORS,
-                payload: err.response.data.message
+                payload: err.response.data
             })
         } else {
-            dispatch({
-                type: SET_ERRORS,
-                payload: err
-            })
+            console.log(err)
         }
     })
 
+}
+
+export const clearLoading = () => (dispatch) => {
+    dispatch({type: CLEAR_ERRORS})
 }

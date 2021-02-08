@@ -73,7 +73,7 @@ export default function VehiculosInfoAdmin(props) {
         <div>
             <div className={classes.tituloFiltro}>
                 
-                <Typography variant='h3' className={classes.titulo}>HISTORIAL DE PEDIDOS</Typography>
+                <Typography variant='h3' className={classes.titulo}>VEHICULOS</Typography>
 
             </div>       
             <div className={classes.tituloFiltro}>
@@ -112,7 +112,7 @@ export default function VehiculosInfoAdmin(props) {
                         </div>
                     </FormControl>
                 </div>
-                <PopUpNuevoVehiculo className={classes.boton}/>
+                <PopUpNuevoVehiculo page={pageNo} size={size} className={classes.boton}/>
             </div>
             <div className={classes.main}>
                 {vehiculos === undefined? null:<TablaMostradorVehiculosSeguroITVReparacion datos = {vehiculos.articleDetails}/>}

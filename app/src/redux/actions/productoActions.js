@@ -18,13 +18,10 @@ export const getProductosPaginados = (page,categoria = null,string =null,size = 
                 if(err.response){
                     dispatch({
                         type: SET_ERRORS,
-                        payload: err.response.data.message
+                        payload: err.response.data
                     })
                 } else {
-                    dispatch({
-                        type: SET_ERRORS,
-                        payload: err
-                    })
+                    console.log(err)
                 }
             });
 
@@ -41,13 +38,10 @@ export const getProductosPaginados = (page,categoria = null,string =null,size = 
                 if(err.response){
                     dispatch({
                         type: SET_ERRORS,
-                        payload: err.response.data.message
+                        payload: err.response.data
                     })
                 } else {
-                    dispatch({
-                        type: SET_ERRORS,
-                        payload: err
-                    })
+                    console.log(err)
                 }
             });
     }else{
@@ -63,13 +57,10 @@ export const getProductosPaginados = (page,categoria = null,string =null,size = 
                 if(err.response){
                     dispatch({
                         type: SET_ERRORS,
-                        payload: err.response.data.message
+                        payload: err.response.data
                     })
                 } else {
-                    dispatch({
-                        type: SET_ERRORS,
-                        payload: err
-                    })
+                    console.log(err)
                 }
             });
 
@@ -90,13 +81,10 @@ export const getCategorias = (almacenAdm) => (dispatch) =>{
                 if(err.response){
                     dispatch({
                         type: SET_ERRORS,
-                        payload: err.response.data.message
+                        payload: err.response.data
                     })
                 } else {
-                    dispatch({
-                        type: SET_ERRORS,
-                        payload: err
-                    })
+                    console.log(err)
                 }
             });
 }
@@ -109,7 +97,6 @@ export const putNotificacion = (almacenAdm, producto) => (dispatch) =>{
                 dispatch({ type: CLEAR_ERRORS });
             })
             .catch((err) => {
-                console.log(err.response)
                 if(err.response){
                     dispatch({
                         type: SET_ERRORS,

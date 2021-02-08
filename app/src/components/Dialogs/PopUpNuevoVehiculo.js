@@ -20,6 +20,12 @@ const useStyles = makeStyles((theme) => ({
 
     boton: {
         marginRight:0
+    },
+    buttonAdd:{
+      color: 'white',
+      height: 40,
+      width: 60,
+      marginRight: 20,
     }
 
 }));
@@ -42,7 +48,9 @@ export default function ResponsiveDialog(props) {
 
   return (
     <div>
-      <Button className={classes.boton} startIcon={<AddCircleIcon />} variant='contained' color='primary' onClick={handleClickOpen}>Añadir vehiculo</Button>
+      <Button variant='contained' color='secondary' onClick={handleClickOpen} className={classes.buttonAdd}>
+        <AddCircleIcon />
+      </Button>
       <Dialog
         fullWidth={true}
         fullScreen={false}
@@ -58,7 +66,7 @@ export default function ResponsiveDialog(props) {
         <DialogContent>
           <DialogContentText>
            
-            <FormNuevoVehiculo cerrar={handleClose}/>
+            <FormNuevoVehiculo page={props.page} size={props.size} cerrar={handleClose}/>
            
           </DialogContentText>
         </DialogContent>

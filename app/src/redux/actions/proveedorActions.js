@@ -78,10 +78,10 @@ export const newFacturaVehiculo = (tipo,data) => (dispatch) =>{
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
-                });
+                    payload: err.response.data
+                })
             } else {
-                console.log(err);
+                console.log(err)
             }
         });
 }
@@ -97,10 +97,10 @@ export const newFacturaOtro = (data) => (dispatch) =>{
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
-                });
+                    payload: err.response.data
+                })
             } else {
-                console.log(err);
+                console.log(err)
             }
         });
 }
