@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 public class FacturaRecibida extends Factura{
 		
 	@Enumerated(value = EnumType.STRING)
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	private Concepto concepto;
 	
 	@JsonView

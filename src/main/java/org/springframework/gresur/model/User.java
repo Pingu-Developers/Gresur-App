@@ -15,8 +15,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-import com.sun.istack.NotNull;
-
 import lombok.Data;
 
 @Data
@@ -24,14 +22,14 @@ import lombok.Data;
 @Table(	name = "users")
 public class User extends BaseEntity {
 
-	@NotBlank
-	@Size(max = 20)
+	@NotBlank(message = "No puede ser vacio")
+	@Size(max = 20, message = "Debe ser menor o igual a 20 caracteres")
 	@Column(unique = true)
 	private String username;
 
 
-	@NotBlank
-	@Size(max = 120)
+	@NotBlank(message = "No puede ser vacio")
+	@Size(max = 120, message = "Debe ser menor o igual a 120 caracteres")
 	private String password;
 	
 	

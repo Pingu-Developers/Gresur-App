@@ -26,6 +26,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,21 +75,28 @@ public class AlmacenController {
 		return res;
 	}
 	
-	@GetMapping("/gestionEncargado")
-	@PreAuthorize("hasRole('ENCARGADO')")
-	public List<Tuple3<Categoria, Double, Double>> ocupacionPorEstanteria(){
+	@GetMapping("/gestionEncargado/{almacenAdm}")
+	@PreAuthorize("hasRole('ENCARGADO') or hasRole('ADMIN')")
+	public List<Tuple3<Categoria, Double, Double>> ocupacionPorEstanteria(@PathVariable("almacenAdm") Long almId){
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
 		
-		EncargadoDeAlmacen encargado = (EncargadoDeAlmacen) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal(); 
+		Almacen alm;
 		
-		List<Tuple2<Categoria, Double>> tupla = this.getCategoriasCapacidad2(encargado.getAlmacen());
+		if(almId == -1) {
+			EncargadoDeAlmacen encargado = (EncargadoDeAlmacen) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal(); 
+			alm = encargado.getAlmacen();
+		} else {
+			alm = almacenService.findById(almId);
+		}
+		
+		List<Tuple2<Categoria, Double>> tupla = this.getCategoriasCapacidad2(alm);
 		List<Tuple3<Categoria, Double, Double>> res = new ArrayList<Tuple3<Categoria,Double,Double>>();
 		for(Tuple2<Categoria, Double> tp: tupla) {
 			Estanteria est = zonaService.findByCategoria(tp.getE1());
 			
 			if(est != null) {
-				Double porcentajeAlmacen = est.getCapacidad()/encargado.getAlmacen().getCapacidad()*100;
+				Double porcentajeAlmacen = est.getCapacidad()/alm.getCapacidad()*100;
 				Tuple3<Categoria, Double, Double> terna = new Tuple3<Categoria, Double, Double>();
 				
 				terna.name1 = "categoria";
@@ -138,16 +146,21 @@ public class AlmacenController {
 		return res;
 	}
 	
-	@GetMapping("/categorias")
-	@PreAuthorize("hasRole('ENCARGADO')")
-	public List<Categoria> getCategorias(){
+	@GetMapping("/categorias/{almacenAdm}")
+	@PreAuthorize("hasRole('ENCARGADO') or hasRole('ADMIN')")
+	public List<Categoria> getCategorias(@PathVariable("almacenAdm") Long almId){
 		
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
 		
-		EncargadoDeAlmacen encargado = (EncargadoDeAlmacen) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+		List<Estanteria> estanterias;
 		
-		List<Estanteria> estanterias =  zonaService.findAllEstanteriaByAlmacen(encargado.getAlmacen().getId());
+		if(almId == -1) {
+			EncargadoDeAlmacen encargado = (EncargadoDeAlmacen) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+			estanterias =  zonaService.findAllEstanteriaByAlmacen(encargado.getAlmacen().getId());
+		} else {
+			estanterias =  zonaService.findAllEstanteriaByAlmacen(almId);
+		}
 		return estanterias.stream().map(x -> x.getCategoria()).collect(Collectors.toList());
 	}
 	

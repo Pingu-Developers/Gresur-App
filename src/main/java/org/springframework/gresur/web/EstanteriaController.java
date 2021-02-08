@@ -33,11 +33,12 @@ public class EstanteriaController {
 	}
 	
 	@PutMapping("/update/{categoria}/{capacidad}")
-	@PreAuthorize("hasRole('ENCARGADO')")
+	@PreAuthorize("hasRole('ENCARGADO') or hasRole('ADMIN')")
 	public ResponseEntity<?> updateEstanteriaCapacidad(@PathVariable("categoria") Categoria cat, @PathVariable("capacidad") Double porcentajeCapacidad){
 		try {
 			Estanteria est = estanteriaService.findByCategoria(cat);
-			est.setCapacidad(est.getAlmacen().getCapacidad() * (porcentajeCapacidad/100));
+			Double newCapacidad = (est.getAlmacen().getCapacidad() * (porcentajeCapacidad/100));
+			est.setCapacidad(newCapacidad);
 			Estanteria eDef = estanteriaService.save(est);
 			return ResponseEntity.ok(eDef);
 		} catch (Exception e) {

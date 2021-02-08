@@ -90,6 +90,13 @@ public class AdministradorController {
 			String uvusNombre = uvus[0].length()>=3?uvus[0].substring(0,3).toLowerCase():uvus[0].length()==2?uvus[0].concat("x"):uvus[0].concat("xx");
 			user = uvusNombre+"xxx"+"xxx";
 		}
+		
+		Integer num = userRepository.findByUsernameContaining(user).size();
+		
+		if(num!=0) {
+			user = user + num;
+		}
+		
 		return user;
 	}
 	
@@ -111,21 +118,17 @@ public class AdministradorController {
 			
 			try {
 				adm = admService.save(adm);
-			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
-			}
-			
-			//Creacion nuevo Usuario
-			User user = new User(nombre, encoder.encode("123456"));
-			Set<Rol> rolset = new HashSet<>();	
-			Rol rol = new Rol();
-			rol.setName(ERol.ROLE_ADMIN);
-			rolset.add(rol);
-			user.setRoles(rolset); 
-			user.setPersonal(adm);
-			
-			try {
-				userRepository.save(user);
+				
+				//Creacion nuevo Usuario
+				User user = new User(nombre, encoder.encode("123456"));
+				Set<Rol> rolset = new HashSet<>();	
+				Rol rol = new Rol();
+				rol.setName(ERol.ROLE_ADMIN);
+				rolset.add(rol);
+				user.setRoles(rolset); 
+				user.setPersonal(adm);
+				
+				user = userRepository.save(user);
 				return ResponseEntity.ok(user);
 			}catch(Exception e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
@@ -150,22 +153,18 @@ public class AdministradorController {
 			Dependiente d = p;
 
 			try {
-				d =  admService.saveDependiente(d);			
-			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
-			}
-			
-			//Creacion nuevo Usuario
-			User user = new User(nombre, encoder.encode("123456"));
-			Set<Rol> rolset = new HashSet<>();	
-			Rol rol = new Rol();
-			rol.setName(ERol.ROLE_DEPENDIENTE);
-			rolset.add(rol);
-			user.setRoles(rolset); 
-			user.setPersonal(d);
-			
-			try {
-				userRepository.save(user);	
+				d =  admService.saveDependiente(d);	
+				
+				//Creacion nuevo Usuario
+				User user = new User(nombre, encoder.encode("123456"));
+				Set<Rol> rolset = new HashSet<>();	
+				Rol rol = new Rol();
+				rol.setName(ERol.ROLE_DEPENDIENTE);
+				rolset.add(rol);
+				user.setRoles(rolset); 
+				user.setPersonal(d);
+				
+				user = userRepository.save(user);	
 				return ResponseEntity.ok(user);
 			}catch(Exception e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
@@ -190,27 +189,23 @@ public class AdministradorController {
 			Transportista t = p;
 			
 			try {
-				t =  admService.saveTransportista(t);			
-			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
-			}
-			
-			//Creacion nuevo Usuario
-			User user = new User(nombre, encoder.encode("123456"));
-			Set<Rol> rolset = new HashSet<>();	
-			Rol rol = new Rol();
-			rol.setName(ERol.ROLE_TRANSPORTISTA);
-			rolset.add(rol);
-			user.setRoles(rolset); 
-			user.setPersonal(t);
-			
-			try {
-				userRepository.save(user);	
+				t =  admService.saveTransportista(t);
+				
+				//Creacion nuevo Usuario
+				User user = new User(nombre, encoder.encode("123456"));
+				Set<Rol> rolset = new HashSet<>();	
+				Rol rol = new Rol();
+				rol.setName(ERol.ROLE_TRANSPORTISTA);
+				rolset.add(rol);
+				user.setRoles(rolset); 
+				user.setPersonal(t);
+				
+				user = userRepository.save(user);	
 				return ResponseEntity.ok(user);
 			}catch(Exception e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
-		}	
+		}
 	}
 	
 	@PostMapping("/add/encargado")
@@ -229,26 +224,22 @@ public class AdministradorController {
 			EncargadoDeAlmacen encargado = p;
 			
 			try {
-				encargado = admService.saveEncargadoDeAlmacen(encargado);		
-			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
-			}
-			
-			//Creacion nuevo Usuario
-			User user = new User(nombre, encoder.encode("123456"));
-			Set<Rol> rolset = new HashSet<>();	
-			Rol rol = new Rol();
-			rol.setName(ERol.ROLE_ENCARGADO);
-			rolset.add(rol);
-			user.setRoles(rolset); 
-			user.setPersonal(encargado);
-			
-			try {
-				userRepository.save(user);	
+				encargado = admService.saveEncargadoDeAlmacen(encargado);
+				
+				//Creacion nuevo Usuario
+				User user = new User(nombre, encoder.encode("123456"));
+				Set<Rol> rolset = new HashSet<>();	
+				Rol rol = new Rol();
+				rol.setName(ERol.ROLE_ENCARGADO);
+				rolset.add(rol);
+				user.setRoles(rolset); 
+				user.setPersonal(encargado);
+				
+				user = userRepository.save(user);	
 				return ResponseEntity.ok(user);
 			}catch(Exception e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
-			}		
+			}	
 		}		
 	}
 
@@ -330,93 +321,65 @@ public class AdministradorController {
 		}
 		
 		else {
+			
 			Authentication user = SecurityContextHolder.getContext().getAuthentication();
 			UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
 			Rol rol = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getRoles().iterator().next();
 			Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
 			
-			User u = userRepository.findById(per.getId()).orElse(null);
-			u.getPersonal().setDireccion(personalModificado.getDireccion());
-			u.getPersonal().setTlf(personalModificado.getTlf());
-			u.getPersonal().setImage(personalModificado.getImage());
-			u.getPersonal().setEmail(personalModificado.getEmail());
-			
 			try {
+				User u = userRepository.findById(per.getId()).orElse(null);
+				u.getPersonal().setDireccion(personalModificado.getDireccion());
+				u.getPersonal().setTlf(personalModificado.getTlf());
+				u.getPersonal().setImage(personalModificado.getImage());
+				u.getPersonal().setEmail(personalModificado.getEmail());
+				
 				userRepository.save(u);
+								
+				switch(rol.getName()) {
+					case ROLE_ADMIN:
+						Administrador adm = admService.findByNIF(per.getNIF());
+							adm.setDireccion(personalModificado.getDireccion());
+							adm.setTlf(personalModificado.getTlf());
+							adm.setImage(personalModificado.getImage());
+							adm.setEmail(personalModificado.getEmail());
+							admService.save(adm);	
+					break;
+					
+					case ROLE_DEPENDIENTE:
+						Dependiente dependiente = dependienteService.findByNIF(per.getNIF());
+							dependiente.setDireccion(personalModificado.getDireccion());
+							dependiente.setTlf(personalModificado.getTlf());
+							dependiente.setImage(personalModificado.getImage());
+							dependiente.setEmail(personalModificado.getEmail());
+							admService.saveDependiente(dependiente);
+					break;
+					
+					case ROLE_ENCARGADO:
+						EncargadoDeAlmacen encargado = encargadoService.findByNIF(per.getNIF());
+							encargado.setDireccion(personalModificado.getDireccion());
+							encargado.setTlf(personalModificado.getTlf());
+							encargado.setImage(personalModificado.getImage());
+							encargado.setEmail(personalModificado.getEmail());
+							admService.saveEncargadoDeAlmacen(encargado);
+					break;
+					
+					case ROLE_TRANSPORTISTA:
+						Transportista transportista = transportistaService.findByNIF(per.getNIF());
+							transportista.setDireccion(personalModificado.getDireccion());
+							transportista.setTlf(personalModificado.getTlf());
+							transportista.setImage(personalModificado.getImage());
+							transportista.setEmail(personalModificado.getEmail());
+							admService.saveTransportista(transportista);
+					break;
+				}
+				
+				return ResponseEntity.ok(per);
+				
 			}catch(Exception e) {
 				return ResponseEntity.badRequest().body(e.getMessage());
-			}
-			
-			String error="";
-		
-			switch(rol.getName()) {
-				case ROLE_ADMIN:
-					Administrador adm = admService.findByNIF(per.getNIF());
-						adm.setDireccion(personalModificado.getDireccion());
-						adm.setTlf(personalModificado.getTlf());
-						adm.setImage(personalModificado.getImage());
-						adm.setEmail(personalModificado.getEmail());
-						
-						try {
-							admService.save(adm);
-						}
-						catch(Exception e) {
-							error = e.getMessage();
-						}			
-				break;
-				
-				case ROLE_DEPENDIENTE:
-					Dependiente dependiente = dependienteService.findByNIF(per.getNIF());
-						dependiente.setDireccion(personalModificado.getDireccion());
-						dependiente.setTlf(personalModificado.getTlf());
-						dependiente.setImage(personalModificado.getImage());
-						dependiente.setEmail(personalModificado.getEmail());
-						
-						try {
-							admService.saveDependiente(dependiente);
-						}
-						catch(Exception e) {
-							error = e.getMessage();
-						}	
-				break;
-				
-				case ROLE_ENCARGADO:
-					EncargadoDeAlmacen encargado = encargadoService.findByNIF(per.getNIF());
-						encargado.setDireccion(personalModificado.getDireccion());
-						encargado.setTlf(personalModificado.getTlf());
-						encargado.setImage(personalModificado.getImage());
-						encargado.setEmail(personalModificado.getEmail());
-						try {
-							admService.saveEncargadoDeAlmacen(encargado);
-						}
-						catch(Exception e) {
-							error = e.getMessage();
-						}	
-				break;
-				
-				case ROLE_TRANSPORTISTA:
-					Transportista transportista = transportistaService.findByNIF(per.getNIF());
-						transportista.setDireccion(personalModificado.getDireccion());
-						transportista.setTlf(personalModificado.getTlf());
-						transportista.setImage(personalModificado.getImage());
-						transportista.setEmail(personalModificado.getEmail());
-						
-						try {
-							admService.saveTransportista(transportista);
-						}
-						catch(Exception e) {
-							error = e.getMessage();
-						}	
-				break;
-			}
-			
-			if(!error.isEmpty()) {
-				return ResponseEntity.badRequest().body(error);
-			}
-			
-			else {
-				return ResponseEntity.ok(user);
-			}
+			}	
 		}
-	}		
+	}	
+	
 }

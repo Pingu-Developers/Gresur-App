@@ -20,15 +20,15 @@ import lombok.EqualsAndHashCode;
 public class Estanteria extends BaseEntity{
 	
 	@Enumerated(value = EnumType.STRING)
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	private Categoria categoria;
 	
-	@NotNull
-	@Min(value = 0, message = "debe ser mayor o igual a cero")
+	@NotNull(message = "No puede ser nulo")
+	@Min(value = 0, message = "Debe ser mayor o igual a cero")
 	private Double capacidad;
 	
 	@JsonIgnore
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@ManyToOne(optional = false)
 	private Almacen almacen;
 }

@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
 public class Personal extends Entidad{
 	
 	@Column(unique = true)
-	@NotBlank
+	@NotBlank(message = "No puede ser vacio")
 	@Pattern(regexp = "^[0-9]{2}\\s?[0-9]{10}$", message = "NSS no valido")
 	protected String NSS;
 	

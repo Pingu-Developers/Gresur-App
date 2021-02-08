@@ -195,9 +195,9 @@ public class ProductoController {
 	}
 	
 	@ExceptionHandler({ Exception.class })
-	@PreAuthorize("hasRole('ENCARGADO')")
-	@PostMapping("/notiStock")
-	public ResponseEntity<?> createNotiStock(@RequestBody @Valid Producto newProducto, BindingResult result) {
+	@PreAuthorize("hasRole('ENCARGADO') or hasRole('ADMIN')")
+	@PostMapping("/notiStock/{almacenAdm}")
+	public ResponseEntity<?> createNotiStock(@PathVariable("almacenAdm") Long almId, @RequestBody @Valid Producto newProducto, BindingResult result) {
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
@@ -207,18 +207,23 @@ public class ProductoController {
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
 		
-		EncargadoDeAlmacen encargado = (EncargadoDeAlmacen) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
-		
-		String cuerpo = "El Producto  "+newProducto.getNombre()+"-("+newProducto.getId()+") se recomienda su reposicion por bajo stock en el almacen " + encargado.getAlmacen().getId();
-		
-		List<Notificacion> notisprod = notificacionService.findNotiPersonalFechaCuerpo(encargado, LocalDate.now(),cuerpo);
+		Personal emisor;
+		String cuerpo;
+		if(almId == -1) {
+			emisor = (EncargadoDeAlmacen) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+			cuerpo = "El Producto  "+newProducto.getNombre()+"-("+newProducto.getId()+") se recomienda su reposicion por bajo stock en el almacen " + newProducto.getEstanteria().getAlmacen().getId();
+		} else {
+			emisor = (Administrador) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+			cuerpo = "El Producto  "+newProducto.getNombre()+"-("+newProducto.getId()+") se recomienda su reposicion por bajo stock en el almacen " + almId;
+		}
+		List<Notificacion> notisprod = notificacionService.findNotiPersonalFechaCuerpo(emisor, LocalDate.now(),cuerpo);
 		
 		if(!notisprod.isEmpty()) {
 			return ResponseEntity.badRequest().body("Ya ha mandado esta notificacion hoy");
 		}else {
 			Notificacion noti = new Notificacion();
 			
-			noti.setEmisor(encargado);
+			noti.setEmisor(emisor);
 			noti.setCuerpo(cuerpo);
 			noti.setTipoNotificacion(TipoNotificacion.URGENTE);
 			noti.setFechaHora(LocalDateTime.now());

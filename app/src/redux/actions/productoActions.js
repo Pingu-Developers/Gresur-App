@@ -76,9 +76,9 @@ export const getProductosPaginados = (page,categoria = null,string =null,size = 
     }   
 };
 
-export const getCategorias = () => (dispatch) =>{
+export const getCategorias = (almacenAdm) => (dispatch) =>{
 
-    axios.get(`almacen/categorias`)
+    axios.get(`almacen/categorias/${almacenAdm}`)
             .then( response => {
                 dispatch({
                     type:SET_CATEGORIASALM,
@@ -101,9 +101,9 @@ export const getCategorias = () => (dispatch) =>{
             });
 }
 
-export const putNotificacion = (producto) => (dispatch) =>{
+export const putNotificacion = (almacenAdm, producto) => (dispatch) =>{
 
-    axios.post(`producto/notiStock`,producto)
+    axios.post(`producto/notiStock/${almacenAdm}`,producto)
             .then( () => {
                 
                 dispatch({ type: CLEAR_ERRORS });

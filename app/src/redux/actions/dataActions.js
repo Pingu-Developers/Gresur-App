@@ -172,10 +172,10 @@ export const clearProductos = () => (dispatch) => {
     dispatch({type: CLEAR_PRODUCTOS})
 }
 
-export const loadPersonalContrato = () => function (dispatch) {
+export const loadPersonalContrato = (rol) => function (dispatch) {
     dispatch({type: LOADING_UI})
     
-    axios.get('/contrato')
+    axios.get(`/contrato/${rol}`)
         .then((res) => {
             dispatch({type: SET_CONTRATO, payload: res})
             dispatch({type: CLEAR_ERRORS})
@@ -627,9 +627,9 @@ export const clearAlmacenGestion = () => (dispatch) => {
     dispatch({type: CLEAR_ALMACENGESTION})
 }
 
-export const loadAlmacenGestionEncargado = () => (dispatch) => {
+export const loadAlmacenGestionEncargado = (almacenAdm) => (dispatch) => {
     dispatch({type: LOADING_UI})
-    axios.get(`/almacen/gestionEncargado`)
+    axios.get(`/almacen/gestionEncargado/${almacenAdm}`)
         .then((res) => {
             dispatch({type: SET_ALMACENGESTIONENCARGADO, payload: res})
             dispatch({type: CLEAR_ERRORS})
@@ -649,10 +649,10 @@ export const loadAlmacenGestionEncargado = () => (dispatch) => {
         })
 }
 
-export const updateEstanteriaCapacidad = (categoria, capacidad) => (dispatch) =>{
+export const updateEstanteriaCapacidad = (categoria, capacidad, almAdm) => (dispatch) =>{
     axios.put(`/estanterias/update/${categoria}/${capacidad}`)
     .then((res) => {
-        dispatch(loadAlmacenGestionEncargado());
+        dispatch(loadAlmacenGestionEncargado(almAdm));
         dispatch({
             type: SET_ENVIADO,
         });
@@ -669,7 +669,7 @@ export const updateEstanteriaCapacidad = (categoria, capacidad) => (dispatch) =>
                 payload: err
             })
         }
-        dispatch(loadAlmacenGestionEncargado());
+        dispatch(loadAlmacenGestionEncargado(almAdm));
     })
 }
 
