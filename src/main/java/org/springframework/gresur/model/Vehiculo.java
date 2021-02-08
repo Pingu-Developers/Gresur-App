@@ -19,23 +19,23 @@ import lombok.EqualsAndHashCode;
 @Table(name="vehiculos")
 public class Vehiculo extends BaseEntity {
 	
-	@NotBlank
+	@NotBlank(message = "No puede ser vacio")
 	@Column(unique = true)
 	private String matricula;
 	
 	@Column(name = "URL_imagen")
 	private String imagen;
 	
-	@NotNull
-	@Min(value = 0, message = "debe ser mayor o igual a cero")
+	@NotNull(message = "No puede ser nulo")
+	@Min(value = 0, message = "Debe ser mayor o igual a cero")
 	private Double capacidad; 
 		
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Enumerated(value = EnumType.STRING)
 	@Column(name ="tipo_vehiculo")
 	private TipoVehiculo tipoVehiculo;
 	
-	@NotNull
-	@Min(value = 0, message = "debe ser mayor que cero")
+	@NotNull(message = "No puede ser nulo")
+	@Min(value = 0, message = "Debe ser mayor o igual a cero")
 	private Double MMA;	
 }

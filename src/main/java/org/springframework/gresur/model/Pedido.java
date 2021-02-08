@@ -22,24 +22,24 @@ import lombok.EqualsAndHashCode;
 @Table(name = "pedidos")
 public class Pedido extends BaseEntity{
 
-	@NotBlank
+	@NotBlank(message = "No puede ser vacio")
 	@Column(name = "direccion_envio")
 	private String direccionEnvio;
 	
 	@Enumerated(value = EnumType.STRING)
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "estado")
 	private EstadoPedido estado;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "fecha_realizacion")
 	private LocalDate fechaRealizacion;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "fecha_envio")
 	private LocalDate fechaEnvio;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@OneToOne(optional = false)
 	@JoinColumn(name = "factura_emitida_id")
 	private FacturaEmitida facturaEmitida;

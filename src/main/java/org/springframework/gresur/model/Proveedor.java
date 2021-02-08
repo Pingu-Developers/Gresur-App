@@ -14,8 +14,8 @@ import lombok.EqualsAndHashCode;
 @Table(name = "proveedores")
 public class Proveedor extends Entidad {
 	
-	@NotBlank
-	@Pattern(regexp = "^([a-zA-Z]{2})\\s*\\t*(\\d{2})\\s*\\t*(\\d{4})\\s*\\t*(\\d{4})\\s*\\t*(\\d{2})\\s*\\t*(\\d{10})$" )
+	@NotBlank(message = "No puede ser vacio")
+	@Pattern(regexp = "^([a-zA-Z]{2})\\s*\\t*(\\d{2})\\s*\\t*(\\d{4})\\s*\\t*(\\d{4})\\s*\\t*(\\d{2})\\s*\\t*(\\d{10})$", message = "IBAN no valido")
 	private String IBAN;
 	
 }

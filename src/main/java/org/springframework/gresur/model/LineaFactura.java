@@ -7,7 +7,6 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,21 +18,21 @@ import lombok.Data;
 @Table(name = "lineas_factura", uniqueConstraints = @UniqueConstraint(columnNames = {"factura_id", "producto_id"}))
 public class LineaFactura extends BaseEntity {
 
-	@NotNull
-	@Min(value = 0)
+	@NotNull(message = "No puede ser nulo")
+	@Min(value = 0, message = "Debe ser mayor o igual a 0")
 	private Integer cantidad;
 	
-	@NotNull
-	@PositiveOrZero
+	@NotNull(message = "No puede ser nulo")
+	@PositiveOrZero(message = "Debe ser cero o positivo")
 	private Double precio;
 	
 	@JsonIgnore
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "factura_id")
 	private Factura factura;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "producto_id")
 	private Producto producto;
