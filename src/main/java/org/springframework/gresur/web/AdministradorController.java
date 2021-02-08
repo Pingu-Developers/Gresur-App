@@ -250,7 +250,7 @@ public class AdministradorController {
 	}
 	
 	@GetMapping("/personal")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("permitAll()")
 	public HashMap<String, List<Personal>> findAllPersonal() {
 
 		HashMap<String, List<Personal>> dic = new HashMap<String, List<Personal>>();
@@ -288,7 +288,7 @@ public class AdministradorController {
 	}
 	
 	@GetMapping("/personal/{nif}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("permitAll()")
 	public ResponseEntity<?> findPersonalByNIF(@PathVariable("nif") String nif){
 		
 		String nifFormato = "^[0-9]{8}([A-Z]{1})?";
@@ -304,7 +304,7 @@ public class AdministradorController {
 	}
 	
 	@GetMapping("/personal/profile")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("permitAll()")
 	public Personal findPersonalLoggedIn(){
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();

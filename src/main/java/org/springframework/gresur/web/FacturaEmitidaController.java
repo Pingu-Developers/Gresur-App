@@ -73,7 +73,7 @@ public class FacturaEmitidaController {
 		}
 	}
 	
-	@PostMapping("/clienteFecha")
+	@PostMapping("/clienteFecha") //TODO revisar no es un post es un Get?
 	@PreAuthorize("hasRole('ADMIN') or hasRole('DEPENDIENTE')")
 	public ResponseEntity<?> getFacturasClienteAndFecha(@RequestBody Tuple2<Long, LocalDate> data){
 		

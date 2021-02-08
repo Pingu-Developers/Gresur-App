@@ -224,7 +224,7 @@ public class VehiculoController {
 		return iterableVehiculos;
 	}
 	
-	@PostMapping("/info")
+	@PostMapping("/info") //TODO no es post es un get?
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> getInfo(@RequestBody @Valid Vehiculo vehiculo, BindingResult result){
 		if(result.hasErrors()) {
