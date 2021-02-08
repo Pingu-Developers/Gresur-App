@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
+import Divider from '@material-ui/core/Divider';
+
 //Redux stuff
 import { connect } from 'react-redux';
 import { loadAlmacenGestion, clear} from '../redux/actions/dataActions';
@@ -67,7 +69,7 @@ const style = {
         height: '100%',
         width: '100%',
         maxHeight: 216,
-        overflowY: 'auto',
+        overflowY: 'hidden',
         borderRadius: 20,
         backgroundColor: 'white'
     },
@@ -79,7 +81,25 @@ const style = {
         textAlign: 'left',
         alignItems: 'center',
         fontSize: 25,
-    }
+    },
+    info:{
+        display: 'flex',
+        margin: 0,
+        alignItems: 'center',
+        fontWeight: 'bold',
+        fontSize: 16,
+        paddingLeft: 20,
+        width: 'calc(100% - 20px)',
+        margin: '10px 0px 10px 0px',
+      },
+      fila: {
+        '&:nth-of-type(2n-1)': {
+          backgroundColor: "#E3F2FC",
+        },
+        '&:nth-of-type(even)': {
+            backgroundColor: "#FFFFFF",
+          },
+      },
 }
 
 class administradorStock extends Component {
@@ -119,22 +139,20 @@ class administradorStock extends Component {
                                     <img src = {row.almacen.id === 1 ? imgAlmacen1 : imgAlmacen2} style = {{borderRadius: 20}} height = '100%' width = '100%'></img>
                                     <Typography style = {{padding: '20px 0px 20px 0px'}}><b>Direccion:</b> {row.almacen.direccion}</Typography>
                                     <div className = {classes.ocupacionTable}>
-                                        <TableContainer>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell style={{backgroundColor: '#d4e6f1', width: '30%', textAlign: 'center'}}><b>Categoría</b></TableCell>
-                                                    <TableCell style={{backgroundColor: '#d4e6f1', width: 500, textAlign: 'center'}}><b>Ocupación por categoría</b></TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {row.categorias.map((cat) =>
-                                                <TableRow>
-                                                    <TableCell style = {{width: '30%', textAlign: 'center'}}>{cat.categoria}</TableCell>
-                                                    <TableCell style = {{width: 500, textAlign: 'center'}}>{cat.ocupacionEstanteria.toFixed(2)} %</TableCell>
-                                                </TableRow>
-                                                )}
-                                            </TableBody>
-                                        </TableContainer>
+                                    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",paddingRight:10,gridColumnGap:15,backgroundColor:"#d4e6f1", height:57,borderBottom:"1px solid #B0D7F0"}}>
+                                        <Typography variant='h6' className={classes.info} style={{margin:0}} color="textSecondary" >Categoria</Typography>
+                                        <Typography variant='h6' className={classes.info} style={{margin:0}} color="textSecondary" >Ocupacion</Typography>
+                                    </div>
+                                    <div style={row.categorias.length<4?{height:165,overflowY:"hidden"}:{height:165,overflowY:"scroll"}}>
+                                    {row.categorias.map((cat) =>
+                                        <div className={classes.fila}>
+                                            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr ",height:55,paddingRight:10}}>
+                                                <Typography variant='h6' className={classes.info} style={{fontWeight:"normal",margin:0}} color="textSecondary" >{cat.categoria}</Typography>
+                                                <Typography variant='h6' className={classes.info} style={{fontWeight:"normal",margin:0}} color="textSecondary" >{cat.ocupacionEstanteria.toFixed(2)} %</Typography>
+                                            </div>
+                                            <Divider />
+                                        </div>)}
+                                    </div>
                                     </div>
                                     <Typography className = {classes.porcOcupado}><b style = {{marginRight: 10}}>Ocupado:</b> {row.ocupacionAlmacen.toFixed(2)} %</Typography>                  
                                 </div>

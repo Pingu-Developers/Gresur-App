@@ -22,13 +22,10 @@ export const cargaEstanterias = () => (dispatch) =>{
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         });
     
@@ -56,13 +53,10 @@ export const nuevoProducto = (product) => (dispatch) =>{
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-                dispatch({
-                    type: SET_ERRORS,
-                    payload: err
-                })
+                console.log(err)
             }
         });
     

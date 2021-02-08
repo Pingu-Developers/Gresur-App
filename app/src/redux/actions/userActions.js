@@ -63,7 +63,16 @@ export const getNotificacionesNoLeidas = () => (dispatch) => {
                 }
             )
         })
-        .catch(err => console.log(err))
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
+        })
 }
 
 export const getNotificacionesLeidas = () => (dispatch) => {
@@ -77,7 +86,16 @@ export const getNotificacionesLeidas = () => (dispatch) => {
                 }
             )
         })
-        .catch(err => console.log(err))
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
+        })
 }
 
 export const clearNotificacionesNoLeidas = () => (dispatch) => {
@@ -93,11 +111,14 @@ export const setNotificacionLeida = (id) => (dispatch) => {
             dispatch(getNotificacionesNoLeidas());
         })
         .catch((err) => {
-            console.log(err);
-            dispatch({
-                type:SET_ERRORS,
-                payload: err
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -105,14 +126,16 @@ export const postNotificacion = (nuevaNoti) => (dispatch) => {
 
     axios.post('/notificacion',nuevaNoti)
         .then((res) => {
-            console.log("TODO OK BRO")
         })
         .catch((err) => {
-            console.log(err.response);
-            dispatch({
-                type:SET_ERRORS,
-                payload: err
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -120,14 +143,16 @@ export const postCliente = (nuevoCliente) => (dispatch) => {
 
     axios.post('cliente/add', nuevoCliente)
         .then((res) => {
-            console.log("TODO OK BRO")
         })
         .catch((err) => {
-            console.log(err.response);
-            dispatch({
-                type:SET_ERRORS,
-                payload: err
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -146,19 +171,25 @@ export const postPedido = (nuevoPedido, nuevoCliente = null) => (dispatch) => {
                 )
             })
             .catch((err) => {
-                console.log(err.response);
+            if(err.response){
                 dispatch({
-                    type:SET_ERRORS,
-                    payload: err
+                    type: SET_ERRORS,
+                    payload: err.response.data
                 })
+            } else {
+                console.log(err)
+            }
             })
         })
         .catch((err) => {
-            console.log(err.response);
-            dispatch({
-                type:SET_ERRORS,
-                payload: err
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
     }
     else{
@@ -172,11 +203,14 @@ export const postPedido = (nuevoPedido, nuevoCliente = null) => (dispatch) => {
                 )
             })
             .catch((err) => {
-                console.log(err.response);
-                dispatch({
-                    type:SET_ERRORS,
-                    payload: err
-                })
+                if(err.response){
+                    dispatch({
+                        type: SET_ERRORS,
+                        payload: err.response.data
+                    })
+                } else {
+                    console.log(err)
+                }
             })
     }
 }
