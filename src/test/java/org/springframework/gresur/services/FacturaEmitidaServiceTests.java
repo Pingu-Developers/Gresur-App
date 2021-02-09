@@ -194,6 +194,7 @@ public class FacturaEmitidaServiceTests {
 		pedido.setEstado(EstadoPedido.EN_ESPERA);
 		pedido.setFacturaEmitida(fem);
 		pedido.setFechaEnvio(LocalDate.parse("14/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+		pedido.setFechaRealizacion(LocalDate.parse("13/09/2020", DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		
 		pedidoService.save(pedido);
 		
@@ -282,22 +283,5 @@ public class FacturaEmitidaServiceTests {
 		assertThrows(ClienteDefaulterException.class, () -> {facturaEmitidaService.save(nuevaCompra);});
 		List<FacturaEmitida> lfem = facturaEmitidaService.findAll();
 		assertThat(lfem.get(lfem.size()-1)).isNotEqualTo(nuevaCompra);
-	}
-	
-	@Test
-	@Transactional
-	@DisplayName("RN: No se vende a clientes con impagos (update) -- caso negativo")
-	void updateClienteDefaulterNegative() {
-		
-		/* pongo la factura en sin pagar (esto no da problema al hacerlo)*/
-		FacturaEmitida fem = facturaEmitidaService.findAll().get(0);
-		fem.setEstaPagada(false);		
-		FacturaEmitida femUpdate = facturaEmitidaService.save(fem);
-
-		assertThat(facturaEmitidaService.findById(fem.getId()).getEstaPagada()).isEqualTo(false);
-		
-		/* Para una factura sin pagar debe dejarme cambiar el atributo estaPagada, pero ningun otro*/
-		fem.setImporte(928.13929);
-		assertThrows(ClienteDefaulterException.class, ()->{facturaEmitidaService.save(femUpdate);});
 	}
 }

@@ -7,7 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,10 +19,10 @@ import lombok.EqualsAndHashCode;
 public class FacturaRecibida extends Factura{
 		
 	@Enumerated(value = EnumType.STRING)
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	private Concepto concepto;
 	
-	@JsonIgnore
+	@JsonView
 	@ManyToOne
 	private Proveedor proveedor;
 }

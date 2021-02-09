@@ -16,11 +16,11 @@ import lombok.EqualsAndHashCode;
 @Table(name = "almacenes")
 public class Almacen extends BaseEntity{
 	
-	@NotBlank
-	@Size(max=50, min=3)
+	@NotBlank(message = "No puede ser vacio")
+	@Size(max=50, min=3, message = "Debe ser de entre 3 y 50 caracteres")
 	private String direccion;
 	
-	@NotNull
-	@Min(value=0, message = "debe ser mayor o igual a cero")  
+	@NotNull(message = "No puede ser nulo")
+	@Min(value=0, message = "Debe ser mayor o igual a cero")  
 	private Double capacidad;
 }

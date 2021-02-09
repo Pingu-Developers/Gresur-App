@@ -2,9 +2,6 @@ package org.springframework.gresur.model;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,8 +12,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "encargados_almacen")
 public class EncargadoDeAlmacen extends Personal{
 	
-	
-	@NotNull
-	@OneToOne(optional = false)
+	//@NotNull(message = "No puede ser nulo")
+	@OneToOne(optional = true)
 	private Almacen almacen;
 }

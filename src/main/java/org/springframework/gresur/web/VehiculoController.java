@@ -3,6 +3,7 @@ package org.springframework.gresur.web;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,13 +12,14 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
 import org.springframework.gresur.model.ITV;
 import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.Reparacion;
 import org.springframework.gresur.model.ResultadoITV;
 import org.springframework.gresur.model.Seguro;
-import org.springframework.gresur.model.TipoSeguro;
 import org.springframework.gresur.model.TipoVehiculo;
 import org.springframework.gresur.model.Transportista;
 import org.springframework.gresur.model.Vehiculo;
@@ -28,10 +30,14 @@ import org.springframework.gresur.service.PersonalService;
 import org.springframework.gresur.service.ReparacionService;
 import org.springframework.gresur.service.SeguroService;
 import org.springframework.gresur.service.VehiculoService;
+import org.springframework.gresur.util.Tuple2;
 import org.springframework.gresur.util.Tuple4;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,9 +47,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RequestMapping("api/vehiculo")
 @RestController
+@Slf4j
 public class VehiculoController {
 
 	private final VehiculoService vehiculoService;
@@ -169,10 +178,97 @@ public class VehiculoController {
 		return ldef;
 	}
 	
+	@GetMapping("/allpaginado")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Map<String,Object> getAllVehiculos(Pageable pageable){
+		
+		Page<Vehiculo> pagina = vehiculoService.findAll(pageable); 
+		List<Vehiculo> listaVehiculos = pagina.toList();
+	
+		List<Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>>> ldef = new ArrayList<Tuple4<Vehiculo,List<Seguro>,List<ITV>,List<Reparacion>>>();
+		
+		for (Vehiculo v: listaVehiculos) {
+			
+			Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>> tp = new Tuple4<Vehiculo, List<Seguro>, List<ITV>, List<Reparacion>>();
+					
+			tp.setE1(v);
+			
+			List<Seguro> ls = seguroService.findByVehiculo(v.getMatricula());
+			ls.sort(Comparator.comparing(Seguro::getFechaExpiracion).reversed());
+			tp.setE2(ls);
+			
+			List<ITV> li = itvService.findByVehiculo(v.getMatricula());
+			li.sort(Comparator.comparing(ITV::getExpiracion).reversed());
+			tp.setE3(li);
+			
+			List<Reparacion> lr = reparacionService.findByMatricula(v.getMatricula());
+			lr.sort(Comparator.comparing(Reparacion::getFechaEntradaTaller).reversed());
+			tp.setE4(lr);
+			
+			tp.name1="vehiculo";
+			tp.name2="seguros";
+			tp.name3="itvs";
+			tp.name4="reparaciones";
+			
+			ldef.add(tp);
+		}
+		
+		Map<String,Object> res = new HashMap<>();
+		res.put("articleDetails", ldef);
+		res.put("totalPages", pagina.getTotalPages());
+		res.put("totalElements", pagina.getTotalElements());
+		return res;
+	}
+	
+	@GetMapping("/allsimple")
+	@PreAuthorize("hasRole('ADMIN')")
+	public Iterable<Vehiculo> getAllVehiculosSimple(){
+		Iterable<Vehiculo> iterableVehiculos = vehiculoService.findAll();
+		return iterableVehiculos;
+	}
+	
+	@PostMapping("/info")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> getInfo(@RequestBody @Valid Vehiculo vehiculo, BindingResult result){
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			log.warn("/vehiculo/info Constrain violation in params");
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
+				
+		try {
+			Tuple2<Seguro,ITV> res = new Tuple2<>();
+			res.setE1(seguroService.findLastSeguroByVehiculo(vehiculo.getMatricula()));
+			res.setE2(itvService.findLastITVVehiculo(vehiculo.getMatricula()));
+			res.name1 = "seguro";
+			res.name2 = "itv";				
+			return ResponseEntity.ok(res);
+		}catch(Exception e) {
+			log.error("/vehiculo/info "+e.getMessage());
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
 	@PostMapping("/add")
 	@PreAuthorize("hasRole('ADMIN')")
-	public Vehiculo addVehiculo(@RequestBody @Valid Vehiculo vehiculo){
-		return vehiculoService.save(vehiculo);
+	public ResponseEntity<?> addVehiculo(@RequestBody @Valid Vehiculo vehiculo, BindingResult result){
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			log.warn("/vehiculo/add Constrain violation in params");
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}
+		
+		try {
+			if(vehiculoService.existsByMatricula(vehiculo.getMatricula())) {
+				return ResponseEntity.badRequest().body("Vehiculo con misma matricula ya existe");
+			}
+			Vehiculo v = vehiculoService.save(vehiculo);
+			log.info("/vehiculo/add Entity Vehiculo with id: "+v.getId()+" was created successfully");
+			return ResponseEntity.ok(v);
+		}catch(Exception e) {
+			log.error("/vehiculo/add "+e.getMessage());
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}		
 	}
 	
 	@GetMapping("/allTiposVehiculos")
@@ -183,8 +279,22 @@ public class VehiculoController {
 	
 	@DeleteMapping("/delete/{matricula}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public void deleteContrato(@PathVariable("matricula") String matricula) throws DataAccessException{
-		vehiculoService.deleteByMatricula(matricula);
+	public ResponseEntity<?> deleteContrato(@PathVariable("matricula") String matricula) throws DataAccessException{
+		
+		if(!(matricula.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}") || matricula.matches("E[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}"))) {
+			log.warn("/vehiculo/delete Constrain violation in params");
+			return ResponseEntity.badRequest().body("Formato de matricula no valido");
+		}
+		else {
+			try {
+				vehiculoService.deleteByMatricula(matricula);
+				log.info("/vehiculo/delete Entity Vehiculo with matricula: "+matricula+" was deleted successfully");
+				return ResponseEntity.ok("Borrado realizado correctamente");
+			}catch(Exception e) {
+				log.error("/vehiculo/delete "+e.getMessage());
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
+		}
 	}
 
 }

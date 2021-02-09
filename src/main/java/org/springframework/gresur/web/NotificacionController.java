@@ -16,9 +16,9 @@ import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.service.AdministradorService;
 import org.springframework.gresur.service.LineasEnviadoService;
 import org.springframework.gresur.service.NotificacionService;
-import org.springframework.gresur.service.PersonalService;
 import org.springframework.gresur.util.Tuple3;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -29,9 +29,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RequestMapping("api/notificacion")
 @RestController
+@Slf4j
 public class NotificacionController {
 
 	private final NotificacionService notificacionService;
@@ -51,8 +54,8 @@ public class NotificacionController {
 		this.notificacionService = notificacionService;
 	}
 	
-	
 	@GetMapping("")
+	@PreAuthorize("permitAll()")
 	public List<Notificacion> notificacionesNoLeidas() {
 		
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
@@ -65,6 +68,7 @@ public class NotificacionController {
 	}
 	
 	@GetMapping("/leidas")
+	@PreAuthorize("permitAll()")
 	public List<Notificacion> notificacionesLeidas() {
 		
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
@@ -77,6 +81,7 @@ public class NotificacionController {
 	}
 	
 	@PostMapping("/setLeida/{id}")
+	@PreAuthorize("permitAll()")
 	public ResponseEntity<?> setLeida(@PathVariable("id") Long id) {
 		
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
@@ -86,46 +91,49 @@ public class NotificacionController {
 		
 		Notificacion noti = notificacionService.findById(id);
 		
-		LineaEnviado linea = noti.getLineasEnviado().stream().filter(x -> x.getPersonal().equals(per)).findFirst().orElseGet(null);
-		
-		
-		if(linea != null) {
-			
-			linea.setLeido(true);
-			lineaEnviadoService.save(linea);
-			return ResponseEntity.ok(noti);
-		}
-		else {
+		if(noti==null) {
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: Notification not found!"));
+		}
+		
+		else {
+			
+			LineaEnviado linea = noti.getLineasEnviado().stream().filter(x -> x.getPersonal().equals(per)).findFirst().orElseGet(null);
+			
+			if(linea != null) {
+				linea.setLeido(true);
+				lineaEnviadoService.save(linea);
+				log.info("/notificacion/setLeida Entity LineaEnviadp with id: "+linea.getId()+" was edited successfully");
+				return ResponseEntity.ok(noti);
+			}
+			else {
+				return ResponseEntity.badRequest().body(new MessageResponse("Error: Notification not found!"));
+			}	
 		}
 	}
 
-	
 	@PostMapping()
+	@PreAuthorize("permitAll()")
 	public ResponseEntity<?> nuevaNotificacion(@Valid @RequestBody Tuple3<List<Long>,String,String> noti) {
-		
-		System.out.println(noti.getE1());
-		System.out.println(noti.getE2());
-		System.out.println(noti.getE3());
 		
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
-		
-		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
-		
-		List<Personal> receptores = noti.getE1().stream().map(x -> admService.findPersonal(x)).collect(Collectors.toList());
-		
-		Notificacion nuevaNoti = new Notificacion();
-		
-		nuevaNoti.setEmisor(per);
-		nuevaNoti.setCuerpo(noti.getE2());
-		nuevaNoti.setTipoNotificacion(TipoNotificacion.valueOf(noti.getE3()));
-		
 		try {
+			Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+			
+			List<Personal> receptores = noti.getE1().stream().map(x -> admService.findPersonal(x)).collect(Collectors.toList());
+			
+			Notificacion nuevaNoti = new Notificacion();
+			
+			nuevaNoti.setEmisor(per);
+			nuevaNoti.setCuerpo(noti.getE2());
+			nuevaNoti.setTipoNotificacion(TipoNotificacion.valueOf(noti.getE3()));
+		
 			Notificacion res = notificacionService.save(nuevaNoti, receptores);
+			log.info("/notificacion/ Entity Notificacion with id: " + res.getId() +" was created successfully");
 			return ResponseEntity.ok(res);
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(e);
+			log.error("/notificacion/ "+e.getMessage());
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		
 	}

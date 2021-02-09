@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Topbar from '../components/Topbar'
+import Topbar from '../components/Other/Topbar'
 
 //Pages
 import AdministradorPersonal from './administradorPersonal'

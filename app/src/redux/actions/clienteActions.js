@@ -1,4 +1,4 @@
-import { SET_CLIENTES,CLEAR_CLIENTES,SET_FACTURAS,CLEAR_FACTURAS , SET_ERRORS,CLEAR_ERRORS } from '../types';
+import { SET_CLIENTES,CLEAR_CLIENTES,SET_FACTURAS,CLEAR_FACTURAS , SET_ERRORS,CLEAR_ERRORS ,SET_ENVIADO} from '../types';
 import axios from 'axios';
 
 
@@ -15,12 +15,18 @@ export const getClientes = () => (dispatch) => {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-               console.log(err)
+                console.log(err)
             }
         })
+}
+
+export const clearClientes = () => (dispatch) => {
+    dispatch({
+        type:CLEAR_CLIENTES
+    })
 }
 
 export const getFacturasCliente = (id) => (dispatch) => {
@@ -35,16 +41,16 @@ export const getFacturasCliente = (id) => (dispatch) => {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-               console.log(err)
+                console.log(err)
             }
         })
 }
 
 export const getFacturasClienteAndFecha = (datos) => (dispatch) => {
-    axios.post('/facturaEmitida/clienteFecha',datos)
+    axios.get('/facturaEmitida/clienteFecha',datos)
         .then((res) => {
             dispatch({
                 type:SET_FACTURAS,
@@ -65,18 +71,22 @@ export const getFacturasClienteAndFecha = (datos) => (dispatch) => {
 
 
 export const sendDevolucion = (datos) => (dispatch) => {
+
+    console.log(datos)
     axios.post('/facturaEmitida/devolucion',datos)
         .then(() => {
-            dispatch({type: CLEAR_ERRORS})      
+            dispatch({
+                type: SET_ENVIADO,
+            });      
         })
         .catch((err) => {
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
-               console.log(err)
+                console.log(err)
             }
         })
 }

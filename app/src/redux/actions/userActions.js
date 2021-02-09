@@ -1,7 +1,8 @@
-import { SET_ERRORS, SET_USER, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED ,LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS , CLEAR_NOTIFICACIONES_NO_LEIDAS,SET_NOTIFICACIONES_LEIDAS, SET_POSTPEDIDO } from '../types';
+import { SET_ERRORS, SET_USER, CLEAR_ERRORS, LOADING_UI, SET_UNAUTHENTICATED ,LOADING_USER, SET_NOTIFICACIONES_NO_LEIDAS,CLEAR_ENVIADO , CLEAR_NOTIFICACIONES_NO_LEIDAS,SET_NOTIFICACIONES_LEIDAS, SET_POSTPEDIDO } from '../types';
 import axios from 'axios';
 
 export const loginUser = (userData,history) => (dispatch) =>{
+    console.log("holap")
     dispatch({ type:LOADING_UI })
 
     axios.post('/auth/signin',userData)
@@ -62,7 +63,16 @@ export const getNotificacionesNoLeidas = () => (dispatch) => {
                 }
             )
         })
-        .catch(err => console.log(err))
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
+        })
 }
 
 export const getNotificacionesLeidas = () => (dispatch) => {
@@ -76,7 +86,16 @@ export const getNotificacionesLeidas = () => (dispatch) => {
                 }
             )
         })
-        .catch(err => console.log(err))
+        .catch((err) => {
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
+        })
 }
 
 export const clearNotificacionesNoLeidas = () => (dispatch) => {
@@ -92,11 +111,14 @@ export const setNotificacionLeida = (id) => (dispatch) => {
             dispatch(getNotificacionesNoLeidas());
         })
         .catch((err) => {
-            console.log(err);
-            dispatch({
-                type:SET_ERRORS,
-                payload: err
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -104,14 +126,16 @@ export const postNotificacion = (nuevaNoti) => (dispatch) => {
 
     axios.post('/notificacion',nuevaNoti)
         .then((res) => {
-            console.log("TODO OK BRO")
         })
         .catch((err) => {
-            console.log(err.response);
-            dispatch({
-                type:SET_ERRORS,
-                payload: err
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -119,14 +143,16 @@ export const postCliente = (nuevoCliente) => (dispatch) => {
 
     axios.post('cliente/add', nuevoCliente)
         .then((res) => {
-            console.log("TODO OK BRO")
         })
         .catch((err) => {
-            console.log(err.response);
-            dispatch({
-                type:SET_ERRORS,
-                payload: err
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
 }
 
@@ -145,19 +171,25 @@ export const postPedido = (nuevoPedido, nuevoCliente = null) => (dispatch) => {
                 )
             })
             .catch((err) => {
-                console.log(err.response);
+            if(err.response){
                 dispatch({
-                    type:SET_ERRORS,
-                    payload: err
+                    type: SET_ERRORS,
+                    payload: err.response.data
                 })
+            } else {
+                console.log(err)
+            }
             })
         })
         .catch((err) => {
-            console.log(err.response);
-            dispatch({
-                type:SET_ERRORS,
-                payload: err
-            })
+            if(err.response){
+                dispatch({
+                    type: SET_ERRORS,
+                    payload: err.response.data
+                })
+            } else {
+                console.log(err)
+            }
         })
     }
     else{
@@ -171,11 +203,24 @@ export const postPedido = (nuevoPedido, nuevoCliente = null) => (dispatch) => {
                 )
             })
             .catch((err) => {
-                console.log(err.response);
-                dispatch({
-                    type:SET_ERRORS,
-                    payload: err
-                })
+                if(err.response){
+                    dispatch({
+                        type: SET_ERRORS,
+                        payload: err.response.data
+                    })
+                } else {
+                    console.log(err)
+                }
             })
     }
+}
+
+export const clear = () => (dispatch) => {
+
+        dispatch({
+            type:CLEAR_ERRORS,
+        })
+        dispatch({
+            type:CLEAR_ENVIADO,
+        })
 }

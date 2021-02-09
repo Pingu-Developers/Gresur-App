@@ -1,31 +1,47 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.gresur.model.EstadoPedido;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.LineaFactura;
+import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Pedido;
+import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.Producto;
+import org.springframework.gresur.model.TipoNotificacion;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.PedidoRepository;
+import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
 import org.springframework.gresur.service.exceptions.MMAExceededException;
 import org.springframework.gresur.service.exceptions.PedidoConVehiculoSinTransportistaException;
 import org.springframework.gresur.service.exceptions.PedidoLogisticException;
 import org.springframework.gresur.service.exceptions.UnmodifablePedidoException;
 import org.springframework.gresur.service.exceptions.VehiculoDimensionesExceededException;
 import org.springframework.gresur.service.exceptions.VehiculoNotAvailableException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class PedidoService {
 	
@@ -33,10 +49,19 @@ public class PedidoService {
 	private VehiculoService vehiculoService;
 	
 	@Autowired
+	private ProductoService productoService;
+	
+	@Autowired
 	private ConfiguracionService configService;
 	
 	@Autowired
 	private FacturaEmitidaService emitidaService;
+	
+	@Autowired
+	private TransportistaService transportistaService;
+	
+	@Autowired
+	private NotificacionService notiService;
 
 	@PersistenceContext
 	private EntityManager em;
@@ -55,16 +80,25 @@ public class PedidoService {
 	public Iterable<Pedido> findAll() throws DataAccessException {
 		return pedidoRepo.findAll();
 	}
+	
+	@Transactional(readOnly = true)
+	public Page<Pedido> findAll(Pageable pageable) throws DataAccessException {
+		return pedidoRepo.findAll(pageable);
+	}
 
 	@Transactional(readOnly = true)
 	public Pedido findByID(Long id) throws DataAccessException {
 		return pedidoRepo.findById(id).orElseGet(null);
 	}
 	
-	//TODO test
 	@Transactional(readOnly = true)
 	public List<Pedido> findByEstado(EstadoPedido estado) throws DataAccessException {
 		return pedidoRepo.findByEstado(estado);
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<Pedido> findByEstado(EstadoPedido estado,Pageable pageable) throws DataAccessException {
+		return pedidoRepo.findByEstado(estado,pageable);
 	}
 	
 	@Transactional(readOnly = true)
@@ -85,6 +119,10 @@ public class PedidoService {
 		Pedido ret;
 		Vehiculo vehiculo = pedido.getVehiculo();
 		LocalDate fecha = pedido.getFechaEnvio();
+		
+		if(pedido.getFechaRealizacion().isAfter(pedido.getFechaEnvio())) {
+			throw new FechaFinNotAfterFechaInicioException("La fecha de realizacion debe ser anterior o igual a la fecha de envio");
+		}
 		
 		Pedido anterior = pedido.getId() == null ? null : pedidoRepo.findById(pedido.getId()).orElse(null);
 		if(anterior != null && anterior.getEstado().equals(EstadoPedido.EN_ESPERA) && (!pedido.getEstado().equals(EstadoPedido.EN_ESPERA) || !pedido.getEstado().equals(EstadoPedido.CANCELADO))) {
@@ -156,7 +194,11 @@ public class PedidoService {
 				throw new PedidoLogisticException();
 			}
 		}
-		em.flush();
+		try {
+			em.flush();
+		} catch(Exception e) {
+			log.warn("No se ha podido ejecutar flush");
+		}
 		return ret;
 	}
 	
@@ -183,5 +225,56 @@ public class PedidoService {
 	@Transactional
 	public void deleteById(Long id) throws DataAccessException {
 		pedidoRepo.deleteById(id);
+	}
+	
+	@EventListener(ApplicationReadyEvent.class)
+	@Scheduled(cron = "0 0 7 * * *")
+	@Transactional
+	public void actualizaPedidos() {
+		
+		try {
+			Queue<Pedido> candidatosQ = new LinkedList<Pedido> (pedidoRepo.findByEstadoAndFechaEnvioBeforeOrdered(EstadoPedido.EN_ESPERA.toString(), LocalDate.now()));
+				
+			while(candidatosQ.size() > 0) {
+				Pedido p = candidatosQ.poll();
+				
+				// comprueba si hay stock para poder pasar a preparado
+				if(p.getFacturaEmitida().getLineasFacturas().stream().allMatch(x -> x.getCantidad() <= productoService.findById(x.getProducto().getId()).getStock())) {
+					
+					// actualiza el stock de los producto
+					p.getFacturaEmitida().getLineasFacturas().forEach(lf -> {
+						Producto producto = productoService.findById(lf.getProducto().getId());
+						producto.setStock(producto.getStock()-lf.getCantidad());
+						productoService.save(producto);
+					});
+					// actualiza el pedido y emite la factura
+					if(p.recogeEnTienda()) {
+						p.setEstado(EstadoPedido.EN_TIENDA);
+					} else {
+						p.setEstado(EstadoPedido.PREPARADO);
+						p.setTransportista(transportistaService.findTransportistaConMenosPedidos());
+					}
+					this.save(p);
+					
+					// manda notificacion
+					FacturaEmitida fem = p.getFacturaEmitida();
+					Notificacion noti = new Notificacion();
+					if (p.recogeEnTienda()) {
+						noti.setCuerpo("El pedido con id " + p.getId() + " se encuentra disponible en tienda, avise al cliente " + fem.getCliente().getName() + " con NIF: " + fem.getCliente().getNIF());
+					} else {
+						noti.setCuerpo("El pedido con id " + p.getId() + " ha sido tramitado y pasa a disposicion del transportista " + p.getTransportista().getName() + " para el transporte");
+					}
+					noti.setEmisor(null);
+					noti.setTipoNotificacion(TipoNotificacion.SISTEMA);
+					noti.setFechaHora(LocalDateTime.now());
+					List<Personal> receptores = new ArrayList<Personal>();
+					receptores.add(fem.getDependiente());
+					notiService.save(noti, receptores);
+				}
+			}
+			log.info("Pedidos actualizados");
+		} catch(Exception e) {
+			log.error(e.getMessage());
+		}
 	}
 }
