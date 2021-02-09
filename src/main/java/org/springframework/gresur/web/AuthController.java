@@ -89,7 +89,7 @@ public class AuthController {
 			List<String> roles = userDetails.getAuthorities().stream()
 					.map(item -> item.getAuthority())
 					.collect(Collectors.toList());
-			
+			log.info("/auth/signin User : "+userDetails.getUsername()+" has logged in");
 			return ResponseEntity.ok(new JwtResponse(jwt,
 													userDetails.getId(),
 													userDetails.getUsername(),

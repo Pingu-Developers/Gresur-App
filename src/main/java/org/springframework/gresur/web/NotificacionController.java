@@ -29,9 +29,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RequestMapping("api/notificacion")
 @RestController
+@Slf4j
 public class NotificacionController {
 
 	private final NotificacionService notificacionService;
@@ -99,6 +102,7 @@ public class NotificacionController {
 			if(linea != null) {
 				linea.setLeido(true);
 				lineaEnviadoService.save(linea);
+				log.info("/notificacion/setLeida Entity LineaEnviadp with id: "+linea.getId()+" was edited successfully");
 				return ResponseEntity.ok(noti);
 			}
 			else {
@@ -113,21 +117,22 @@ public class NotificacionController {
 		
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
-		
-		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
-		
-		List<Personal> receptores = noti.getE1().stream().map(x -> admService.findPersonal(x)).collect(Collectors.toList());
-		
-		Notificacion nuevaNoti = new Notificacion();
-		
-		nuevaNoti.setEmisor(per);
-		nuevaNoti.setCuerpo(noti.getE2());
-		nuevaNoti.setTipoNotificacion(TipoNotificacion.valueOf(noti.getE3()));
-		
 		try {
+			Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+			
+			List<Personal> receptores = noti.getE1().stream().map(x -> admService.findPersonal(x)).collect(Collectors.toList());
+			
+			Notificacion nuevaNoti = new Notificacion();
+			
+			nuevaNoti.setEmisor(per);
+			nuevaNoti.setCuerpo(noti.getE2());
+			nuevaNoti.setTipoNotificacion(TipoNotificacion.valueOf(noti.getE3()));
+		
 			Notificacion res = notificacionService.save(nuevaNoti, receptores);
+			log.info("/notificacion/ Entity Notificacion with id: " + res.getId() +" was created successfully");
 			return ResponseEntity.ok(res);
 		} catch (Exception e) {
+			log.error("/notificacion/ "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		

@@ -47,9 +47,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RequestMapping("api/vehiculo")
 @RestController
+@Slf4j
 public class VehiculoController {
 
 	private final VehiculoService vehiculoService;
@@ -224,11 +227,12 @@ public class VehiculoController {
 		return iterableVehiculos;
 	}
 	
-	@PostMapping("/info") //TODO no es post es un get?
+	@PostMapping("/info")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> getInfo(@RequestBody @Valid Vehiculo vehiculo, BindingResult result){
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/vehiculo/info Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 				
@@ -240,6 +244,7 @@ public class VehiculoController {
 			res.name2 = "itv";				
 			return ResponseEntity.ok(res);
 		}catch(Exception e) {
+			log.error("/vehiculo/info "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
@@ -249,6 +254,7 @@ public class VehiculoController {
 	public ResponseEntity<?> addVehiculo(@RequestBody @Valid Vehiculo vehiculo, BindingResult result){
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/vehiculo/add Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
@@ -256,9 +262,11 @@ public class VehiculoController {
 			if(vehiculoService.existsByMatricula(vehiculo.getMatricula())) {
 				return ResponseEntity.badRequest().body("Vehiculo con misma matricula ya existe");
 			}
-			Vehiculo v = vehiculoService.save(vehiculo);				
+			Vehiculo v = vehiculoService.save(vehiculo);
+			log.info("/vehiculo/add Entity Vehiculo with id: "+v.getId()+" was created successfully");
 			return ResponseEntity.ok(v);
 		}catch(Exception e) {
+			log.error("/vehiculo/add "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}		
 	}
@@ -274,13 +282,16 @@ public class VehiculoController {
 	public ResponseEntity<?> deleteContrato(@PathVariable("matricula") String matricula) throws DataAccessException{
 		
 		if(!(matricula.matches("[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}") || matricula.matches("E[0-9]{4}[BCDFGHJKLMNPRSTVWXYZ]{3}"))) {
+			log.warn("/vehiculo/delete Constrain violation in params");
 			return ResponseEntity.badRequest().body("Formato de matricula no valido");
 		}
 		else {
 			try {
 				vehiculoService.deleteByMatricula(matricula);
+				log.info("/vehiculo/delete Entity Vehiculo with matricula: "+matricula+" was deleted successfully");
 				return ResponseEntity.ok("Borrado realizado correctamente");
 			}catch(Exception e) {
+				log.error("/vehiculo/delete "+e.getMessage());
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}

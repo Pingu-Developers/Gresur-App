@@ -36,9 +36,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RestController
 @RequestMapping("api/facturaEmitida")
+@Slf4j
 public class FacturaEmitidaController {
 	
 	private final FacturaEmitidaService facturaEmitidaService;
@@ -73,7 +76,7 @@ public class FacturaEmitidaController {
 		}
 	}
 	
-	@PostMapping("/clienteFecha") //TODO revisar no es un post es un Get?
+	@GetMapping("/clienteFecha")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('DEPENDIENTE')")
 	public ResponseEntity<?> getFacturasClienteAndFecha(@RequestBody Tuple2<Long, LocalDate> data){
 		
@@ -89,16 +92,17 @@ public class FacturaEmitidaController {
 	}
 	
 	@Transactional
-	@ExceptionHandler({ Exception.class })
 	@PostMapping("/devolucion")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('DEPENDIENTE')")
 	public ResponseEntity<?> createDevolucion(@Valid @RequestBody Tuple3<FacturaEmitida,String,List<Tuple2<Long,Integer>>> data, BindingResult result){
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/facturaEmitida/devolucion Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
 		if(data.getE3().size() == 0) {
+			log.warn("/facturaEmitida/devolucion Constrain violation in params");
 			throw new IllegalArgumentException("Factura sin lineas");
 		}
 		
@@ -113,6 +117,9 @@ public class FacturaEmitidaController {
 			FacturaEmitida original = facturaEmitidaService.findById(data.getE1().getId());
 			FacturaEmitida devolucion = new FacturaEmitida();
 			
+			if(!original.esDefinitiva()) {
+				return ResponseEntity.badRequest().body("No puedes rectificar una factura no final");
+			}
 			
 			List<LineaFactura> lineasDevolucion = new ArrayList<>();
 			
@@ -162,14 +169,14 @@ public class FacturaEmitidaController {
 			devolucion.setLineasFacturas(lineasDevolucion);
 			devolucion.setImporte(importe);
 			devolucion = facturaEmitidaService.save(devolucion);
-			
+			log.info("/facturaEmitida/devolucion Entity FacturaEmitida with id :" + devolucion.getId() + " was created successfully");
 			return ResponseEntity.ok(devolucion);
 		}catch(Exception e) {
+			log.error("/facturaEmitida/devolucion "+ e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}	
 	}
 	
-	@Transactional
 	@GetMapping("/cargar/{numFactura}")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('DEPENDIENTE')")
 	public ResponseEntity<?> getFacturaByNumFactura(@PathVariable String numFactura) {
@@ -199,14 +206,17 @@ public class FacturaEmitidaController {
 		}
 		
 		if(ori.getVersion()!=fra.getVersion()) {
+			log.error("/facturaEmitida/rectificar Concurrent modification");
 			return ResponseEntity.badRequest().body("Concurrent modification");
 		}
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/facturaEmitida/rectificar Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		if(!fra.getOriginal().esDefinitiva()) {
+			log.warn("/facturaEmitida/rectificar Constrain violation in params");
 			return ResponseEntity.badRequest().body("Intento modificar una factura no final");
 		}
 		try {
@@ -243,8 +253,10 @@ public class FacturaEmitidaController {
 			f2.setLineasFacturas(lsFinal);
 			f2.setImporte(fra.getImporte());
 			FacturaEmitida f3 = facturaEmitidaService.save(f2);
+			log.info("/facturaEmitida/rectificar Entity FacturaEmitida with id: " + f3.getId()+" was created successfully");
 			return ResponseEntity.ok(f3);
 		}catch (Exception e) {
+			log.error("/facturaEmitida/rectificar " + e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 

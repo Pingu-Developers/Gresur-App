@@ -2,6 +2,8 @@ package org.springframework.gresur.web;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.model.Almacen;
 import org.springframework.gresur.model.Categoria;
@@ -17,9 +19,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RestController
 @RequestMapping("api/estanterias")
+@Slf4j
 public class EstanteriaController {
 	private final EstanteriaService estanteriaService;
 	
@@ -37,6 +42,7 @@ public class EstanteriaController {
 		return estanteriaService.findAll();
 	}
 	
+	@Transactional
 	@PutMapping("/update/{categoria}/{capacidad}/{version}")
 	@PreAuthorize("hasRole('ENCARGADO') or hasRole('ADMIN')")
 	public ResponseEntity<?> updateEstanteriaCapacidad(@PathVariable("categoria") Categoria cat, @PathVariable("capacidad") Double porcentajeCapacidad, @PathVariable("version") Integer version){
@@ -50,6 +56,7 @@ public class EstanteriaController {
 		Almacen a = est.getAlmacen();
 				
 		if(a.getVersion()!=version) {
+			log.error("/estanterias/update Concurrent modification");
 			return ResponseEntity.badRequest().body("Concurrent modification. Please reload");
 		}
 		
@@ -68,9 +75,10 @@ public class EstanteriaController {
 			}
 			
 			almacenService.save(a);
-			
+			log.info("/estanterias/update Entity Almacen with id: "+a.getId()+" was edited");
 			return ResponseEntity.ok(eDef);
 		} catch (Exception e) {
+			log.error("/estanterias/update "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		

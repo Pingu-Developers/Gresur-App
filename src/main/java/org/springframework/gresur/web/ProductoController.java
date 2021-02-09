@@ -40,9 +40,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RequestMapping("api/producto")
 @RestController
+@Slf4j
 public class ProductoController {
 	
 	private final ProductoService productoService;
@@ -113,23 +116,24 @@ public class ProductoController {
 	@PostMapping("/save") //TODO SERIA UN PUT porque ACTUALIZA?
 	@PreAuthorize("hasRole('ADMIN') or hasRole('ENCARGADO')")
 	public ResponseEntity<?> saveProducto(@RequestBody @Valid Producto newProducto, BindingResult result) {
-		
-		Producto p = productoService.findById(newProducto.getId());
-		
-		if(p==null) {
-			return ResponseEntity.badRequest().body("El producto que se intenta editar no existe");
-		}
-		
-		if(p.getVersion() != newProducto.getVersion()) {
-			return ResponseEntity.badRequest().body("Concurrent modification");
-		}
-		
-		if(result.hasErrors()) {
-			List<FieldError> le = result.getFieldErrors();
-			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
-		}
-		
 		try {
+						
+			if(result.hasErrors()) {
+				List<FieldError> le = result.getFieldErrors();
+				log.warn("/producto/save Constrain violation in params");
+				return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+			}
+			
+			Producto p = productoService.findById(newProducto.getId());
+			if(p==null) {
+				return ResponseEntity.badRequest().body("El producto que se intenta editar no existe");
+			}
+			
+			if(p.getVersion() != newProducto.getVersion()) {
+				log.error("/producto/save Concurrent modification");
+				return ResponseEntity.badRequest().body("Concurrent modification");
+			}
+
 			p.setNombre(newProducto.getNombre());
 			p.setDescripcion(newProducto.getDescripcion());
 			p.setUnidad(newProducto.getUnidad());
@@ -143,8 +147,10 @@ public class ProductoController {
 			p.setPesoUnitario(newProducto.getPesoUnitario());
 			p.setURLImagen(newProducto.getURLImagen());
 			p = productoService.save(p);
+			log.info("/producto/save Entity Producto with id: "+p.getId()+" was edited successfully");
 			return ResponseEntity.ok(p);
 		}catch(Exception e) {
+			log.error("/producto/save "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
@@ -155,13 +161,16 @@ public class ProductoController {
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/producto/add Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
 		try {
-			Producto p = productoService.save(newProducto);				
+			Producto p = productoService.save(newProducto);
+			log.info("/producto/add Entity Producto with id: "+p.getId()+" was created successfully");
 			return ResponseEntity.ok(p);
 		}catch(Exception e) {
+			log.error("/producto/add "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}	
 	}	
@@ -208,44 +217,47 @@ public class ProductoController {
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/producto/notiStock/ Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
-		
-		Personal emisor;
-		String cuerpo;
-		if(almId == -1) {
-			emisor = (EncargadoDeAlmacen) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
-			cuerpo = "El Producto  "+newProducto.getNombre()+"-("+newProducto.getId()+") se recomienda su reposicion por bajo stock en el almacen " + newProducto.getEstanteria().getAlmacen().getId();
-		} else {
-			emisor = (Administrador) userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
-			cuerpo = "El Producto  "+newProducto.getNombre()+"-("+newProducto.getId()+") se recomienda su reposicion por bajo stock en el almacen " + almId;
-		}
-		List<Notificacion> notisprod = notificacionService.findNotiPersonalFechaCuerpo(emisor, LocalDate.now(),cuerpo);
-		
-		if(!notisprod.isEmpty()) {
-			return ResponseEntity.badRequest().body("Ya ha mandado esta notificacion hoy");
-		}else {
-			Notificacion noti = new Notificacion();
+		try {
+			Personal emisor = userRepository.findByUsername(userDetails.getUsername()).get().getPersonal();
+			String cuerpo;
 			
-			noti.setEmisor(emisor);
-			noti.setCuerpo(cuerpo);
-			noti.setTipoNotificacion(TipoNotificacion.URGENTE);
-			noti.setFechaHora(LocalDateTime.now());
-			
-			List<Personal> adminReceptores = new ArrayList<>();
-			for (Administrador adm : adminService.findAll()) {
-				adminReceptores.add(adm);
+			if(almId == -1) {
+				emisor = (EncargadoDeAlmacen)  emisor;
+				cuerpo = "El Producto  "+newProducto.getNombre()+"-("+newProducto.getId()+") se recomienda su reposicion por bajo stock en el almacen " + newProducto.getEstanteria().getAlmacen().getId();
+			} else {
+				emisor = (Administrador) emisor;
+				cuerpo = "El Producto  "+newProducto.getNombre()+"-("+newProducto.getId()+") se recomienda su reposicion por bajo stock en el almacen " + almId;
 			}
+			List<Notificacion> notisprod = notificacionService.findNotiPersonalFechaCuerpo(emisor, LocalDate.now(),cuerpo);
 			
-			try {
+			if(!notisprod.isEmpty()) {
+				return ResponseEntity.badRequest().body("Ya ha mandado esta notificacion hoy");
+			}else {
+				Notificacion noti = new Notificacion();
+				
+				noti.setEmisor(emisor);
+				noti.setCuerpo(cuerpo);
+				noti.setTipoNotificacion(TipoNotificacion.URGENTE);
+				noti.setFechaHora(LocalDateTime.now());
+				
+				List<Personal> adminReceptores = new ArrayList<>();
+				for (Administrador adm : adminService.findAll()) {
+					adminReceptores.add(adm);
+				}
+				
 				Notificacion nDef = notificacionService.save(noti, adminReceptores);
+				log.info("/producto/notiStock Entity Notification with id: " +nDef.getId() +" was created successfully");
 				return ResponseEntity.ok(nDef);
-			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
 			}
+		}catch(Exception e) {
+			log.error("/producto/notiStock "+e.getMessage());
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
