@@ -28,5 +28,11 @@ public interface ContratoRepository extends CrudRepository<Contrato, Long>{
 	
 	void deleteByPersonalNIF(String NIF);
 	
+	@Query(value = "SELECT * FROM CONTRATOS WHERE FECHA_FIN < SYSDATE", nativeQuery = true)
+	List<Contrato> findAllCaducados();
+	
+	@Query(value = "SELECT * FROM CONTRATOS WHERE FECHA_FIN BETWEEN SYSDATE AND SYSDATE+5", nativeQuery = true)
+	List<Contrato> findAllCaducanEnCincoDias();
+	
 	Optional<Contrato>  findByPersonalNIF(String NIF);
 }

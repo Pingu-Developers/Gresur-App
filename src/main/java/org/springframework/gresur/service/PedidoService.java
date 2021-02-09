@@ -1,25 +1,31 @@
 package org.springframework.gresur.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.gresur.model.EstadoPedido;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.model.LineaFactura;
+import org.springframework.gresur.model.Notificacion;
 import org.springframework.gresur.model.Pedido;
+import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.Producto;
+import org.springframework.gresur.model.TipoNotificacion;
 import org.springframework.gresur.model.Vehiculo;
 import org.springframework.gresur.repository.PedidoRepository;
 import org.springframework.gresur.service.exceptions.FechaFinNotAfterFechaInicioException;
@@ -53,6 +59,9 @@ public class PedidoService {
 	
 	@Autowired
 	private TransportistaService transportistaService;
+	
+	@Autowired
+	private NotificacionService notiService;
 
 	@PersistenceContext
 	private EntityManager em;
@@ -219,37 +228,54 @@ public class PedidoService {
 		pedidoRepo.deleteById(id);
 	}
 	
-	@PostConstruct
+	@EventListener(ApplicationReadyEvent.class)
 	@Scheduled(cron = "0 0 7 * * *")
 	@Transactional
 	public void actualizaPedidos() {
-		Queue<Pedido> candidatosQ = new LinkedList<Pedido> (pedidoRepo.findByEstadoAndFechaEnvioBeforeOrdered(EstadoPedido.EN_ESPERA.toString(), LocalDate.now()));
-			
-		while(candidatosQ.size() > 0) {
-			Pedido p = candidatosQ.poll();
-			
-			// comprueba si hay stock para poder pasar a preparado
-			if(p.getFacturaEmitida().getLineasFacturas().stream().allMatch(x -> x.getCantidad() <= productoService.findById(x.getProducto().getId()).getStock())) {
+		
+		try {
+			Queue<Pedido> candidatosQ = new LinkedList<Pedido> (pedidoRepo.findByEstadoAndFechaEnvioBeforeOrdered(EstadoPedido.EN_ESPERA.toString(), LocalDate.now()));
 				
-				// actualiza el stock de los producto
-				p.getFacturaEmitida().getLineasFacturas().forEach(lf -> {
-					Producto producto = productoService.findById(lf.getProducto().getId());
-					producto.setStock(producto.getStock()-lf.getCantidad());
-					productoService.save(producto);
-				});
+			while(candidatosQ.size() > 0) {
+				Pedido p = candidatosQ.poll();
 				
-				// emite la factura
-				FacturaEmitida fem = p.getFacturaEmitida();
-				fem.setFechaEmision(LocalDate.now());
-				fem.setNumFactura(configService.nextValEmitidas());
-				emitidaService.save(fem);
-				
-				// actualiza el pedido
-				p.setEstado(EstadoPedido.PREPARADO);
-				p.setTransportista(transportistaService.findTransportistaConMenosPedidos());
-				this.save(p);
+				// comprueba si hay stock para poder pasar a preparado
+				if(p.getFacturaEmitida().getLineasFacturas().stream().allMatch(x -> x.getCantidad() <= productoService.findById(x.getProducto().getId()).getStock())) {
+					
+					// actualiza el stock de los producto
+					p.getFacturaEmitida().getLineasFacturas().forEach(lf -> {
+						Producto producto = productoService.findById(lf.getProducto().getId());
+						producto.setStock(producto.getStock()-lf.getCantidad());
+						productoService.save(producto);
+					});
+					// actualiza el pedido y emite la factura
+					if(p.recogeEnTienda()) {
+						p.setEstado(EstadoPedido.EN_TIENDA);
+					} else {
+						p.setEstado(EstadoPedido.PREPARADO);
+						p.setTransportista(transportistaService.findTransportistaConMenosPedidos());
+					}
+					this.save(p);
+					
+					// manda notificacion
+					FacturaEmitida fem = p.getFacturaEmitida();
+					Notificacion noti = new Notificacion();
+					if (p.recogeEnTienda()) {
+						noti.setCuerpo("El pedido con id " + p.getId() + " se encuentra disponible en tienda, avise al cliente " + fem.getCliente().getName() + " con NIF: " + fem.getCliente().getNIF());
+					} else {
+						noti.setCuerpo("El pedido con id " + p.getId() + " ha sido tramitado y pasa a disposicion del transportista " + p.getTransportista().getName() + " para el transporte");
+					}
+					noti.setEmisor(null);
+					noti.setTipoNotificacion(TipoNotificacion.SISTEMA);
+					noti.setFechaHora(LocalDateTime.now());
+					List<Personal> receptores = new ArrayList<Personal>();
+					receptores.add(fem.getDependiente());
+					notiService.save(noti, receptores);
+				}
 			}
+			log.info("Pedidos actualizados");
+		} catch(Exception e) {
+			log.error(e.getMessage());
 		}
-		log.info("Pedidos actualizados.");
 	}
 }

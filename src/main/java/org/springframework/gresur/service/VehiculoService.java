@@ -6,12 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.omg.CORBA.portable.UnknownException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +33,9 @@ import org.springframework.gresur.service.exceptions.MatriculaUnsupportedPattern
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class VehiculoService {
 
@@ -163,7 +167,7 @@ public class VehiculoService {
 		return disponibilidadVehiculo && (pedidosEnRepartoVehiculo.size() == 0 || pedidosEnRepartoVehiculo.stream().allMatch(x->x.getTransportista().equals(t)));
 	}
 	
-	@PostConstruct
+	@EventListener(ApplicationReadyEvent.class)
 	@Scheduled(cron = "0 0 7 * * *")
 	@Transactional
 	public void ITVSeguroReparacionvalidation() throws UnknownException{
@@ -199,11 +203,12 @@ public class VehiculoService {
 					warning.setTipoNotificacion(TipoNotificacion.SISTEMA);
 					warning.setCuerpo("El vehículo con matrícula: " + v.getMatricula() + " ha dejado de estar disponible debido a que esta en reparacion");	
 					notificacionService.save(warning,lPer);
-				}			
+				}
 			} catch (Exception e) {
-				throw new UnknownException(e);
+				log.error("No se ha podido revisar el vehiculo " + v.getMatricula() + ": " + e.getMessage());
 			}
 		}
+		log.info("Vehiculos revisados");
 	}
 	
 	@Transactional
