@@ -13,7 +13,6 @@ import org.springframework.gresur.model.Personal;
 import org.springframework.gresur.model.User;
 import org.springframework.gresur.model.userPayload.JwtResponse;
 import org.springframework.gresur.model.userPayload.LoginRequest;
-import org.springframework.gresur.model.userPayload.MessageResponse;
 import org.springframework.gresur.repository.RolRepository;
 import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.util.Tuple2;

@@ -103,7 +103,7 @@ import { connect } from 'react-redux';
 
 
   const initialState = {
-            nomina:'',
+            nomina:0,
             entidadBancaria:'',
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -133,7 +133,7 @@ class FormNuevoContrato extends Component{
 
       if(this.state.open != prevState.open && !this.state.open){
           this.setState({
-            nomina:'', 
+            nomina:0, 
             entidadBancaria:'',
             fechaInicio:'',
             fechaFin:'',
@@ -299,7 +299,19 @@ class FormNuevoContrato extends Component{
 
     }
 
-
+    handleNumFloat = (value,min) =>{
+        console.log(value)
+        return Number.isNaN(parseFloat(value))||parseFloat(value)<min? min: parseFloat(value)
+    }
+    handleChangeNomina = (event) => {
+        const num = this.handleNumFloat(event.target.value,1.0)
+        this.setState(state =>({
+          [event.target.name]: num,
+          errors :{
+              ...state.errors,
+              [event.target.name]:[]
+          }
+      }))}
 
     handleChangeInput = (event) => {
       this.setState(state =>({
@@ -404,17 +416,18 @@ class FormNuevoContrato extends Component{
 
                     </Select>
             </FormControl>
+
                     <TextField 
                         autofocus
                         id="nomina"
                         label="Nomina"
-                        type="text"
+                        type="number"
                         variant="outlined"
                         name = "nomina"
                         margin="normal"
                         required
                         value={this.state.nomina}
-                        onChange={this.handleChangeInput}
+                        onChange={this.handleChangeNomina}
                         className={classes.formSpace}
                         error={this.state.errors.nomina.length>0}
                         helperText={this.state.errors.nomina[0]}
