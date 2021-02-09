@@ -50,7 +50,7 @@ export const getFacturasCliente = (id) => (dispatch) => {
 }
 
 export const getFacturasClienteAndFecha = (datos) => (dispatch) => {
-    axios.post('/facturaEmitida/clienteFecha',datos)
+    axios.get('/facturaEmitida/clienteFecha',datos)
         .then((res) => {
             dispatch({
                 type:SET_FACTURAS,
