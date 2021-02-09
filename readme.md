@@ -20,7 +20,7 @@ Una vez instalado todo, importaremos nuestro proyecto en eclipse y ejecutaremos 
 
 Posteriormente, desde Visual Studio Code abriremos la carpeta _/app_ y ahí ejecutaremos el siguiente comando
 ```
-npm install
+npm install --legacy-peer-deps
 ```
 Una vez instaladas todas las dependencias, ejecutaremos el frontend con el siguiente comando 
 
