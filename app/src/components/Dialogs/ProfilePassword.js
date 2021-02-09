@@ -15,6 +15,7 @@ import {logoutUser} from '../../redux/actions/userActions';
 //REDUX stuff
 import {putPersonalProfilePassword,clear } from '../../redux/actions/dataActions';
 import { connect } from 'react-redux';
+import SnackCallController from '../Other/SnackCallController';
 
 const useStyles = makeStyles((theme) => ({
   
@@ -62,7 +63,11 @@ const useStyles = makeStyles((theme) => ({
 
       componentDidUpdate(prevProps,prevState){
         console.log("UPDATE---"+this.state.errorsPwd)
-
+        if(prevProps.UI.enviado != this.props.UI.enviado && this.props.UI.enviado){
+          this.props.FinalizarhandleClose();
+          this.props.logoutUser();
+          this.props.history.push('/login');
+        }
         if(this.state.open != prevState.open && !this.state.open){
             this.setState({
               passwordOld: '',
@@ -116,12 +121,7 @@ const useStyles = makeStyles((theme) => ({
             if(!errores){
               this.props.putPersonalProfilePassword(this.state.pwds);  
               console.log("VALIDADO---"+this.state.errorsPwd)
-            
-              if(this.state.errorsPwd !== null && this.state.errorsPwd !== 'Contraseña invalida' ){
-              //  this.props.FinalizarhandleClose();
-               // this.props.logoutUser();
-               // this.props.history.push('/login');
-              }               
+                          
           }
             this.setState({
                 enviar:false,
@@ -139,7 +139,7 @@ const useStyles = makeStyles((theme) => ({
     <div>
       <Snackbar type = "error" open = {errors==='Contraseña invalida'} truco ={true} message = {errors}></Snackbar>
                 {errors==='Contraseña invalida' ? document.getElementById("botonSnack").click():null}
-
+      <SnackCallController  message = {"Operacion realizada correctamente"} errors={errors} />
     <DialogContent>
     <form  id="nuevoContrato"noValidate onSubmit={this.handleSubmit}>
        <div style={{display:'flex', justifyContent:'center', margin:'5%'}}>

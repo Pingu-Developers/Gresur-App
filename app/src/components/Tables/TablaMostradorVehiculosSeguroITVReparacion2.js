@@ -168,7 +168,7 @@ export default function ControlledAccordions(props) {
                                     variant='h6' 
                                     className={classes.info} 
                                     style={{fontWeight:"normal",paddingLeft:0 , margin:0}} 
-                                    color="textSecondary" >{row.seguros[0].tipoSeguro}M</Typography>
+                                    color="textSecondary" >{row.seguros[0].tipoSeguro}</Typography>
                             </div>
                             <div style={{display:"flex", justifyContent:"space-around"}}>
                                 <Typography variant='h6' className={classes.info} style={{margin:0}} color="textSecondary" >Contratacion:</Typography>

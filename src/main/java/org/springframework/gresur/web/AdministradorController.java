@@ -23,6 +23,7 @@ import org.springframework.gresur.model.User;
 import org.springframework.gresur.repository.RolRepository;
 import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.service.AdministradorService;
+import org.springframework.gresur.service.AlmacenService;
 import org.springframework.gresur.service.DependienteService;
 import org.springframework.gresur.service.EncargadoDeAlmacenService;
 import org.springframework.gresur.service.TransportistaService;
@@ -61,6 +62,9 @@ public class AdministradorController {
 	
 	@Autowired
 	EncargadoDeAlmacenService encargadoService;
+	
+	@Autowired
+	AlmacenService almaService;
 	
 	@Autowired
 	DependienteService dependienteService;
@@ -264,6 +268,8 @@ public class AdministradorController {
 			EncargadoDeAlmacen encargado = p;
 			
 			try {
+				
+				encargado.setAlmacen(almaService.findById(encargado.getAlmacen().getId()));
 				encargado = admService.saveEncargadoDeAlmacen(encargado);
 				
 				//Creacion nuevo Usuario

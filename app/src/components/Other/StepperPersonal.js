@@ -68,6 +68,7 @@ const steps = getSteps();
             activeStep: step + 1
         })
         if(personal){
+          console.log(personal)
           this.setState({
             personal:personal,
             rol:rol

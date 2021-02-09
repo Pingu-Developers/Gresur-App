@@ -330,7 +330,9 @@ export const putPersonalProfile = (personal) => function (dispatch) {
 
 export const putPersonalProfilePassword = (personal) => function (dispatch) {
     axios.put('/auth/password',personal)    .then((res) => {
-        dispatch(loadPersonalProfile());
+        dispatch({
+            type: SET_ENVIADO,
+        });
     })
     .catch((err) => {
         if(err.response){

@@ -286,6 +286,7 @@ class FormNuevoContrato extends Component{
 
           if(!errores){
             this.props.onNextStep(this.state.step)
+            console.log(this.props.personal)
             this.props.addPersonal(this.props.personal,this.props.rol,this.state.contrato);
            
         }
