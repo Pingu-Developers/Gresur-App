@@ -695,8 +695,8 @@ export const loadAlmacenGestionEncargado = (almacenAdm) => (dispatch) => {
         })
 }
 
-export const updateEstanteriaCapacidad = (categoria, capacidad, almAdm) => (dispatch) =>{
-    axios.put(`/estanterias/update/${categoria}/${capacidad}`)
+export const updateEstanteriaCapacidad = (categoria, capacidad, almAdm, version) => (dispatch) =>{
+    axios.put(`/estanterias/update/${categoria}/${capacidad}/${version}`)
     .then((res) => {
         dispatch(loadAlmacenGestionEncargado(almAdm));
         dispatch({
@@ -712,7 +712,7 @@ export const updateEstanteriaCapacidad = (categoria, capacidad, almAdm) => (disp
         } else {
             console.log(err)
         }
-        dispatch(loadAlmacenGestionEncargado(almAdm));
+        //dispatch(loadAlmacenGestionEncargado(almAdm));
     })
 }
 

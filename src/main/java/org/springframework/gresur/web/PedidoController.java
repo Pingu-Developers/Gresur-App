@@ -461,6 +461,17 @@ public class PedidoController {
 	@PutMapping("/update")
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
 	public ResponseEntity<?> updatePedido(@Valid @RequestBody Pedido pedido, BindingResult result) {
+		
+		Pedido p = pedidoService.findByID(pedido.getId());
+		
+		if(p==null) {
+			return ResponseEntity.badRequest().body("Pedido no existente");
+		}
+		
+		if(p.getVersion() != pedido.getVersion()) {
+			return ResponseEntity.badRequest().body("Concurrent modification");
+		}
+		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
@@ -468,9 +479,9 @@ public class PedidoController {
 		
 		try {
 			clienteService.save(pedido.getFacturaEmitida().getCliente());
-			Pedido p = pedidoService.save(pedido);
+			Pedido pDef = pedidoService.save(pedido);
 				
-			return ResponseEntity.ok(p);
+			return ResponseEntity.ok(pDef);
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
