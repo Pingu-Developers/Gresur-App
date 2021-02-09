@@ -54,7 +54,7 @@ public class Pedido extends BaseEntity{
 	
 	/* Propiedad derivada */
 	public Boolean recogeEnTienda() {
-		return this.getDireccionEnvio() == "C/ Ligastorro nº 9" || this.getDireccionEnvio() == "Avenida Gresur edificio AG";
+		return this.getDireccionEnvio().equals("C/ Ligastorro nº 9") || this.getDireccionEnvio().equals("Avenida Gresur edificio AG");
 	}
 		
 	public FacturaEmitida getFacturaEmitida() {

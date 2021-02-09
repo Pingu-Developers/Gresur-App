@@ -270,16 +270,16 @@ INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jo
 	VALUES (2000.00, 'SANTADER', TO_DATE('2015/04/04','YYYY/MM/DD'), TO_DATE('2999/01/02','YYYY/MM/DD'), 'COMPLETA', 1);
 		
 INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
-	VALUES (1240.00, 'CAIXA-BANK', TO_DATE('2017/04/04','YYYY/MM/DD'), TO_DATE('2021/01/02','YYYY/MM/DD'), 'COMPLETA', 2);
+	VALUES (1240.00, 'CAIXA-BANK', TO_DATE('2017/04/04','YYYY/MM/DD'), TO_DATE('2022/01/02','YYYY/MM/DD'), 'COMPLETA', 2);
 		
 INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
-	VALUES (1100.00, 'BANKIA', TO_DATE('2018/07/09','YYYY/MM/DD'), TO_DATE('2021/04/03','YYYY/MM/DD'), 'PARCIAL', 3);
+	VALUES (1100.00, 'BANKIA', TO_DATE('2018/07/09','YYYY/MM/DD'), TO_DATE('2021/02/14','YYYY/MM/DD'), 'PARCIAL', 3);
 			
 INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
 	VALUES (1300.00, 'SANTANDER', TO_DATE('2016/05/04','YYYY/MM/DD'), TO_DATE('2021/09/05','YYYY/MM/DD'), 'COMPLETA', 4);
 
 INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
-	VALUES (910.00, 'CAIXA', TO_DATE('2017/02/08','YYYY/MM/DD'), TO_DATE('2021/03/04','YYYY/MM/DD'), 'MEDIA_JORNADA', 5);
+	VALUES (910.00, 'CAIXA', TO_DATE('2017/02/08','YYYY/MM/DD'), TO_DATE('2021/02/20','YYYY/MM/DD'), 'MEDIA_JORNADA', 5);
 		
 INSERT INTO CONTRATOS(nomina, entidad_bancaria, fecha_inicio, fecha_fin, tipo_jornada, personal_id)
 	VALUES (1300.00, 'CAIXA', TO_DATE('2017/01/01','YYYY/MM/DD'), TO_DATE('2021/04/06','YYYY/MM/DD'), 'COMPLETA', 6);
@@ -508,9 +508,10 @@ INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
 INSERT INTO ITV(fecha, expiracion, resultado, factura_recibida_id, vehiculo_id)
 	VALUES (TO_DATE('2020/05/07','YYYY/MM/DD'), TO_DATE('2022/11/11','YYYY/MM/DD'), 'NEGATIVA', 21, 6);
 	
-
+	
+	
 INSERT INTO PEDIDOS(direccion_envio, estado, fecha_realizacion, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
-	VALUES ('Calle Der Cadi Depe nº1 Bloque C Piso 3 Puerta 1 (Cadiz)', 'EN_ESPERA', TO_DATE('2020/12/31','YYYY/MM/DD') ,TO_DATE('2021/02/20','YYYY/MM/DD'), 1, NULL, NULL);
+	VALUES ('Avenida Gresur edificio AG', 'EN_ESPERA', TO_DATE('2021/01/30','YYYY/MM/DD') ,TO_DATE('2021/02/02','YYYY/MM/DD'), 1, NULL, NULL);
 
 INSERT INTO PEDIDOS(direccion_envio, estado, fecha_realizacion, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
 	VALUES ('Ronda Iglesia, 44, 49492, Fresno De Sayago(Zamora)', 'PREPARADO', TO_DATE('2020/12/22','YYYY/MM/DD'), TO_DATE('2020/12/23','YYYY/MM/DD'), 2, NULL, 5);
@@ -523,7 +524,6 @@ INSERT INTO PEDIDOS(direccion_envio, estado, fecha_realizacion, fecha_envio, fac
 	
 INSERT INTO PEDIDOS(direccion_envio, estado, fecha_realizacion, fecha_envio, factura_emitida_id, vehiculo_id, transportista_id)
 	VALUES ('Praza Catalunya, 2, 20341, Itsasondo(Gipuzkoa)', 'EN_REPARTO',  TO_DATE('2021/01/03','YYYY/MM/DD'), TO_DATE('2021/01/04','YYYY/MM/DD'), 5, 4, 6); --CAMBIADO DE ENTREGADO A EN_REPARTO
-
 
 UPDATE ID_Generator SET sequence = 6 WHERE name = 'personal';
 		
