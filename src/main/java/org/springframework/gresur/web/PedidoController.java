@@ -131,7 +131,6 @@ public class PedidoController {
 		return pedidoService.findByEstado(EstadoPedido.valueOf(estado) , paging);
 	}
 	
-	@ExceptionHandler({Exception.class})
 	@PostMapping("/add")
 	@PreAuthorize("hasRole('DEPENDIENTE')")
 	@Transactional
