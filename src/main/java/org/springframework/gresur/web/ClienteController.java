@@ -21,9 +21,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RestController
 @RequestMapping("api/cliente")
+@Slf4j
 public class ClienteController {
 
 	private final ClienteService clienteService;
@@ -39,21 +42,23 @@ public class ClienteController {
 		return clienteService.findAll();
 	}
 	
-	@ExceptionHandler({Exception.class})
 	@PostMapping("/add")
 	@PreAuthorize("hasRole('DEPENDIENTE')")
 	public ResponseEntity<?> add(@RequestBody @Valid Cliente cliente, BindingResult result) throws DataAccessException{
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/cliente/add Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
 		else {
 			try {
 				Cliente c = clienteService.save(cliente);
+				log.info("/cliente/add Entity Cliente with id: "+c.getId()+" was created successfully");
 				return ResponseEntity.ok(c);
 			}catch(Exception e) {
+				log.error("/cliente/add " + e.getMessage());
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}			
 		}		

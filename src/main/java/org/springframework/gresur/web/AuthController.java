@@ -39,9 +39,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
+@Slf4j
 public class AuthController {
 	
 	@Autowired
@@ -94,69 +97,6 @@ public class AuthController {
 		}	
 	}
 	
-	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest, BindingResult result) {
-		
-		if(result.hasErrors()) {
-			List<FieldError> le = result.getFieldErrors();
-			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
-		}
-		
-		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
-		}
-
-		// Create new user's account
-		User user = new User(signUpRequest.getUsername(), 
-							 encoder.encode(signUpRequest.getPassword()));
-
-		Set<String> strRoles = signUpRequest.getRoles();
-		Set<Rol> roles = new HashSet<>();
-
-		if (strRoles == null) {
-			Rol userRole = roleRepository.findByName(ERol.ROLE_DEPENDIENTE)
-					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-			roles.add(userRole);
-		} else {
-			strRoles.forEach(role -> {
-				switch (role) {
-				case "admin":
-					Rol adminRole = roleRepository.findByName(ERol.ROLE_ADMIN)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					roles.add(adminRole);
-
-					break;
-				case "encargado":
-					Rol encargadoRole = roleRepository.findByName(ERol.ROLE_ENCARGADO)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					roles.add(encargadoRole);
-
-					break;
-				case "transportista":
-					Rol transportistaRole = roleRepository.findByName(ERol.ROLE_TRANSPORTISTA)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					roles.add(transportistaRole);
-
-					break;
-				default:
-					Rol userRole = roleRepository.findByName(ERol.ROLE_DEPENDIENTE)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-					roles.add(userRole);
-				}
-			});
-		}
-
-		user.setRoles(roles);
-		
-		try {
-			userRepository.save(user);
-			return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
-		}catch(Exception e) {
-			return ResponseEntity.badRequest().body(e.getMessage());
-		}
-	}
 	
 	@GetMapping("/user")
 	@PreAuthorize("permitAll()")
@@ -192,8 +132,10 @@ public class AuthController {
 			
 			try {
 				userRepository.save(empleado);
+				log.info("/auth/password User with id: "+empleado.getId()+" change password successfully");
 				return ResponseEntity.ok("Contraseña cambiada");
 			}catch(Exception e) {
+				log.error("/auth/password " + e.getMessage());
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}
