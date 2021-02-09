@@ -124,7 +124,7 @@ class NotificacionControllerTest {
     @Disabled
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Este test esta comentado, ya que debido a que se utiliza la clase Authentication siempre devuelve un 200 OK   *
-	 * por lo que no podemos probar correctamente el funcionamiento en este caso, pero la logica es correcta		 *																									 *
+	 * por lo que no podemos probar correctamente el funcionamiento en este caso, pero la logica es correcta		 *																									 
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	void testPostSetNotificacionesLeidasError() throws Exception  {
 		
@@ -177,7 +177,7 @@ class NotificacionControllerTest {
     @Disabled
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Este test esta comentado, ya que debido a que se utiliza la clase Authentication siempre devuelve un 200 OK   *
-	 * por lo que no podemos probar correctamente el funcionamiento en este caso, pero la logica es correcta		 *																									 *
+	 * por lo que no podemos probar correctamente el funcionamiento en este caso, pero la logica es correcta		 *																								
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	void testPostNewNotificacionesError() throws Exception  {
 

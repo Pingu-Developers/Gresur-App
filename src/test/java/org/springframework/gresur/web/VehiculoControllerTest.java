@@ -30,7 +30,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.google.gson.Gson;
-
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 @WebMvcTest(controllers = VehiculoController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
 excludeAutoConfiguration= {SecurityConfiguration.class,ExceptionHandlerConfiguration.class})
@@ -172,6 +173,9 @@ class VehiculoControllerTest {
     @Test
 	void testPostVehiculoisOk() throws Exception  {
 	
+		//Devuelve Vehiculo Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.vehiculoService.save(any(Vehiculo.class))).willReturn(new Vehiculo());
+		
 		//Creacion Vehiculo
 		vehiculo.setCapacidad(231.);
 		vehiculo.setImagen("/img/camion.png");

@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.google.gson.Gson;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @WebMvcTest(controllers = ProveedorController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
@@ -63,6 +65,9 @@ class ProveedorControllerTest {
 	@DisplayName("Agregar un proveedor -- caso positivo")
 	@Test
 	void testPostProveedorisOk() throws Exception  {
+		
+		//Devuelve Proveedor Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.proveedorService.save(any(Proveedor.class))).willReturn(new Proveedor());
 		
 		//Creacion Proveedor
 		proveedor.setName("Paco Antonio Bermudez Sanchez");
