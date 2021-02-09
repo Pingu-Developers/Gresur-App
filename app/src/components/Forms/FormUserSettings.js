@@ -73,6 +73,7 @@ const useStyles = makeStyles((theme) => ({
     constructor(props){
         super(props);
         let initialState = {
+            version: this.props.usuario.version,
             name: this.props.usuario.name,
             direccion: this.props.usuario.direccion,
             nif: this.props.usuario.nif,
@@ -139,7 +140,7 @@ const useStyles = makeStyles((theme) => ({
           handleSubmit = (event)=>{
             event.preventDefault();
             const empleado = {
-              version: this.props.usuario.version,
+              version:this.state.version,
               name: this.state.name,
               direccion: this.state.direccion,
               nif: this.state.nif,

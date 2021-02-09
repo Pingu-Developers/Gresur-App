@@ -136,8 +136,7 @@ public class AuthController {
 		}
 		
 		else {
-			MessageResponse me = new MessageResponse("Wrong Password");
-			return ResponseEntity.ok(me);
+			return ResponseEntity.badRequest().body("Wrong Password");
 		}
 	}
 }
