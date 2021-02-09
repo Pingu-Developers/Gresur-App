@@ -221,7 +221,7 @@ class FormNuevoEmpleado extends Component{
             this.setState(state=>({
                 errors :{
                     ...state.errors,
-                    direccion:[...state.errors.direccion,'Esta vacio']
+                    direccion:[...state.errors.direccion,'Direccion no valida']
                 }
             }))
             errores = true

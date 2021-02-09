@@ -22,6 +22,7 @@ import org.springframework.gresur.model.User;
 import org.springframework.gresur.repository.RolRepository;
 import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.service.AdministradorService;
+import org.springframework.gresur.service.AlmacenService;
 import org.springframework.gresur.service.DependienteService;
 import org.springframework.gresur.service.EncargadoDeAlmacenService;
 import org.springframework.gresur.service.TransportistaService;
@@ -67,6 +68,9 @@ class AdministradorControllerTest {
 	
 	@MockBean
 	AdministradorService admService;
+	
+	@MockBean
+	AlmacenService almService;
 	
 	
 	//Creacion Datos Testear

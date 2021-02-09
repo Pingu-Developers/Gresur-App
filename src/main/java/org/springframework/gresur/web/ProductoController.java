@@ -112,7 +112,7 @@ public class ProductoController {
 		return diccVehiculoProductos;
 	}
 	
-	@PostMapping("/save") //TODO SERIA UN PUT porque ACTUALIZA?
+	@PostMapping("/save")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('ENCARGADO')")
 	public ResponseEntity<?> saveProducto(@RequestBody @Valid Producto newProducto, BindingResult result) {
 		try {
