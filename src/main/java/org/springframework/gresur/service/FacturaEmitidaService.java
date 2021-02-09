@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.gresur.model.Cliente;
-import org.springframework.gresur.model.Factura;
 import org.springframework.gresur.model.FacturaEmitida;
 import org.springframework.gresur.repository.FacturaEmitidaRepository;
 import org.springframework.gresur.service.exceptions.ClienteDefaulterException;
