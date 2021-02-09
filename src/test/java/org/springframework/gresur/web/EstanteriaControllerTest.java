@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.gresur.configuration.ExceptionHandlerConfiguration;
 import org.springframework.gresur.configuration.SecurityConfiguration;
 import org.springframework.gresur.model.Almacen;
 import org.springframework.gresur.model.Categoria;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.*;
 
 @WebMvcTest(controllers = EstanteriaController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
-excludeAutoConfiguration= SecurityConfiguration.class)
+excludeAutoConfiguration= {SecurityConfiguration.class,ExceptionHandlerConfiguration.class})
 class EstanteriaControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
@@ -104,7 +105,7 @@ class EstanteriaControllerTest {
 		given(this.estanteriaService.findByCategoria(any(Categoria.class))).willReturn(est);
 		when(estanteria.getAlmacen()).thenReturn(new Almacen());
 		mockMvc.perform(MockMvcRequestBuilders
-				.put("/api/estanterias/update/{categoria}/{capacidad}", est.getCategoria(), 20.0)
+				.put("/api/estanterias/update/{categoria}/{capacidad}/{version}", est.getCategoria(), 20.0,0)
 				.with(csrf()))
 		.andExpect(MockMvcResultMatchers.status().isOk());
 	}

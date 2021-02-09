@@ -580,6 +580,9 @@ class PedidoControllerTest {
 				+ "\"vehiculo\":null,\"transportista\":{\"id\":6,\"name\":\"Agustin Pineda Rey\",\"email\":\"f8s9khjgx@btinternet.com\",\"tlf\":\"672910341\","
 				+ "\"direccion\":\"Calle Carrera De Espa\u00f1a, 74, 28661, Valdemanco(madrid)\",\"image\":\"foto.png\",\"nss\":\"410473213263\",\"nif\":\"73929968X\"}}";
 		
+		//Devuelve Un Pedido Para Cualquier ID
+		given(this.pedidoService.findByID(any(Long.class))).willReturn(new Pedido());
+		
 		//Peticion PUT
 		mockMvc.perform(MockMvcRequestBuilders.
 				put("/api/pedido/update")

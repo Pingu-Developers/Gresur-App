@@ -149,7 +149,6 @@ public class ProductoController {
 		}
 	}
 	
-	@ExceptionHandler({ Exception.class })
 	@PostMapping("/add")
 	@PreAuthorize("hasRole('ADMIN') or hasRole('ENCARGADO')")
 	public ResponseEntity<?> saveNuevoProducto(@RequestBody @Valid Producto newProducto, BindingResult result) {
@@ -203,7 +202,6 @@ public class ProductoController {
 		return productoService.findByProductosByNameOrderedPageable(s, pageable);		
 	}
 	
-	@ExceptionHandler({ Exception.class })
 	@PreAuthorize("hasRole('ENCARGADO') or hasRole('ADMIN')")
 	@PostMapping("/notiStock/{almacenAdm}")
 	public ResponseEntity<?> createNotiStock(@PathVariable("almacenAdm") Long almId, @RequestBody @Valid Producto newProducto, BindingResult result) {
