@@ -26,6 +26,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.google.gson.Gson;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.ArgumentMatchers.any;
 
 @WebMvcTest(controllers = AlmacenController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
@@ -45,21 +47,23 @@ class AlmacenControllerTest {
 	PasswordEncoder encoder;
 	
 	@MockBean
-	private AlmacenService almacenService;
+	AlmacenService almacenService;
 	
 	@MockBean
-	private ProductoService productoService;
+	ProductoService productoService;
 	
 	@MockBean
-	private EstanteriaService zonaService;
+	EstanteriaService zonaService;
 	
+	//Datos a Testear
+	private static final Long ID_ALMACEN = 2L;
 	private Almacen almacen;
 	
 	@BeforeEach
 	void setUp() throws Exception {
+		
 		almacen = new Almacen();
-		almacen.setCapacidad(2500.0);
-		almacen.setDireccion("Poligono El Gastor - Cádiz");
+	
 	}
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * 									GET		GESTION																 *
@@ -68,6 +72,8 @@ class AlmacenControllerTest {
 	@DisplayName("GET Gestion Almacen")
 	@Test
 	void getGestionIsOk() throws Exception{
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders
 				.get("/api/almacen/gestion")
 				.with(csrf())
@@ -81,8 +87,10 @@ class AlmacenControllerTest {
 	@DisplayName("GET Gestion Encargado")
 	@Test
 	void getGestionEncargadoIsOk() throws Exception{
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders
-				.get("/api/almacen/gestionEncargado")
+				.get("/api/almacen/gestionEncargado/{almacenAdm}",ID_ALMACEN)
 				.with(csrf()))
 		.andExpect(MockMvcResultMatchers.status().isOk());
 		
@@ -95,8 +103,10 @@ class AlmacenControllerTest {
 	@DisplayName("GET Categorias")
 	@Test
 	void getCategoriasIsOk() throws Exception{
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders
-				.get("/api/almacen/categorias")
+				.get("/api/almacen/categorias/{almacenAdm}",ID_ALMACEN)
 				.with(csrf()))
 		.andExpect(MockMvcResultMatchers.status().isOk());
 		
@@ -109,6 +119,8 @@ class AlmacenControllerTest {
 	@DisplayName("GET Almacenes")
 	@Test
 	void getAlmacenesIsOk() throws Exception{
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders
 				.get("/api/almacen/")
 				.with(csrf()))
@@ -124,10 +136,21 @@ class AlmacenControllerTest {
 	@DisplayName("POST Almacenes -- caso positivo")
 	@Test
 	void postAlmacenIsOk() throws Exception{
+		
+		//Creacion Almacen
+		almacen.setCapacidad(2500.0);
+		almacen.setDireccion("Poligono El Gastor - Cádiz");
+		
+		//Creacion de Objeto a JSON
 		Gson gson = new Gson();
 		String jsonString = gson.toJson(almacen);
+		
+		//Devuelve Almacen Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.almacenService.save(any(Almacen.class))).willReturn(new Almacen());
+		
+		//Peticion POST
 		mockMvc.perform(MockMvcRequestBuilders
-				.post("/api/almacen/")
+				.post("/api/almacen")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonString)
 				.with(csrf()))
@@ -139,11 +162,21 @@ class AlmacenControllerTest {
 	@DisplayName("POST Almacenes -- caso negativo")
 	@Test
 	void postAlmacenError() throws Exception{
+		
+		//Creacion Almacen
+		almacen.setCapacidad(2500.0);
 		almacen.setDireccion("");
+		
+		//Devuelve Almacen Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.almacenService.save(any(Almacen.class))).willReturn(new Almacen());
+		
+		//Creacion de Objeto a JSON
 		Gson gson = new Gson();
 		String jsonString = gson.toJson(almacen);
+		
+		//Peticion POST
 		mockMvc.perform(MockMvcRequestBuilders
-				.post("/api/almacen/")
+				.post("/api/almacen")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(jsonString)
 				.with(csrf()))
