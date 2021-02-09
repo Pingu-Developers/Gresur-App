@@ -14,7 +14,7 @@ Para el despliegue proyecto en tu pc, deberás tener instalado previamente las s
 * [Node.js](https://nodejs.org/es/download/) - Para ejecutar el frontend desarrollado con React
 * [Visual Studio Code](https://code.visualstudio.com/download) - Recomendado para visualizar/editar el código de React
 
-## Despliegue 📦
+### Despliegue 📦
 
 Una vez instalado todo, importaremos nuestro proyecto en eclipse y ejecutaremos el archivo <b>GresurApplication.java</b> localizado en _src/main/java_ en el package _org.springframework.gresur_
 
