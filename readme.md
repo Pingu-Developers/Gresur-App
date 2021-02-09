@@ -35,4 +35,4 @@ Por último, abriremos una pestaña en el navegador e introduciremos esta URL: <
 * **Tomás Galera Barrera** - *tomgalbar@alum.us.es* - [Github](https://github.com/tomgalbar)
 * **Lucas Pérez Ruiz** - *lucperrui@alum.us.es* - [Github](https://github.com/lucasperezweb)
 * **Borja Rondán Domínguez** - *borrondom@alum.us.es* - [Github](https://github.com/borjar20)
-* **Alejandro Santisteban Corchos** - *alesanco@alum.us.esr* - [Github](https://github.com/alesancor1)
+* **Alejandro Santisteban Corchos** - *alesancor1@alum.us.es* - [Github](https://github.com/alesancor1)
