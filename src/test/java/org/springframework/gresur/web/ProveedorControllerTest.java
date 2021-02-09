@@ -38,22 +38,17 @@ class ProveedorControllerTest {
 	void setUp() throws Exception {
 		
 		proveedor = new Proveedor();
-		proveedor.setName("Paco Antonio Bermudez Sanchez");
-		proveedor.setDireccion("Calle Nostradammus");
-		proveedor.setEmail("pacoant@gmail.com");
-		proveedor.setTlf("678698123");
-		proveedor.setNIF("20070211X");
-		proveedor.setIBAN("ES2114640100722030876293");
-		
 
 	}
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 										GET	PROVEEDORES							 *
+	 * 										GET	PROVEEDORES							                                 *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Mostrar todos los proveedores")
     @Test
 	void testGetAllProveedoresisOk() throws Exception  {
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders.
 					get("/api/proveedor") 
 					.with(csrf())
@@ -61,37 +56,60 @@ class ProveedorControllerTest {
 	}
 
 
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * 										POST	PROVEEDOR							 *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-@WithMockUser(value = "spring")
-@DisplayName("Agregar un proveedor -- caso positivo")
-@Test
-void testPostProveedorisOk() throws Exception  {
-	Gson gson  = new Gson();
-	String jsonString =  gson.toJson(proveedor).replace("NIF", "nif").replace("IBAN", "iban");
-	mockMvc.perform(MockMvcRequestBuilders.
-				post("/api/proveedor") 
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonString)
-				.with(csrf())
-				).andExpect(MockMvcResultMatchers.status().isOk());
-}
-
-@WithMockUser(value = "spring")
-@DisplayName("Agregar un proveedor -- caso negativo")
-@Test
-void testPostProveedorError() throws Exception  {
-	proveedor.setIBAN("");
-	Gson gson  = new Gson();
-	String jsonString =  gson.toJson(proveedor).replace("NIF", "nif").replace("IBAN", "iban");
-	mockMvc.perform(MockMvcRequestBuilders.
-				post("/api/proveedor") 
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonString)
-				.with(csrf())
-				).andExpect(MockMvcResultMatchers.status().isBadRequest());
-}
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * 										POST	PROVEEDOR							                             *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	@WithMockUser(value = "spring")
+	@DisplayName("Agregar un proveedor -- caso positivo")
+	@Test
+	void testPostProveedorisOk() throws Exception  {
+		
+		//Creacion Proveedor
+		proveedor.setName("Paco Antonio Bermudez Sanchez");
+		proveedor.setDireccion("Calle Nostradammus");
+		proveedor.setEmail("pacoant@gmail.com");
+		proveedor.setTlf("678698123");
+		proveedor.setNIF("20070211X");
+		proveedor.setIBAN("ES2114640100722030876293");
+		
+		//Creacion Objeto a JSON
+		Gson gson  = new Gson();
+		String jsonString =  gson.toJson(proveedor).replace("NIF", "nif").replace("IBAN", "iban");
+		
+		//Peticion POST
+		mockMvc.perform(MockMvcRequestBuilders.
+					post("/api/proveedor") 
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(jsonString)
+					.with(csrf())
+					).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+	
+	@WithMockUser(value = "spring")
+	@DisplayName("Agregar un proveedor -- caso negativo")
+	@Test
+	void testPostProveedorError() throws Exception  {
+		
+		//Creacion Proveedor
+		proveedor.setName("Paco Antonio Bermudez Sanchez");
+		proveedor.setDireccion("Calle Nostradammus");
+		proveedor.setEmail("pacoant@gmail.com");
+		proveedor.setTlf("678698123");
+		proveedor.setNIF("20070211X");
+		proveedor.setIBAN("");
+		
+		//Creacion Objeto a JSON
+		Gson gson  = new Gson();
+		String jsonString =  gson.toJson(proveedor).replace("NIF", "nif").replace("IBAN", "iban");
+		
+		//Peticion POST
+		mockMvc.perform(MockMvcRequestBuilders.
+					post("/api/proveedor") 
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(jsonString)
+					.with(csrf())
+					).andExpect(MockMvcResultMatchers.status().isBadRequest());
+	}
 
 
 }

@@ -62,15 +62,34 @@ class AdministradorControllerTest {
 	@MockBean
 	AdministradorService admService;
 	
+	//Creacion Datos Testear
 	private Administrador administrador;
 	private Dependiente dependiente;
 	private EncargadoDeAlmacen encargado;
 	private Transportista transportista;
 	private Personal personal;
-	
+	private static final String NIF_VALIDO = "20070284A";
+	private static final String NIF_INVALIDO = "20070284AAA";
+
 	@BeforeEach
 	void setUp() throws Exception {
+		
 		administrador = new Administrador();
+		dependiente = new Dependiente();
+		encargado = new EncargadoDeAlmacen();
+		transportista = new Transportista();
+		personal = new Personal();	
+
+	}
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * 									POST	ADMINISTRADOR								                         *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	@WithMockUser(value = "spring")
+	@DisplayName("Añadir Administrador -- caso positivo")
+    @Test
+	void testPostAdministradorisOk() throws Exception  {
+		
+		//Creacion Administrador
 		administrador.setName("Paco Manuel Lopez");
 		administrador.setDireccion("Calle Larios");
 		administrador.setEmail("paco@gmail.com");
@@ -78,7 +97,54 @@ class AdministradorControllerTest {
 		administrador.setNSS("123456789963");
 		administrador.setTlf("678675482");
 		
-		dependiente = new Dependiente();
+		//Conversion Objeto a JSON
+		Gson gson  = new Gson();
+		String jsonString =  gson.toJson(administrador).replace("NIF", "nif").replace("NSS", "nss");
+		
+		//Peticion POST
+		mockMvc.perform(MockMvcRequestBuilders.
+					post("/api/adm/add/administrador") 
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(jsonString)
+					.with(csrf())
+					).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+	
+	@WithMockUser(value = "spring")
+	@DisplayName("Añadir Administrador -- caso negativo")
+    @Test
+	void testPostAdministradorError() throws Exception  {
+		
+		//Creacion Administrador
+		administrador.setName("");
+		administrador.setDireccion("Calle Larios");
+		administrador.setEmail("paco@gmail.com");
+		administrador.setNIF("00070284X");
+		administrador.setNSS("123456789963");
+		administrador.setTlf("678675482");
+		
+		//Conversion Objeto a JSON
+		Gson gson  = new Gson();
+		String jsonString =  gson.toJson(administrador).replace("NIF", "nif").replace("NSS", "nss");
+		
+		//Peticion POST
+		mockMvc.perform(MockMvcRequestBuilders.
+					post("/api/adm/add/administrador") 
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(jsonString)
+					.with(csrf())
+					).andExpect(MockMvcResultMatchers.status().isBadRequest());
+	}
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * 										POST	DEPENDIENTE							                             *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	@WithMockUser(value = "spring")
+	@DisplayName("Añadir Dependiente -- caso positivo")
+    @Test
+	void testPostDependienteisOk() throws Exception  {
+		
+		//Creacion Dependiente
 		dependiente.setName("Jose Manuel Lopez");
 		dependiente.setDireccion("Calle Trigrida");
 		dependiente.setEmail("jose@gmail.com");
@@ -86,7 +152,107 @@ class AdministradorControllerTest {
 		dependiente.setNSS("123456789964");
 		dependiente.setTlf("478675482");
 		
-		encargado = new EncargadoDeAlmacen();
+		//Conversion Objeto a JSON
+		Gson gson  = new Gson();
+		String jsonString =  gson.toJson(dependiente).replace("NIF", "nif").replace("NSS", "nss");
+		
+		//Peticion POST
+		mockMvc.perform(MockMvcRequestBuilders.
+					post("/api/adm/add/dependiente") 
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(jsonString)
+					.with(csrf())
+					).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+	
+	@WithMockUser(value = "spring")
+	@DisplayName("Añadir Dependiente -- caso negativo")
+    @Test
+	void testPostDependienteError() throws Exception  {
+		
+		//Creacion Dependiente
+		dependiente.setName("");
+		dependiente.setDireccion("Calle Trigrida");
+		dependiente.setEmail("jose@gmail.com");
+		dependiente.setNIF("10070284X");
+		dependiente.setNSS("123456789964");
+		dependiente.setTlf("478675482");
+		
+		//Conversion Objeto a JSON
+		Gson gson  = new Gson();
+		String jsonString =  gson.toJson(dependiente).replace("NIF", "nif").replace("NSS", "nss");
+		
+		//Peticion POST
+		mockMvc.perform(MockMvcRequestBuilders.
+					post("/api/adm/add/dependiente") 
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(jsonString)
+					.with(csrf())
+					).andExpect(MockMvcResultMatchers.status().isBadRequest());
+	}
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * 										POST	TRANSPORTISTA							                         *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	@WithMockUser(value = "spring")
+	@DisplayName("Añadir Transportista -- caso positivo")
+    @Test
+	void testPostTransportistaisOk() throws Exception  {
+		
+		//Creacion Transportista
+		transportista.setName("Antonio Manuel Lopez");
+		transportista.setDireccion("Calle Andalucia");
+		transportista.setEmail("antonio@gmail.com");
+		transportista.setNIF("30070284X");
+		transportista.setNSS("123456789966");
+		transportista.setTlf("278675482");
+		
+		//Conversion Objeto a JSON
+		Gson gson  = new Gson();
+		String jsonString =  gson.toJson(transportista).replace("NIF", "nif").replace("NSS", "nss");
+		
+		//Peticion POST
+		mockMvc.perform(MockMvcRequestBuilders.
+					post("/api/adm/add/transportista") 
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(jsonString)
+					.with(csrf())
+					).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+	
+	@WithMockUser(value = "spring")
+	@DisplayName("Añadir Transportista -- caso negativo")
+    @Test
+	void testPostTransportistaError() throws Exception  {
+		
+		//Creacion Transportista
+		encargado.setName("");
+		transportista.setDireccion("Calle Andalucia");
+		transportista.setEmail("antonio@gmail.com");
+		transportista.setNIF("30070284X");
+		transportista.setNSS("123456789966");
+		transportista.setTlf("278675482");
+
+		//Conversion Objeto a JSON
+		Gson gson  = new Gson();
+		String jsonString =  gson.toJson(transportista).replace("NIF", "nif").replace("NSS", "nss");
+		
+		//Peticion POST
+		mockMvc.perform(MockMvcRequestBuilders.
+					post("/api/adm/add/transportista") 
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(jsonString)
+					.with(csrf())
+					).andExpect(MockMvcResultMatchers.status().isBadRequest());
+	}
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * 										POST	ENCARGADO							                             *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	@WithMockUser(value = "spring")
+	@DisplayName("Añadir Encargado -- caso positivo")
+    @Test
+	void testPostEncargadoisOk() throws Exception  {
+		
+		//Creacion Encargado
 		encargado.setName("Lucas Manuel Lopez");
 		encargado.setDireccion("Calle Leon");
 		encargado.setEmail("lucas@gmail.com");
@@ -98,124 +264,11 @@ class AdministradorControllerTest {
 		alm.setDireccion("Los Algodonales");
 		encargado.setAlmacen(alm);
 		
-		transportista = new Transportista();
-		transportista.setName("Antonio Manuel Lopez");
-		transportista.setDireccion("Calle Andalucia");
-		transportista.setEmail("antonio@gmail.com");
-		transportista.setNIF("30070284X");
-		transportista.setNSS("123456789966");
-		transportista.setTlf("278675482");
-		
-		personal = new Personal();
-		personal.setName("Jose Luis Sierra");
-		personal.setDireccion("Calle Recreativo de Huelva");
-		personal.setEmail("oceluis@gmail.com");
-		personal.setNIF("80070284X");
-		personal.setNSS("123451780966");
-		personal.setTlf("978175382");
-		
-
-	}
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									POST	ADMINISTRADOR								 *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	@WithMockUser(value = "spring")
-	@DisplayName("Añadir Administrador -- caso positivo")
-    @Test
-	void testPostAdministradorisOk() throws Exception  {
-		Gson gson  = new Gson();
-		String jsonString =  gson.toJson(administrador).replace("NIF", "nif").replace("NSS", "nss");
-		mockMvc.perform(MockMvcRequestBuilders.
-					post("/api/adm/add/administrador") 
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(jsonString)
-					.with(csrf())
-					).andExpect(MockMvcResultMatchers.status().isOk());
-	}
-	@WithMockUser(value = "spring")
-	@DisplayName("Añadir Administrador -- caso negativo")
-    @Test
-	void testPostAdministradorError() throws Exception  {
-		administrador.setName("");
-		Gson gson  = new Gson();
-		String jsonString =  gson.toJson(administrador).replace("NIF", "nif").replace("NSS", "nss");
-		mockMvc.perform(MockMvcRequestBuilders.
-					post("/api/adm/add/administrador") 
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(jsonString)
-					.with(csrf())
-					).andExpect(MockMvcResultMatchers.status().isBadRequest());
-	}
-	
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 										POST	DEPENDIENTE							 *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	@WithMockUser(value = "spring")
-	@DisplayName("Añadir Dependiente -- caso positivo")
-    @Test
-	void testPostDependienteisOk() throws Exception  {
-		Gson gson  = new Gson();
-		String jsonString =  gson.toJson(dependiente).replace("NIF", "nif").replace("NSS", "nss");
-		mockMvc.perform(MockMvcRequestBuilders.
-					post("/api/adm/add/dependiente") 
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(jsonString)
-					.with(csrf())
-					).andExpect(MockMvcResultMatchers.status().isOk());
-	}
-	@WithMockUser(value = "spring")
-	@DisplayName("Añadir Dependiente -- caso negativo")
-    @Test
-	void testPostDependienteError() throws Exception  {
-		dependiente.setName("");
-		Gson gson  = new Gson();
-		String jsonString =  gson.toJson(dependiente).replace("NIF", "nif").replace("NSS", "nss");
-		mockMvc.perform(MockMvcRequestBuilders.
-					post("/api/adm/add/dependiente") 
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(jsonString)
-					.with(csrf())
-					).andExpect(MockMvcResultMatchers.status().isBadRequest());
-	}
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 										POST	TRANSPORTISTA							 *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	@WithMockUser(value = "spring")
-	@DisplayName("Añadir Transportista -- caso positivo")
-    @Test
-	void testPostTransportistaisOk() throws Exception  {
-		Gson gson  = new Gson();
-		String jsonString =  gson.toJson(transportista).replace("NIF", "nif").replace("NSS", "nss");
-		mockMvc.perform(MockMvcRequestBuilders.
-					post("/api/adm/add/transportista") 
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(jsonString)
-					.with(csrf())
-					).andExpect(MockMvcResultMatchers.status().isOk());
-	}
-	@WithMockUser(value = "spring")
-	@DisplayName("Añadir Transportista -- caso negativo")
-    @Test
-	void testPostTransportistaError() throws Exception  {
-		transportista.setName("");
-		Gson gson  = new Gson();
-		String jsonString =  gson.toJson(transportista).replace("NIF", "nif").replace("NSS", "nss");
-		mockMvc.perform(MockMvcRequestBuilders.
-					post("/api/adm/add/transportista") 
-					.contentType(MediaType.APPLICATION_JSON)
-					.content(jsonString)
-					.with(csrf())
-					).andExpect(MockMvcResultMatchers.status().isBadRequest());
-	}
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 										POST	ENCARGADO							 *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	@WithMockUser(value = "spring")
-	@DisplayName("Añadir Encargado -- caso positivo")
-    @Test
-	void testPostEncargadoisOk() throws Exception  {
+		//Conversion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(encargado).replace("NIF", "nif").replace("NSS", "nss");
+		
+		//Peticion POST
 		mockMvc.perform(MockMvcRequestBuilders.
 					post("/api/adm/add/encargado") 
 					.contentType(MediaType.APPLICATION_JSON)
@@ -223,13 +276,29 @@ class AdministradorControllerTest {
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
+	
 	@WithMockUser(value = "spring")
 	@DisplayName("Añadir Encargado -- caso negativo")
     @Test
 	void testPostEncargadoError() throws Exception  {
+		
+		//Creacion Transportista
 		encargado.setName("");
+		encargado.setDireccion("Calle Leon");
+		encargado.setEmail("lucas@gmail.com");
+		encargado.setNIF("20070284X");
+		encargado.setNSS("123456789965");
+		encargado.setTlf("378675482");
+		Almacen alm = new Almacen();
+		alm.setCapacidad(30.0);
+		alm.setDireccion("Los Algodonales");
+		encargado.setAlmacen(alm);
+		
+		//Conversion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(encargado).replace("NIF", "nif").replace("NSS", "nss");
+		
+		//Peticion POST
 		mockMvc.perform(MockMvcRequestBuilders.
 					post("/api/adm/add/encargado") 
 					.contentType(MediaType.APPLICATION_JSON)
@@ -239,44 +308,52 @@ class AdministradorControllerTest {
 	}
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 										GET	PERSONAL							 *
+	 * 										GET	PERSONAL							                                 *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Mostrar todo el personal")
     @Test
 	void testGetPersonalisOk() throws Exception  {
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders.
 					get("/api/adm/personal") 
 					.contentType(MediaType.APPLICATION_JSON)
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 										GET	PERSONAL POR NIF							 *
+	 * 										GET	PERSONAL POR NIF							                         *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Mostrar el personal por nif  -- caso positivo")
     @Test
 	void testGetPersonalByNIFisOk() throws Exception  {
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders.
-					get("/api/adm/personal/{dni}",dependiente.getNIF())
+					get("/api/adm/personal/{dni}",NIF_VALIDO)
 					.contentType(MediaType.APPLICATION_JSON)
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
+	
 	@WithMockUser(value = "spring")
 	@DisplayName("Mostrar el personal por nif  -- caso negativo")
     @Test
 	void testGetPersonalByNIFError() throws Exception  {
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders.
-					get("/api/adm/personal/{dni}","20070284RR")
+					get("/api/adm/personal/{dni}",NIF_INVALIDO)
 					.contentType(MediaType.APPLICATION_JSON)
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 										GET	PERSONAL PERFIL							 *
+	 * 										GET	PERSONAL PERFIL							                             *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Mostrar el perfil del personal")
@@ -288,14 +365,26 @@ class AdministradorControllerTest {
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 										PUT	PERSONAL PERFIL							 *
+	 * 										PUT	PERSONAL PERFIL							                             *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Editar perfil del personal  -- caso positivo")
     @Test
 	void testPutPersonalProfileisOk() throws Exception  {
+		
+		//Creacion Personal
+		personal.setName("Jose Luis Sierra");
+		personal.setDireccion("Calle Recreativo de Huelva");
+		personal.setEmail("oceluis@gmail.com");
+		personal.setNIF("80070284X");
+		personal.setNSS("123451780966");
+		personal.setTlf("978175382");
+		
+		//Conversion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(personal).replace("NIF", "nif").replace("NSS", "nss");
+		
+		//Peticion PUT
 		mockMvc.perform(MockMvcRequestBuilders.
 					put("/api/adm/personal/profile")
 					.contentType(MediaType.APPLICATION_JSON)
@@ -303,13 +392,25 @@ class AdministradorControllerTest {
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
+	
 	@WithMockUser(value = "spring")
 	@DisplayName("Editar perfil del personal  -- caso negativo")
     @Test
 	void testPutPersonalProfileError() throws Exception  {
+		
+		//Creacion Personal
+		personal.setName("Jose Luis Sierra");
 		personal.setDireccion("");
+		personal.setEmail("oceluis@gmail.com");
+		personal.setNIF("80070284X");
+		personal.setNSS("123451780966");
+		personal.setTlf("978175382");
+
+		//Conversion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(personal).replace("NIF", "nif").replace("NSS", "nss");
+		
+		//Peticion PUT
 		mockMvc.perform(MockMvcRequestBuilders.
 					put("/api/adm/personal/profile")
 					.contentType(MediaType.APPLICATION_JSON)

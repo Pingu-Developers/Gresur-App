@@ -1,7 +1,6 @@
 package org.springframework.gresur.web;
 
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,17 +35,15 @@ class EncargadoControllerTest {
 	private AlmacenService almacenService;
 	
 
-	@BeforeEach
-	void setUp() throws Exception {
-
-	}
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									GET	ALMACEN DISPONIBLE								 *
+	 * 									GET	ALMACEN DISPONIBLE								                         *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Consultar Almacenes Disponibles")
     @Test
 	void testGetAlmacenesDisponibles() throws Exception  {
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders.		
 					get("/api/encargado/almacen")
 					).andExpect(MockMvcResultMatchers.status().isOk());
