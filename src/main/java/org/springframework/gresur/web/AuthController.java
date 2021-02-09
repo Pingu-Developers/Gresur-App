@@ -1,8 +1,6 @@
 package org.springframework.gresur.web;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -11,14 +9,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.gresur.configuration.jwt.JwtUtils;
 import org.springframework.gresur.configuration.services.UserDetailsImpl;
-import org.springframework.gresur.model.ERol;
 import org.springframework.gresur.model.Personal;
-import org.springframework.gresur.model.Rol;
 import org.springframework.gresur.model.User;
 import org.springframework.gresur.model.userPayload.JwtResponse;
 import org.springframework.gresur.model.userPayload.LoginRequest;
 import org.springframework.gresur.model.userPayload.MessageResponse;
-import org.springframework.gresur.model.userPayload.SignupRequest;
 import org.springframework.gresur.repository.RolRepository;
 import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.util.Tuple2;
