@@ -41,10 +41,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin( origins = "*",maxAge = 3600 )
 @RequestMapping("api/adm")
 @RestController
-
+@Slf4j
 public class AdministradorController {
 		
 	@Autowired
@@ -106,14 +108,17 @@ public class AdministradorController {
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/adm/add/administrador Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
 		else {
 			if(admService.existByNif(p.getNIF())) {
+				log.warn("/adm/add/administrador Constrain violation in params");
 				return ResponseEntity.badRequest().body("NIF ya en el sistema");
 			}
 			if(admService.existByNSS(p.getNSS())) {
+				log.warn("/adm/add/administrador Constrain violation in params");
 				return ResponseEntity.badRequest().body("NSS ya en el sistema");
 			}
 			
@@ -134,8 +139,10 @@ public class AdministradorController {
 				user.setPersonal(adm);
 				
 				user = userRepository.save(user);
+				log.info("/adm/add/encargado Entity Administrador with id: "+adm.getId()+" was created with user: "+ user.getUsername());
 				return ResponseEntity.ok(user);
 			}catch(Exception e) {
+				log.error("/adm/add/administrador " + e.getMessage());
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}
@@ -147,13 +154,16 @@ public class AdministradorController {
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/adm/add/dependiente Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));		
 		}
 		else {
 			if(admService.existByNif(p.getNIF())) {
+				log.warn("/adm/add/dependiente Constrain violation in params");
 				return ResponseEntity.badRequest().body("NIF ya en el sistema");
 			}
 			if(admService.existByNSS(p.getNSS())) {
+				log.warn("/adm/add/dependiente Constrain violation in params");
 				return ResponseEntity.badRequest().body("NSS ya en el sistema");
 			}
 			String [] uvus = p.getName().split(" ");
@@ -172,9 +182,11 @@ public class AdministradorController {
 				user.setRoles(rolset); 
 				user.setPersonal(d);
 				
-				user = userRepository.save(user);	
+				user = userRepository.save(user);
+				log.info("/adm/add/dependiente Entity Dependiente with id: "+d.getId()+" was created with user: "+ user.getUsername());
 				return ResponseEntity.ok(user);
 			}catch(Exception e) {
+				log.error("/adm/add/dependiente " + e.getMessage());
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}
@@ -186,13 +198,16 @@ public class AdministradorController {
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/adm/add/transportista Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		else {
 			if(admService.existByNif(p.getNIF())) {
+				log.warn("/adm/add/transportista Constrain violation in params");
 				return ResponseEntity.badRequest().body("NIF ya en el sistema");
 			}
 			if(admService.existByNSS(p.getNSS())) {
+				log.warn("/adm/add/transportista Constrain violation in params");
 				return ResponseEntity.badRequest().body("NSS ya en el sistema");
 			}
 			String [] uvus = p.getName().split(" ");
@@ -211,9 +226,11 @@ public class AdministradorController {
 				user.setRoles(rolset); 
 				user.setPersonal(t);
 				
-				user = userRepository.save(user);	
+				user = userRepository.save(user);
+				log.info("/adm/add/transportista Entity Transportista with id: "+t.getId()+" was created with user: "+ user.getUsername());
 				return ResponseEntity.ok(user);
 			}catch(Exception e) {
+				log.error("/adm/add/transportista " + e.getMessage());
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}
@@ -224,13 +241,16 @@ public class AdministradorController {
 	public ResponseEntity<?> addEncargadoDeAlmacen(@RequestBody @Valid EncargadoDeAlmacen p, BindingResult result) throws DataAccessException{
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/adm/add/encargado Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		else {
 			if(admService.existByNif(p.getNIF())) {
+				log.warn("/adm/add/encargado Constrain violation in params");
 				return ResponseEntity.badRequest().body("NIF ya en el sistema");
 			}
 			if(admService.existByNSS(p.getNSS())) {
+				log.warn("/adm/add/encargado Constrain violation in params");
 				return ResponseEntity.badRequest().body("NSS ya en el sistema");
 			}
 			String [] uvus = p.getName().split(" ");
@@ -249,9 +269,11 @@ public class AdministradorController {
 				user.setRoles(rolset); 
 				user.setPersonal(encargado);
 				
-				user = userRepository.save(user);	
+				user = userRepository.save(user);
+				log.info("/adm/add/encargado Entity EncargadoDeAlmacen with id: "+encargado.getId()+" was created with user: "+ user.getUsername());
 				return ResponseEntity.ok(user);
 			}catch(Exception e) {
+				log.error("/adm/add/encargado " + e.getMessage());
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}	
 		}		
@@ -265,10 +287,12 @@ public class AdministradorController {
 			if(pElim.getClass().equals(EncargadoDeAlmacen.class)) {
 				EncargadoDeAlmacen en = (EncargadoDeAlmacen)pElim;
 				en.setAlmacen(null);
+				log.info("Entity Encargado with id:"+en.getId()+" was edited");
 				admService.saveEncargadoDeAlmacen(en);
 			}
 			return ResponseEntity.ok("");
 		}catch (Exception e) {
+			log.error(e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
@@ -346,18 +370,11 @@ public class AdministradorController {
 	@PreAuthorize("permitAll()")
 	public ResponseEntity<?> putPersonalByNif(@Valid @RequestBody Personal personalModificado, BindingResult result){
 		
-		Personal p = admService.findPersonal(personalModificado.getId());
 		
-		if(p==null) {
-			return ResponseEntity.badRequest().body("Personal no encontrado");
-		}
-		
-		if(p.getVersion()!=personalModificado.getVersion()) {
-			return ResponseEntity.badRequest().body("Concurrent modification");
-		}
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/adm/personal/profile Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
@@ -365,59 +382,30 @@ public class AdministradorController {
 			
 			Authentication user = SecurityContextHolder.getContext().getAuthentication();
 			UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
-			Rol rol = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getRoles().iterator().next();
 			Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
 			
 			try {
-				User u = userRepository.findById(per.getId()).orElse(null);
-				u.getPersonal().setDireccion(personalModificado.getDireccion());
-				u.getPersonal().setTlf(personalModificado.getTlf());
-				u.getPersonal().setImage(personalModificado.getImage());
-				u.getPersonal().setEmail(personalModificado.getEmail());
 				
-				userRepository.save(u);
-								
-				switch(rol.getName()) {
-					case ROLE_ADMIN:
-						Administrador adm = admService.findByNIF(per.getNIF());
-							adm.setDireccion(personalModificado.getDireccion());
-							adm.setTlf(personalModificado.getTlf());
-							adm.setImage(personalModificado.getImage());
-							adm.setEmail(personalModificado.getEmail());
-							admService.save(adm);	
-					break;
-					
-					case ROLE_DEPENDIENTE:
-						Dependiente dependiente = dependienteService.findByNIF(per.getNIF());
-							dependiente.setDireccion(personalModificado.getDireccion());
-							dependiente.setTlf(personalModificado.getTlf());
-							dependiente.setImage(personalModificado.getImage());
-							dependiente.setEmail(personalModificado.getEmail());
-							admService.saveDependiente(dependiente);
-					break;
-					
-					case ROLE_ENCARGADO:
-						EncargadoDeAlmacen encargado = encargadoService.findByNIF(per.getNIF());
-							encargado.setDireccion(personalModificado.getDireccion());
-							encargado.setTlf(personalModificado.getTlf());
-							encargado.setImage(personalModificado.getImage());
-							encargado.setEmail(personalModificado.getEmail());
-							admService.saveEncargadoDeAlmacen(encargado);
-					break;
-					
-					case ROLE_TRANSPORTISTA:
-						Transportista transportista = transportistaService.findByNIF(per.getNIF());
-							transportista.setDireccion(personalModificado.getDireccion());
-							transportista.setTlf(personalModificado.getTlf());
-							transportista.setImage(personalModificado.getImage());
-							transportista.setEmail(personalModificado.getEmail());
-							admService.saveTransportista(transportista);
-					break;
+				if(per==null) {
+					return ResponseEntity.badRequest().body("Personal no encontrado");
 				}
 				
+				if(per.getVersion()!=personalModificado.getVersion()) {
+					log.error("/adm/personal/profile Concurrent modification");
+					return ResponseEntity.badRequest().body("Concurrent modification");
+				}
+						
+				per.setDireccion(personalModificado.getDireccion());
+				per.setTlf(personalModificado.getTlf());
+				per.setImage(personalModificado.getImage());
+				per.setEmail(personalModificado.getEmail());
+				admService.savePersonal(per);
+				
+				log.info("/adm/personal/profile Entity personal id: "+per.getId()+" was edited");
 				return ResponseEntity.ok(per);
 				
 			}catch(Exception e) {
+				log.error("/adm/personal/profile " + e.getMessage());
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}	
 		}
