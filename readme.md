@@ -1,4 +1,4 @@
-# GresurApp <img src="https://raw.githubusercontent.com/gii-is-DP1/dp1-2020-g3-12/master/app/src/images/Gresur.png" height="50px">
+<img src="https://raw.githubusercontent.com/gii-is-DP1/dp1-2020-g3-12/master/app/src/images/Gresur.png" height="50px"> # GresurApp
 
 Aplicación para la gestión de la logística de Azulejos Gresur
 
