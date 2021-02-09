@@ -346,19 +346,5 @@ class PersonalTests extends ValidatorTests{
 		assertThat(constraintViolations.size()).isEqualTo(0);	
 	}
 	
-	@ParameterizedTest
-	@CsvSource({
-		"Antonio, 12345678A, email@email.com, 696823445 , C/ patata, 12 1234567890, /resources/lucas.png, 0",
-		"Paco, 12345678B, email1@email.com, 956728496, C/ patata2, 121234567891, /resources/paco.png, 0",
-		"Alex, 12345678C, email2@email.com, 716839827, C/ patata4, 12 1234567891, /resources/alex.jpeg, ",
-	})
-	void validateEncargadoAlmacenNotNullTest(String name, String NIF, String email, String tlf, String direccion, String NSS, String image, Integer almacen) {
-		
-		EncargadoDeAlmacen encargado = this.createSUTEncargado(name, NIF, email, tlf, direccion, NSS, image, almacen);
-
-		Validator validator = createValidator();
-		Set<ConstraintViolation<EncargadoDeAlmacen>> constraintViolations = validator.validate(encargado);
-		assertThat(constraintViolations.size()).isEqualTo(1);	
-	}
 }
 

@@ -72,6 +72,11 @@ public class VehiculoService {
 	}
 	
 	@Transactional(readOnly = true)
+	public Boolean existsByMatricula(String matricula) throws DataAccessException{
+		return vehiculoRepository.existsByMatricula(matricula);
+	}
+	
+	@Transactional(readOnly = true)
 	public Page<Vehiculo> findAll(Pageable pageable) throws DataAccessException{
 		return vehiculoRepository.findAll(pageable);
 	}

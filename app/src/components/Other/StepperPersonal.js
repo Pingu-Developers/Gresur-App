@@ -42,6 +42,8 @@ const steps = getSteps();
         super(props);
         this.state = {
             activeStep:0,
+            personal:{},
+            rol:null,
             nifEmpleado:'',
             close:true
         };
@@ -51,7 +53,7 @@ const steps = getSteps();
           case 0:
             return <FormNuevoEmpleado onSubmitNif={this.handleNif} onNextStep={this.handleNextStep}/>;
           case 1:
-            return <FormNuevoContrato dni ={this.state.nifEmpleado}  onNextStep={this.handleNextStep}/>;
+            return <FormNuevoContrato personal ={this.state.personal} rol={this.state.rol} onError={this.handleClose}  onNextStep={this.handleNextStep}/>;
           case 2:
             return  <Button fullWidth className='finalizar' variant="contained" color="primary"  onClick={this.handleClose}startIcon={<CheckCircleIcon />}>
             Finalizar
@@ -61,10 +63,16 @@ const steps = getSteps();
         }
       }
       //Coge el boton de añadir como step + 1 
-      handleNextStep = (step) => {
+      handleNextStep = (step,personal = null, rol = null) => {
         this.setState({
             activeStep: step + 1
         })
+        if(personal){
+          this.setState({
+            personal:personal,
+            rol:rol
+          })
+        }
         };
     
         handleClose = () => {

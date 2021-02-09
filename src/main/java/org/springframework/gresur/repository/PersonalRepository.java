@@ -13,4 +13,8 @@ public interface PersonalRepository<T extends Personal>  extends CrudRepository<
 	void deleteByNIF(String NIF) throws DataAccessException;
 	
 	List<T> findAll();
+	
+	Boolean existsByNIF(String NIF);
+	
+	Boolean existsByNSS(String NSS);
 }

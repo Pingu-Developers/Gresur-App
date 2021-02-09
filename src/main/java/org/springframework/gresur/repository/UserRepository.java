@@ -12,7 +12,11 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
 	Optional<User> findByUsername(String username);
 	
+	Optional<User> findByPersonalNIF(String nif);
+	
 	Boolean existsByUsername(String username);
 	
 	List<User> findByUsernameContaining(String username);
+	
+	void deleteByPersonalNIF(String nif);
 }
