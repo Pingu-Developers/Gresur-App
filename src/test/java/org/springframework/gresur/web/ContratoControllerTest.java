@@ -43,11 +43,13 @@ class ContratoControllerTest {
 	@MockBean
 	AdministradorService admService;
 	
+	//Creacion Datos Testear
 	
-	
+	private static final String NIF = "20070284A";
+	private static final String NIF_INVALIDO = "20070284AA";
+	private static final String NIF_NOT_FOUND = "10070284A";
 	private String rolTodos = "TODOS";
 	private String rol = "DEPENDIENTE";
-	private String nif = "20070284E";
 	private Contrato contrato;
 	private Personal personal;
 	private String jsonParser;
@@ -56,12 +58,54 @@ class ContratoControllerTest {
 	void setUp() throws Exception {
 
 		contrato = new Contrato();
+		personal  = new Personal();
+		jsonParser = "";
+		
+	}
+
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+	 * 									GET	 CONTRATO DEL PERSONAL							                         *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	@WithMockUser(value = "spring")
+	@DisplayName("Obtener Contrato Del Todo El Personal")
+    @Test
+	void testGetAllContratoPersonalisOk() throws Exception  {
+		
+		//Peticion GET
+		mockMvc.perform(MockMvcRequestBuilders.
+					get("/api/contrato/{rol}",rolTodos) 
+					.with(csrf())
+					).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+	
+	@WithMockUser(value = "spring")
+	@DisplayName("Obtener Contrato De Un Rol")
+    @Test
+	void testGetAllContratoPersonalByRolisOk() throws Exception  {
+	
+		//Peticion GET
+		mockMvc.perform(MockMvcRequestBuilders.
+					get("/api/contrato/{rol}",rol) 
+					.with(csrf())
+					).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+	
+	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * 									POST AÑADIR CONTRATO POR NIF							                         *
+	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+	@WithMockUser(value = "spring")
+	@DisplayName("Agregar Contrato Por NIF -- caso positivo")
+    @Test
+	void testPostAddContratoByNifisOk() throws Exception  {
+		
+		//Creacion Contrato
 		contrato.setEntidadBancaria("CaixaBank");
 		contrato.setFechaFin(LocalDate.of(2100, 12, 12));
 		contrato.setFechaInicio(LocalDate.of(2007, 5, 5));
 		contrato.setNomina(2700.);
 		contrato.setTipoJornada(TipoJornada.COMPLETA);
-		personal  = new Personal();
+		
+		//Creacion Personal
 		personal.setName("Jose Luis Sierra");
 		personal.setDireccion("Calle Recreativo de Huelva");
 		personal.setEmail("oceluis@gmail.com");
@@ -69,54 +113,30 @@ class ContratoControllerTest {
 		personal.setNSS("123451780966");
 		personal.setTlf("978175382");
 		contrato.setPersonal(personal);
-		jsonParser = "{"+ "\"nomina\""+":"+contrato.getNomina()+","
-				+"\"entidadBancaria\"" +":"+"\""+contrato.getEntidadBancaria()+"\""+","
-				+"\"fechaInicio\""+":"+"\""+contrato.getFechaInicio().getYear()+"-"
-				+0 +contrato.getFechaInicio().getMonthValue()+"-"
-				+0+contrato.getFechaInicio().getDayOfMonth()+"\""+","
-				+"\"fechaFin\""+":"+"\""+contrato.getFechaFin().getYear()+"-"
-				+ contrato.getFechaFin().getMonthValue()+"-"
-				+contrato.getFechaFin().getDayOfMonth()+"\""+","
-				+"\"tipoJornada\""+":"+"\""+contrato.getTipoJornada()+"\""+","
-				+ "\"personal\""+":";
-
-	}
-
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									GET	 CONTRATO DEL PERSONAL							 *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	@WithMockUser(value = "spring")
-	@DisplayName("Obtener Contrato Del Todo El Personal")
-    @Test
-	void testGetAllContratoPersonalisOk() throws Exception  {
-		mockMvc.perform(MockMvcRequestBuilders.
-					get("/api/contrato/{rol}",rolTodos) 
-					.with(csrf())
-					).andExpect(MockMvcResultMatchers.status().isOk());
-	}
-	@WithMockUser(value = "spring")
-	@DisplayName("Obtener Contrato De Un Rol")
-    @Test
-	void testGetAllContratoPersonalByRolisOk() throws Exception  {
 		
-		mockMvc.perform(MockMvcRequestBuilders.
-					get("/api/contrato/{rol}",rol) 
-					.with(csrf())
-					).andExpect(MockMvcResultMatchers.status().isOk());
-	}
-	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									POST AÑADIR CONTRATO POR NIF							 *
-	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-	@WithMockUser(value = "spring")
-	@DisplayName("Agregar Contrato Por NIF -- caso positivo")
-    @Test
-	void testPostAddContratoByNifisOk() throws Exception  {
+		//Creacion JSON Especial
+		jsonParser = "{"+ "\"nomina\""+":"+contrato.getNomina()+","
+		+"\"entidadBancaria\"" +":"+"\""+contrato.getEntidadBancaria()+"\""+","
+		+"\"fechaInicio\""+":"+"\""+contrato.getFechaInicio().getYear()+"-"
+		+0 +contrato.getFechaInicio().getMonthValue()+"-"
+		+0+contrato.getFechaInicio().getDayOfMonth()+"\""+","
+		+"\"fechaFin\""+":"+"\""+contrato.getFechaFin().getYear()+"-"
+		+ contrato.getFechaFin().getMonthValue()+"-"
+		+contrato.getFechaFin().getDayOfMonth()+"\""+","
+		+"\"tipoJornada\""+":"+"\""+contrato.getTipoJornada()+"\""+","
+		+ "\"personal\""+":";
+		
+		//Conversion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(personal).replace("NIF", "nif").replace("NSS", "nss");
 		String json = jsonParser+jsonString+"}";
+		
+		//Devuelve Personal Para Cualquier NIF
 		when(this.admService.findByNIFPersonal(any(String.class))).thenReturn(new Personal());
-			mockMvc.perform(MockMvcRequestBuilders.
-					post("/api/contrato/add/{nif}", nif)
+		
+		//Peticion POST
+		mockMvc.perform(MockMvcRequestBuilders.
+					post("/api/contrato/add/{nif}", NIF)
 					.with(csrf())
 					.characterEncoding("utf-8")
 					.content(json)
@@ -127,17 +147,49 @@ class ContratoControllerTest {
 	@DisplayName("Agregar Contrato Por NIF -- caso negativo(Formato NIF No Valido)")
     @Test
 	void testPostAddContratoByNifErrorInvalid() throws Exception  {
-		nif = "20070284EEEEE";
+		
+		//Creacion Contrato
+		contrato.setEntidadBancaria("CaixaBank");
+		contrato.setFechaFin(LocalDate.of(2100, 12, 12));
+		contrato.setFechaInicio(LocalDate.of(2007, 5, 5));
+		contrato.setNomina(2700.);
+		contrato.setTipoJornada(TipoJornada.COMPLETA);
+		
+		//Creacion Personal
+		personal.setName("Jose Luis Sierra");
+		personal.setDireccion("Calle Recreativo de Huelva");
+		personal.setEmail("oceluis@gmail.com");
+		personal.setNIF("80070284X");
+		personal.setNSS("123451780966");
+		personal.setTlf("978175382");
+		contrato.setPersonal(personal);
+
+		//Creacion JSON Especial
+		jsonParser = "{"+ "\"nomina\""+":"+contrato.getNomina()+","
+		+"\"entidadBancaria\"" +":"+"\""+contrato.getEntidadBancaria()+"\""+","
+		+"\"fechaInicio\""+":"+"\""+contrato.getFechaInicio().getYear()+"-"
+		+0 +contrato.getFechaInicio().getMonthValue()+"-"
+		+0+contrato.getFechaInicio().getDayOfMonth()+"\""+","
+		+"\"fechaFin\""+":"+"\""+contrato.getFechaFin().getYear()+"-"
+		+ contrato.getFechaFin().getMonthValue()+"-"
+		+contrato.getFechaFin().getDayOfMonth()+"\""+","
+		+"\"tipoJornada\""+":"+"\""+contrato.getTipoJornada()+"\""+","
+		+ "\"personal\""+":";
+		
+		//Conversion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(personal).replace("NIF", "nif").replace("NSS", "nss");
 		String json = jsonParser+jsonString+"}";
 
+		//Peticion POST
 		String error  = mockMvc.perform(MockMvcRequestBuilders.
-					post("/api/contrato/add/{nif}",nif) 
+					post("/api/contrato/add/{nif}",NIF_INVALIDO) 
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json)
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn().getResponse().getContentAsString();
+		
+		//Comprobamos Mensaje Error Es El Esperado
 		assertThat(error).isEqualTo("Formato del NIF invalido");
 	}
 	
@@ -145,70 +197,201 @@ class ContratoControllerTest {
 	@DisplayName("Agregar Contrato Por NIF -- caso negativo(Formato NIF No Encontrado)")
     @Test
 	void testPostAddContratoByNifErrorNotFound() throws Exception  {
-		nif = "20070284A";
+		
+		//Creacion Contrato
+		contrato.setEntidadBancaria("CaixaBank");
+		contrato.setFechaFin(LocalDate.of(2100, 12, 12));
+		contrato.setFechaInicio(LocalDate.of(2007, 5, 5));
+		contrato.setNomina(2700.);
+		contrato.setTipoJornada(TipoJornada.COMPLETA);
+		
+		//Creacion Personal
+		personal.setName("Jose Luis Sierra");
+		personal.setDireccion("Calle Recreativo de Huelva");
+		personal.setEmail("oceluis@gmail.com");
+		personal.setNIF("80070284X");
+		personal.setNSS("123451780966");
+		personal.setTlf("978175382");
+		contrato.setPersonal(personal);
+
+		//Creacion JSON Especial
+		jsonParser = "{"+ "\"nomina\""+":"+contrato.getNomina()+","
+		+"\"entidadBancaria\"" +":"+"\""+contrato.getEntidadBancaria()+"\""+","
+		+"\"fechaInicio\""+":"+"\""+contrato.getFechaInicio().getYear()+"-"
+		+0 +contrato.getFechaInicio().getMonthValue()+"-"
+		+0+contrato.getFechaInicio().getDayOfMonth()+"\""+","
+		+"\"fechaFin\""+":"+"\""+contrato.getFechaFin().getYear()+"-"
+		+ contrato.getFechaFin().getMonthValue()+"-"
+		+contrato.getFechaFin().getDayOfMonth()+"\""+","
+		+"\"tipoJornada\""+":"+"\""+contrato.getTipoJornada()+"\""+","
+		+ "\"personal\""+":";
+		
+		//Conversion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(personal).replace("NIF", "nif").replace("NSS", "nss");
 		String json = jsonParser+jsonString+"}";
 
+		//Peticion POST
 		String error  = mockMvc.perform(MockMvcRequestBuilders.
-					post("/api/contrato/add/{nif}",nif) 
+					post("/api/contrato/add/{nif}",NIF_NOT_FOUND) 
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json)
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn().getResponse().getContentAsString();
+		
+		//Comprobamos Mensaje Error Es El Esperado
 		assertThat(error).isEqualTo("NIF no perteneciente a ningun empleado");
 	}
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									PUT ACTUALIZAR CONTRATO POR NIF							 *
+	 * 									PUT ACTUALIZAR CONTRATO POR NIF							                     *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Actualizar Contrato Por NIF -- caso positivo")
     @Test
 	void testPutActualizarContratoByNifisOk() throws Exception  {
+		
+		//Creacion Contrato
+		contrato.setEntidadBancaria("CaixaBank");
+		contrato.setFechaFin(LocalDate.of(2100, 12, 12));
+		contrato.setFechaInicio(LocalDate.of(2007, 5, 5));
+		contrato.setNomina(2700.);
+		contrato.setTipoJornada(TipoJornada.COMPLETA);
+		
+		//Creacion Personal
+		personal.setName("Jose Luis Sierra");
+		personal.setDireccion("Calle Recreativo de Huelva");
+		personal.setEmail("oceluis@gmail.com");
+		personal.setNIF("80070284X");
+		personal.setNSS("123451780966");
+		personal.setTlf("978175382");
+		contrato.setPersonal(personal);
+		
+		//Creacion JSON Especial
+		jsonParser = "{"+ "\"nomina\""+":"+contrato.getNomina()+","
+		+"\"entidadBancaria\"" +":"+"\""+contrato.getEntidadBancaria()+"\""+","
+		+"\"fechaInicio\""+":"+"\""+contrato.getFechaInicio().getYear()+"-"
+		+0 +contrato.getFechaInicio().getMonthValue()+"-"
+		+0+contrato.getFechaInicio().getDayOfMonth()+"\""+","
+		+"\"fechaFin\""+":"+"\""+contrato.getFechaFin().getYear()+"-"
+		+ contrato.getFechaFin().getMonthValue()+"-"
+		+contrato.getFechaFin().getDayOfMonth()+"\""+","
+		+"\"tipoJornada\""+":"+"\""+contrato.getTipoJornada()+"\""+","
+		+ "\"personal\""+":";
+		
+		//Conversion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(personal).replace("NIF", "nif").replace("NSS", "nss");
 		String json = jsonParser+jsonString+"}";
 
+		//Devuelve Contrato Para Cualquier NIF
 		given(this.contratoService.findByPersonalNIF(any(String.class))).willReturn(new Contrato());
+		
+		//Peticion PUT
 		mockMvc.perform(MockMvcRequestBuilders.
-					put("/api/contrato/update/{nif}",nif) 
+					put("/api/contrato/update/{nif}",NIF) 
 					.with(csrf())
 					.characterEncoding("utf-8")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json)
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
+	
 	@WithMockUser(value = "spring")
 	@DisplayName("Actualizar Contrato Por NIF -- caso negativo (Formato NIF No Valido)")
     @Test
 	void testPutActualizarContratoByNifErrorInvalid() throws Exception  {
-		nif="23A";
+		
+		//Creacion Contrato
+		contrato.setEntidadBancaria("CaixaBank");
+		contrato.setFechaFin(LocalDate.of(2100, 12, 12));
+		contrato.setFechaInicio(LocalDate.of(2007, 5, 5));
+		contrato.setNomina(2700.);
+		contrato.setTipoJornada(TipoJornada.COMPLETA);
+		
+		//Creacion Personal
+		personal.setName("Jose Luis Sierra");
+		personal.setDireccion("Calle Recreativo de Huelva");
+		personal.setEmail("oceluis@gmail.com");
+		personal.setNIF("80070284X");
+		personal.setNSS("123451780966");
+		personal.setTlf("978175382");
+		contrato.setPersonal(personal);
+
+		//Creacion JSON Especial
+		jsonParser = "{"+ "\"nomina\""+":"+contrato.getNomina()+","
+		+"\"entidadBancaria\"" +":"+"\""+contrato.getEntidadBancaria()+"\""+","
+		+"\"fechaInicio\""+":"+"\""+contrato.getFechaInicio().getYear()+"-"
+		+0 +contrato.getFechaInicio().getMonthValue()+"-"
+		+0+contrato.getFechaInicio().getDayOfMonth()+"\""+","
+		+"\"fechaFin\""+":"+"\""+contrato.getFechaFin().getYear()+"-"
+		+ contrato.getFechaFin().getMonthValue()+"-"
+		+contrato.getFechaFin().getDayOfMonth()+"\""+","
+		+"\"tipoJornada\""+":"+"\""+contrato.getTipoJornada()+"\""+","
+		+ "\"personal\""+":";
+		
+		//Conversion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(personal).replace("NIF", "nif").replace("NSS", "nss");
 		String json = jsonParser+jsonString+"}";
+		
+		//Devuelve Contrato Para Cualquier NIF
 		given(this.contratoService.findByPersonalNIF(any(String.class))).willReturn(new Contrato());
+		
+		//Peticion PUT
 		String error = mockMvc.perform(MockMvcRequestBuilders.
-					put("/api/contrato/update/{nif}",nif) 
+					put("/api/contrato/update/{nif}",NIF_INVALIDO) 
 					.with(csrf())
 					.characterEncoding("utf-8")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(json)
 					).andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn().getResponse().getContentAsString();
 		
+		//Comprobamos Mensaje Error Es El Esperado
 		assertThat(error).isEqualTo("Formato del NIF invalido");
 	}
 	@WithMockUser(value = "spring")
 	@DisplayName("Actualizar Contrato Por NIF -- caso negativo (Contrato No Valido)")
     @Test
 	void testPutActualizarContratoByNifErrorContratoInvalid() throws Exception  {
+		
+		//Creacion Contrato
+		contrato.setEntidadBancaria("CaixaBank");
+		contrato.setFechaFin(LocalDate.of(2100, 12, 12));
+		contrato.setFechaInicio(LocalDate.of(2007, 5, 5));
+		contrato.setNomina(2700.);
+		contrato.setTipoJornada(TipoJornada.COMPLETA);
+		
+		//Creacion Personal
+		personal.setName("Jose Luis Sierra");
+		personal.setDireccion("Calle Recreativo de Huelva");
+		personal.setEmail("oceluis@gmail.com");
+		personal.setNIF("80070284X");
+		personal.setNSS("123451780966");
+		personal.setTlf("978175382");
+		contrato.setPersonal(personal);
+
+		//Creacion JSON Especial
+		jsonParser = "{"+ "\"nomina\""+":"+contrato.getNomina()+","
+		+"\"entidadBancaria\"" +":"+"\""+contrato.getEntidadBancaria()+"\""+","
+		+"\"fechaInicio\""+":"+"\""+contrato.getFechaInicio().getYear()+"-"
+		+0 +contrato.getFechaInicio().getMonthValue()+"-"
+		+0+contrato.getFechaInicio().getDayOfMonth()+"\""+","
+		+"\"fechaFin\""+":"+"\""+contrato.getFechaFin().getYear()+"-"
+		+ contrato.getFechaFin().getMonthValue()+"-"
+		+contrato.getFechaFin().getDayOfMonth()+"\""+","
+		+"\"tipoJornada\""+":"+"\""+contrato.getTipoJornada()+"\""+","
+		+ "\"personal\""+":";
+		
+		//Conversion Objeto a JSON
 		contrato.setPersonal(null);
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(personal).replace("NIF", "nif").replace("NSS", "nss");
 		String json = jsonParser+jsonString+"}";
 
+		//Peticion PUT
 		mockMvc.perform(MockMvcRequestBuilders.
-					put("/api/contrato/update/{nif}",nif) 
+					put("/api/contrato/update/{nif}",NIF) 
 					.with(csrf())
 					.characterEncoding("utf-8")
 					.contentType(MediaType.APPLICATION_JSON)
@@ -217,40 +400,51 @@ class ContratoControllerTest {
 	}
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									DELETE  CONTRATO POR NIF							 *
+	 * 									DELETE  CONTRATO POR NIF							                         *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Borrar Contrato Por NIF -- caso positivo")
     @Test
 	void testDeleteContratoByNifisOk() throws Exception  {
+		
+		//Devuelve Contrato Para Cualquier NIF
 		given(this.admService.findByNIFPersonal(any(String.class))).willReturn(new Personal());
+		
+		//Peticion DELETE
 		mockMvc.perform(MockMvcRequestBuilders.
-					delete("/api/contrato/delete/{nif}",nif) 
+					delete("/api/contrato/delete/{nif}",NIF) 
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
+	
 	@WithMockUser(value = "spring")
 	@DisplayName("Borrar Contrato Por NIF -- caso negativo(No existe empleado con NIF)")
     @Test
 	void testDeleteContratoByNifError() throws Exception  {
-	    nif="20070277X";
+	    
+		//Peticion DELETE
 		String error = mockMvc.perform(MockMvcRequestBuilders.
-				delete("/api/contrato/delete/{nif}",nif) 
+				delete("/api/contrato/delete/{nif}",NIF_NOT_FOUND) 
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isBadRequest())
 		.andReturn().getResponse().getContentAsString();
+		
+		//Comprobamos Mensaje Error Es El Esperado
 		assertThat(error).isEqualTo("No existe ningun empleado con dicho NIF");
 	}
 	@WithMockUser(value = "spring")
 	@DisplayName("Borrar Contrato Por NIF -- caso negativo(Formato NIF No Valido)")
     @Test
 	void testDeleteContratoByNifErrorNifInvalid() throws Exception  {
-	    nif="20070277XEE";
-		String error = mockMvc.perform(MockMvcRequestBuilders.
-				delete("/api/contrato/delete/{nif}",nif) 
+
+		//Peticion DELETE
+	    String error = mockMvc.perform(MockMvcRequestBuilders.
+				delete("/api/contrato/delete/{nif}",NIF_INVALIDO) 
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isBadRequest())
 		.andReturn().getResponse().getContentAsString();
+	    
+		//Comprobamos Mensaje Error Es El Esperado
 		assertThat(error).isEqualTo("Formato del NIF invalido");
 	}
 	

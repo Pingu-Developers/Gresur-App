@@ -63,12 +63,7 @@ class VehiculoControllerTest {
 	void setUp() throws Exception {
 		
 		vehiculo = new Vehiculo();
-		vehiculo.setCapacidad(231.);
-		vehiculo.setImagen("/img/camion.png");
-		vehiculo.setMatricula("1909GND");
-		vehiculo.setMMA(700.);
-		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
-		
+				
 	}
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -78,18 +73,23 @@ class VehiculoControllerTest {
 	@DisplayName("Consultar Vehiculos Disponibles Segun ITV y Seguro")
     @Test
 	void testGetVehiculoDisponibilidadisOk() throws Exception  {
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders.
 					get("/api/vehiculo") 
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									GET	 TODOS VEHICULOS 						 *
+	 * 									GET	 TODOS VEHICULOS 						                                 *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Consultar Todos Vehiculos")
     @Test
 	void testGetAllVehiculoisOk() throws Exception  {
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders.
 					get("/api/vehiculo/all") 
 					.with(csrf())
@@ -97,26 +97,40 @@ class VehiculoControllerTest {
 	}
 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									GET	 TODOS VEHICULOS SIMPLE					 *
+	 * 									GET	 TODOS VEHICULOS SIMPLE					                                 *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Consultar Todos Vehiculos Simple")
     @Test
 	void testGetAllVehiculoSimpleisOk() throws Exception  {
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders.
 					get("/api/vehiculo/allsimple") 
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									POST  VEHICULO DISPONIBILIDAD					 *
+	 * 									POST  VEHICULO DISPONIBILIDAD					                             *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Ver disponibilidad de un vehiculo -- caso positivo")
     @Test
 	void testPostVehiculoDisponibilidadisOk() throws Exception  {
+		
+		//Creacion Vehiculo
+		vehiculo.setCapacidad(231.);
+		vehiculo.setImagen("/img/camion.png");
+		vehiculo.setMatricula("1909GND");
+		vehiculo.setMMA(700.);
+		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
+		
+		//Creacion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(vehiculo).replace("MMA", "mma");
+		
+		//Peticion POST
 		mockMvc.perform(MockMvcRequestBuilders.
 					post("/api/vehiculo/info") 
 					.contentType(MediaType.APPLICATION_JSON)
@@ -129,9 +143,19 @@ class VehiculoControllerTest {
 	@DisplayName("Ver disponibilidad de un vehiculo -- caso negativo")
     @Test
 	void testPostVehiculoDisponibilidadError() throws Exception  {
+		
+		//Creacion Vehiculo
+		vehiculo.setCapacidad(231.);
+		vehiculo.setImagen("/img/camion.png");
+		vehiculo.setMatricula("1909GND");
 		vehiculo.setMMA(-1.);
+		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
+		
+		//Creacion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(vehiculo).replace("MMA", "mma");
+		
+		//Peticion POST
 		mockMvc.perform(MockMvcRequestBuilders.
 					post("/api/vehiculo/info") 
 					.contentType(MediaType.APPLICATION_JSON)
@@ -139,15 +163,27 @@ class VehiculoControllerTest {
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
+	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									POST  VEHICULO 					 *
+	 * 									POST  VEHICULO 					                                             *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Añadir nuevo  vehiculo -- caso positivo")
     @Test
 	void testPostVehiculoisOk() throws Exception  {
+	
+		//Creacion Vehiculo
+		vehiculo.setCapacidad(231.);
+		vehiculo.setImagen("/img/camion.png");
+		vehiculo.setMatricula("1909GND");
+		vehiculo.setMMA(700.);
+		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
+		
+		//Creacion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(vehiculo).replace("MMA", "mma");
+		
+		//Peticion POST
 		mockMvc.perform(MockMvcRequestBuilders.
 					post("/api/vehiculo/add") 
 					.contentType(MediaType.APPLICATION_JSON)
@@ -160,9 +196,19 @@ class VehiculoControllerTest {
 	@DisplayName("Añadir nuevo  vehiculo -- caso negativo")
     @Test
 	void testPostVehiculoError() throws Exception  {
+		
+		//Creacion Vehiculo
+		vehiculo.setCapacidad(231.);
+		vehiculo.setImagen("/img/camion.png");
+		vehiculo.setMatricula("1909GND");
+		vehiculo.setMMA(700.);
 		vehiculo.setTipoVehiculo(null);
+		
+		//Creacion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(vehiculo).replace("MMA", "mma");
+		
+		//Peticion POST
 		mockMvc.perform(MockMvcRequestBuilders.
 					post("/api/vehiculo/add") 
 					.contentType(MediaType.APPLICATION_JSON)
@@ -171,24 +217,35 @@ class VehiculoControllerTest {
 					).andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									GET ALL TIPOS  VEHICULO 					 *
+	 * 									GET ALL TIPOS  VEHICULO 					                                 *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Consultar Todos Vehiculos Por Tipo")
     @Test
 	void testGetAllTiposVehiculoisOk() throws Exception  {
+		
+		//Peticion GET
 		mockMvc.perform(MockMvcRequestBuilders.
 					get("/api/vehiculo/allTiposVehiculos") 
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * 									DELETE  VEHICULO 					 *
+	 * 									DELETE  VEHICULO 					                                         *
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 	@WithMockUser(value = "spring")
 	@DisplayName("Borrar un vehiculo -- caso positivo")
     @Test
 	void testDeleteVehiculoisOk() throws Exception  {
+		
+		//Creacion Vehiculo
+		vehiculo.setCapacidad(231.);
+		vehiculo.setImagen("/img/camion.png");
+		vehiculo.setMatricula("4090GND");
+		vehiculo.setMMA(700.);
+		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
+		
+		//Peticion DELETE
 		mockMvc.perform(MockMvcRequestBuilders.
 					delete("/api/vehiculo/delete/{matricula}",vehiculo.getMatricula()) 
 					.with(csrf())
@@ -198,12 +255,22 @@ class VehiculoControllerTest {
 	@DisplayName("Borrar un vehiculo -- caso negativo")
     @Test
 	void testDeleteVehiculoError() throws Exception  {
+		
+		//Creacion Vehiculo
+		vehiculo.setCapacidad(231.);
+		vehiculo.setImagen("/img/camion.png");
 		vehiculo.setMatricula("EE4090GND");
+		vehiculo.setMMA(700.);
+		vehiculo.setTipoVehiculo(TipoVehiculo.CAMION);
+		
+		//Peticion DELETE
 		String error = mockMvc.perform(MockMvcRequestBuilders.
 					delete("/api/vehiculo/delete/{matricula}",vehiculo.getMatricula()) 
 					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isBadRequest())
 			.andReturn().getResponse().getContentAsString();
+		
+		//Comprobamos Mensaje Error Es El Esperado
 		assertThat(error).isEqualTo("Formato de matricula no valido");
 
 	}
