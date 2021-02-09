@@ -106,7 +106,7 @@ public class NotificacionController {
 				return ResponseEntity.ok(noti);
 			}
 			else {
-				return ResponseEntity.badRequest().body(new MessageResponse("Error: Notification not found!"));
+				return ResponseEntity.badRequest().body("Error: Notification not found!");
 			}	
 		}
 	}
