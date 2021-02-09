@@ -122,7 +122,7 @@ class FacturaEmitidaControllerTests {
 				.with(csrf())
 				).andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
-	
+	 
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * 									POST (que realmente es un GET) FACTURAS CLIENTE POR FECHA					*
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
