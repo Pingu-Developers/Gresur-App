@@ -33,9 +33,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin( origins = "*", maxAge = 3600 )
 @RequestMapping("api/almacen")
 @RestController
+@Slf4j
 public class AlmacenController {
 	
 	private AlmacenService almacenService;
@@ -214,14 +217,17 @@ public class AlmacenController {
 	public ResponseEntity<?> addAlmacen(@RequestBody @Valid Almacen alm, BindingResult result){
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/almacen Constrain violation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
 		else {
 			try {
-				Almacen a = almacenService.save(alm);				
+				Almacen a = almacenService.save(alm);
+				log.info("/almacen Entity Almacen id: "+a.getId()+" was created");
 				return ResponseEntity.ok(a);
 			}catch(Exception e) {
+				log.error("/almacen " + e.getMessage());
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}

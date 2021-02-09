@@ -59,6 +59,15 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	}
 	
 	@Transactional
+	public Personal savePersonal(Personal personal) throws DataAccessException{
+		em.clear();
+
+		Personal ret = personalGRepo.save(personal);
+		em.flush();
+		return ret;
+	}
+	
+	@Transactional
 	public void deleteByNIF(String NIF) throws DataAccessException{
 		contratoService.deleteByPersonalNIF(NIF);
 		personalRepo.deleteByNIF(NIF);

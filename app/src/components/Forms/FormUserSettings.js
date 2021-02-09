@@ -139,6 +139,7 @@ const useStyles = makeStyles((theme) => ({
           handleSubmit = (event)=>{
             event.preventDefault();
             const empleado = {
+              version: this.props.usuario.version,
               name: this.state.name,
               direccion: this.state.direccion,
               nif: this.state.nif,

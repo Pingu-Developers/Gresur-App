@@ -30,9 +30,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin( origins = "*",maxAge = 3600 )
 @RequestMapping("api/contrato")
 @RestController
+@Slf4j
 public class ContratoController {
 	
 	private final ContratoService contratoService;
@@ -84,21 +87,24 @@ public class ContratoController {
 			if(result.hasErrors()) {
 				List<FieldError> le = result.getFieldErrors();
 				if(contratoService.findByPersonalNIF(nif) == null) {
-					admService.deleteByNIF(nif);
+					log.info("Rollback of Personal nif: "+nif+" done successfully");
+					admService.deleteByNIFPersonal(nif);
 				}
+				log.warn("/contrato/add Constrain violation in params");
 				return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 			}
 			
 			else {
 				try {
 					Contrato contrato = contratoService.save(cdef);
+					log.info("Entity Contrato with id: "+contrato.getId()+" was created successfully");
 					return ResponseEntity.ok(contrato);
 				}catch(Exception e) {
-					System.out.println("HOLAP1");
 					if(contratoService.findByPersonalNIF(nif) == null) {
-						System.out.println("HOLAP2");
+						log.info("Rollback of Personal nif: "+nif+" done successfully");
 						admService.deleteByNIFPersonal(nif);
 					}
+					log.error("/contrato/add/{nif} " + e.getMessage());
 					return ResponseEntity.badRequest().body(e.getMessage());
 				}	
 			}
@@ -108,6 +114,12 @@ public class ContratoController {
 	@PutMapping("/update/{nif}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> updateContrato(@RequestBody @Valid Contrato c,@PathVariable("nif") String nif, BindingResult result) throws DataAccessException{
+				
+		if(result.hasErrors()) {
+			List<FieldError> le = result.getFieldErrors();
+			log.warn("/contrato/update/{nif} Constrain violation in params");
+			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+		}	
 		
 		Contrato contratoOld = contratoService.findByPersonalNIF(nif);
 		
@@ -116,16 +128,14 @@ public class ContratoController {
 		}
 		
 		if(contratoOld.getVersion()!=c.getVersion()) {
+			log.error("/contrato/update/{nif} Concurrent modification");
 			return ResponseEntity.badRequest().body("Concurrent modification");
 		}
 		
-		if(result.hasErrors()) {
-			List<FieldError> le = result.getFieldErrors();
-			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
-		}	
 		String nifFormato = "^[0-9]{8}([A-Z]{1})?";
 	
 		if(!nif.matches(nifFormato)) {
+			log.warn("/contrato/update/{nif} Constrain violation in params");
 			return ResponseEntity.badRequest().body("Formato del NIF invalido");
 		}
 		else {
@@ -138,9 +148,10 @@ public class ContratoController {
 				contratoOld.setObservaciones(c.getObservaciones());
 			
 				Contrato contratoDef = contratoService.save(contratoOld);				
-				
+				log.info("/contrato/update/{nif} Entity Contrato with id: "+contratoDef.getId()+" update successfully");
 				return ResponseEntity.ok(contratoDef);
 			}catch(Exception e) {
+				log.error("/contrato/update/{nif} " + e.getMessage());
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}
@@ -156,6 +167,7 @@ public class ContratoController {
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
 		
 		if(!nif.matches(nifFormato)) {
+			log.warn("/contrato/delete/{nif} Constrain violation in params");
 			return ResponseEntity.badRequest().body("Formato del NIF invalido");
 		}
 		if(admService.findByNIFPersonal(nif)==null) {
@@ -169,9 +181,11 @@ public class ContratoController {
 					return ResponseEntity.badRequest().body("No se puede eliminar a si mismo");
 				}
 				
-				contratoService.deleteByPersonalNIF(nif);	
+				contratoService.deleteByPersonalNIF(nif);
+				log.info("/contrato/delete/{nif} Entities Contrato with personal.Nif: "+ nif + " deleted successfully");
 				return ResponseEntity.ok("Borrado correctamente");
 			}catch(Exception e) {
+				log.error("/contrato/delete/{nif} " + e.getMessage());
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}
