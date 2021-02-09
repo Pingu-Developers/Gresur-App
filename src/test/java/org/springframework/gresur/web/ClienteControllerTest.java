@@ -75,6 +75,9 @@ class ClienteControllerTest {
 		cliente.setNIF("20071214R");
 		cliente.setDireccion("Calle Andalucia n13");
 		
+		//Devuelve Cliente Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.clienteService.save(any(Cliente.class))).willReturn(new Cliente());
+		
 		//Conversion Objeto a JSON
 		Gson gson  = new Gson();
 		String jsonString =  gson.toJson(cliente).replace("NIF", "nif");

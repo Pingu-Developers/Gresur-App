@@ -101,8 +101,11 @@ class ProductoControllerTest {
     @Test
 	void testPostEditarProductoIsOk() throws Exception  {
 		
-		//Devuelve Producto Para Cualquie ID
+		//Devuelve Producto Para Cualquier ID
 		given(this.productoService.findById(any(Long.class))).willReturn(new Producto());
+		
+		//Devuelve Producto Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.productoService.save(any(Producto.class))).willReturn(new Producto());
 		
 		//Creacion JSON 
 		String json = "{\"id\":77,\"nombre\":\"Estufa de kw rojo\",\"descripcion\":\"ESTUFA.\","
@@ -126,7 +129,7 @@ class ProductoControllerTest {
     @Test
 	void testPostEditarProductoErrorInvalid() throws Exception  {
 		
-		//Devuelve Producto Para Cualquie ID
+		//Devuelve Producto Para Cualquier ID
 		given(this.productoService.findById(any(Long.class))).willReturn(new Producto());
 		
 		//Creacion JSON 
@@ -177,8 +180,11 @@ class ProductoControllerTest {
     @Test
 	void testPostNuevoProductoIsOk() throws Exception  {
 		
-		//Devuelve Producto Para Cualquie ID
+		//Devuelve Producto Para Cualquier ID
 		given(this.productoService.findById(any(Long.class))).willReturn(new Producto());
+		
+		//Devuelve Producto Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.productoService.save(any(Producto.class))).willReturn(new Producto());
 		
 		//Creacion JSON 
 		String json = "{\"nombre\":\"Estufa de kw rojo\",\"descripcion\":\"ESTUFA.\","

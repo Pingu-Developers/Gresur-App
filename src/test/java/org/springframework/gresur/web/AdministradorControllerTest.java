@@ -13,9 +13,12 @@ import org.springframework.gresur.configuration.SecurityConfiguration;
 import org.springframework.gresur.model.Administrador;
 import org.springframework.gresur.model.Almacen;
 import org.springframework.gresur.model.Dependiente;
+import org.springframework.gresur.model.ERol;
 import org.springframework.gresur.model.EncargadoDeAlmacen;
 import org.springframework.gresur.model.Personal;
+import org.springframework.gresur.model.Rol;
 import org.springframework.gresur.model.Transportista;
+import org.springframework.gresur.model.User;
 import org.springframework.gresur.repository.RolRepository;
 import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.service.AdministradorService;
@@ -27,10 +30,13 @@ import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import java.util.Optional;
+import static org.mockito.ArgumentMatchers.any;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.google.gson.Gson;
+import static org.mockito.BDDMockito.given;
 
 @WebMvcTest(controllers = AdministradorController.class,
 excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebSecurityConfigurer.class),
@@ -62,6 +68,7 @@ class AdministradorControllerTest {
 	@MockBean
 	AdministradorService admService;
 	
+	
 	//Creacion Datos Testear
 	private Administrador administrador;
 	private Dependiente dependiente;
@@ -89,6 +96,13 @@ class AdministradorControllerTest {
     @Test
 	void testPostAdministradorisOk() throws Exception  {
 		
+		//Devuelve Rol Para Cualquier User
+		given(this.roleRepository.findByName(any(ERol.class))).willReturn(Optional.of(new Rol()));
+		
+		//Devuelve Administrador y User Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.admService.save(any(Administrador.class))).willReturn(new Administrador());
+		given(this.userRepository.save(any(User.class))).willReturn(new User());
+		
 		//Creacion Administrador
 		administrador.setName("Paco Manuel Lopez");
 		administrador.setDireccion("Calle Larios");
@@ -96,6 +110,7 @@ class AdministradorControllerTest {
 		administrador.setNIF("00070284X");
 		administrador.setNSS("123456789963");
 		administrador.setTlf("678675482");
+
 		
 		//Conversion Objeto a JSON
 		Gson gson  = new Gson();
@@ -104,9 +119,10 @@ class AdministradorControllerTest {
 		//Peticion POST
 		mockMvc.perform(MockMvcRequestBuilders.
 					post("/api/adm/add/administrador") 
+					.with(csrf())
+					.characterEncoding("utf-8")
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(jsonString)
-					.with(csrf())
 					).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 	
@@ -114,6 +130,13 @@ class AdministradorControllerTest {
 	@DisplayName("Añadir Administrador -- caso negativo")
     @Test
 	void testPostAdministradorError() throws Exception  {
+			
+		//Devuelve Rol Para Cualquier User
+		given(this.roleRepository.findByName(any(ERol.class))).willReturn(Optional.of(new Rol()));
+		
+		//Devuelve Administrador y User Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.admService.save(any(Administrador.class))).willReturn(new Administrador());
+		given(this.userRepository.save(any(User.class))).willReturn(new User());
 		
 		//Creacion Administrador
 		administrador.setName("");
@@ -144,6 +167,13 @@ class AdministradorControllerTest {
     @Test
 	void testPostDependienteisOk() throws Exception  {
 		
+		//Devuelve Rol Para Cualquier User
+		given(this.roleRepository.findByName(any(ERol.class))).willReturn(Optional.of(new Rol()));
+		
+		//Devuelve Dependiente y User Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.admService.saveDependiente(any(Dependiente.class))).willReturn(new Dependiente());
+		given(this.userRepository.save(any(User.class))).willReturn(new User());
+		
 		//Creacion Dependiente
 		dependiente.setName("Jose Manuel Lopez");
 		dependiente.setDireccion("Calle Trigrida");
@@ -169,6 +199,13 @@ class AdministradorControllerTest {
 	@DisplayName("Añadir Dependiente -- caso negativo")
     @Test
 	void testPostDependienteError() throws Exception  {
+		
+		//Devuelve Rol Para Cualquier User
+		given(this.roleRepository.findByName(any(ERol.class))).willReturn(Optional.of(new Rol()));
+		
+		//Devuelve Dependiente y User Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.admService.saveDependiente(any(Dependiente.class))).willReturn(new Dependiente());
+		given(this.userRepository.save(any(User.class))).willReturn(new User());
 		
 		//Creacion Dependiente
 		dependiente.setName("");
@@ -198,6 +235,13 @@ class AdministradorControllerTest {
     @Test
 	void testPostTransportistaisOk() throws Exception  {
 		
+		//Devuelve Rol Para Cualquier User
+		given(this.roleRepository.findByName(any(ERol.class))).willReturn(Optional.of(new Rol()));
+		
+		//Devuelve Transportista y User Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.admService.saveTransportista(any(Transportista.class))).willReturn(new Transportista());
+		given(this.userRepository.save(any(User.class))).willReturn(new User());
+		
 		//Creacion Transportista
 		transportista.setName("Antonio Manuel Lopez");
 		transportista.setDireccion("Calle Andalucia");
@@ -223,6 +267,13 @@ class AdministradorControllerTest {
 	@DisplayName("Añadir Transportista -- caso negativo")
     @Test
 	void testPostTransportistaError() throws Exception  {
+		
+		//Devuelve Rol Para Cualquier User
+		given(this.roleRepository.findByName(any(ERol.class))).willReturn(Optional.of(new Rol()));
+		
+		//Devuelve Transportista y User Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.admService.saveTransportista(any(Transportista.class))).willReturn(new Transportista());
+		given(this.userRepository.save(any(User.class))).willReturn(new User());
 		
 		//Creacion Transportista
 		encargado.setName("");
@@ -251,6 +302,13 @@ class AdministradorControllerTest {
 	@DisplayName("Añadir Encargado -- caso positivo")
     @Test
 	void testPostEncargadoisOk() throws Exception  {
+		
+		//Devuelve Rol Para Cualquier User
+		given(this.roleRepository.findByName(any(ERol.class))).willReturn(Optional.of(new Rol()));
+		
+		//Devuelve Encargado y User Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.admService.saveEncargadoDeAlmacen(any(EncargadoDeAlmacen.class))).willReturn(new EncargadoDeAlmacen());
+		given(this.userRepository.save(any(User.class))).willReturn(new User());
 		
 		//Creacion Encargado
 		encargado.setName("Lucas Manuel Lopez");
@@ -281,6 +339,13 @@ class AdministradorControllerTest {
 	@DisplayName("Añadir Encargado -- caso negativo")
     @Test
 	void testPostEncargadoError() throws Exception  {
+		
+		//Devuelve Rol Para Cualquier User
+		given(this.roleRepository.findByName(any(ERol.class))).willReturn(Optional.of(new Rol()));
+		
+		//Devuelve Encargado y User Cuando Se Guarda, Evitando Objetos Nulos Para El Log
+		given(this.admService.saveEncargadoDeAlmacen(any(EncargadoDeAlmacen.class))).willReturn(new EncargadoDeAlmacen());
+		given(this.userRepository.save(any(User.class))).willReturn(new User());
 		
 		//Creacion Transportista
 		encargado.setName("");
