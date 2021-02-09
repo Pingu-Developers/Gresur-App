@@ -61,9 +61,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RequestMapping("api/pedido")
 @RestController
+@Slf4j
 public class PedidoController {
 	
 	private final PedidoService pedidoService;
@@ -146,6 +149,7 @@ public class PedidoController {
 			LocalDate fechaEnvio = pedido.getE3();
 			
 			if(!fechaEnvio.isAfter(LocalDate.now())) {
+				log.warn("/pedido/add Constrain violation in params");
 				return ResponseEntity.badRequest().body("La fecha de envío debe ser futura");
 			}
 			
@@ -199,9 +203,11 @@ public class PedidoController {
 						aviso = notificacionService.save(aviso, lPer);
 					}
 				}
+				log.info("/pedido/add Entity Pedido with id: "+ pedidoRes.getId() +" was created successfully");
 				return ResponseEntity.ok(pedidoRes);
 			}
 		}catch(Exception e) {
+			log.error("/pedido/add "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}		
 	}
@@ -209,20 +215,22 @@ public class PedidoController {
 	@PostMapping("/{id}")
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
 	public ResponseEntity<?> cancelarPedido(@PathVariable("id") Long id) {
-		
-		Pedido pedido = pedidoService.findByID(id);
-		
-		if(pedido != null) {
-			pedido.setEstado(EstadoPedido.CANCELADO);
-			try {
-				pedidoService.save(pedido);
-				return ResponseEntity.ok(pedido);
-			} catch (Exception e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
+		try {
+			
+			Pedido pedido = pedidoService.findByID(id);
+			if(pedido != null) {
+				pedido.setEstado(EstadoPedido.CANCELADO);
+			
+				pedido = pedidoService.save(pedido);
+				log.info("/pedido/{id} Entity Pedido with id: "+pedido.getId()+" was edited successfully");
+				return ResponseEntity.ok(pedido);				
 			}
-		}
-		else {
-			return ResponseEntity.badRequest().body("Error: Pedido not found");
+			else {
+				return ResponseEntity.badRequest().body("Error: Pedido not found");
+			}
+		} catch (Exception e) {
+			log.error("/pedido/{id} "+e.getMessage());
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
@@ -340,55 +348,60 @@ public class PedidoController {
 	@PutMapping("/reparto/{id}")
 	@PreAuthorize("hasRole('TRANSPORTISTA')")
 	public ResponseEntity<?> setEnReparto(@PathVariable("id") Long id,@RequestBody @Valid Vehiculo veh, BindingResult result) {
-		if(result.hasErrors()) {
-			List<FieldError> le = result.getFieldErrors();
-			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
-		}
-		
-		Pedido p = pedidoService.findByID(id);
-		
-		Authentication user = SecurityContextHolder.getContext().getAuthentication();
-		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
-		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
-		
-		if(p!=null) {
-			p.setTransportista(personalService.findByNIF(per.getNIF()));
-			p.setVehiculo(veh);
-			p.setEstado(EstadoPedido.EN_REPARTO);
-			p.setFechaEnvio(LocalDate.now());
-			try {
-				pedidoService.save(p);
-				return ResponseEntity.ok(p);
-			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
-
+		try {
+			if(result.hasErrors()) {
+				List<FieldError> le = result.getFieldErrors();
+				log.warn("/pedido/reparto/{id} Constrain violation in params");
+				return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 			}
-		}else {
-			return ResponseEntity.badRequest().body("Error: Pedido not found");
+			
+			Pedido p = pedidoService.findByID(id);
+			
+			Authentication user = SecurityContextHolder.getContext().getAuthentication();
+			UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+			Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+			
+			if(p!=null) {
+				p.setTransportista(personalService.findByNIF(per.getNIF()));
+				p.setVehiculo(veh);
+				p.setEstado(EstadoPedido.EN_REPARTO);
+				p.setFechaEnvio(LocalDate.now());
+				
+				pedidoService.save(p);
+				log.info("/pedido/reparto/{id} Entity Pedido with id: "+p.getId()+" was edited successfully");
+				return ResponseEntity.ok(p);
+			}else {
+				return ResponseEntity.badRequest().body("Error: Pedido not found");
+			}
+		}catch(Exception e) {
+			log.error("/pedido/reparto/{id} " + e.getMessage());
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
 	@PutMapping("/entregado/{id}")
 	@PreAuthorize("hasRole('TRANSPORTISTA')")
 	public ResponseEntity<?> setEntregado(@PathVariable("id") Long id) {
-		
-		Pedido p = pedidoService.findByID(id);
-		Authentication user = SecurityContextHolder.getContext().getAuthentication();
-		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
-		Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
-		
-		
-		if(p!=null&&p.getEstado().equals(EstadoPedido.EN_REPARTO)&&p.getTransportista().getNIF().equals((per.getNIF()))) {
-			p.setEstado(EstadoPedido.ENTREGADO);
-			try {
+		try {
+			Pedido p = pedidoService.findByID(id);
+			Authentication user = SecurityContextHolder.getContext().getAuthentication();
+			UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
+			Personal per = userRepository.findByUsername(userDetails.getUsername()).orElse(null).getPersonal();
+			
+			
+			if(p!=null&&p.getEstado().equals(EstadoPedido.EN_REPARTO)&&p.getTransportista().getNIF().equals((per.getNIF()))) {
+				p.setEstado(EstadoPedido.ENTREGADO);
+			
 				pedidoService.save(p);
+				log.info("/pedido/reparto/{id} Entity Pedido with id: "+p.getId()+" was edited successfully");
 				return ResponseEntity.ok(p);
-			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
-
+			
+			}else {
+				return ResponseEntity.badRequest().body("Error: Pedido not found or Pedido not Preparado");
 			}
-		}else {
-			return ResponseEntity.badRequest().body("Error: Pedido not found or Pedido not Preparado");
+		}catch(Exception e) {
+			log.error("/pedido/entregado/{id} " + e.getMessage());
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		
 	}
@@ -430,58 +443,56 @@ public class PedidoController {
 		}
 		return ls;
 	}
-	
+	@Transactional
 	@PutMapping("/pagado/{id}")
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
 	public ResponseEntity<?> setEstaPagado(@PathVariable("id") Long id) {
-		
-		Pedido p = pedidoService.findByID(id);
-		
-		if(p!=null) {
-			try {
-				FacturaEmitida f = p.getFacturaEmitida();
-				f.setEstaPagada(f.getEstaPagada()? false : true);
-				f = facturaEmitidaService.save(f);
-				
-				p.setFacturaEmitida(f);
-				pedidoService.save(p);
-				
-				return ResponseEntity.ok(p);
-			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e.getMessage());
+		try {
+			Pedido p = pedidoService.findByID(id);
+			
+			if(p!=null) {
+	
+					FacturaEmitida f = p.getFacturaEmitida();
+					f.setEstaPagada(f.getEstaPagada()? false : true);
+					f = facturaEmitidaService.save(f);
+					
+					log.info("/pedido/reparto/{id} Entity Factura with id: "+f.getId()+" was edited successfully");
+					return ResponseEntity.ok(p);		
+			}else {
+				return ResponseEntity.badRequest().body("Error al intentar cambiar el estado del pago del pedido");
 			}
-		}
-		
-		else {
-			return ResponseEntity.badRequest().body("Error al intentar cambiar el estado del pago del pedido");
+		}catch(Exception e) {
+			log.error("/pedido/pagado/{id} " + e.getMessage());
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 	
 	@PutMapping("/update")
 	@PreAuthorize("hasRole('DEPENDIENTE') or hasRole('ADMIN')")
 	public ResponseEntity<?> updatePedido(@Valid @RequestBody Pedido pedido, BindingResult result) {
-		
-		Pedido p = pedidoService.findByID(pedido.getId());
-		
-		if(p==null) {
-			return ResponseEntity.badRequest().body("Pedido no existente");
-		}
-		
-		if(p.getVersion() != pedido.getVersion()) {
-			return ResponseEntity.badRequest().body("Concurrent modification");
-		}
-		
-		if(result.hasErrors()) {
-			List<FieldError> le = result.getFieldErrors();
-			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
-		}
-		
 		try {
+			Pedido p = pedidoService.findByID(pedido.getId());
+			
+			if(p==null) {
+				return ResponseEntity.badRequest().body("Pedido no existente");
+			}
+			
+			if(result.hasErrors()) {
+				List<FieldError> le = result.getFieldErrors();
+				log.warn("/pedido/update Constrain violation in params");
+				return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
+			}
+			if(p.getVersion() != pedido.getVersion()) {
+				log.error("/pedido/update Concurrent modification");
+				return ResponseEntity.badRequest().body("Concurrent modification");
+			}
+			
 			clienteService.save(pedido.getFacturaEmitida().getCliente());
 			Pedido pDef = pedidoService.save(pedido);
-				
+			log.info("/pedido/update Entity Pedido with id: "+pDef.getId()+" was edited successfully");
 			return ResponseEntity.ok(pDef);
 		}catch(Exception e) {
+			log.error("/pedido/update " + e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}

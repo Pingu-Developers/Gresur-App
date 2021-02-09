@@ -18,9 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RequestMapping("api/proveedor")
 @RestController
+@Slf4j
 public class ProveedorController {
 	
 	private final ProveedorService proveedorService;
@@ -41,13 +44,16 @@ public class ProveedorController {
 	public ResponseEntity<?> newProveedor(@Valid @RequestBody Proveedor p, BindingResult result){
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/proveedor/ Constrain violations in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
 		try {
-			Proveedor pDef = proveedorService.save(p);			
+			Proveedor pDef = proveedorService.save(p);
+			log.info("/proveedor/ Entity Proveedor with id: "+pDef.getId()+" was created successfully");
 			return ResponseEntity.ok(pDef);
 		}catch(Exception e) {
+			log.error("/proveedor/ "+ e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}

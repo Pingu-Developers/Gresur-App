@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +103,7 @@ public class AdministradorController {
 		return user;
 	}
 	
+	@Transactional
 	@PostMapping("/add/administrador")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> addAdministrador(@RequestBody @Valid Administrador p, BindingResult result) throws DataAccessException{
@@ -147,7 +149,8 @@ public class AdministradorController {
 			}
 		}
 	}
-		
+	
+	@Transactional
 	@PostMapping("/add/dependiente")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> addDependiente(@RequestBody @Valid Dependiente p, BindingResult result) throws DataAccessException{
@@ -192,6 +195,7 @@ public class AdministradorController {
 		}
 	}
 	
+	@Transactional
 	@PostMapping("/add/transportista")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> addTransportista(@RequestBody @Valid Transportista p, BindingResult result) throws DataAccessException{
@@ -235,7 +239,7 @@ public class AdministradorController {
 			}
 		}
 	}
-	
+	@Transactional
 	@PostMapping("/add/encargado")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> addEncargadoDeAlmacen(@RequestBody @Valid EncargadoDeAlmacen p, BindingResult result) throws DataAccessException{

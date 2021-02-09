@@ -32,9 +32,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin(origins = "*",maxAge = 3600)
 @RestController
 @RequestMapping("api/facturaRecibida")
+@Slf4j
 public class FacturaRecibidaController {
 
 	private final FacturaRecibidaService facturaRecibidaService;
@@ -62,13 +65,13 @@ public class FacturaRecibidaController {
 	}
 	
 	@Transactional
-	@ExceptionHandler({ Exception.class })
 	@PostMapping("/repo")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> createEmitidaReposicion(@Valid @RequestBody Tuple2<FacturaRecibida,List<Tuple2<Long,Integer>>> data, BindingResult result){
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/facturaRecibida/repo Constrain validation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
@@ -96,9 +99,11 @@ public class FacturaRecibidaController {
 			}
 			
 			fact.setLineasFacturas(lineasCompra);
-			fact = facturaRecibidaService.save(fact);				
+			fact = facturaRecibidaService.save(fact);
+			log.info("/facturaRecibida/repo Entity FacturaRecibida with id: "+fact.getId()+" was created successfully");
 			return ResponseEntity.ok(fact);
 		}catch(Exception e) {
+			log.error("/facturaRecibida/repo "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
@@ -110,6 +115,7 @@ public class FacturaRecibidaController {
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/facturaRecibida/seguro Constrain validation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
@@ -121,9 +127,10 @@ public class FacturaRecibidaController {
 			Seguro s = data.getE2();
 			s.setRecibidas(fact);
 			seguroService.save(s);
-			
+			log.info("/facturaRecibida/seguro Entity FacturaRecibida with id: "+fact.getId()+" was created successfully");
 			return ResponseEntity.ok(fact);
 		}catch(Exception e) {
+			log.error("/facturaRecibida/seguro "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
@@ -135,6 +142,7 @@ public class FacturaRecibidaController {
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/facturaRecibida/itv Constrain validation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
@@ -147,9 +155,10 @@ public class FacturaRecibidaController {
 			
 			i.setRecibidas(fact);
 			itvService.save(i);
-			
+			log.info("/facturaRecibida/itv Entity FacturaRecibida with id: "+fact.getId()+" was created successfully");
 			return ResponseEntity.ok(fact);
 		}catch(Exception e) {
+			log.error("/facturaRecibida/itv "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
@@ -161,6 +170,7 @@ public class FacturaRecibidaController {
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/facturaRecibida/reparacion Constrain validation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
@@ -173,9 +183,10 @@ public class FacturaRecibidaController {
 			
 			r.setRecibidas(fact);
 			reparacionService.save(r);
-			
+			log.info("/facturaRecibida/reparacion Entity FacturaRecibida with id: "+fact.getId()+" was created successfully");
 			return ResponseEntity.ok(fact);
 		}catch(Exception e) {
+			log.error("/facturaRecibida/reparacion "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
@@ -187,6 +198,7 @@ public class FacturaRecibidaController {
 		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
+			log.warn("/facturaRecibida/otro Constrain validation in params");
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		
@@ -194,9 +206,10 @@ public class FacturaRecibidaController {
 			FacturaRecibida fact = data;
 			fact.setFechaEmision(LocalDate.now());
 			fact = facturaRecibidaService.save(fact);
-			
+			log.info("/facturaRecibida/otro Entity FacturaRecibida with id: "+fact.getId()+" was created successfully");
 			return ResponseEntity.ok(fact);
 		}catch(Exception e) {
+			log.error("/facturaRecibida/otro "+e.getMessage());
 			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
