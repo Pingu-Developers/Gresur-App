@@ -111,6 +111,7 @@ export class administradorPersonal extends Component {
     componentDidUpdate(prevprops, prevstate) {
         if(prevstate.value !== this.state.value){
             console.log("Pls")
+            this.props.clear()
             switch(this.state.value){
                 case 0:
                     this.props.loadPersonalContrato("TODOS"); break;
@@ -164,7 +165,7 @@ export class administradorPersonal extends Component {
                     <TabPanel value={this.state.value} index={this.state.value}>
                         {data.contrato.length === 0 ? <p>No se han podido cargar los datos</p>:
                             data.contrato.map( (cont) => 
-                                <InformacionEmpleado datos = {cont} />  
+                                <InformacionEmpleado key={data.contrato.indexOf(cont)} datos = {cont} handleReload={this.handleChange} />  
                             )
                         }
                     </TabPanel>                    

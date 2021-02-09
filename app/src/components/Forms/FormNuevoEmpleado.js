@@ -293,8 +293,8 @@ class FormNuevoEmpleado extends Component{
         }
 
           if(!errores){
-            this.props.onNextStep(this.state.step)
-            this.props.addPersonal(this.state.rol,this.state.trabajador)
+            this.props.onNextStep(this.state.step,this.state.trabajador,this.state.rol)
+            //this.props.addPersonal()
            
         }
           this.setState({

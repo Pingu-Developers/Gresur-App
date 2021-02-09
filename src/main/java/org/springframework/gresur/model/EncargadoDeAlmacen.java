@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "encargados_almacen")
 public class EncargadoDeAlmacen extends Personal{
 	
-	@NotNull(message = "No puede ser nulo")
-	@OneToOne(optional = false)
+	//@NotNull(message = "No puede ser nulo")
+	@OneToOne(optional = true)
 	private Almacen almacen;
 }

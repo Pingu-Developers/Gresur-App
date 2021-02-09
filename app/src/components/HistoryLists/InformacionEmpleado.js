@@ -82,8 +82,8 @@ export default function InformacionEmpleado(props) {
             </div>
           </div>
           <div className = {classes.buttonDiv}>
-            <EditDialogue edicion={!props.datos ? '':props.datos}/>
-            <DeleteDialogue eliminacion={!props.datos ? '':props.datos.personal}/>
+            <EditDialogue handleReload={props.handleReload} edicion={!props.datos ? '':props.datos}/>
+            <DeleteDialogue handleReload={props.handleReload} eliminacion={!props.datos ? '':props.datos.personal}/>
           </div>
       </div>
     );

@@ -15,5 +15,7 @@ public interface VehiculoRepository extends PagingAndSortingRepository<Vehiculo,
 	Optional<Vehiculo> findByMatricula(String matricula) throws DataAccessException;
 	
 	void deleteByMatricula(String matricula) throws DataAccessException;
+	
+	Boolean existsByMatricula(String matricula);
 
 }

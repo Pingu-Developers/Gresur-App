@@ -68,14 +68,20 @@ public class AuthController {
 		}
 		
 		else {
-			
-			Authentication authentication = authManager.authenticate(
-					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
-			
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			String jwt = jwtUtils.generateJwtToken(authentication);
-			
-			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+			UserDetailsImpl userDetails = null;
+			String jwt = null;
+			try {
+				
+				Authentication authentication = authManager.authenticate(
+						new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword()));
+				
+				SecurityContextHolder.getContext().setAuthentication(authentication);
+				jwt = jwtUtils.generateJwtToken(authentication);
+				userDetails = (UserDetailsImpl) authentication.getPrincipal();
+				
+			}catch (Exception e) {
+				return ResponseEntity.badRequest().body(e);
+			}
 			
 			List<String> roles = userDetails.getAuthorities().stream()
 					.map(item -> item.getAuthority())

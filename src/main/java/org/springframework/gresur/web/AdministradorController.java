@@ -110,6 +110,13 @@ public class AdministradorController {
 		}
 		
 		else {
+			if(admService.existByNif(p.getNIF())) {
+				return ResponseEntity.badRequest().body("NIF ya en el sistema");
+			}
+			if(admService.existByNSS(p.getNSS())) {
+				return ResponseEntity.badRequest().body("NSS ya en el sistema");
+			}
+			
 			String [] uvus = p.getName().split(" ");
 
 			String nombre = createUvus(uvus);
@@ -122,9 +129,7 @@ public class AdministradorController {
 				//Creacion nuevo Usuario
 				User user = new User(nombre, encoder.encode("123456"));
 				Set<Rol> rolset = new HashSet<>();	
-				Rol rol = new Rol();
-				rol.setName(ERol.ROLE_ADMIN);
-				rolset.add(rol);
+				rolset.add(roleRepository.findByName(ERol.ROLE_ADMIN).get());
 				user.setRoles(rolset); 
 				user.setPersonal(adm);
 				
@@ -144,8 +149,13 @@ public class AdministradorController {
 			List<FieldError> le = result.getFieldErrors();
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));		
 		}
-		
 		else {
+			if(admService.existByNif(p.getNIF())) {
+				return ResponseEntity.badRequest().body("NIF ya en el sistema");
+			}
+			if(admService.existByNSS(p.getNSS())) {
+				return ResponseEntity.badRequest().body("NSS ya en el sistema");
+			}
 			String [] uvus = p.getName().split(" ");
 
 			String nombre = createUvus(uvus);
@@ -158,9 +168,7 @@ public class AdministradorController {
 				//Creacion nuevo Usuario
 				User user = new User(nombre, encoder.encode("123456"));
 				Set<Rol> rolset = new HashSet<>();	
-				Rol rol = new Rol();
-				rol.setName(ERol.ROLE_DEPENDIENTE);
-				rolset.add(rol);
+				rolset.add(roleRepository.findByName(ERol.ROLE_DEPENDIENTE).get());
 				user.setRoles(rolset); 
 				user.setPersonal(d);
 				
@@ -180,8 +188,13 @@ public class AdministradorController {
 			List<FieldError> le = result.getFieldErrors();
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
-		
 		else {
+			if(admService.existByNif(p.getNIF())) {
+				return ResponseEntity.badRequest().body("NIF ya en el sistema");
+			}
+			if(admService.existByNSS(p.getNSS())) {
+				return ResponseEntity.badRequest().body("NSS ya en el sistema");
+			}
 			String [] uvus = p.getName().split(" ");
 
 			String nombre = createUvus(uvus);
@@ -193,10 +206,8 @@ public class AdministradorController {
 				
 				//Creacion nuevo Usuario
 				User user = new User(nombre, encoder.encode("123456"));
-				Set<Rol> rolset = new HashSet<>();	
-				Rol rol = new Rol();
-				rol.setName(ERol.ROLE_TRANSPORTISTA);
-				rolset.add(rol);
+				Set<Rol> rolset = new HashSet<>();			
+				rolset.add(roleRepository.findByName(ERol.ROLE_TRANSPORTISTA).get());
 				user.setRoles(rolset); 
 				user.setPersonal(t);
 				
@@ -215,8 +226,13 @@ public class AdministradorController {
 			List<FieldError> le = result.getFieldErrors();
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
-		
 		else {
+			if(admService.existByNif(p.getNIF())) {
+				return ResponseEntity.badRequest().body("NIF ya en el sistema");
+			}
+			if(admService.existByNSS(p.getNSS())) {
+				return ResponseEntity.badRequest().body("NSS ya en el sistema");
+			}
 			String [] uvus = p.getName().split(" ");
 
 			String nombre = createUvus(uvus);
@@ -229,9 +245,7 @@ public class AdministradorController {
 				//Creacion nuevo Usuario
 				User user = new User(nombre, encoder.encode("123456"));
 				Set<Rol> rolset = new HashSet<>();	
-				Rol rol = new Rol();
-				rol.setName(ERol.ROLE_ENCARGADO);
-				rolset.add(rol);
+				rolset.add(roleRepository.findByName(ERol.ROLE_ENCARGADO).get());
 				user.setRoles(rolset); 
 				user.setPersonal(encargado);
 				
@@ -241,6 +255,22 @@ public class AdministradorController {
 				return ResponseEntity.badRequest().body(e.getMessage());
 			}	
 		}		
+	}
+	
+	@PutMapping("/almacen/{nif}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<?> habilitarEncargadoDeAlmacen(@PathVariable("nif") String nif) throws DataAccessException{	
+		try {
+			Personal pElim = admService.findByNIFPersonal(nif);
+			if(pElim.getClass().equals(EncargadoDeAlmacen.class)) {
+				EncargadoDeAlmacen en = (EncargadoDeAlmacen)pElim;
+				en.setAlmacen(null);
+				admService.saveEncargadoDeAlmacen(en);
+			}
+			return ResponseEntity.ok("");
+		}catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
 	}
 
 	@GetMapping

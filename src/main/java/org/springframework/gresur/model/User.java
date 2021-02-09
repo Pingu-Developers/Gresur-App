@@ -33,10 +33,10 @@ public class User extends BaseEntity {
 	private String password;
 	
 	
-	@OneToOne(orphanRemoval = true, optional = false)
+	@OneToOne(optional = false)
 	private Personal personal;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(	name = "user_roles", 
 				joinColumns = @JoinColumn(name = "user_id"), 
 				inverseJoinColumns = @JoinColumn(name = "role_id"))
