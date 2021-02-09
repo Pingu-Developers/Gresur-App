@@ -234,6 +234,7 @@ class encargadoGestion extends Component {
                                             categoria = {entry.categoria} 
                                             ocupacion = {entry.ocupacionEstanteria}
                                             porcentajeAlmacen = {entry.porcentajeAlmacen}
+                                            version = {entry.version}
                                             totalOcupado = {this.porcentajeDeAlmacenAsignado()}
                                             axisH = {document.getElementById('axis').clientHeight}
                                             dragHandler = {this.mouseDownHandler}

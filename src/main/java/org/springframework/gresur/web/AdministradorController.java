@@ -345,6 +345,17 @@ public class AdministradorController {
 	@PutMapping("/personal/profile")
 	@PreAuthorize("permitAll()")
 	public ResponseEntity<?> putPersonalByNif(@Valid @RequestBody Personal personalModificado, BindingResult result){
+		
+		Personal p = admService.findPersonal(personalModificado.getId());
+		
+		if(p==null) {
+			return ResponseEntity.badRequest().body("Personal no encontrado");
+		}
+		
+		if(p.getVersion()!=personalModificado.getVersion()) {
+			return ResponseEntity.badRequest().body("Concurrent modification");
+		}
+		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));

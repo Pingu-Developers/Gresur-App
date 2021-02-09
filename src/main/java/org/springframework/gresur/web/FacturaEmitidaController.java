@@ -190,7 +190,18 @@ public class FacturaEmitidaController {
 	@PostMapping("/rectificar")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> rectificarFactura(@Valid @RequestBody FacturaEmitida fra, BindingResult result){
-		System.out.println("ENTRAA");
+
+		
+		FacturaEmitida ori = facturaEmitidaService.findByNumFactura(fra.getOriginal().getNumFactura());
+		
+		if(ori==null) {
+			return ResponseEntity.badRequest().body("Factura no encontrada en el sistema");
+		}
+		
+		if(ori.getVersion()!=fra.getVersion()) {
+			return ResponseEntity.badRequest().body("Concurrent modification");
+		}
+		
 		if(result.hasErrors()) {
 			List<FieldError> le = result.getFieldErrors();
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
@@ -205,7 +216,6 @@ public class FacturaEmitidaController {
 			f.setDescripcion(fra.getDescripcion());
 			f.setEstaPagada(fra.getEstaPagada());
 			f.setImporte(0.0);
-			FacturaEmitida ori = facturaEmitidaService.findByNumFactura(fra.getOriginal().getNumFactura());
 			f.setOriginal(ori);
 			FacturaEmitida f2 = facturaEmitidaService.save(f);
 			

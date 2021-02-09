@@ -100,7 +100,7 @@ class encargadoGestion extends Component {
             porcentajeAlm = this.props.porcentajeAlmacen,
             totalOcupado = this.props.totalOcupado,
             ocupacion = this.state.porcentajeOcupacionEst,
-            postData = () => this.props.updateEstanteriaCapacidad(categoria, this.state.porcentajeCapacidad, this.props.almAdm);
+            postData = () => this.props.updateEstanteriaCapacidad(categoria, this.state.porcentajeCapacidad, this.props.almAdm, this.props.version);
 
 
         //estado de las barras

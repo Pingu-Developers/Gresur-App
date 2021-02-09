@@ -18,6 +18,7 @@ import org.springframework.gresur.service.EstanteriaService;
 import org.springframework.gresur.service.ProductoService;
 import org.springframework.gresur.util.Tuple2;
 import org.springframework.gresur.util.Tuple3;
+import org.springframework.gresur.util.Tuple4;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -77,7 +78,7 @@ public class AlmacenController {
 	
 	@GetMapping("/gestionEncargado/{almacenAdm}")
 	@PreAuthorize("hasRole('ENCARGADO') or hasRole('ADMIN')")
-	public List<Tuple3<Categoria, Double, Double>> ocupacionPorEstanteria(@PathVariable("almacenAdm") Long almId){
+	public List<Tuple4<Categoria, Double, Double,Integer>> ocupacionPorEstanteria(@PathVariable("almacenAdm") Long almId){
 		Authentication user = SecurityContextHolder.getContext().getAuthentication();
 		UserDetailsImpl userDetails = (UserDetailsImpl) user.getPrincipal();
 		
@@ -91,21 +92,23 @@ public class AlmacenController {
 		}
 		
 		List<Tuple2<Categoria, Double>> tupla = this.getCategoriasCapacidad2(alm);
-		List<Tuple3<Categoria, Double, Double>> res = new ArrayList<Tuple3<Categoria,Double,Double>>();
+		List<Tuple4<Categoria, Double, Double, Integer>> res = new ArrayList<Tuple4<Categoria,Double,Double, Integer>>();
 		for(Tuple2<Categoria, Double> tp: tupla) {
 			Estanteria est = zonaService.findByCategoria(tp.getE1());
 			
 			if(est != null) {
 				Double porcentajeAlmacen = est.getCapacidad()/alm.getCapacidad()*100;
-				Tuple3<Categoria, Double, Double> terna = new Tuple3<Categoria, Double, Double>();
+				Tuple4<Categoria, Double, Double,Integer> terna = new Tuple4<Categoria, Double, Double, Integer>();
 				
 				terna.name1 = "categoria";
 				terna.name2 = "ocupacionEstanteria";
 				terna.name3 = "porcentajeAlmacen";
+				terna.name4 = "version";
 				
 				terna.setE1(tp.getE1());
 				terna.setE2(tp.getE2());
 				terna.setE3(porcentajeAlmacen);
+				terna.setE4(alm.getVersion());
 				res.add(terna);
 			}
 		}
