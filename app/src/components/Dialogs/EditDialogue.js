@@ -118,15 +118,78 @@ import { connect } from 'react-redux';
         tipoJornada:this.props.edicion.tipoJornada,
         observaciones:this.props.edicion.observaciones,
         personal: this.props.edicion.personal,
-        errors:null,
-        open:false
+        errors:{fechaInicio:[],fechaFin:[]},
+        open:false,
+        enviar:false
     }
     }
 
-    handleSubmit = (event) =>  {
-        event.preventDefault();
-        //Valores del nuevo contrato rellenado en el formulario
-         const contrato = {
+    dateInPast = function(fecha) {
+      const firstDate = new Date()
+      if (firstDate < fecha) {
+        return true;
+      }
+
+      return false;
+    };
+
+    dateInFuture = function(fecha) {
+      const firstDate = new Date()
+      if (firstDate > fecha) {
+        return true;
+      }
+
+      return false;
+    };
+
+    componentDidMount(){
+      console.log(this.state)
+    }
+
+    componentDidUpdate(prevProps,prevState){
+      console.log(this.state)
+      if(prevState.enviar !== this.state.enviar && this.state.enviar){
+        var errores = false;
+        if(this.dateInPast(this.state.fechaInicio) && this.state.errors.fechaInicio.length === 0){
+          this.setState(state=>({
+              errors :{
+                  ...state.errors,
+                  fechaInicio:[...state.errors.fechaInicio,'Fecha no valida']
+              }
+          }))
+          errores = true
+        }else if(!this.dateInPast(this.state.fechaInicio)){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    fechaInicio:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+        
+        if(this.dateInFuture(this.state.fechaFin) && this.state.errors.fechaFin.length === 0){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    fechaFin:[...state.errors.fechaFin,'Fecha no valida']
+                }
+            }))
+            errores = true
+        }else if(!this.dateInFuture(this.state.fechaFin)){
+            this.setState(state=>({
+                errors :{
+                    ...state.errors,
+                    fechaFin:[]
+                }
+            }))
+        }else{
+            errores = true
+        }
+
+        if(!errores){
+          const contrato = {
             id: this.props.edicion.id,
             version: this.props.edicion.version,
             nomina: this.state.nomina,
@@ -138,9 +201,23 @@ import { connect } from 'react-redux';
             personal: this.state.personal,
 
          };
-        this.props.editContrato(contrato.personal.nif,contrato);
+          this.props.editContrato(contrato.personal.nif,contrato);
+          this.setState({
+              open:false
+          })
+          this.props.handleReload(0)
+        }
         this.setState({
-            open:false
+          enviar:false
+      })
+      }
+    }
+
+    handleSubmit = (event) =>  {
+        event.preventDefault();
+
+        this.setState({
+          enviar:true
         })
      }
      handleChange = (event) => {
@@ -149,20 +226,29 @@ import { connect } from 'react-redux';
         })
       };
       handleFechaInicioChange = (date) => {
-           this.setState({
-            fechaInicio:date
-        })
+        this.setState(state =>({
+          fechaInicio:date,
+          errors :{
+            ...state.errors,
+            fechaInicio:[]
+        }
+      }))
       };
       handleFechaFinChange = (date) => {
-        this.setState({
-         fechaFin:date
-     })
-   };
-   handleChangeInput = (event) => {
-    this.setState({
-        [event.target.name]:event.target.value
-    })
-  };
+        this.setState(state =>({
+          fechaFin:date,
+          errors :{
+            ...state.errors,
+            fechaFin:[]
+        }
+      }))
+      };
+
+    handleChangeInput = (event) => {
+      this.setState({
+          [event.target.name]:event.target.value
+      })
+    };
 
    handleClickOpen = () => {
        this.setState({
@@ -249,6 +335,8 @@ import { connect } from 'react-redux';
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
                             }}
+                            error={this.state.errors.fechaInicio.length>0}
+                            helperText={this.state.errors.fechaInicio[0]}
                                 />       
                         </Grid>
                     </MuiPickersUtilsProvider>
@@ -270,6 +358,8 @@ import { connect } from 'react-redux';
                             KeyboardButtonProps={{
                                 'aria-label': 'change date',
                             }}
+                            error={this.state.errors.fechaFin.length>0}
+                            helperText={this.state.errors.fechaFin[0]}
                             />
                         
                         </Grid>

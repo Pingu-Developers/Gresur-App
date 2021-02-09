@@ -20,7 +20,7 @@ import {
 import FormControl from '@material-ui/core/FormControl';
 
 //REDUX stuff
-import { addContrato } from '../../redux/actions/dataActions';
+import { addPersonal } from '../../redux/actions/dataActions';
 import { connect } from 'react-redux';
 
   const styles = theme => ({
@@ -126,6 +126,11 @@ class FormNuevoContrato extends Component{
 
     componentDidUpdate(prevProps,prevState){
       console.log(this.state)
+
+      if(this.props.UI.errors){
+        this.props.onError()
+      }
+
       if(this.state.open != prevState.open && !this.state.open){
           this.setState({
             nomina:'', 
@@ -138,6 +143,7 @@ class FormNuevoContrato extends Component{
               enviar:false,
               trabajador:{}
           })
+
       }
       if(this.state.enviar != prevState.enviar && this.state.enviar ){
           let errores = false;
@@ -238,6 +244,26 @@ class FormNuevoContrato extends Component{
             errores = true
         }
 
+        if(this.state.fechaFin.setHours(0,0,0,0) === this.state.fechaInicio.setHours(0,0,0,0) && this.state.errors.fechaFin.length === 0){
+          console.log("patata")
+          this.setState(state=>({
+              errors :{
+                  ...state.errors,
+                  fechaFin:[...state.errors.fechaFin,'Las fechas no pueden ser iguales']
+              }
+          }))
+          errores = true
+      }else if(this.state.fechaFin.setHours(0,0,0,0) !== this.state.fechaInicio.setHours(0,0,0,0)){
+          this.setState(state=>({
+              errors :{
+                  ...state.errors,
+                  fechaInicio:[]
+              }
+          }))
+      }else{
+          errores = true
+      }
+
         if( this.state.observaciones.length>255 && this.state.errors.observaciones.length === 0){
             this.setState(state=>({
                 errors :{
@@ -260,9 +286,10 @@ class FormNuevoContrato extends Component{
 
           if(!errores){
             this.props.onNextStep(this.state.step)
-            this.props.addContrato(this.props.dni,this.state.contrato);
+            this.props.addPersonal(this.props.personal,this.props.rol,this.state.contrato);
            
         }
+        console.log("HI")
           this.setState({
               enviar:false
           })
@@ -490,10 +517,11 @@ FormNuevoContrato.propTypes={
 
 const mapStateToProps = (state) => ({
   data: state.data,
+  UI:state.UI
 });
 
 const mapActionsToProps = {
-    addContrato,
+    addPersonal,
 }
 
 export default connect(mapStateToProps,mapActionsToProps)(withStyles(styles)(FormNuevoContrato))

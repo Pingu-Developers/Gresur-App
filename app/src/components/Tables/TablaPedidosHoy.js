@@ -131,7 +131,7 @@ render(){
                    
                   {this.state.columns.map((column) => {
                     
-                    const value = column.id==='e7'?<ButtonPDF idPedido={row.e1}/>:
+                    const value = column.id==='e7'?<ButtonPDF color = "secondary" iconColor = "white" idPedido={row.e1}/>:
                                     column.id === 'e6' & row.e3 === 'PREPARADO'?
                                     <ButtonEnReparto activacion={row.e3} idPedido = {row.e1} />:
                                     column.id === 'e6' & row.e3 === 'EN_REPARTO'?

@@ -43,6 +43,7 @@ const styles = theme => ({
         this.setState({
             open:false
         })
+        this.props.handleReload(0)
   }
 
    handleClose = () => {

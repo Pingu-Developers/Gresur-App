@@ -219,7 +219,7 @@ public class PedidoController {
 				pedidoService.save(pedido);
 				return ResponseEntity.ok(pedido);
 			} catch (Exception e) {
-				return ResponseEntity.badRequest().body(e);
+				return ResponseEntity.badRequest().body(e.getMessage());
 			}
 		}
 		else {
@@ -361,7 +361,7 @@ public class PedidoController {
 				pedidoService.save(p);
 				return ResponseEntity.ok(p);
 			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e);
+				return ResponseEntity.badRequest().body(e.getMessage());
 
 			}
 		}else {
@@ -385,7 +385,7 @@ public class PedidoController {
 				pedidoService.save(p);
 				return ResponseEntity.ok(p);
 			}catch(Exception e) {
-				return ResponseEntity.badRequest().body(e);
+				return ResponseEntity.badRequest().body(e.getMessage());
 
 			}
 		}else {

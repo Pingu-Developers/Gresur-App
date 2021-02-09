@@ -78,7 +78,6 @@ public class FacturaEmitidaController {
 	public ResponseEntity<?> getFacturasClienteAndFecha(@RequestBody Tuple2<Long, LocalDate> data){
 		
 		List<FacturaEmitida> values = facturaEmitidaService.findFacturasByClienteAndFecha(data.getE1(), data.getE2());
-		
 		if(values==null) {
 			return ResponseEntity.badRequest().body("No se encontraron factura para dicho cliente");
 		}
@@ -176,6 +175,7 @@ public class FacturaEmitidaController {
 	public ResponseEntity<?> getFacturaByNumFactura(@PathVariable String numFactura) {
 		FacturaEmitida factura = facturaEmitidaService.findByNumFactura(numFactura);
 		if(factura != null) {
+			System.out.println("ENTRA");
 			if(factura.esDefinitiva()) {
 				return ResponseEntity.ok(factura);
 			}else {
@@ -190,6 +190,7 @@ public class FacturaEmitidaController {
 	@PostMapping("/rectificar")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> rectificarFactura(@Valid @RequestBody FacturaEmitida fra, BindingResult result){
+
 		
 		FacturaEmitida ori = facturaEmitidaService.findByNumFactura(fra.getOriginal().getNumFactura());
 		
@@ -206,7 +207,7 @@ public class FacturaEmitidaController {
 			return ResponseEntity.badRequest().body(le.get(0).getDefaultMessage() + (le.size()>1? " (Total de errores: " + le.size() + ")" : ""));
 		}
 		if(!fra.getOriginal().esDefinitiva()) {
-			return ResponseEntity.badRequest().body("Intento modifiar una factura no final");
+			return ResponseEntity.badRequest().body("Intento modificar una factura no final");
 		}
 		try {
 			FacturaEmitida f = new FacturaEmitida();

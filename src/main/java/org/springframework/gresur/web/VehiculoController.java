@@ -253,6 +253,9 @@ public class VehiculoController {
 		}
 		
 		try {
+			if(vehiculoService.existsByMatricula(vehiculo.getMatricula())) {
+				return ResponseEntity.badRequest().body("Vehiculo con misma matricula ya existe");
+			}
 			Vehiculo v = vehiculoService.save(vehiculo);				
 			return ResponseEntity.ok(v);
 		}catch(Exception e) {

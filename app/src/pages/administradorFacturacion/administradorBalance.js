@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
 import Chart from "react-google-charts";
-import { loadBalance } from '../../redux/actions/dataActions';
+import { loadBalance, clearLoading } from '../../redux/actions/dataActions';
 import Select from '@material-ui/core/Select';
 import FormControl from '@material-ui/core/FormControl';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -12,6 +12,23 @@ import Typography from '@material-ui/core/Typography'
 
 
 const style = {
+    tituloForm: {
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid #bdbdbd',
+        margin: '0px 0px 20px 0px',
+        padding: '0px 0px 15px 0px'
+    },
+    titulo: {
+        margin: '30px 20px',
+        fontSize: 40,
+        fontWeight: 600,
+        float: 'left',
+        color: '#7a7a7a',
+        margin: '0px 0px 0px 20px'
+      },
 }
 
 class balance extends Component {
@@ -38,27 +55,35 @@ class balance extends Component {
         this.props.loadBalance(this.state.year);
     }
 
+    componentWillUnmount(){
+        this.props.clearLoading()
+    }
+
     render() {
         
         const { classes, data } = this.props;
         const año = new Date().getFullYear()
         return (
             <div>
-                <div style = {{display: 'inline-flex', paddingBottom: 10, alignItems: 'center'}}>
-                    <Typography>Año: </Typography>
-                    <FormControl style = {{marginLeft: 10}}>
-                        <Select
-                            labelId="demo-simple-select-outlined-label"
-                            id="demo-simple-select-outlined"
-                            name="year"
-                            value={this.state.year ? this.state.year : new Date().getFullYear()}
-                            onChange={this.handleChangeSelected}
-                        >
-                            {this.state.arr.map(i => <MenuItem value={año-this.state.arr.length+1+i}>{año-this.state.arr.length+1+i}</MenuItem>)}
-                        </Select>
-                    </FormControl>
+                <div className = {classes.tituloForm}>
+                    <Typography className = {classes.titulo}>GRAFICO DE GASTOS / INGRESOS</Typography>
+                    <div style = {{display: 'inline-flex', paddingBottom: 10, alignItems: 'center', marginRight: 40}}>
+                        <Typography>Año: </Typography>
+                        <FormControl style = {{marginLeft: 10}}>
+                            <Select
+                                variant = "outlined"
+                                style = {{height: 35}}
+                                labelId="demo-simple-select-outlined-label"
+                                id="demo-simple-select-outlined"
+                                name="year"
+                                value={this.state.year ? this.state.year : new Date().getFullYear()}
+                                onChange={this.handleChangeSelected}
+                            >
+                                {this.state.arr.map(i => <MenuItem value={año-this.state.arr.length+1+i}>{año-this.state.arr.length+1+i}</MenuItem>)}
+                            </Select>
+                        </FormControl>
+                    </div>
                 </div>
-                <Divider/>
                 {data.balance.length == 0 ?null:
                                     <Chart
                                     width={'100%'}
@@ -126,7 +151,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapActionsToProps = {
-    loadBalance
+    loadBalance,
+    clearLoading
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(balance))

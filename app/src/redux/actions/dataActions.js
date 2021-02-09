@@ -182,6 +182,7 @@ export const loadPersonalContrato = (rol="TODOS") => function (dispatch) {
     
     axios.get(`/contrato/${rol}`)
         .then((res) => {
+            console.log(rol)
             dispatch({type: SET_CONTRATO, payload: res})
             dispatch({type: CLEAR_ERRORS})
         })
@@ -221,6 +222,10 @@ export const deleteContrato = (nif) => function (dispatch){
     dispatch({type: LOADING_UI})
     axios.delete(`/contrato/delete/${nif}`)
         .then((res) => {
+            axios.put(`/adm/almacen/${nif}`)
+            .catch(err=>{
+                console.log(err)
+            })
             dispatch(loadPersonalContrato())
             dispatch({
                 type: SET_ENVIADO,
@@ -230,7 +235,7 @@ export const deleteContrato = (nif) => function (dispatch){
             if(err.response){
                 dispatch({
                     type: SET_ERRORS,
-                    payload: err.response.data.message
+                    payload: err.response.data
                 })
             } else {
                console.log(err)
@@ -340,10 +345,10 @@ export const putPersonalProfilePassword = (personal) => function (dispatch) {
 }
 
 
-export const addPersonal = (rolEmpleado,personal) => (dispatch) =>{
+export const addPersonal = (personal,rolEmpleado,contrato) => (dispatch) =>{
         axios.post(`/adm/add/${rolEmpleado}`,personal)
         .then((res) => {
-            dispatch(loadPersonal());
+            dispatch(addContrato(personal.nif,contrato));
         })
         .catch((err) => {
             if(err.response){

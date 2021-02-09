@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.gresur.model.Contrato;
 import org.springframework.gresur.repository.ContratoRepository;
+import org.springframework.gresur.repository.UserRepository;
 import org.springframework.gresur.service.exceptions.SalarioMinimoException;
 import org.springframework.gresur.util.FechaInicioFinValidation;
 import org.springframework.stereotype.Service;
@@ -23,12 +24,15 @@ public class ContratoService {
 	
 	private ContratoRepository contratoRepository;
 	
+	private UserRepository userRepo;
+	
 	@Autowired
 	private ConfiguracionService configService;
 	
 	@Autowired
-	public ContratoService(ContratoRepository contratoRepository) {
+	public ContratoService(ContratoRepository contratoRepository,UserRepository userRepo) {
 		this.contratoRepository = contratoRepository;
+		this.userRepo = userRepo;
 	}
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -99,6 +103,7 @@ public class ContratoService {
 	
 	@Transactional
 	public void deleteByPersonalNIF(String NIF) {
+		userRepo.deleteByPersonalNIF(NIF);
 		contratoRepository.deleteByPersonalNIF(NIF);
 	}
 

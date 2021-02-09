@@ -128,7 +128,7 @@ public class NotificacionController {
 			Notificacion res = notificacionService.save(nuevaNoti, receptores);
 			return ResponseEntity.ok(res);
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body(e);
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 		
 	}
