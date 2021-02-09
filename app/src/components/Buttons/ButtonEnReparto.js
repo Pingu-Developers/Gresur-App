@@ -38,8 +38,10 @@ import { connect } from 'react-redux';
         marginLeft: theme.spacing(17)
   
       }, wdialogue: {
-        width:230,        
-      },addBoton:{
+        width:230,    
+        color: 'white',    
+      },
+      addBoton:{
         marginLeft:theme.spacing(28),
         marginBottom: theme.spacing(2),
         marginTop: theme.spacing(2)
@@ -99,7 +101,7 @@ import { connect } from 'react-redux';
     const { classes,data } = this.props;
   return (
     <div>
-      <Button disabled={this.props.activacion==='PREPARADO'?false:true}variant="contained" color="primary" className={classes.wdialogue} onClick={this.handleClickOpen}  startIcon={<LocalShippingIcon />}>
+      <Button disabled={this.props.activacion==='PREPARADO'?false:true}variant="contained" color="secondary" className={classes.wdialogue} onClick={this.handleClickOpen}  startIcon={<LocalShippingIcon />}>
         Poner en Reparto
       </Button>
       <Dialog open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">

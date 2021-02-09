@@ -57,7 +57,18 @@ const style = theme => ({
         width: "100%",
         display: "inline-grid",
         gridTemplateColumns:"1fr",
-    }
+    },
+    titulo: {
+        margin: '30px 20px',
+        fontSize: 40,
+        fontWeight: 600,
+        float: 'left',
+        color: '#7a7a7a',
+        margin: '0px 0px 20px 0px',
+        padding: '0px 0px 15px 20px',
+        width: '100%',
+        borderBottom: '1px solid #bdbdbd'
+    },
 })
 
 
@@ -212,6 +223,8 @@ export class administradorRectificar2 extends Component {
 
         return (
             <div style={{height:"100%"}}>
+                <Typography className = {classes.titulo}>RECTIFICAR FACTURAS</Typography>
+
                 <Snackbar id="botonSnack" type = "warning" message= 'No has modificado la factura'/>
                 <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
                 <div style={{height:"10%",margin:20,width:"100%", display:'inline-flex', justifyContent:"space-between"}}>

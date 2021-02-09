@@ -28,17 +28,27 @@ const style = {
         }
 
     },
+    tituloForm: {
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid #bdbdbd',
+        margin: '30px 0px 20px 0px',
+        padding: '0px 0px 15px 0px'
+    },
     titulo: {
         margin: '30px 20px',
         fontSize: 40,
         fontWeight: 600,
-    },
+        float: 'left',
+        color: '#7a7a7a',
+        margin: '0px 0px 0px 20px'
+      },
     form:{
         margin:"0.7%",
-        marginLeft:35,
-        fontSize:15,
-        display: "inline-block",
-
+        marginRight:15,
+        fontSize:20,
     }
 }
 
@@ -84,32 +94,32 @@ export class tranportistaPedidos extends Component {
         const {classes, data , UI:{errors,enviado}} = this.props;
         return (
             <div>
-            <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
-            <Typography variant='h3' className={classes.titulo}>MIS PEDIDOS</Typography>
-            <Typography 
-            className={classes.form}
-            variant='body1'>
-            Mostrando:
-            </Typography>
-        <FormControl variant="outlined" className={classes.Select} >
-            <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                name = "selected" 
-                value={this.state.selected?this.state.selected:"TODO"}
-                onChange={this.handleChangeSelected}
-                input = {<BootstrapInput/>}
-                >
-                <MenuItem value="TODO">Todo</MenuItem>
-                <MenuItem value="PREPARADO">Preparado</MenuItem>
-                <MenuItem value="EN_REPARTO">En Reparto</MenuItem>
-            </Select>
-        </FormControl>
-            <div>
-                {data.pedidos===undefined?null:
-                <TablaPedidosHoy datos = {data.pedidos}/>
-                }
-            </div>
+                <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
+                <div className = {classes.tituloForm}>
+                    <Typography className={classes.titulo} variant='h3' className={classes.titulo}>MIS PEDIDOS</Typography>
+                    <span style = {{display: 'inline-flex', alignItems: 'flex-end'}}>
+                        <Typography className={classes.form} variant='body1'> Mostrando: </Typography>
+                        <FormControl variant="outlined" className={classes.Select}>
+                            <Select
+                                labelId="demo-simple-select-outlined-label"
+                                id="demo-simple-select-outlined"
+                                name = "selected" 
+                                value={this.state.selected?this.state.selected:"TODO"}
+                                onChange={this.handleChangeSelected}
+                                input = {<BootstrapInput/>}
+                                >
+                                <MenuItem value="TODO">Todo</MenuItem>
+                                <MenuItem value="PREPARADO">Preparado</MenuItem>
+                                <MenuItem value="EN_REPARTO">En Reparto</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </span>
+                </div>
+                <div>
+                    {data.pedidos===undefined?null:
+                    <TablaPedidosHoy datos = {data.pedidos}/>
+                    }
+                </div>
             </div>
         )
     }

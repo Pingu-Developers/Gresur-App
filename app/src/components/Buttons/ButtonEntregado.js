@@ -20,15 +20,14 @@ import { connect } from 'react-redux';
     }, container: {
         display: 'flex',
         flexWrap: 'wrap',
-      }, wdialogue: {
+      }, 
+      wdialogue: {
         width:230,
-        marginTop:theme.spacing(2)
+        color: 'white'
       },
       Buttons: {
           margin: theme.spacing(1),
           display: 'inline-block'
-      }, wdialogue: {
-        width:230,
       }
   });
 
@@ -75,7 +74,7 @@ import { connect } from 'react-redux';
     const { classes,data } = this.props;
   return (
     <React.Fragment>
-      <Button disabled={this.props.activacion==='EN_REPARTO'?false:true}variant="contained" color="primary" className={classes.wdialogue} onClick={this.handleClickOpen}  startIcon={<CheckCircleOutlineIcon />}>
+      <Button disabled={this.props.activacion==='EN_REPARTO'?false:true}variant="contained" color="secondary" className={classes.wdialogue} onClick={this.handleClickOpen}  startIcon={<CheckCircleOutlineIcon />}>
         Entregar
       </Button>
       <Dialog  open={this.state.open} onClose={this.handleClose} aria-labelledby="form-dialog-title">

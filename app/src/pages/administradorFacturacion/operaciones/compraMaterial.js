@@ -24,7 +24,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
-import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import ArrowForwardRoundedIcon from '@material-ui/icons/ArrowForwardRounded';
 import Pagination from "@material-ui/lab/Pagination";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -34,6 +34,10 @@ import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 //FIREBASE stuff
 import firebase from "../../../firebaseConfig/firebase";
@@ -43,13 +47,27 @@ const style = (theme) => ({
   root: {
     flexGrow: 1,
   },
-  paper: {
-    padding: theme.spacing(1),
-    color: theme.palette.text.secondary,
+  lineaProducto: {
+    display: 'grid',
+    gridTemplateRows: '1fr',
+    gridTemplateColumns: '1fr 3fr 3fr 1fr',
+    alignItems: 'center',
+    padding: 5,
+    gridColumnGap: 10,
+    '&:nth-of-type(2n-1)': {
+      backgroundColor: "#f7f7f7",
+    },
+    '&:nth-of-type(even)': {
+        backgroundColor: "#FFFFFF",
+      },
+  },
+  leftListWrapper: {
     minHeight: 260,
     maxHeight: 260,
     overflowY: "auto",
     overflowX: "hidden",
+    borderRadius: 20,
+    border: '1px solid #bdbdbd'
   },
   elegidos: {
     padding: theme.spacing(1),
@@ -64,40 +82,20 @@ const style = (theme) => ({
     minWidth: 200,
   },
   search: {
-    margin: 10,
+    margin: 0,
   },
   categoria: {
-    margin: 10,
+    margin: 0,
     minWidth: 100,
   },
-  arrowDiv: {
-    position: "relative",
-    alignItems: "center",
-    display: "flex",
-    justifyContent: "center",
-    width:"4%"
-  },
-  arrow: {
-    position: "relative",
-    top: 30,
-    width:"100%"
-  },
   total: {
-    position: "relative",
-    top: 25,
-    marginRight: 20,
     fontSize: 25,
     fontWeight: 600,
-    display: "inline-block",
+    color: '#7a7a7a'
   },
   addButton: {
     position: "relative",
     marginLeft: -10,
-    top: 20,
-  },
-  createButton: {
-    position: "relative",
-    float:'right',
     top: 20,
   },
   foto: {
@@ -120,7 +118,6 @@ const style = (theme) => ({
     minWidth: 220,
   }, 
   upload: {
-    padding: theme.spacing(1),
     backgroundColor: "rgba(220,220,220,0.4)",
     height: "100%",
     width: "100%",
@@ -160,7 +157,8 @@ export class compraMaterial extends Component {
       openProveedor: false,
       newProduct:{},
       errors:false,
-      enviado:false
+      enviado:false,
+      openNuevoProducto: false,
     };
     this.handleChangeCategoria = this.handleChangeCategoria.bind(this);
     this.handleChangeSearch = this.handleChangeSearch.bind(this);
@@ -182,6 +180,8 @@ export class compraMaterial extends Component {
     this.handleCloseClear = this.handleCloseClear.bind(this);
     this.handleCloseProveedor = this.handleCloseProveedor.bind(this);
     this.handleEnviar = this.handleEnviar.bind(this);
+    this.handleOpenDialogNP = this.handleOpenDialogNP.bind(this);
+    this.handleCloseDialogNP = this.handleCloseDialogNP.bind(this);
   }
 
   handleEnviar(){
@@ -395,6 +395,14 @@ export class compraMaterial extends Component {
       dimensionesNuevoProd: temp,
     });
   }
+  handleCloseDialogNP(event) {
+    this.setState({openNuevoProducto: false})
+  }
+
+  handleOpenDialogNP(event) {
+    console.log('aa')
+    this.setState({openNuevoProducto: true})
+  }
 
   handleChangeImg = (event) => {
     event.preventDefault();
@@ -538,585 +546,508 @@ export class compraMaterial extends Component {
       <Grid xs={12} container spacing={0}>
         <SnackCallController  enviado = {enviado} message = {"Compra realizada correctamente"} errors={errors} />
 
-        <div style={{display:"flex" , justifyContent:"space-between"}}>
-        <Grid container spacing={3} style={{width:"47%",boxSizing:"border-box",}}>
-          <Grid item xs={12}>
-            <TextField
-              className={classes.search}
-              id="idBusqueda"
-              label="Buscar"
-              name="valueSearch"
-              value={this.state.valueSearch}
-              onChange={(event) => this.handleChangeSearch(event)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            <TextField
-              className={classes.categoria}
-              id="selectCategoria"
-              name="valueCategoria"
-              select
-              label="Categoria"
-              value={this.state.valueCategoria}
-              onChange={this.handleChangeCategoria}
-            >
-              <MenuItem value={"TODOS"}>Todos</MenuItem>
-              <MenuItem value={"AZULEJOS"}>AZULEJOS</MenuItem>
-              <MenuItem value={"BANOS"}>BAÑOS</MenuItem>
-              <MenuItem value={"CALEFACCION"}>CALEFACCION</MenuItem>
-              <MenuItem value={"LADRILLOS"}>LADRILLOS</MenuItem>
-              <MenuItem value={"PINTURAS"}>PINTURAS</MenuItem>
-              <MenuItem value={"REVESTIMIENTOS"}>REVESTIMIENTOS</MenuItem>
-              <MenuItem value={"SILICES"}>SILICES</MenuItem>
-            </TextField>
-            <Paper className={classes.paper} elevation={0} variant="outlined">
-              {articlesDetails
-                ? articlesDetails.map((producto) => (
-                    <div style={{ minHeight: 80 }}>
-                      <Grid
-                        style={{
-                          height: "100%",
-                          position: "relative",
-                          alignItems: "center",
-                          display: "flex",
-                          justifyContent: "center",
-                        }}
-                        container
-                        spacing={3}
-                      >
-                        <Grid item xs={2}>
-                          <img
-                            className={classes.foto}
-                            src={producto.urlimagen}
-                            alt="IMAGEN"
-                          />
-                        </Grid>
-                        <Grid item xs={4}>
-                          <Typography
-                            className={classes.gridproductos}
-                            variant="body1"
-                          >
-                            {producto.nombre}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                          <Typography
-                            className={classes.gridproductos}
-                            variant="body1"
-                          >
-                            Precio Compra: {producto.precioCompra}€ /
-                            {producto.unidad === "UNIDADES"
-                              ? "Ud."
-                              : producto.unidad}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                          <Button
-                            className={classes.gridboton}
-                            variant="contained"
-                            size="small"
-                            color="primary"
-                            disabled={this.state.selected.filter(obj => {return obj.id === producto.id})[0]?true:false}
-                            onClick={() => this.handleClickAñadir(producto)}
-                          >
-                            Añadir
-                          </Button>
-                        </Grid>
-                      </Grid>
-                      <Divider />
-                    </div>
-                  ))
-                : () => null}
-            </Paper>
-            {articlesDetails.length === 0 ? null : (
-              <Pagination
-                style={{marginTop:10}}
-                count={totalPages}
-                hidePrevButton={this.state.valuePaginaActual === 1}
-                hideNextButton={this.state.valuePaginaActual === totalPages}
-                page={this.state.valuePaginaActual}
-                onChange={(event, newValue) =>
-                  this.handleChangePage(event, newValue)
-                }
-                color="secondary"
-              />
-            )}
-          </Grid>
-        </Grid>
-
-        <Grid className={classes.arrowDiv}>
-          <ArrowForwardIcon
-            className={classes.arrow}
-            style={{ fontSize: 80 }}
-          />
-        </Grid>
-
-        <Grid container spacing={3} style={{width:"47%",boxSizing:"border-box",}}>
-          <Grid item xs={12}>
-            <Typography className={classes.total} variant="body1">
-              TOTAL: {total.toFixed(2)}€
-            </Typography>
-            <Autocomplete
-              id="proveedor"
-              size="small"
-              style={{
-                width: 200,
-                margin: 10,
-                marginLeft: 20,
-                display: "inline-block",
-              }}
-              open={this.state.open}
-              value={this.state.proveedorSel}
-              onChange={this.handleChangeProveedor}
-              onOpen={() => {
-                this.setState({
-                  open: true,
-                });
-              }}
-              onClose={() => {
-                this.setState({
-                  open: false,
-                });
-              }}
-              getOptionSelected={(option, value) => option.name === value.name}
-              getOptionLabel={(option) => option.name}
-              options={proveedores}
-              loading={loading}
-              renderInput={(params) => (
+        <div style={{display:"grid" , justifyItems:"center", alignItems: 'center', gridTemplateColumns: '5fr 1fr 5fr', width: '100%'}}>
+          <div style = {{width: '100%'}}>
+            <Grid item xs={12}>
+              <div style = {{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 10}}>
                 <TextField
-                  {...params}
-                  label="Proveedor"
-                  error={this.state.errors}
+                  className={classes.search}
+                  variant = "outlined"
+                  id="idBusqueda"
+                  label="Buscar"
+                  name="valueSearch"
+                  value={this.state.valueSearch}
+                  onChange={(event) => this.handleChangeSearch(event)}
                   InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <React.Fragment>
-                        {loading ? (
-                          <CircularProgress color="inherit" size={20} />
-                        ) : null}
-                        {params.InputProps.endAdornment}
-                      </React.Fragment>
+                    style : {height: 35},
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon />
+                      </InputAdornment>
                     ),
                   }}
                 />
+
+                <TextField
+                  className={classes.categoria}
+                  variant = "outlined"
+                  id="selectCategoria"
+                  name="valueCategoria"
+                  select
+                  label="Categoria"
+                  value={this.state.valueCategoria}
+                  onChange={this.handleChangeCategoria}
+                  InputProps={{
+                    style : {height: 35}}}
+                >
+                  <MenuItem value={"TODOS"}>Todos</MenuItem>
+                  <MenuItem value={"AZULEJOS"}>AZULEJOS</MenuItem>
+                  <MenuItem value={"BANOS"}>BAÑOS</MenuItem>
+                  <MenuItem value={"CALEFACCION"}>CALEFACCION</MenuItem>
+                  <MenuItem value={"LADRILLOS"}>LADRILLOS</MenuItem>
+                  <MenuItem value={"PINTURAS"}>PINTURAS</MenuItem>
+                  <MenuItem value={"REVESTIMIENTOS"}>REVESTIMIENTOS</MenuItem>
+                  <MenuItem value={"SILICES"}>SILICES</MenuItem>
+                </TextField>
+              </div>
+              <div className={classes.leftListWrapper}>
+                {articlesDetails
+                  ? articlesDetails.map((producto) => (
+                      <div style={{ minHeight: 80 }} className = {classes.lineaProducto}>
+                            <img
+                              className={classes.foto}
+                              src={producto.urlimagen}
+                              alt="IMAGEN"/>
+                            <Typography
+                              className={classes.gridproductos}
+                              variant="body1"
+                            >
+                              {producto.nombre}
+                            </Typography>
+
+                            <Typography
+                              className={classes.gridproductos}
+                              variant="body1"
+                            >
+                              Precio Compra: {producto.precioCompra}€ /
+                              {producto.unidad === "UNIDADES"
+                                ? "Ud."
+                                : producto.unidad}
+                            </Typography>
+
+                            <Button
+                              style = {{color: 'white'}}
+                              variant="contained"
+                              size="small"
+                              color="secondary"
+                              disabled={this.state.selected.filter(obj => {return obj.id === producto.id})[0]?true:false}
+                              onClick={() => this.handleClickAñadir(producto)}
+                            >
+                              Añadir
+                            </Button>
+                      </div>
+                    ))
+                  : () => null}
+              </div>
+
+              {articlesDetails.length === 0 ? null : (
+                <Pagination
+                  style={{marginTop:10}}
+                  count={totalPages}
+                  hidePrevButton={this.state.valuePaginaActual === 1}
+                  hideNextButton={this.state.valuePaginaActual === totalPages}
+                  page={this.state.valuePaginaActual}
+                  onChange={(event, newValue) =>
+                    this.handleChangePage(event, newValue)
+                  }
+                  color="secondary"
+                />
               )}
-            />
-            <IconButton aria-label="delete" onClick={() => this.setState({
-              openProveedor:true
-            })} className={classes.addButton}>
-              <AddCircleIcon color="secondary" />
-            </IconButton>
-            <FormNuevoProveedor handleClose={this.handleCloseProveedor} open={this.state.openProveedor}/>
-            <Button
-              variant="contained"
-              color="primary"
-              className={classes.createButton}
-              onClick={this.handleEnviar}
-            >
-              Crear factura
-            </Button>
-            <Paper
-              className={classes.elegidos}
-              elevation={0}
-              variant="outlined"
-            >
-              {this.state.selected.map((producto) => (
-                <div style={{ minHeight: 80 }}>
-                  <Grid
-                    style={{
-                      height: "100%",
-                      position: "relative",
-                      alignItems: "center",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                    container
-                    spacing={3}
-                  >
-                    <Grid item xs={1}>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() => this.handleClickDeselected(producto)}
-                      >
-                        <DeleteIcon color="secondary" />
-                      </IconButton>
-                    </Grid>
-                    <Grid item xs={2}>
-                      <img
-                        className={classes.foto}
-                        src={producto.urlimagen}
-                        alt="IMAGEN"
-                      />
-                    </Grid>
-                    <Grid item xs={4}>
-                      <Typography variant="body1">{producto.nombre}</Typography>
-                    </Grid>
-                    <Grid item xs={3}>
-                      <Typography variant="body1">
-                        Cantidad :
-                        <TextField
-                          style={{
-                            height: 12,
-                            width: 60,
-                            display: "inline-block",
-                            position: "relative",
-                            top: -4,
-                          }}
-                          type="number"
-                          defaultValue={1}
-                          value={
-                            this.state.valueSelected.filter((obj) => {
-                              return obj.e1 === producto.id;
-                            })[0]
-                              ? this.state.valueSelected.filter((obj) => {
-                                  return obj.e1 === producto.id;
-                                })[0].e2
-                              : 1
-                          }
-                          onChange={(event) => {
-                            this.handleChangeValueSelected(
-                              producto,
-                              event.target.value
-                            );
-                          }}
-                          error={
-                            this.state.valueSelected.filter((obj) => {
-                              return obj.e1 === producto.id;
-                            })[0]
-                              ? this.state.valueSelected.filter((obj) => {
-                                  return obj.e1 === producto.id;
-                                })[0].e2 < 1 ||
-                                !this.state.valueSelected.filter((obj) => {
-                                  return obj.e1 === producto.id;
-                                })[0].e2
-                              : false
-                          }
-                          inputProps={{ min: 1, style: { padding: 5 } }}
-                          variant="outlined"
-                        />
-                      </Typography>
-                    </Grid>
-                    <Grid container xs={2}>
-                      <Grid xs={2}>
-                        <Divider orientation="vertical" />
-                      </Grid>
-                      <Grid>
-                        <Typography variant="body1">
-                          {" "}
-                          {producto.precioCompra *
-                            (this.state.valueSelected.filter((obj) => {
-                              return obj.e1 === producto.id;
-                            })[0]
-                              ? this.state.valueSelected.filter((obj) => {
-                                  return obj.e1 === producto.id;
-                                })[0].e2
-                              : 0)}
-                          €
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Divider />
-                </div>
-              ))}
-            </Paper>
-          </Grid>
-        </Grid>
-        </div>
-        <Grid style={{ height: "55%" }} xs={12}>
-          <fieldset className={classes.fieldset}>
-            <legend>
-              <Typography
-                variant="subtitle1"
-                className={classes.subtituloCatalogo}
-              >
-                Añadir nuevo producto
-              </Typography>
-            </legend>
-            <Grid container spacing={1}>
-              <Grid style={{ height: 20 }} item xs={12} />
-              <Grid container direction="column" spacing={5} xs={5}>
-                <Grid item container>
-                  <Grid item xs={10}>
-                    <TextField
-                      label="Nombre"
-                      variant="outlined"
-                      fullWidth
-                      style={{
-                        backgroundColor:'white',
-                      }}
-                      value={this.state.nombreNuevoProd}
-                      onChange={this.handleChangeNombre}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item container>
-                  <Grid item xs={12}>
-                    <TextField
-                      label="Descripcion"
-                      variant="outlined"
-                      multiline
-                      style={{
-                        backgroundColor:'white',
-                      }}
-                      rows={6}
-                      fullWidth
-                      value={this.state.descNuevoProd}
-                      onChange={this.handleChangeDesc}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item container>
-                  <Grid item container xs={12}>
-                  <TextField
-                      id="selectCategoria"
-                      name="valueCategoria"
-                      variant="outlined"
-                      select
-                      style={{
-                        width:200,
-                        backgroundColor:'white',
-                      }}
-                      label="Unidad"
-                      value={this.state.unidadNuevoProd}
-                      onChange={this.handleChangeUnidad}
-                    >
-                      <MenuItem value={"SACOS"}>SACOS</MenuItem>
-                      <MenuItem value={"KG"}>KG</MenuItem>
-                      <MenuItem value={"M2"}>M2</MenuItem>
-                      <MenuItem value={"UNIDADES"}>UNIDADES</MenuItem>
-                      <MenuItem value={"LATAS"}>LATAS</MenuItem>
-                    </TextField>
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid container direction="column" xs={1} />
-              <Grid
-                style={{ marginTop: 20 }}
-                container
-                direction="column"
-                spacing={5}
-                xs={4}
-              >
-                <Grid item container>
-                  <Grid xs={5}>
-                    <Typography color="textSecondary" variant="body1">
-                      Precio de compra:
-                    </Typography>
-                  </Grid>
-                  <Grid xs={6}>
-                    <TextField
-                      style={{
-                        backgroundColor:'white',
-                        height: 12,
-                        width: 60,
-                        position: "relative",
-                        top: -4,
-                      }}
-                      type="number"
-                      defaultValue={1}
-                      value={this.state.precioCompraNuevoProd}
-                      onChange={this.handleChangePrecioCompra}
-                      inputProps={{ min: 1, style: { padding: 5 } }}
-                      variant="outlined"
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item container>
-                  <Grid xs={5}>
-                    <Typography color="textSecondary" variant="body1">
-                      Precio de venta:
-                    </Typography>
-                  </Grid>
-                  <Grid xs={6}>
-                    <TextField
-                      style={{
-                        backgroundColor:'white',
-                        height: 12,
-                        width: 60,
-                        position: "relative",
-                        top: -4,
-                      }}
-                      type="number"
-                      defaultValue={1}
-                      value={this.state.precioVentaNuevoProd}
-                      onChange={this.handleChangePrecioVenta}
-                      inputProps={{ min: 1, style: { padding: 5 } }}
-                      variant="outlined"
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item container>
-                  <Grid xs={5}>
-                    <Typography color="textSecondary" variant="body1">
-                      Dimensiones(AlxAnxL):
-                    </Typography>
-                  </Grid>
-                  <Grid>
-                    <TextField
-                      style={{
-                        backgroundColor:'white',
-                        marginRight:5,
-                        height: 12,
-                        width: 60,
-                        position: "relative",
-                        top: -4,
-                      }}
-                      type="number"
-                      defaultValue={1}
-                      value={this.state.dimensionesNuevoProd.H}
-                      onChange={this.handleChangeH}
-                      inputProps={{ min: 1, style: { padding: 5 } }}
-                      variant="outlined"
-                    />
-                    x
-                  </Grid>
-                  <Grid>
-                    <TextField
-                      style={{
-                        backgroundColor:'white',
-                        marginRight:5,
-                        marginLeft:5,
-                        height: 12,
-                        width: 60,
-                        position: "relative",
-                        top: -4,
-                      }}
-                      type="number"
-                      defaultValue={1}
-                      value={this.state.dimensionesNuevoProd.W}
-                      onChange={this.handleChangeW}
-                      inputProps={{ min: 1, style: { padding: 5 } }}
-                      variant="outlined"
-                    />
-                      x  
-                  </Grid>
-                  <Grid>
-                    <TextField
-                      style={{
-                        backgroundColor:'white',
-                        marginLeft:5,
-                        height: 12,
-                        width: 60,
-                        position: "relative",
-                        top: -4,
-                      }}
-                      type="number"
-                      defaultValue={1}
-                      value={this.state.dimensionesNuevoProd.D}
-                      onChange={this.handleChangeD}
-                      inputProps={{ min: 1, style: { padding: 5 } }}
-                      variant="outlined"
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item container>
-                  <Grid xs={5}>
-                    <Typography color="textSecondary" variant="body1">
-                      Peso unitario:
-                    </Typography>
-                  </Grid>
-                  <Grid xs={6}>
-                    <TextField
-                      style={{
-                        backgroundColor:'white',
-                        height: 12,
-                        width: 60,
-                        position: "relative",
-                        top: -4,
-                      }}
-                      type="number"
-                      defaultValue={1}
-                      value={this.state.pesoNuevoProd}
-                      onChange={this.handleChangePeso}
-                      inputProps={{ min: 1, style: { padding: 5 } }}
-                      variant="outlined"
-                    />
-                  </Grid>
-                </Grid>
-                <Grid item container>
-                    <Grid xs={5}>
-                      <Typography color="textSecondary" variant="body1">
-                        Stock de Seguridad:
-                      </Typography>
-                    </Grid>
-                    <Grid xs={6}>
-                      <TextField
-                        style={{
-                          backgroundColor:'white',
-                          height: 12,
-                          width: 60,
-                          position: "relative",
-                          top: -4,
-                        }}
-                        type="number"
-                        defaultValue={1}
-                        value={this.state.stockSegNuevoProd}
-                        onChange={this.handleChangeStock}
-                        inputProps={{ min: 1, style: { padding: 5 } }}
-                        variant="outlined"
-                      />
-                    </Grid>
-                  </Grid>
-              </Grid>
-              <Grid
-                style={{ marginTop: 20 }}
-                container
-                direction="column"
-                spacing={5}
-                xs={2}
-              >
-                <Grid xs={12} style={{
-                          height: "100%",
-                          position: "relative",
-                          alignItems: "center",
-                          display: "flex",
-                          justifyContent: "center",
-                          color:"rgba(0,0,0,0.2)"
-                        }}>
-                   {this.state.urlImageNuevoProd === ''?
-                    <Paper elevation={3} className={classes.upload}>
-                        <input
-                            type="file"
-                            onChange={this.handleChangeImg.bind(this)}
-                            className={classes.input}
-                            id="contained-button-file"
-                        />
-                        <label htmlFor="contained-button-file">
-                        <Button className={classes.uploadBoton} variant="contained" color="primary" component="span"  startIcon={<CloudUploadIcon />} >
-                            Subir
-                        </Button>
-                        </label>
-                    </Paper>:<div>
-                                <img
-                                    style={{width:"70%",padding:"15%",height:"70%"}}
-                                    src={this.state.urlImageNuevoProd}
-                                    alt="IMAGEN"
-                                />
-                        </div>}
-                </Grid>
-              </Grid>
             </Grid>
-          </fieldset>
-        <Button
-        onClick = {this.handleClickOpen}
-        style={{
-            float:'right',
-            position: "relative",
-            top:-40,
-            margin:20
-          }}
-        variant="contained" color="primary" component="span">
-                Añadir producto
-        </Button>
-        </Grid>
-        <EstanteriaConfirm open={this.state.opendialoge} onCloseConfirm ={this.handleCloseClear}  product={this.state.newProduct} onClose={this.handleClose}/>
+          </div>
+
+          <div style = {{width: 'min-content'}}>
+            <ArrowForwardRoundedIcon
+              style={{ fontSize: 50}}
+            />
+          </div>
+
+          <div style = {{width: '100%'}}>
+            <Grid item xs={12}>
+              <div style = {{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: -10, paddingBottom: 5}}>
+                <Typography className={classes.total} variant="body1">
+                  TOTAL: {total.toFixed(2)}€
+                </Typography>
+                <span style = {{display: 'inline-flex', alignItems: 'center'}}>
+                  <Autocomplete
+                    id="proveedor"
+                    style={{
+                      margin: 0,
+                      minWidth: 200,
+                    }}
+                    open={this.state.open}
+                    value={this.state.proveedorSel}
+                    onChange={this.handleChangeProveedor}
+                    onOpen={() => {
+                      this.setState({
+                        open: true,
+                      });
+                    }}
+                    onClose={() => {
+                      this.setState({
+                        open: false,
+                      });
+                    }}
+                    getOptionSelected={(option, value) => option.name === value.name}
+                    getOptionLabel={(option) => option.name}
+                    options={proveedores}
+                    loading={loading}
+                    renderInput={(params) => (
+                      <TextField
+                        variant = "outlined"
+                        {...params}
+                        label="Proveedor"
+                        error={this.state.errors}
+                        InputLabelProps={{
+                          style: {
+                            marginTop: -9,
+                          }
+                        }}
+                        InputProps={{
+                          ...params.InputProps,
+                          style : {height:35, paddingTop: 0},
+                          endAdornment: (
+                            <React.Fragment>
+                              {loading ? (
+                                <CircularProgress color="inherit" size={20} />
+                              ) : null}
+                              {params.InputProps.endAdornment}
+                            </React.Fragment>
+                          ),
+                        }}
+                      />
+                    )}
+                  />
+                  <IconButton aria-label="delete" onClick={() => this.setState({
+                    openProveedor:true
+                  })}>
+                    <AddCircleIcon color="secondary" />
+                  </IconButton>                
+                  <FormNuevoProveedor handleClose={this.handleCloseProveedor} open={this.state.openProveedor}/>
+                </span>
+
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={this.handleEnviar}
+                  style = {{color: 'white', marginBottom: 5}}
+                >
+                  Crear factura
+                </Button>
+              </div>
+
+
+
+
+              <div className={classes.leftListWrapper}>
+                {this.state.selected.map((producto) => (
+                  <div style={{ minHeight: 80, gridTemplateColumns: '0.5fr 1fr 3fr 3fr 1fr'}} className = {classes.lineaProducto}>
+                        <IconButton
+                          aria-label="delete"
+                          onClick={() => this.handleClickDeselected(producto)}
+                        >
+                          <DeleteIcon color="secondary" />
+                        </IconButton>
+
+                        <img
+                          className={classes.foto}
+                          src={producto.urlimagen}
+                          alt="IMAGEN"
+                        />
+
+                        <Typography variant="body1">{producto.nombre}</Typography>
+
+                        <Typography variant="body1">
+                          Cantidad :
+                          <TextField
+                            style={{
+                              height: 12,
+                              width: 60,
+                              display: "inline-block",
+                              position: "relative",
+                              top: -4,
+                            }}
+                            type="number"
+                            defaultValue={1}
+                            value={
+                              this.state.valueSelected.filter((obj) => {
+                                return obj.e1 === producto.id;
+                              })[0]
+                                ? this.state.valueSelected.filter((obj) => {
+                                    return obj.e1 === producto.id;
+                                  })[0].e2
+                                : 1
+                            }
+                            onChange={(event) => {
+                              this.handleChangeValueSelected(
+                                producto,
+                                event.target.value
+                              );
+                            }}
+                            error={
+                              this.state.valueSelected.filter((obj) => {
+                                return obj.e1 === producto.id;
+                              })[0]
+                                ? this.state.valueSelected.filter((obj) => {
+                                    return obj.e1 === producto.id;
+                                  })[0].e2 < 1 ||
+                                  !this.state.valueSelected.filter((obj) => {
+                                    return obj.e1 === producto.id;
+                                  })[0].e2
+                                : false
+                            }
+                            inputProps={{ min: 1, style: { padding: 5 } }}
+                            variant="outlined"
+                          />
+                        </Typography>
+
+                        <Typography variant="body1">
+                            {" "}
+                            {producto.precioCompra *
+                              (this.state.valueSelected.filter((obj) => {
+                                return obj.e1 === producto.id;
+                              })[0]
+                                ? this.state.valueSelected.filter((obj) => {
+                                    return obj.e1 === producto.id;
+                                  })[0].e2
+                                : 0)}
+                            €
+                        </Typography>
+                  </div>
+                ))}
+              </div>
+              <Button 
+              color = "secondary" 
+              variant = "contained"
+              onClick={this.handleOpenDialogNP}
+              style = {{marginTop: 10, color: 'white', float: 'right'}}>
+                Añadir nuevo producto
+              </Button>
+            </Grid>
+          </div>
+          
+        </div>
+        
+        
+        {/* FORM NUEVO PRODUCTO */}
+        <Divider style = {{width:'100%', margin: '20px 0px 20px 0px'}}/>
+
+        <Dialog 
+        fullWidth
+        maxWidth = {'lg'}
+        open = {this.state.openNuevoProducto} 
+        onclose = {this.handleCloseDialogNP} 
+        aria-labelledby="form-dialog-title">
+          <DialogTitle>
+            Añadir un nuevo producto
+          </DialogTitle>
+          <DialogContent 
+            style = {{
+              display: 'grid', 
+              gridTemplateColumns: '1fr 1fr 1fr',
+              gridTemplateRows: '1fr 1fr 1fr 1fr 1fr', 
+              padding: 24, 
+              gridGap: 24,
+              alignItems: 'center'}}>
+              <TextField
+                label="Nombre"
+                variant="outlined"
+                fullWidth
+                style={{
+                  gridColumn: 1,
+                  gridRow: 1,
+                }}
+                value={this.state.nombreNuevoProd}
+                onChange={this.handleChangeNombre}
+              />
+
+              <TextField
+                label="Descripcion"
+                variant="outlined"
+                multiline
+                style={{
+                  gridColumn: 1,
+                  gridRow: '2 / span 2',
+                }}
+                rows={6}
+                fullWidth
+                value={this.state.descNuevoProd}
+                onChange={this.handleChangeDesc}
+              />
+
+            <TextField
+                id="selectCategoria"
+                name="valueCategoria"
+                variant="outlined"
+                select
+                style={{
+                  gridColumn: 1,
+                  gridRow: 4,
+                  backgroundColor:'white',
+                }}
+                label="Unidad"
+                value={this.state.unidadNuevoProd}
+                onChange={this.handleChangeUnidad}
+              >
+                <MenuItem value={"SACOS"}>SACOS</MenuItem>
+                <MenuItem value={"KG"}>KG</MenuItem>
+                <MenuItem value={"M2"}>M2</MenuItem>
+                <MenuItem value={"UNIDADES"}>UNIDADES</MenuItem>
+                <MenuItem value={"LATAS"}>LATAS</MenuItem>
+              </TextField>
+
+              
+              <div style={{gridColumn: 2,gridRow: 1}}>
+                <Typography color="textSecondary" variant="body1">
+                  Precio de compra:
+                </Typography>
+        
+                <TextField
+                  style={{
+                    gridColumn: 2,
+                    gridRow: 1,
+                  }}
+                  type="number"
+                  defaultValue={1}
+                  value={this.state.precioCompraNuevoProd}
+                  onChange={this.handleChangePrecioCompra}
+                  inputProps={{ min: 1, style: { padding: 5 } }}
+                  variant="outlined"
+                />
+              </div>
+
+              <div style={{gridColumn: 2,gridRow: 2}}>
+                <Typography color="textSecondary" variant="body1">
+                  Precio de venta:
+                </Typography>
+              
+                <TextField
+                  type="number"
+                  defaultValue={1}
+                  value={this.state.precioVentaNuevoProd}
+                  onChange={this.handleChangePrecioVenta}
+                  inputProps={{ min: 1, style: { padding: 5 } }}
+                  variant="outlined"
+                />
+              </div>
+              
+              <div style={{gridColumn: 2,gridRow: 3}}>
+
+                <Typography color="textSecondary" variant="body1">
+                  Dimensiones(Al x An x L):
+                </Typography>
+
+                <TextField
+                  style={{
+                    marginRight: 10,
+                    width: 60,
+                  }}
+                  type="number"
+                  defaultValue={1}
+                  value={this.state.dimensionesNuevoProd.H}
+                  onChange={this.handleChangeH}
+                  inputProps={{ min: 1, style: { padding: 5 } }}
+                  variant="outlined"
+                />
+                  x
+                <TextField
+                  style={{  
+                    marginRight: 10,
+                    marginLeft: 10,
+                    width: 60,
+                  }}
+                  type="number"
+                  defaultValue={1}
+                  value={this.state.dimensionesNuevoProd.W}
+                  onChange={this.handleChangeW}
+                  inputProps={{ min: 1, style: { padding: 5 } }}
+                  variant="outlined"
+                />
+                  x  
+            
+                <TextField
+                  style={{  
+                    marginLeft: 10,
+                    width: 60,
+                  }}
+                  type="number"
+                  defaultValue={1}
+                  value={this.state.dimensionesNuevoProd.D}
+                  onChange={this.handleChangeD}
+                  inputProps={{ min: 1, style: { padding: 5 } }}
+                  variant="outlined"
+                />
+              </div>
+              
+              <div style={{gridColumn: 2,gridRow: 4, width: '100%', display: 'inline-flex', justifyContent: 'space-between'}}>
+                <span style = {{display: 'grid', justifyItems: 'flex-start'}}>
+                  <Typography color="textSecondary" variant="body1">
+                    Peso unitario:
+                  </Typography>
+              
+                  <TextField
+                    style={{
+                      width: 60,
+                    }}
+                    type="number"
+                    defaultValue={1}
+                    value={this.state.pesoNuevoProd}
+                    onChange={this.handleChangePeso}
+                    inputProps={{ min: 1, style: { padding: 5 } }}
+                    variant="outlined"
+                  />
+                </span>
+                
+                <span style = {{display: 'grid', justifyItems: 'center', marginRight: 50}}>
+                  <Typography color="textSecondary" variant="body1">
+                    Stock de Seguridad:
+                  </Typography>
+            
+                  <TextField
+                    style={{
+                      width: 60,
+                    }}
+                    type="number"
+                    defaultValue={1}
+                    value={this.state.stockSegNuevoProd}
+                    onChange={this.handleChangeStock}
+                    inputProps={{ min: 1, style: { padding: 5 } }}
+                    variant="outlined"
+                  />
+                </span>
+              </div>
+              
+              <div style={{gridColumn: 3,gridRow: '1 / span 4', height: '100%', width: '100%'}}>
+              {this.state.urlImageNuevoProd === ''?
+              <Paper elevation={3} className={classes.upload}>
+                  <input
+                      type="file"
+                      onChange={this.handleChangeImg.bind(this)}
+                      className={classes.input}
+                      id="contained-button-file"
+                  />
+                  <label htmlFor="contained-button-file">
+                  <Button style = {{color: 'white'}} className={classes.uploadBoton} variant="contained" color="primary" component="span"  startIcon={<CloudUploadIcon />} >
+                      Subir
+                  </Button>
+                  </label>
+              </Paper>:<div>
+                          <img
+                              style={{width:"70%",padding:"15%",height:"70%"}}
+                              src={this.state.urlImageNuevoProd}
+                              alt="IMAGEN"
+                          />
+                  </div>}
+              </div>
+            
+            <div style = {{position: 'absolute', bottom: 10, display:'inline-flex', width: 'calc(100% - 48px)', justifyContent: 'space-between', alignItems: 'center'}}>
+              <Button
+                onClick = {this.handleCloseDialogNP}
+                color = "secondary">
+                  Cancelar
+              </Button>
+
+              <Button
+                onClick = {this.handleClickOpen}
+                variant="contained" 
+                color="secondary"
+                style = {{color: 'white'}}>
+                  Añadir producto
+              </Button>
+            </div>          
+          </DialogContent>
+          <EstanteriaConfirm open={this.state.opendialoge} onCloseConfirm ={() => {this.handleCloseClear(); this.handleCloseDialogNP()}}  product={this.state.newProduct} onClose={this.handleClose}/>
+        </Dialog>
       </Grid>
     );
   }
