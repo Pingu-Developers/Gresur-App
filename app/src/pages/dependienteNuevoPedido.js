@@ -23,10 +23,10 @@ import DoneIcon from '@material-ui/icons/Done';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import Stepper from '../components/Stepper';
-import Snackbar from '../components/SnackBar'
-import NestedList from '../components/NestedList';
-import ButtonPDF from '../components/ButtonPDF';
+import Stepper from '../components/Other/Stepper';
+import Snackbar from '../components/Other/SnackBar'
+import NestedList from '../components/HistoryLists/NestedList';
+import ButtonPDF from '../components/Buttons/ButtonPDF';
 
 import { loadClienteIsDefaulter, clearClienteIsDefaulter, clear } from '../redux/actions/dataActions';
 import { loadCliente, clearClienteByNIF } from '../redux/actions/dataActions';
@@ -37,11 +37,14 @@ import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissa
 
 const style = {
     tituloNuevoPedido: {
-        margin: '30px 20px',
+        margin: '20px 0px 10px 20px',
+        padding: '10px 0px 5px 0px',
         fontSize: 40,
         fontWeight: 600,
         float: 'left',
-        width: '100%'
+        width: 'calc(100% - 20px - 30px)',
+        color: '#7a7a7a',
+        borderBottom: '1px solid #bdbdbd'
     },
     buttonDiv: {
         display: 'flex',
@@ -71,7 +74,9 @@ const style = {
         backgroundColor: '#f7f7f7',
         color: '#3d3d3d',
         maxHeight: 614,
-        overflowY: 'auto'
+        overflowY: 'auto',
+        border: '1px solid #bdbdbd',
+        boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.15), 0 6px 20px 0 rgba(0, 0, 0, 0.14)'
     },
     input: {
         width: '40%',
@@ -649,6 +654,7 @@ export class dependienteNuevoPedido extends Component {
                   * COMIENZO DE LA VISTA 
                   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */}
                 <Typography variant='h3' className={classes.tituloNuevoPedido}>GENERAR UN NUEVO PEDIDO</Typography><br/>
+
                 <Stepper 
                     opcionales = {[2]}
                     stepTitles = {['1. Datos del cliente', '2. Selección de productos', '3. Datos de envío', '4. Resumen del pedido']}
@@ -1066,6 +1072,14 @@ export class dependienteNuevoPedido extends Component {
                                 
                                 <div className = {classes.detailsDiv}>
                                     <Typography className={classes.detailsTitle}>
+                                        Fecha:     
+                                    </Typography>
+                                    <Typography className={classes.detailsInfo}>
+                                        {' ' + new Date().toUTCString()}     
+                                    </Typography>
+                                    <br/>
+                                    <br/>
+                                    <Typography className={classes.detailsTitle}>
                                         Nombre:     
                                     </Typography>
                                     <Typography className={classes.detailsInfo}>
@@ -1234,10 +1248,10 @@ const mapActionsToProps = {
     postPedido,
 }
 
-const provincias = ['Alava','Albacete','Alicante','Almería','Asturias','Avila','Badajoz','Barcelona','Burgos','Caceres',
+const provincias = ['Alava','Albacete','Alicante','Almeria','Asturias','Avila','Badajoz','Barcelona','Burgos','Caceres',
              'Cadiz','Cantabria','Castellon','Ciudad Real','Cordoba','La Coruña','Cuenca','Gerona','Granada','Guadalajara',
-             'Guipuzkoa','Huelva','Huesca','Islas Baleares','Jaen','Leon','Lerida','Lugo','Madrid','Málaga','Murcia','Navarra',
-             'Orense','Palencia','Las Palmas','Pontevedra','La Rioja','Salamanca','Segovia','Sevilla','Soria','Tarragona',
+             'Guipuzkoa','Huelva','Huesca','Islas Baleares','Jaen','Leon','Lleida','Lugo','Madrid','Malaga','Murcia','Navarra',
+             'Ourense','Palencia','Las Palmas','Pontevedra','La Rioja','Salamanca','Segovia','Sevilla','Soria','Tarragona',
              'Santa Cruz de Tenerife','Teruel','Toledo','Valencia','Valladolid','Vizcaya','Zamora','Zaragoza']
 
 function initialState(){

@@ -1,4 +1,4 @@
-import { CLEAR_PRODUCTOS_PAGINADO , SET_PRODUCTOS_PAGINADO, LOADING_UI, SET_ERRORS, CLEAR_ERRORS } from '../types'
+import { CLEAR_PRODUCTOS_PAGINADO , SET_PRODUCTOS_PAGINADO,SET_CATEGORIASALM,CLEAR_CATEGORIASALM, LOADING_UI, SET_ERRORS, CLEAR_ERRORS, CLEAR_PRODUCTOS } from '../types'
 import axios from 'axios';
 
 export const getProductosPaginados = (page,categoria = null,string =null,size = 5,ord='') => (dispatch) =>{
@@ -18,13 +18,10 @@ export const getProductosPaginados = (page,categoria = null,string =null,size = 
                 if(err.response){
                     dispatch({
                         type: SET_ERRORS,
-                        payload: err.response.data.message
+                        payload: err.response.data
                     })
                 } else {
-                    dispatch({
-                        type: SET_ERRORS,
-                        payload: err
-                    })
+                    console.log(err)
                 }
             });
 
@@ -41,13 +38,10 @@ export const getProductosPaginados = (page,categoria = null,string =null,size = 
                 if(err.response){
                     dispatch({
                         type: SET_ERRORS,
-                        payload: err.response.data.message
+                        payload: err.response.data
                     })
                 } else {
-                    dispatch({
-                        type: SET_ERRORS,
-                        payload: err
-                    })
+                    console.log(err)
                 }
             });
     }else{
@@ -63,7 +57,50 @@ export const getProductosPaginados = (page,categoria = null,string =null,size = 
                 if(err.response){
                     dispatch({
                         type: SET_ERRORS,
-                        payload: err.response.data.message
+                        payload: err.response.data
+                    })
+                } else {
+                    console.log(err)
+                }
+            });
+
+    }   
+};
+
+export const getCategorias = (almacenAdm) => (dispatch) =>{
+
+    axios.get(`almacen/categorias/${almacenAdm}`)
+            .then( response => {
+                dispatch({
+                    type:SET_CATEGORIASALM,
+                    payload: response.data
+                });
+                dispatch({ type: CLEAR_ERRORS });
+            })
+            .catch((err) => {
+                if(err.response){
+                    dispatch({
+                        type: SET_ERRORS,
+                        payload: err.response.data
+                    })
+                } else {
+                    console.log(err)
+                }
+            });
+}
+
+export const putNotificacion = (almacenAdm, producto) => (dispatch) =>{
+
+    axios.post(`producto/notiStock/${almacenAdm}`,producto)
+            .then( () => {
+                
+                dispatch({ type: CLEAR_ERRORS });
+            })
+            .catch((err) => {
+                if(err.response){
+                    dispatch({
+                        type: SET_ERRORS,
+                        payload: err.response.data
                     })
                 } else {
                     dispatch({
@@ -72,9 +109,13 @@ export const getProductosPaginados = (page,categoria = null,string =null,size = 
                     })
                 }
             });
+}
 
-    }   
-};
+export const clearCategorias = () => (dispatch) =>{
+    dispatch({
+        type: CLEAR_CATEGORIASALM
+    })
+}
 
 export const clearProductosPaginados = () => (dispatch) =>{
     dispatch({

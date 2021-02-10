@@ -1,5 +1,6 @@
 package org.springframework.gresur.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -98,6 +99,11 @@ public class NotificacionService {
 	@Transactional(readOnly = true)
 	public List<Notificacion> findLeidasPersonal(Personal p){
 		return notificacionRepo.findLeidasForPersonal(p.getId());
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Notificacion> findNotiPersonalFechaCuerpo(Personal p,LocalDate fecha,String cuerpo){
+		return notificacionRepo.findByEmisorNameAndFechaHoraBetweenAndCuerpoContains(p.getName(),fecha.atStartOfDay(), fecha.plusDays(1).atStartOfDay(),cuerpo);
 	}
 	
 	@Transactional

@@ -2,31 +2,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { connect } from 'react-redux';
-import Topbar from '../components/Topbar';
-import Typography from '@material-ui/core/Typography';
 
 //Redux stuff
-import { loadVehiculosSeguroITVReparacion , clear } from '../redux/actions/dataActions';
+import { loadVehiculosSeguroITVReparacionPaged , loadPedidosPaginados, clear} from '../redux/actions/dataActions';
 
 //Components
-import TablaMostradorVehiculosSeguroITVReparacion from '../components/TablaMostradorVehiculosSeguroITVReparacion';
-import PopUpNuevoVehiculo from '../components/PopUpNuevoVehiculo';
+
+import VerticalTabs from '../components/Other/VerticalTabsAdmin';
+import SnackCallController from '../components/Other/SnackCallController';
 
 
-
-const style = {
-
-    titulo: {
-        margin: '30px 20px',
-        fontSize: 40,
-        fontWeight: 600,
-      },
-
-      tituloyForm: {
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-      },
+const style = {  
+    verticalTabs: {
+    }
 }
 
 class administradorTransporte extends Component {
@@ -38,7 +26,8 @@ class administradorTransporte extends Component {
     }
 
     componentDidMount(){
-        this.props.loadVehiculosSeguroITVReparacion();
+        this.props.loadVehiculosSeguroITVReparacionPaged(0,2);
+        this.props.loadPedidosPaginados("",0,2);
     }
 
     componentWillUnmount(){
@@ -46,19 +35,13 @@ class administradorTransporte extends Component {
     }
 
     render() {
-        const {classes, data} = this.props;
+        const {classes, data,UI:{errors,enviado}} = this.props;
 
         return (
-            <div>
-                <div className={classes.tituloyForm}>
-                    <Typography variant='h3' className={classes.titulo}>VEHICULOS DE LA EMPRESA</Typography>
-                    <PopUpNuevoVehiculo className={classes.boton}/>
-                </div>
 
-                <div className={classes.main}>
-                    {data === undefined? null:<TablaMostradorVehiculosSeguroITVReparacion datos = {data}/>}
-                </div>
-
+            <div>  
+                <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
+                <VerticalTabs className={classes.verticalTabs} datos = {data}/>
             </div>
         )
     }
@@ -67,15 +50,18 @@ class administradorTransporte extends Component {
 administradorTransporte.propTypes = {
     classes: PropTypes.object.isRequired,
     data: PropTypes.object.isRequired,
-    loadVehiculosSeguroITVReparacion: PropTypes.func.isRequired
+    loadVehiculosSeguroITVReparacion: PropTypes.func.isRequired,
+    loadPedidos: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
-    data: state.data
+    data: state.data,
+    UI: state.UI
 })
 
 const mapActionsToProps = {
-    loadVehiculosSeguroITVReparacion,
+    loadVehiculosSeguroITVReparacionPaged,
+    loadPedidosPaginados,
     clear
 }
 

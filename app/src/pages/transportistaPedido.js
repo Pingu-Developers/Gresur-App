@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import TablaPedidosHoy from '../components/TablaPedidosHoy'
+import TablaPedidosHoy from '../components/Tables/TablaPedidosHoy'
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import Typography from '@material-ui/core/Typography';
@@ -9,7 +9,8 @@ import InputBase from '@material-ui/core/InputBase';
 import withStyles from '@material-ui/core/styles/withStyles';
 //Redux stuff
 import { connect } from 'react-redux';
-import { loadPedidosHoy,loadPedidosByEstadoTransportista} from '../redux/actions/dataActions';
+import { loadPedidosHoy,loadPedidosByEstadoTransportista ,clear} from '../redux/actions/dataActions';
+import SnackCallController from '../components/Other/SnackCallController';
 
 const style = {
     Select:{
@@ -27,17 +28,27 @@ const style = {
         }
 
     },
+    tituloForm: {
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottom: '1px solid #bdbdbd',
+        margin: '30px 0px 20px 0px',
+        padding: '0px 0px 15px 0px'
+    },
     titulo: {
         margin: '30px 20px',
         fontSize: 40,
         fontWeight: 600,
-    },
+        float: 'left',
+        color: '#7a7a7a',
+        margin: '0px 0px 0px 20px'
+      },
     form:{
         margin:"0.7%",
-        marginLeft:35,
-        fontSize:15,
-        display: "inline-block",
-
+        marginRight:15,
+        fontSize:20,
     }
 }
 
@@ -67,6 +78,9 @@ export class tranportistaPedidos extends Component {
         this.props.loadPedidosHoy();
     }
 
+    componentWillUnmount(){
+        this.props.clear();
+    }
     handleChangeSelected = (event) => {
 
         event.target.value ==="TODO"?this.props.loadPedidosHoy():this.props.loadPedidosByEstadoTransportista(event.target.value);
@@ -77,34 +91,35 @@ export class tranportistaPedidos extends Component {
     }
 
     render() {
-        const {classes, data} = this.props;
+        const {classes, data , UI:{errors,enviado}} = this.props;
         return (
             <div>
-            <Typography variant='h3' className={classes.titulo}>MIS PEDIDOS</Typography>
-            <Typography 
-            className={classes.form}
-            variant='body1'>
-            Mostrando:
-            </Typography>
-        <FormControl variant="outlined" className={classes.Select} >
-            <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                name = "selected" 
-                value={this.state.selected?this.state.selected:"TODO"}
-                onChange={this.handleChangeSelected}
-                input = {<BootstrapInput/>}
-                >
-                <MenuItem value="TODO">Todo</MenuItem>
-                <MenuItem value="PREPARADO">Preparado</MenuItem>
-                <MenuItem value="EN_REPARTO">En Reparto</MenuItem>
-            </Select>
-        </FormControl>
-            <div>
-                {data.pedidos===undefined?null:
-                <TablaPedidosHoy datos = {data.pedidos}/>
-                }
-            </div>
+                <SnackCallController  enviado = {enviado} message = {"Operacion realizada correctamente"} errors={errors} />
+                <div className = {classes.tituloForm}>
+                    <Typography className={classes.titulo} variant='h3' className={classes.titulo}>MIS PEDIDOS</Typography>
+                    <span style = {{display: 'inline-flex', alignItems: 'flex-end'}}>
+                        <Typography className={classes.form} variant='body1'> Mostrando: </Typography>
+                        <FormControl variant="outlined" className={classes.Select}>
+                            <Select
+                                labelId="demo-simple-select-outlined-label"
+                                id="demo-simple-select-outlined"
+                                name = "selected" 
+                                value={this.state.selected?this.state.selected:"TODO"}
+                                onChange={this.handleChangeSelected}
+                                input = {<BootstrapInput/>}
+                                >
+                                <MenuItem value="TODO">Todo</MenuItem>
+                                <MenuItem value="PREPARADO">Preparado</MenuItem>
+                                <MenuItem value="EN_REPARTO">En Reparto</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </span>
+                </div>
+                <div>
+                    {data.pedidos===undefined?null:
+                    <TablaPedidosHoy datos = {data.pedidos}/>
+                    }
+                </div>
             </div>
         )
     }
@@ -118,12 +133,14 @@ tranportistaPedidos.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-    data:state.data
+    data:state.data,
+    UI:state.UI
 })
 
 const mapActionsToProps = {
     loadPedidosHoy,
-    loadPedidosByEstadoTransportista
+    loadPedidosByEstadoTransportista,
+    clear
 }
 
 export default connect(mapStateToProps, mapActionsToProps)(withStyles(style)(tranportistaPedidos))

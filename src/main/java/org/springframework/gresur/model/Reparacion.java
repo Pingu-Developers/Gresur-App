@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,8 +23,8 @@ import lombok.EqualsAndHashCode;
 @Table(name = "reparaciones")
 public class Reparacion extends BaseEntity implements Comparable<Reparacion>{
 
-	@NotNull
-	@PastOrPresent
+	@NotNull(message = "No puede ser nulo")
+	@PastOrPresent(message = "La fecha debe ser pasada o presente")
 	@Column(name = "fecha_entrada_taller")
 	protected LocalDate fechaEntradaTaller;
 	
@@ -34,13 +34,14 @@ public class Reparacion extends BaseEntity implements Comparable<Reparacion>{
 	@Lob
 	protected String descripcion;
 	
-	@NotNull
+	@JsonView
+	@NotNull(message = "No puede ser nulo")
 	@OneToOne(optional = false)
 	@JoinColumn(name = "factura_recibida_id")
 	private FacturaRecibida recibidas;
 	
-	@JsonIgnore
-	@NotNull
+	@JsonView
+	@NotNull(message = "No puede ser nulo")
 	@ManyToOne(optional = false)
 	@JoinColumn(name= "vehiculo_id")
 	private Vehiculo vehiculo;

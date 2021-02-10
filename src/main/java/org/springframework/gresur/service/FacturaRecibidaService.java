@@ -1,5 +1,8 @@
 package org.springframework.gresur.service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -73,6 +76,11 @@ public class FacturaRecibidaService extends FacturaService<FacturaRecibida, Fact
 		seguroService.deleteAll();
 		ITVService.deleteAll();
 		facturaRepo.deleteAll();
+	}
+
+	@Transactional
+	public List<FacturaRecibida> findByFechaEmisionBeforeAndFechaEmisionAfter(LocalDate dateBefore, LocalDate dateAfter){
+		return facturaRepo.findByFechaEmisionBeforeAndFechaEmisionAfter(dateBefore, dateAfter);
 	}
 	
 }

@@ -20,6 +20,8 @@ public interface NotificacionRepository extends CrudRepository<Notificacion, Lon
 	
 	List<Notificacion> findAllNotificacionesByEmisorName(String name);
 	
+	List<Notificacion> findByEmisorNameAndFechaHoraBetweenAndCuerpoContains(String name, LocalDateTime fecha1, LocalDateTime fecha2,String cuerpo);
+	
 	@Query("SELECT noti FROM Notificacion noti INNER JOIN noti.lineasEnviado l WHERE l.personal.id = :id and l.leido = false")
 	List<Notificacion> findNoLeidasForPersonal(@Param("id") Long id);
 	

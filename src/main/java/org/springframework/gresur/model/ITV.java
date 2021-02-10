@@ -13,7 +13,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,27 +25,27 @@ import lombok.EqualsAndHashCode;
 public class ITV extends BaseEntity implements Comparable<ITV>{
 	
 	@NotNull
-	@PastOrPresent
+	@PastOrPresent(message = "La fecha debe ser pasada o presente")
 	@Column(name = "fecha")
 	private LocalDate fecha;
 
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "expiracion")
 	private LocalDate expiracion;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Enumerated(value = EnumType.STRING)
 	@Column(name = "resultado")
 	private ResultadoITV resultado;
 	
-	@JsonIgnore
-	@NotNull
+	@JsonView
+	@NotNull(message = "No puede ser nulo")
 	@OneToOne(optional = false)
 	@JoinColumn(name = "factura_recibida_id")
 	private FacturaRecibida recibidas;
 	
-	@JsonIgnore
-	@NotNull
+	@JsonView
+	@NotNull(message = "No puede ser nulo")
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "vehiculo_id")
 	private Vehiculo vehiculo;

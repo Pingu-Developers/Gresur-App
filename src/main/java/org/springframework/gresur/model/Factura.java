@@ -16,11 +16,13 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import lombok.Data;
 
@@ -34,18 +36,22 @@ public class Factura{
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "ENTITY_ID")
 	protected Long id;
 	
+	@Version
+	@Column(columnDefinition = "integer DEFAULT 0", nullable = false)
+	private Integer version;
+	
 	@Column(name = "num_factura", unique = true)
 	protected String numFactura;
 	
-	@PastOrPresent
+	@PastOrPresent(message = "La fecha debe ser pasada o presente")
 	@Column(name = "fecha_emision")
 	protected LocalDate fechaEmision;
 	
-	@NotNull
-	@Min(value=0, message = "debe ser mayor o igual a cero")  
+	@NotNull(message = "No puede ser nulo")
+	@Min(value=0, message = "Debe ser mayor o igual a cero")  
 	protected Double importe;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "esta_pagada")
 	protected Boolean estaPagada;
 	
@@ -57,7 +63,7 @@ public class Factura{
 	
 	/* RELACIONES */
 	
-	@JsonIgnore
+	@JsonView
 	@OneToOne
 	protected Factura original;
 	

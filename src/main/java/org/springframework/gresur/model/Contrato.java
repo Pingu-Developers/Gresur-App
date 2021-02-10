@@ -14,8 +14,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -25,24 +23,24 @@ import lombok.EqualsAndHashCode;
 @Table(name = "contratos")
 public class Contrato extends BaseEntity{
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	private Double nomina;
 	
-	@NotBlank
+	@NotBlank(message = "No puede ser vacio")
 	@Column(name = "entidad_bancaria")
 	private String entidadBancaria;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "fecha_inicio")
-	@PastOrPresent
+	@PastOrPresent(message = "La fecha debe ser pasada o presente")
 	private LocalDate fechaInicio;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "fecha_fin")
-	@FutureOrPresent
+	@FutureOrPresent(message = "La fecha debe ser presente o futura")
 	private LocalDate fechaFin;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Enumerated(value = EnumType.STRING)
 	@Column(name ="tipo_jornada")
 	private TipoJornada tipoJornada;
@@ -50,7 +48,7 @@ public class Contrato extends BaseEntity{
 	@Lob
 	private String observaciones;
 
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@ManyToOne(optional = false)
 	private Personal personal;
 }

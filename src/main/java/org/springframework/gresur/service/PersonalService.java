@@ -35,6 +35,16 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 	}
 	
 	@Transactional(readOnly = true)
+	public Boolean existByNif(String nif) throws DataAccessException{
+		return personalGRepo.existsByNIF(nif);
+	}
+	
+	@Transactional(readOnly = true)
+	public Boolean existByNSS(String nss) throws DataAccessException{
+		return personalGRepo.existsByNSS(nss);
+	}
+	
+	@Transactional(readOnly = true)
 	public T findByNIF(String NIF) throws DataAccessException{
 		return personalRepo.findByNIF(NIF);
 	}
@@ -44,6 +54,15 @@ public class PersonalService<T extends Personal, E extends PersonalRepository<T>
 		em.clear();
 
 		T ret = personalRepo.save(personal);
+		em.flush();
+		return ret;
+	}
+	
+	@Transactional
+	public Personal savePersonal(Personal personal) throws DataAccessException{
+		em.clear();
+
+		Personal ret = personalGRepo.save(personal);
 		em.flush();
 		return ret;
 	}

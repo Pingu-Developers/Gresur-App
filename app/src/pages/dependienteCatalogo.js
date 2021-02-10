@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import withStyles from '@material-ui/core/styles/withStyles';
 
-import MostradorProductos from '../components/MostradorProductos';
+import MostradorProductos from '../components/HistoryLists/MostradorProductos';
 
 import { connect } from 'react-redux';
 import { getProductosPaginados, clearProductosPaginados } from '../redux/actions/productoActions'
@@ -32,8 +31,13 @@ function TabPanel(props) {
             {...other}
             >
             {value === index && (
-                <Box p={3}>
-                <Typography>{children}</Typography>
+                <Box p={3} 
+                    style = {{
+                        paddingTop: 0, 
+                        backgroundColor: '#fafafa', 
+                        borderRadius: 20,
+                    }}>
+                    <Typography>{children}</Typography>
                 </Box>
             )}
         </div>
@@ -57,12 +61,15 @@ const style = theme => ({
     root: {
         flexGrow: 1,
         backgroundColor: theme.palette.background.paper,
-        display: 'flex',
+        display: 'grid',
+        gridTemplateColumns: '1fr 20fr',
+        gridTemplateRows: '30fr 1fr',
         height: 384,
       },
     tabs: {
         borderRight: `1px solid ${theme.palette.divider}`,
-        minWidth:180
+        minWidth:180,
+        height: 'calc(100% - 50px)'
     }, 
     backdrop: {
         zIndex: theme.zIndex.drawer + 1,
@@ -72,7 +79,10 @@ const style = theme => ({
         width: '100%',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        borderBottom: '1px solid #bdbdbd',
+        margin: '30px 0px 20px 0px',
+        padding: '0px 0px 15px 0px'
     },
     formBoton: {
         display: 'flex',
@@ -86,8 +96,15 @@ const style = theme => ({
         margin: '30px 20px',
         fontSize: 40,
         fontWeight: 600,
-        float: 'left'
+        float: 'left',
+        color: '#7a7a7a',
+        margin: '0px 0px 0px 20px'
       }, 
+    tabBtn: {
+        '&:hover':{
+            backgroundColor: 'rgba(0, 188, 212, 0.2)',
+        },
+    }
 })
 
 class Catalogo extends Component {
@@ -127,7 +144,7 @@ class Catalogo extends Component {
                         this.props.getProductosPaginados(this.state.activePage,"AZULEJOS")
                         break;
                     case 2:
-                        this.props.getProductosPaginados(this.state.activePage,"BAÑOS")
+                        this.props.getProductosPaginados(this.state.activePage,"BANOS")
                         break;
                     case 3:
                         this.props.getProductosPaginados(this.state.activePage,"CALEFACCION")
@@ -214,24 +231,25 @@ class Catalogo extends Component {
                 aria-label="Vertical tabs example"
                 className={classes.tabs}
             >
-                <Tab label="Todos" {...a11yProps(0)} />
-                <Tab label="AZULEJOS" {...a11yProps(1)} />
-                <Tab label="BAÑOS" {...a11yProps(2)} />
-                <Tab label="CALEFACCION" {...a11yProps(3)} />
-                <Tab label="LADRILLOS" {...a11yProps(4)} />
-                <Tab label="PINTURAS" {...a11yProps(5)} />
-                <Tab label="REVESTIMIENTOS" {...a11yProps(6)} />
-                <Tab label="SILICES" {...a11yProps(7)} />
+                <Tab label="Todos" {...a11yProps(0)} className = {classes.tabBtn}/>
+                <Tab label="AZULEJOS" {...a11yProps(1)} className = {classes.tabBtn}/>
+                <Tab label="BAÑOS" {...a11yProps(2)} className = {classes.tabBtn}/>
+                <Tab label="CALEFACCION" {...a11yProps(3)} className = {classes.tabBtn}/>
+                <Tab label="LADRILLOS" {...a11yProps(4)} className = {classes.tabBtn}/>
+                <Tab label="PINTURAS" {...a11yProps(5)} className = {classes.tabBtn}/>
+                <Tab label="REVESTIMIENTOS" {...a11yProps(6)} className = {classes.tabBtn}/>
+                <Tab label="SILICES" {...a11yProps(7)} className = {classes.tabBtn}/>
             </Tabs>
             <TabPanel value={this.state.value} index={this.state.value}>
                 {articlesDetails?articlesDetails.map(producto => 
                     <MostradorProductos producto={producto}/>
                 ):()=>null}
 
-            <div className="d-flex justify-content-center">
+            
+            </TabPanel>
+            <div className="d-flex justify-content-center" style = {{gridColumn: 2, marginTop: 10}}>
                 {articlesDetails.length===0?null:<Pagination count={totalPages} hidePrevButton={this.state.activePage ===1} hideNextButton={this.state.activePage ===totalPages}  page={this.state.activePage} onChange={(event,newValue) => this.handlePageChange(newValue)} color="secondary" />}
             </div>
-            </TabPanel>
         </div>
     </div>
       

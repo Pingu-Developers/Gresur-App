@@ -13,8 +13,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,21 +22,24 @@ import lombok.EqualsAndHashCode;
 @Table(name = "pedidos")
 public class Pedido extends BaseEntity{
 
-	@NotBlank
+	@NotBlank(message = "No puede ser vacio")
 	@Column(name = "direccion_envio")
 	private String direccionEnvio;
 	
 	@Enumerated(value = EnumType.STRING)
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "estado")
 	private EstadoPedido estado;
 	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
+	@Column(name = "fecha_realizacion")
+	private LocalDate fechaRealizacion;
+	
+	@NotNull(message = "No puede ser nulo")
 	@Column(name = "fecha_envio")
 	private LocalDate fechaEnvio;
 	
-	
-	@NotNull
+	@NotNull(message = "No puede ser nulo")
 	@OneToOne(optional = false)
 	@JoinColumn(name = "factura_emitida_id")
 	private FacturaEmitida facturaEmitida;
@@ -52,8 +53,8 @@ public class Pedido extends BaseEntity{
 	private Transportista transportista;
 	
 	/* Propiedad derivada */
-	public Boolean recogeEnTienda(Pedido p) {
-		return p.getDireccionEnvio() == "C/ Ligastorro nº 9" || p.getDireccionEnvio() == "Avenida Gresur edificio AG";
+	public Boolean recogeEnTienda() {
+		return this.getDireccionEnvio().equals("C/ Ligastorro nº 9") || this.getDireccionEnvio().equals("Avenida Gresur edificio AG");
 	}
 		
 	public FacturaEmitida getFacturaEmitida() {
