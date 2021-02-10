@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/gii-is-DP1/dp1-2020-g3-12/master/app/src/images/Gresur.png" height="50px"> # GresurApp
+# <img src="https://raw.githubusercontent.com/gii-is-DP1/dp1-2020-g3-12/master/app/src/images/Gresur.png" height="50px">  GresurApp
 
 Aplicación para la gestión de la logística de Azulejos Gresur
 
@@ -14,13 +14,13 @@ Para el despliegue proyecto en tu pc, deberás tener instalado previamente las s
 * [Node.js](https://nodejs.org/es/download/) - Para ejecutar el frontend desarrollado con React
 * [Visual Studio Code](https://code.visualstudio.com/download) - Recomendado para visualizar/editar el código de React
 
-## Despliegue 📦
+### Despliegue 📦
 
 Una vez instalado todo, importaremos nuestro proyecto en eclipse y ejecutaremos el archivo <b>GresurApplication.java</b> localizado en _src/main/java_ en el package _org.springframework.gresur_
 
 Posteriormente, desde Visual Studio Code abriremos la carpeta _/app_ y ahí ejecutaremos el siguiente comando
 ```
-npm install
+npm install --legacy-peer-deps
 ```
 Una vez instaladas todas las dependencias, ejecutaremos el frontend con el siguiente comando 
 
@@ -35,4 +35,4 @@ Por último, abriremos una pestaña en el navegador e introduciremos esta URL: <
 * **Tomás Galera Barrera** - *tomgalbar@alum.us.es* - [Github](https://github.com/tomgalbar)
 * **Lucas Pérez Ruiz** - *lucperrui@alum.us.es* - [Github](https://github.com/lucasperezweb)
 * **Borja Rondán Domínguez** - *borrondom@alum.us.es* - [Github](https://github.com/borjar20)
-* **Alejandro Santisteban Corchos** - *alesanco@alum.us.esr* - [Github](https://github.com/alesancor1)
+* **Alejandro Santisteban Corchos** - *alesancor1@alum.us.es* - [Github](https://github.com/alesancor1)
